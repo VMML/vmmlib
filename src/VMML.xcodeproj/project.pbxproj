@@ -1,0 +1,396 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		8D07F2C00486CC7A007CD1D0 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C1666FE841158C02AAC07 /* InfoPlist.strings */; };
+		980561D80AC933E200BDF55F /* VMMLib.h in Headers */ = {isa = PBXBuildFile; fileRef = 980561D70AC933E200BDF55F /* VMMLib.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		9836EF7F0AC958500060C6CB /* JacobiSolver.h in Headers */ = {isa = PBXBuildFile; fileRef = 9836EF7E0AC958500060C6CB /* JacobiSolver.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		9867B4F00AAED08E00651D9B /* Vector3.h in Headers */ = {isa = PBXBuildFile; fileRef = 9867B4EF0AAED08E00651D9B /* Vector3.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		9867B5650AAEFDB900651D9B /* Vector4.h in Headers */ = {isa = PBXBuildFile; fileRef = 9867B5640AAEFDB900651D9B /* Vector4.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		9867B5760AAEFF1400651D9B /* main_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9867B4EC0AAED07600651D9B /* main_test.cpp */; };
+		9867B62C0AAF0C0200651D9B /* Matrix3.h in Headers */ = {isa = PBXBuildFile; fileRef = 9867B62A0AAF0C0200651D9B /* Matrix3.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		9867B62D0AAF0C0200651D9B /* Matrix4.h in Headers */ = {isa = PBXBuildFile; fileRef = 9867B62B0AAF0C0200651D9B /* Matrix4.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		989F5C9C0AC97B09007CC6C9 /* SingularValueDecomposition.h in Headers */ = {isa = PBXBuildFile; fileRef = 989F5C9B0AC97B09007CC6C9 /* SingularValueDecomposition.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		989F5CD90ACA7970007CC6C9 /* HelperFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 989F5CD80ACA7970007CC6C9 /* HelperFunctions.h */; settings = {ATTRIBUTES = (Public, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		089C1667FE841158C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		8D07F2C70486CC7A007CD1D0 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		8D07F2C80486CC7A007CD1D0 /* VMMLib.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = VMMLib.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		980561D70AC933E200BDF55F /* VMMLib.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = VMMLib.h; path = include/VMMLib.h; sourceTree = "<group>"; };
+		9836EF7E0AC958500060C6CB /* JacobiSolver.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = JacobiSolver.h; path = include/JacobiSolver.h; sourceTree = "<group>"; };
+		9867B4EC0AAED07600651D9B /* main_test.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = main_test.cpp; path = src/main_test.cpp; sourceTree = "<group>"; };
+		9867B4EF0AAED08E00651D9B /* Vector3.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Vector3.h; path = include/Vector3.h; sourceTree = "<group>"; };
+		9867B5640AAEFDB900651D9B /* Vector4.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Vector4.h; path = include/Vector4.h; sourceTree = "<group>"; };
+		9867B5740AAEFEFC00651D9B /* vmml_test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = vmml_test; sourceTree = BUILT_PRODUCTS_DIR; };
+		9867B62A0AAF0C0200651D9B /* Matrix3.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Matrix3.h; path = include/Matrix3.h; sourceTree = "<group>"; };
+		9867B62B0AAF0C0200651D9B /* Matrix4.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Matrix4.h; path = include/Matrix4.h; sourceTree = "<group>"; };
+		989F5C9B0AC97B09007CC6C9 /* SingularValueDecomposition.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = SingularValueDecomposition.h; path = include/SingularValueDecomposition.h; sourceTree = "<group>"; };
+		989F5CD80ACA7970007CC6C9 /* HelperFunctions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = HelperFunctions.h; path = include/HelperFunctions.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8D07F2C30486CC7A007CD1D0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9867B5720AAEFEFC00651D9B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		034768DDFF38A45A11DB9C8B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8D07F2C80486CC7A007CD1D0 /* VMMLib.framework */,
+				9867B5740AAEFEFC00651D9B /* vmml_test */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		0867D691FE84028FC02AAC07 /* VMML */ = {
+			isa = PBXGroup;
+			children = (
+				9867B4EE0AAED07A00651D9B /* Basics */,
+				9836EF820AC958620060C6CB /* Advanced */,
+				08FB77ACFE841707C02AAC07 /* Tests */,
+				089C1665FE841158C02AAC07 /* Resources */,
+				0867D69AFE84028FC02AAC07 /* External Frameworks and Libraries */,
+				034768DDFF38A45A11DB9C8B /* Products */,
+			);
+			name = VMML;
+			sourceTree = "<group>";
+		};
+		0867D69AFE84028FC02AAC07 /* External Frameworks and Libraries */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "External Frameworks and Libraries";
+			sourceTree = "<group>";
+		};
+		089C1665FE841158C02AAC07 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				8D07F2C70486CC7A007CD1D0 /* Info.plist */,
+				089C1666FE841158C02AAC07 /* InfoPlist.strings */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		08FB77ACFE841707C02AAC07 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				9867B4EC0AAED07600651D9B /* main_test.cpp */,
+			);
+			name = Tests;
+			sourceTree = "<group>";
+		};
+		9836EF820AC958620060C6CB /* Advanced */ = {
+			isa = PBXGroup;
+			children = (
+				9836EF7E0AC958500060C6CB /* JacobiSolver.h */,
+				989F5C9B0AC97B09007CC6C9 /* SingularValueDecomposition.h */,
+			);
+			name = Advanced;
+			sourceTree = "<group>";
+		};
+		9867B4EE0AAED07A00651D9B /* Basics */ = {
+			isa = PBXGroup;
+			children = (
+				980561D70AC933E200BDF55F /* VMMLib.h */,
+				9867B62A0AAF0C0200651D9B /* Matrix3.h */,
+				9867B62B0AAF0C0200651D9B /* Matrix4.h */,
+				9867B4EF0AAED08E00651D9B /* Vector3.h */,
+				9867B5640AAEFDB900651D9B /* Vector4.h */,
+				989F5CD80ACA7970007CC6C9 /* HelperFunctions.h */,
+			);
+			name = Basics;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		8D07F2BD0486CC7A007CD1D0 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				980561D80AC933E200BDF55F /* VMMLib.h in Headers */,
+				9867B4F00AAED08E00651D9B /* Vector3.h in Headers */,
+				9867B5650AAEFDB900651D9B /* Vector4.h in Headers */,
+				9867B62C0AAF0C0200651D9B /* Matrix3.h in Headers */,
+				9867B62D0AAF0C0200651D9B /* Matrix4.h in Headers */,
+				9836EF7F0AC958500060C6CB /* JacobiSolver.h in Headers */,
+				989F5C9C0AC97B09007CC6C9 /* SingularValueDecomposition.h in Headers */,
+				989F5CD90ACA7970007CC6C9 /* HelperFunctions.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		8D07F2BC0486CC7A007CD1D0 /* VMML */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4FADC24208B4156D00ABE55E /* Build configuration list for PBXNativeTarget "VMML" */;
+			buildPhases = (
+				8D07F2BD0486CC7A007CD1D0 /* Headers */,
+				8D07F2BF0486CC7A007CD1D0 /* Resources */,
+				8D07F2C10486CC7A007CD1D0 /* Sources */,
+				8D07F2C30486CC7A007CD1D0 /* Frameworks */,
+				8D07F2C50486CC7A007CD1D0 /* Rez */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = VMML;
+			productInstallPath = "$(HOME)/Library/Frameworks";
+			productName = VMML;
+			productReference = 8D07F2C80486CC7A007CD1D0 /* VMMLib.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		9867B5730AAEFEFC00651D9B /* vmml_test */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9867B5810AAEFF5600651D9B /* Build configuration list for PBXNativeTarget "vmml_test" */;
+			buildPhases = (
+				9867B5710AAEFEFC00651D9B /* Sources */,
+				9867B5720AAEFEFC00651D9B /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = vmml_test;
+			productName = vmml_test;
+			productReference = 9867B5740AAEFEFC00651D9B /* vmml_test */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		0867D690FE84028FC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 4FADC24608B4156D00ABE55E /* Build configuration list for PBXProject "VMML" */;
+			hasScannedForEncodings = 1;
+			mainGroup = 0867D691FE84028FC02AAC07 /* VMML */;
+			productRefGroup = 034768DDFF38A45A11DB9C8B /* Products */;
+			projectDirPath = "";
+			targets = (
+				8D07F2BC0486CC7A007CD1D0 /* VMML */,
+				9867B5730AAEFEFC00651D9B /* vmml_test */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8D07F2BF0486CC7A007CD1D0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D07F2C00486CC7A007CD1D0 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXRezBuildPhase section */
+		8D07F2C50486CC7A007CD1D0 /* Rez */ = {
+			isa = PBXRezBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXRezBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8D07F2C10486CC7A007CD1D0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9867B5710AAEFEFC00651D9B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9867B5760AAEFF1400651D9B /* main_test.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		089C1666FE841158C02AAC07 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				089C1667FE841158C02AAC07 /* English */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		4FADC24308B4156D00ABE55E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					ppc64,
+					i386,
+				);
+				COPY_PHASE_STRIP = NO;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = VMML_Prefix.pch;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Library/Frameworks";
+				LIBRARY_STYLE = DYNAMIC;
+				MACH_O_TYPE = mh_dylib;
+				PRODUCT_NAME = VMMLib;
+				WRAPPER_EXTENSION = framework;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		4FADC24408B4156D00ABE55E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					ppc64,
+					i386,
+				);
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = VMML_Prefix.pch;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Library/Frameworks";
+				LIBRARY_STYLE = DYNAMIC;
+				MACH_O_TYPE = mh_dylib;
+				PRODUCT_NAME = VMMLib;
+				WRAPPER_EXTENSION = framework;
+			};
+			name = Release;
+		};
+		4FADC24708B4156D00ABE55E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					ppc64,
+					i386,
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = include;
+				PREBINDING = NO;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+			};
+			name = Debug;
+		};
+		4FADC24808B4156D00ABE55E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					ppc64,
+					i386,
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = include;
+				PREBINDING = NO;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+			};
+			name = Release;
+		};
+		9867B5820AAEFF5600651D9B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = vmml_test;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		9867B5830AAEFF5600651D9B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = vmml_test;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		4FADC24208B4156D00ABE55E /* Build configuration list for PBXNativeTarget "VMML" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4FADC24308B4156D00ABE55E /* Debug */,
+				4FADC24408B4156D00ABE55E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4FADC24608B4156D00ABE55E /* Build configuration list for PBXProject "VMML" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4FADC24708B4156D00ABE55E /* Debug */,
+				4FADC24808B4156D00ABE55E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9867B5810AAEFF5600651D9B /* Build configuration list for PBXNativeTarget "vmml_test" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9867B5820AAEFF5600651D9B /* Debug */,
+				9867B5830AAEFF5600651D9B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 0867D690FE84028FC02AAC07 /* Project object */;
+}

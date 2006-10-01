@@ -160,9 +160,10 @@ public:
     static const Matrix4 IDENTITY;
     static const Matrix4 ZERO;
 
-    typedef Matrix4<float>  Matrix4f;
-    typedef Matrix4<double> Matrix4d;
 };
+
+typedef Matrix4<float>  Matrix4f;
+typedef Matrix4<double> Matrix4d;
 
 // * * * * * * * * * *
 //
@@ -423,7 +424,7 @@ Matrix4< Real >& Matrix4< Real >::operator*= ( const Matrix4& mm )
         {
             Real tmp = 0.0;
             for( int k = 0; k < 4; ++k )
-                tmp += m.m[j][k] * mm.m[k][i];
+                tmp += m[j][k] * mm.m[k][i];
             m[j][i] = tmp;
         }
     return *this;

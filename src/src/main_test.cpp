@@ -26,13 +26,20 @@ int main()
     Vector3f a;
     a = 0;
     a.x = 1.0;
-    a.z = 0.3;
+    a[2] = 0.3;
 
     std::cout << a << std::endl << " sizeof " << sizeof(a) << std::endl;
+
+    Vector3f aCopy( a );
+    a.normalise();
+    Vector3f::normalise( (float*) &aCopy );
+    std::cout << a << " " << aCopy << std::endl;
+    assert ( a == aCopy );
+    
     
     Vector4d b;
     b = 0.6;
-    b.a = 0.1;
+    b[3] = 0.1;
 
     std::cout << b << std::endl << " sizeof " << sizeof(b) << std::endl;
     

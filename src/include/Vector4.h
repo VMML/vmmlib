@@ -223,17 +223,17 @@ const Vector4< Real >& Vector4< Real >::operator=( const Vector4& aa )
 
 
 template < class Real > 
-Real& Vector4< Real >::operator[]( size_t position) 
+Real& Vector4< Real >::operator[]( size_t index ) 
 { 
-    assert( position < 4 && "Vector4::operator[] Invalid component index!" ); 
-    return * (&x+position); 
+    assert( index < 4 && "Vector4::operator[] Invalid component index!" ); 
+    return xyzw[ index ]; 
 }
          
 template < class Real > 
-const Real& Vector4< Real >::operator[]( size_t position) const
+const Real& Vector4< Real >::operator[]( size_t index ) const
 { 
-    assert( position < 4 && "Vector4::operator[] Invalid component index!" ); 
-    return * (&x+position); 
+    assert( index < 4 && "Vector4::operator[] Invalid component index!" ); 
+    return xyzw[ index ]; 
 } 
 	
 template < class Real > 

@@ -104,7 +104,7 @@ public:
     Real lengthSquared() const;
 
     Real normalise();
-    Real normalise( const float* source );
+    static Real normalise( float* source );
     void scale( Real scale_factor );
 
     // result = vec1.cross( vec2 ) => vec1 x vec2
@@ -220,17 +220,17 @@ const Vector3< Real >& Vector3< Real >::operator=( const Vector3& a )
 
 
 template < class Real > 
-Real& Vector3< Real >::operator[]( size_t position) 
+Real& Vector3< Real >::operator[]( size_t index ) 
 { 
-    assert( position < 3 && "Vector3::operator[] Invalid component index!" ); 
-    return * (&x+position); 
+    assert( index < 3 && "Vector3::operator[] Invalid component index!" ); 
+    return xyz[ index ]; 
 }
          
 template < class Real > 
-const Real& Vector3< Real >::operator[]( size_t position) const
+const Real& Vector3< Real >::operator[]( size_t index ) const
 { 
-    assert( position < 3 && "Vector3::operator[] Invalid component index!" ); 
-    return * (&x+position); 
+    assert( index < 3 && "Vector3::operator[] Invalid component index!" ); 
+    return xyz[ index ]; 
 } 
 	
 template < class Real > 
@@ -259,14 +259,19 @@ Real  Vector3< Real >::normalise()
     return l; 
 } 
 
+// PRECONDITION: float* source is a valid 3-float array
 template < class Real > 
-Real  Vector3< Real >::normalise( const float* source )
+Real  Vector3< Real >::normalise( float* source )
 {
-    Vector3< Real > a ( source );
-    Real l = a.length();
+    Vector3< float >* a = ( Vector3< float >* ) source;
+    Real l = a->length();
     if ( l == 0 ) 
         return 0;
-     
+    l = 1.0f / l;
+    source[0] *= l;
+    source[1] *= l;
+    source[2] *= l;
+    return l;
 }
 
 

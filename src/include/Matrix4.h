@@ -130,6 +130,7 @@ public:
     void rotateY( const Real angle );
     void rotateZ( const Real angle );
     void scale( const Real scale[3] );
+    void scaleTranslation( const Real scale[3] );
     void setTranslation( const Real x, const Real y, const Real z );
 
     void tensor( const Vector3< Real >& u, const Vector3< Real >& v );
@@ -685,6 +686,14 @@ void Matrix4<Real>::scale( const Real scale[3] )
     ml[6]  *= scale[2];
     ml[10] *= scale[2];
     ml[14] *= scale[2];
+}
+
+template< typename Real >
+void Matrix4<Real>::scaleTranslation( const Real scale[3] )
+{
+    ml[3] *= scale[0];
+    ml[7] *= scale[1];
+    ml[11] *= scale[2];
 }
 
 template< typename Real >

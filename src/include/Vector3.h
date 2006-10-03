@@ -237,7 +237,7 @@ template < class Real >
 Real  Vector3< Real >::length() const 
 { 
     Real l = lengthSquared();
-    return ( l <= 0 ) ? 0 : sqrt( l ); 
+    return sqrt( l ); 
 } 
 
 template < class Real > 
@@ -267,6 +267,7 @@ Real  Vector3< Real >::normalise( float* source )
     Real l = a->length();
     if ( l == 0 ) 
         return 0;
+
     l = 1.0f / l;
     source[0] *= l;
     source[1] *= l;
@@ -505,7 +506,6 @@ Vector3< Real > Vector3< Real >::rotate( Real theta, Real rx, Real ry,
     return q; 
 } 
 
-#if 0
 template<>
 inline Vector3< float > Vector3< float >::rotate( float theta, float rx, 
                                                   float ry, float rz )      
@@ -525,7 +525,6 @@ inline Vector3< float > Vector3< float >::rotate( float theta, float rx,
     q.z += ( costheta + ( 1 - costheta ) * r.z * r.z ) * z;
     return q; 
 } 
-#endif
 
 template < class Real > 
 Real Vector3< Real >::max() 

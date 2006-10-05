@@ -96,10 +96,17 @@ public:
     Real min();
     Real max();
 
-    friend std::ostream& operator<<( std::ostream& o, const Vector2& v )
+    friend std::ostream& operator << ( std::ostream& os, const Vector2& v )
     {
-        o << "Vector2(" << v.x << "," << v.y << ") ";
-        return o;
+        const std::ios::fmtflags flags = os.flags();
+        const int                prec  = os.precision();
+
+        os.setf( std::ios::right, std::ios::adjustfield );
+        os.precision( 5 );
+        os << "[" << std::setw(7) << v.x << " " << std::setw(7) << v.y << "]";
+        os.precision( prec );
+        os.setf( flags );
+        return os;
     };        
 };
 

@@ -145,17 +145,32 @@ public:
         const;
                    
 
-    friend std::ostream& operator<<( std::ostream& o, const Matrix4& mm )
+    friend std::ostream& operator << ( std::ostream& os, const Matrix4& m )
     {
-        o << "Matrix4( " << mm.m[0][0] << ", " << mm.m[0][1] << ", " 
-          << mm.m[0][2] << ", " << mm.m[0][3] << std::endl;
-        o << "         " << mm.m[1][0] << ", " << mm.m[1][1] << ", " 
-          << mm.m[1][2] << ", " << mm.m[1][3] << std::endl;
-        o << "         " << mm.m[2][0] << ", " << mm.m[2][1] << ", " 
-          << mm.m[2][2] << ", " << mm.m[2][3] << std::endl;
-        o << "         " << mm.m[3][0] << ", " << mm.m[3][1] << ", " 
-          << mm.m[3][2] << ", " << mm.m[3][3] << " )" << std::endl;
-        return o;
+        const std::ios::fmtflags flags = os.flags();
+        const int                prec  = os.precision();
+
+        os.setf( std::ios::right, std::ios::adjustfield );
+        os.precision( 5 );
+        os << std::endl << "|" << std::setw(7) << m.m[0][0] << " " 
+           << std::setw(7) << m.m[0][1] << " " 
+           << std::setw(7) << m.m[0][2] << " " 
+           << std::setw(7) << m.m[0][3] << "|" << std::endl
+           << "|" << std::setw(7) << m.m[1][0] << " " 
+           << std::setw(7) << m.m[1][1] << " " 
+           << std::setw(7) << m.m[1][2] << " " 
+           << std::setw(7) << m.m[1][3] << "|" << std::endl
+           << "|" << std::setw(7) << m.m[2][0] << " " 
+           << std::setw(7) << m.m[2][1] << " " 
+           << std::setw(7) << m.m[2][2] << " " 
+           << std::setw(7) << m.m[2][3] << "|" << std::endl
+           << "|" << std::setw(7) << m.m[3][0] << " " 
+           << std::setw(7) << m.m[3][1] << " " 
+           << std::setw(7) << m.m[3][2] << " " 
+           << std::setw(7) << m.m[3][3] << "|" << std::endl;
+        os.precision( prec );
+        os.setf( flags );
+        return os;
     };  
     
     static const Matrix4 IDENTITY;

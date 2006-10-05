@@ -26,6 +26,7 @@
 
 #include <math.h>
 #include <stdlib.h>
+#include <iomanip>
 #include <iostream>
 #include <algorithm>
 #include <assert.h>
@@ -109,15 +110,25 @@ public:
     Matrix3 operator- () const;
     Matrix3 negate () const;
 
-    friend std::ostream& operator<<( std::ostream& o, const Matrix3& mm )
+    friend std::ostream& operator << ( std::ostream& os, const Matrix3& m )
     {
-        o << "Matrix3( " << mm.ml[0] << ", " << mm.ml[1] << ", " << mm.ml[2]
-          << std::endl; 
-        o << "         " << mm.ml[3] << ", " << mm.ml[4] << ", " << mm.ml[5]
-          << std::endl; 
-        o << "         " << mm.ml[6] << ", " << mm.ml[7] << ", " << mm.ml[8]
-          << " )" << std::endl;
-        return o;
+        const std::ios::fmtflags flags = os.flags();
+        const int                prec  = os.precision();
+
+        os.setf( std::ios::right, std::ios::adjustfield );
+        os.precision( 5 );
+        os << std::endl << "|" << std::setw(7) << m.ml[0] << " " 
+           << std::setw(7) << m.ml[1] << " " 
+           << std::setw(7) << m.ml[2] << "|" << std::endl
+           << "|" << std::setw(7) << m.ml[3] << " "
+           << std::setw(7) << m.ml[4] << " " 
+           << std::setw(7) << m.ml[5] << "|" << std::endl
+           << "|" << std::setw(7) << m.ml[6] << " "
+           << std::setw(7) << m.ml[7] << " " 
+           << std::setw(7) << m.ml[8] << "|" << std::endl; 
+        os.precision( prec );
+        os.setf( flags );
+        return os;
     };  
     
     static const Matrix3 IDENTITY;

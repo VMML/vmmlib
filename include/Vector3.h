@@ -21,6 +21,7 @@
 
 #include <math.h>
 #include <stdlib.h>
+#include <iomanip>
 #include <iostream>
 #include <algorithm>
 #include <assert.h>
@@ -126,10 +127,18 @@ public:
     Real min();
     Real max();
 
-    friend std::ostream& operator<<( std::ostream& o, const Vector3& v )
+    friend std::ostream& operator << ( std::ostream& os, const Vector3& v )
     {
-        o << "Vector3(" << v.x << "," << v.y << "," << v.z << ") ";
-        return o;
+        const std::ios::fmtflags flags = os.flags();
+        const int                prec  = os.precision();
+
+        os.setf( std::ios::right, std::ios::adjustfield );
+        os.precision( 5 );
+        os << "[" << std::setw(7) << v.x << " " << std::setw(7) << v.y 
+           << " " << std::setw(7) << v.z << "]";
+        os.precision( prec );
+        os.setf( flags );
+        return os;
     };        
 };
     

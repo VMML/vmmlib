@@ -111,8 +111,11 @@ public:
     };        
 };
 
-typedef Vector2<float>  Vector2f;
-typedef Vector2<double> Vector2d;
+#ifndef VMMLIB_DISABLE_TYPEDEFS
+    typedef Vector2<int>    Vector2i;
+    typedef Vector2<float>  Vector2f;
+    typedef Vector2<double> Vector2d;
+#endif
 
 // - implementation - //
        

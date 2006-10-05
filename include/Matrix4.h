@@ -179,8 +179,10 @@ public:
 
 };
 
-typedef Matrix4<float>  Matrix4f;
-typedef Matrix4<double> Matrix4d;
+#ifndef VMMLIB_DISABLE_TYPEDEFS
+    typedef Matrix4<float>  Matrix4f;
+    typedef Matrix4<double> Matrix4d;
+#endif
 
 // * * * * * * * * * *
 //

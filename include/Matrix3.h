@@ -133,10 +133,13 @@ public:
     
     static const Matrix3 IDENTITY;
     static const Matrix3 ZERO;
+};
 
+
+#ifndef VMMLIB_DISABLE_TYPEDEFS
     typedef Matrix3<float>  Matrix3f;
     typedef Matrix3<double> Matrix3d;
-};
+#endif
 
 // - implementation -
 

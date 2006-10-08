@@ -7,6 +7,8 @@
 #include "VMMLib.h"
 //#include "Pool.h"
 #include "AxisAlignedBoundingBox.h"
+#include "Visitor.h"
+
 
 /** 
 * an octree class 
@@ -32,9 +34,11 @@ class OctreeNode
 //    typedef Pool< OctreeNode< T > > ONodePool;
 
 public:
+
     // root node ctor
     // creates only the root node
     OctreeNode( const Aabbf& aabb );
+    OctreeNode( float cx, float cy, float cz, float size );
 
     // child node ctor
     OctreeNode( OctreeNode< T >* parent, unsigned char pIndex );
@@ -70,6 +74,9 @@ public:
     inline OctreeNode< T >* operator[]( size_t index );
     
     void createChildren( size_t maxDepth );
+    void setupLeaves();
+    
+    void accept( Visitor< T >* visitor );
     
     // warning: slow!    
     void spam();
@@ -79,8 +86,8 @@ public:
     void getId( std::string& nodeId );
 
 protected:
-    // dangerous ctor/setPackage package for pool
     OctreeNode(); 
+    void _setupRoot( const Aabbf& aabb ); 
     void _setParent( OctreeNode< T >* parent, unsigned char index );
 
     OctreeNode< T >* _parent;
@@ -114,14 +121,19 @@ OctreeNode< T >::OctreeNode( const Aabbf& aabb )
 }
 
 template< typename T >
-OctreeNode< T >::OctreeNode()
+OctreeNode< T >::OctreeNode( float cx, float cy, float cz, float size )
     : _parent( 0 )
     , _children( 0 )
-    , _aabb()
+    , _aabb( cx, cy, cz, size )
     , _load( 0 )
     , _index( ROOT )
-    , _depth( 0)
-{}
+    , _depth( 0 )
+{
+    _center = _aabb.getMin();
+    float edgelen = _aabb.getMax().x - _center.x;
+    edgelen *= 0.5f;
+    _center += edgelen;
+}
 
 template< typename T >
 OctreeNode< T >::OctreeNode( OctreeNode< T >* parent, unsigned char pIndex )
@@ -166,6 +178,26 @@ OctreeNode< T >::OctreeNode( OctreeNode< T >* parent, unsigned char pIndex )
 }
 
 template< typename T >
+OctreeNode< T >::OctreeNode()
+    : _parent( 0 )
+    , _children( 0 )
+    , _aabb()
+    , _load( 0 )
+    , _index( ROOT )
+    , _depth( 0)
+{}
+
+template< typename T >
+void OctreeNode< T >::_setupRoot( const Aabbf& aabb )
+{
+    _aabb = aabb;
+    _center = _aabb.getMin();
+    float edgelen = _aabb.getMax().x - _center.x;
+    edgelen *= 0.5f;
+    _center += edgelen;
+}
+
+template< typename T >
 void OctreeNode< T >::_setParent( OctreeNode< T >* parent, unsigned char index )
 {
     assert( _parent );
@@ -174,9 +206,9 @@ void OctreeNode< T >::_setParent( OctreeNode< T >* parent, unsigned char index )
     _index =  index;
     _depth = parent->getDepth() + 1;
     
-    const Aabbf& pbox = parent->getAabb();
-    Vector3f min = pbox.getMin();
-    Vector3f max = pbox.getMax();
+    _aabb = parent->getAabb();
+    Vector3f min = _aabb.getMin();
+    Vector3f max = _aabb.getMax();
     // in this context, the aabb is always a cube.
     float edgelen = max.x - min.x;
     edgelen *= 0.5f;
@@ -324,7 +356,27 @@ inline OctreeNode< T >* OctreeNode< T >::operator[]( size_t index )
     return _children[index]; 
 };
     
+template< typename T >    
+void OctreeNode< T >::setupLeaves()
+{ 
+    if ( _children.size() > 0 )
+    {
+        for ( size_t i = 0; i < 8; ++i )
+        {
+            _children[i]->setupLeaves();
+        }
+    }
+    else if ( _load == 0 )
+    {
+        _load = new T();
+    }
+};
 
+template< typename T > 
+void OctreeNode< T >::accept( Visitor< T >* visitor )
+{
+    visitor->visit( this );
+}
 
 
 };

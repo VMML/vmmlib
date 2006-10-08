@@ -14,6 +14,7 @@ public:
     AxisAlignedBoundingBox();
     AxisAlignedBoundingBox( const Vector3< T >& pMin, const Vector3< T >& pMax );
     AxisAlignedBoundingBox( const Sphere< T >& sphere );
+    AxisAlignedBoundingBox( T cx, T cy, T cz, T size );
     
     bool isIn( const Vector3< T >& pos );
     bool isIn( const Sphere< T >& sphere );
@@ -46,6 +47,14 @@ AxisAlignedBoundingBox< T >::AxisAlignedBoundingBox( const Sphere< T >& sphere )
     _max = _min = sphere.getCenter();
     _max += sphere.getRadius();
     _min -= sphere.getRadius();
+}
+
+template< typename T >
+AxisAlignedBoundingBox< T >::AxisAlignedBoundingBox( T cx, T cy, T cz, T size )
+{
+    _max = _min = Vector3f( cx, cy, cz );
+    _max += size;
+    _min -= size;
 }
 
 template< typename T >

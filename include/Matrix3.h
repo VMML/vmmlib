@@ -11,7 +11,7 @@
 *
 * parts of the source code of VMMLib were inspired by David Eberly's 
 * Wild Magic and Andrew Willmott's VL.
-* 
+* typename T
 */ 
 
 #ifndef _Matrix3_H_
@@ -36,7 +36,7 @@
 namespace vmml
 {
 
-template< class Real > 
+template< typename T > 
 class Matrix3
 {
 public:
@@ -44,20 +44,20 @@ public:
     {
         struct
         {
-            Real m00, m01, m02, m10, m11, m12, m20, m21, m22;
+            T m00, m01, m02, m10, m11, m12, m20, m21, m22;
         };
-        Real m[3][3]; // rows 
-        Real ml[9]; // linear
+        T m[3][3]; // rows 
+        T ml[9]; // linear
     };
         
     Matrix3();
     Matrix3( const Matrix3& mm );
-    Matrix3( Real a, Real b, Real c, 
-             Real d, Real e, Real f, 
-             Real g, Real h, Real i 
+    Matrix3( T a, T b, T c, 
+             T d, T e, T f, 
+             T g, T h, T i 
              );
-    Matrix3( const Vector3<Real>& v0, const Vector3<Real>& v1, 
-             const Vector3<Real>& v2, bool column_vectors = false );
+    Matrix3( const Vector3<T>& v0, const Vector3<T>& v1, 
+             const Vector3<T>& v2, bool column_vectors = false );
 
     // dangerous, but implemented to allow easy conversion between 
     // Matrix< float > and Matrix< double >
@@ -66,7 +66,7 @@ public:
     Matrix3( double* values );
  
     inline Matrix3& operator= ( const Matrix3& mm );
-    inline Matrix3& operator= ( const Real r );
+    inline Matrix3& operator= ( const T r );
     
     inline bool operator== (const Matrix3& mm) const;
     inline bool operator!= (const Matrix3& mm) const;
@@ -78,34 +78,34 @@ public:
     void set( const float* mm );
     void set( const double* mm );
 
-    inline Real* operator[] ( size_t row ) const;
-    Vector3< Real > getRow( size_t row ) const;
-    Vector3< Real > getColumn( size_t col ) const; 
+    inline T* operator[] ( size_t row ) const;
+    Vector3< T > getRow( size_t row ) const;
+    Vector3< T > getColumn( size_t col ) const; 
     
-    void setRow( size_t row, Vector3< Real > rowvec );
-    void setColumn( size_t col, Vector3< Real > colvec );
+    void setRow( size_t row, Vector3< T > rowvec );
+    void setColumn( size_t col, Vector3< T > colvec );
 
     // arithmetic operations
     Matrix3 operator+ ( const Matrix3& mm ) const;
     Matrix3 operator- ( const Matrix3& mm ) const;
     Matrix3 operator* ( const Matrix3& mm ) const;
-    Matrix3 operator* ( Real scalar ) const; // matrix = matrix * scalar 
+    Matrix3 operator* ( T scalar ) const; // matrix = matrix * scalar 
 
     Matrix3& operator+= ( const Matrix3& mm );
     Matrix3& operator-= ( const Matrix3& mm );
     Matrix3& operator*= ( const Matrix3& mm );
-    Matrix3& operator*= ( Real scalar ); // matrix = matrix * scalar 
+    Matrix3& operator*= ( T scalar ); // matrix = matrix * scalar 
 
     // vector = matrix * vector
-    Vector3< Real > operator* ( const Vector3< Real >& vv ) const;
+    Vector3< T > operator* ( const Vector3< T >& vv ) const;
 
     Matrix3 transpose() const;
-    Real determinant() const;
-    bool isPositiveDefinite( Real limit = -0.0000000001 );
+    T determinant() const;
+    bool isPositiveDefinite( T limit = -0.0000000001 );
     
-    bool inverse( Matrix3& result, Real limit = 0.0000000001 );
+    bool inverse( Matrix3& result, T limit = 0.0000000001 );
 
-    void tensor( const Vector3< Real >& u, const Vector3< Real >& v ); 
+    void tensor( const Vector3< T >& u, const Vector3< T >& v ); 
 
     Matrix3 operator- () const;
     Matrix3 negate () const;
@@ -143,28 +143,28 @@ public:
 
 // - implementation -
 
-template< class Real > 
-const Matrix3< Real > Matrix3< Real >::IDENTITY( 1, 0, 0, 0, 1, 0, 0, 0, 1 );
+template< typename T > 
+const Matrix3< T > Matrix3< T >::IDENTITY( 1, 0, 0, 0, 1, 0, 0, 0, 1 );
 
-template< class Real > 
-const Matrix3< Real > Matrix3< Real >::ZERO( 0, 0, 0, 0, 0, 0, 0, 0, 0 );
+template< typename T > 
+const Matrix3< T > Matrix3< T >::ZERO( 0, 0, 0, 0, 0, 0, 0, 0, 0 );
 
 
-template< class Real > 
-Matrix3< Real >::Matrix3()
+template< typename T > 
+Matrix3< T >::Matrix3()
 {}
 
-template< class Real > 
-Matrix3< Real >::Matrix3( const Matrix3< Real >& mm )
+template< typename T > 
+Matrix3< T >::Matrix3( const Matrix3< T >& mm )
 {
-    memcpy( m, mm.m, 9 * sizeof( Real ));
+    memcpy( m, mm.m, 9 * sizeof( T ));
 }
 
-template< class Real > 
-Matrix3< Real >::Matrix3( 
-            Real a, Real b, Real c, 
-            Real d, Real e, Real f, 
-            Real g, Real h, Real i )
+template< typename T > 
+Matrix3< T >::Matrix3( 
+            T a, T b, T c, 
+            T d, T e, T f, 
+            T g, T h, T i )
 {
     ml[0] = a;
     ml[1] = b;
@@ -177,9 +177,9 @@ Matrix3< Real >::Matrix3(
     ml[8] = i;
 }
          
-template< class Real > 
-Matrix3< Real >::Matrix3( const Vector3< Real >& v0, const Vector3< Real >& v1,
-                          const Vector3< Real >& v2, bool column_vectors )
+template< typename T > 
+Matrix3< T >::Matrix3( const Vector3< T >& v0, const Vector3< T >& v1,
+                          const Vector3< T >& v2, bool column_vectors )
 {
     if ( column_vectors )
     {
@@ -207,24 +207,24 @@ Matrix3< Real >::Matrix3( const Vector3< Real >& v0, const Vector3< Real >& v1,
     }
 }
 
-template< class Real > 
-Matrix3< Real >::Matrix3( float* values )
+template< typename T > 
+Matrix3< T >::Matrix3( float* values )
 {
     assert( values && "Matrix3: Initialisation of a Matrix from a Nullpointer was requested." );
     for ( size_t i = 0; i < 9; ++i )
-        ml[i] = static_cast< Real > ( values[i] );
+        ml[i] = static_cast< T > ( values[i] );
 }
 
-template< class Real > 
-Matrix3< Real >::Matrix3( double* values )
+template< typename T > 
+Matrix3< T >::Matrix3( double* values )
 {
     assert( values && "Matrix3: Initialisation of a Matrix from a Nullpointer was requested." );
     for ( size_t i = 0; i < 9; ++i )
-        ml[i] = static_cast< Real > ( values[i] );
+        ml[i] = static_cast< T > ( values[i] );
 }
 
-template< class Real > 
-Matrix3< Real >& Matrix3< Real >::operator= ( const Real r )
+template< typename T > 
+Matrix3< T >& Matrix3< T >::operator= ( const T r )
 {
     for ( size_t i = 0; i < 9; ++i )
     {
@@ -234,15 +234,15 @@ Matrix3< Real >& Matrix3< Real >::operator= ( const Real r )
 }
 
 
-template< class Real > 
-Matrix3< Real >& Matrix3< Real >::operator= ( const Matrix3< Real >& mm )
+template< typename T > 
+Matrix3< T >& Matrix3< T >::operator= ( const Matrix3< T >& mm )
 {
-    memcpy(ml,mm.ml,9*sizeof(Real));
+    memcpy(ml,mm.ml,9*sizeof(T));
     return *this;
 }
 
-template< class Real > 
-bool Matrix3< Real >::operator== (const Matrix3< Real >& mm) const
+template< typename T > 
+bool Matrix3< T >::operator== (const Matrix3< T >& mm) const
 {
     bool equal = true;
     for ( size_t i = 0; i < 9 && equal; ++i )
@@ -253,101 +253,101 @@ bool Matrix3< Real >::operator== (const Matrix3< Real >& mm) const
 
 }
 
-template< class Real > 
-inline bool Matrix3< Real >::operator!= (const Matrix3< Real >& mm) const
+template< typename T > 
+inline bool Matrix3< T >::operator!= (const Matrix3< T >& mm) const
 {
     return !operator==(mm);
 }
 
-template< class Real > 
-void Matrix3< Real >::set( const Matrix3& mm )
+template< typename T > 
+void Matrix3< T >::set( const Matrix3& mm )
 {
-    memcpy( ml, mm.ml, 9 * sizeof( Real ) );
+    memcpy( ml, mm.ml, 9 * sizeof( T ) );
 }
 
-template< class Real > 
-void Matrix3< Real >::set( const float* mm )
+template< typename T > 
+void Matrix3< T >::set( const float* mm )
 {
     assert( mm && "Matrix3: Nullpointer argument as source for initialisation!" );
     for ( size_t i = 0; i < 9; ++i )
-        ml[i] = static_cast< Real > ( mm[i] );
+        ml[i] = static_cast< T > ( mm[i] );
 }
 
-template< class Real > 
-void Matrix3< Real >::set( const double* mm )
+template< typename T > 
+void Matrix3< T >::set( const double* mm )
 {
     assert( mm && "Matrix3: Nullpointer argument as source for initialisation!" );
     for ( size_t i = 0; i < 9; ++i )
-        ml[i] = static_cast< Real > ( mm[i] );
+        ml[i] = static_cast< T > ( mm[i] );
 }
 
 
 // returns a row vector
-template< class Real > 
-Real* Matrix3< Real >::operator[] ( size_t row ) const
+template< typename T > 
+T* Matrix3< T >::operator[] ( size_t row ) const
 {
     if ( row > 2 ) 
         std::cerr << "Matrix3::op[] - invalid row index " << row << "." << std::endl;
     assert( row < 3 && "Matrix3: Requested Row ( operator[] ) with invalid index!" );
-    return const_cast< Real* > ( m[row] );
+    return const_cast< T* > ( m[row] );
 }
 
-template< class Real > 
-Vector3< Real > Matrix3< Real >::getRow( size_t row ) const
+template< typename T > 
+Vector3< T > Matrix3< T >::getRow( size_t row ) const
 {
     if ( row > 2 ) 
         std::cerr << "Matrix3::getRow - invalid row index " << row << "." << std::endl;
     assert( row < 3 && "Matrix3: Requested Row ( getRow ) with invalid index!" );
-    return Vector3< Real >( m[row] );
+    return Vector3< T >( m[row] );
 }
 
-template< class Real > 
-Vector3< Real > Matrix3< Real >::getColumn( size_t col ) const
+template< typename T > 
+Vector3< T > Matrix3< T >::getColumn( size_t col ) const
 {
     assert( col < 3 && "Matrix3: Requested Column ( getColumn ) with invalid index!" );
-    return Vector3< Real > ( m[0+col], m[3+col], m[6+col] );
+    return Vector3< T > ( m[0+col], m[3+col], m[6+col] );
 }
 
-template< class Real > 
-void Matrix3< Real >::setRow( size_t row, Vector3< Real > rowvec )
+template< typename T > 
+void Matrix3< T >::setRow( size_t row, Vector3< T > rowvec )
 {
     m[row][0] = rowvec[0];
     m[row][1] = rowvec[1];
     m[row][2] = rowvec[2];
 }
 
-template< class Real > 
-void Matrix3< Real >::setColumn( size_t col, Vector3< Real > colvec )
+template< typename T > 
+void Matrix3< T >::setColumn( size_t col, Vector3< T > colvec )
 {
     m[0][col] = colvec[0];
     m[1][col] = colvec[1];
     m[2][col] = colvec[2];
 }
 
-template< class Real > 
-Matrix3< Real > Matrix3< Real >::operator+ ( const Matrix3< Real >& mm ) const
+template< typename T > 
+Matrix3< T > Matrix3< T >::operator+ ( const Matrix3< T >& mm ) const
 {
-    Matrix3< Real > result;
+    Matrix3< T > result;
     for ( size_t i = 0; i < 9; ++i ) 
         result.ml[i] = ml[i] + mm.ml[i];
     return result;
 }
 
-template< class Real > 
-Matrix3< Real > Matrix3< Real >::operator- ( const Matrix3< Real >& mm ) const
+template< typename T > 
+Matrix3< T > Matrix3< T >::operator- ( const Matrix3< T >& mm ) const
 {
-    Matrix3< Real > result;
+    Matrix3< T > result;
     for ( size_t i = 0; i < 9; ++i ) 
         result.ml[i] = ml[i] - mm.ml[i];
     return result;
 }
 
-template< class Real > 
-Matrix3< Real > Matrix3< Real >::operator* ( const Matrix3< Real >& mm ) const
+template< typename T > 
+Matrix3< T > Matrix3< T >::operator* ( const Matrix3< T >& mm ) const
 {
-    Matrix3< Real > result;
+    Matrix3< T > result;
     size_t i, j, k;
-    Real tmp;
+    T tmp;
 
     for (j = 0; j < 3; j++)
         for (i = 0; i < 3; i++) 
@@ -359,36 +359,36 @@ Matrix3< Real > Matrix3< Real >::operator* ( const Matrix3< Real >& mm ) const
         }
 }
 
-template< class Real > 
-Matrix3< Real > Matrix3< Real >::operator* ( Real scalar ) const
+template< typename T > 
+Matrix3< T > Matrix3< T >::operator* ( T scalar ) const
 {
-    Matrix3< Real > result;
+    Matrix3< T > result;
     for ( size_t i = 0; i < 9; ++i )
         result.ml[i] = ml[i] * scalar;
     return result;
 }
 
-template< class Real > 
-Matrix3< Real >& Matrix3< Real >::operator+= ( const Matrix3& mm )
+template< typename T > 
+Matrix3< T >& Matrix3< T >::operator+= ( const Matrix3& mm )
 {
     for ( size_t i = 0; i < 9; ++i )
         ml[i] += mm.ml[i];
     return *this;
 }
 
-template< class Real > 
-Matrix3< Real >& Matrix3< Real >::operator-= ( const Matrix3& mm )
+template< typename T > 
+Matrix3< T >& Matrix3< T >::operator-= ( const Matrix3& mm )
 {
     for ( size_t i = 0; i < 9; ++i )
         ml[i] -= mm.ml[i];
     return *this;
 }
 
-template< class Real > 
-Matrix3< Real >& Matrix3< Real >::operator*= ( const Matrix3& mm )
+template< typename T > 
+Matrix3< T >& Matrix3< T >::operator*= ( const Matrix3& mm )
 {
     size_t i, j, k;
-    Real tmp;
+    T tmp;
 
     for (j = 0; j < 3; j++)
         for (i = 0; i < 3; i++) 
@@ -401,27 +401,27 @@ Matrix3< Real >& Matrix3< Real >::operator*= ( const Matrix3& mm )
     return *this;
 }
 
-template< class Real > 
-Matrix3< Real >& Matrix3< Real >::operator*= ( Real scalar ) // matrix = matrix * scalar 
+template< typename T > 
+Matrix3< T >& Matrix3< T >::operator*= ( T scalar ) // matrix = matrix * scalar 
 {
     for ( size_t i = 0; i < 9; ++i )
         ml[i] *= scalar;
     return *this;
 }
 
-template< class Real > 
-Vector3< Real > Matrix3< Real >::operator* ( const Vector3< Real >& vv ) const
+template< typename T > 
+Vector3< T > Matrix3< T >::operator* ( const Vector3< T >& vv ) const
 {  
-    Vector3< Real > result;
+    Vector3< T > result;
     for (size_t i = 0; i < 3; ++i)
         result[i] = m[i][0]* vv[0] + m[i][1] * vv[1] + m[i][2] * vv[2];
     return result;
 }
 
-template< class Real > 
-Matrix3< Real > Matrix3< Real >::transpose() const
+template< typename T > 
+Matrix3< T > Matrix3< T >::transpose() const
 {
-    Matrix3< Real > result;
+    Matrix3< T > result;
     result.m[0][0] = m[0][0];
     result.m[0][1] = m[1][0];
     result.m[0][2] = m[2][0];
@@ -434,20 +434,20 @@ Matrix3< Real > Matrix3< Real >::transpose() const
     return result;
 }
 
-template< class Real > 
-Real Matrix3< Real >::determinant() const
+template< typename T > 
+T Matrix3< T >::determinant() const
 {
-    Vector3< Real > cof;
+    Vector3< T > cof;
     cof[0] = m[1][1] * m[2][2] - m[1][2] * m[2][1];
     cof[1] = m[1][2] * m[2][0] - m[1][0] * m[2][2];
     cof[2] = m[1][0] * m[2][1] - m[1][1] * m[2][0];
     return m[0][0] * cof[0] + m[0][1] * cof[1] + m[0][2] * cof[2];
 }
 
-template< class Real > 
-bool Matrix3< Real >::isPositiveDefinite( Real limit )
+template< typename T > 
+bool Matrix3< T >::isPositiveDefinite( T limit )
 {
-    Vector3< Real > d;
+    Vector3< T > d;
     d[0] = m[0][0];
     d[1] = m[0][0]*m[1][1] - m[0][1]*m[1][0];
     d[2] = m[0][0]*m[1][1]*m[2][2] - m[0][0]*m[1][2]*m[2][1] + 
@@ -460,8 +460,8 @@ bool Matrix3< Real >::isPositiveDefinite( Real limit )
 }
 
 
-template< class Real > 
-bool Matrix3< Real >::inverse( Matrix3< Real >& result, Real limit )
+template< typename T > 
+bool Matrix3< T >::inverse( Matrix3< T >& result, T limit )
 {
     // Invert a 3x3 using cofactors.  This is about 8 times faster than
     // the Numerical Recipes code which uses Gaussian elimination.
@@ -476,12 +476,12 @@ bool Matrix3< Real >::inverse( Matrix3< Real >& result, Real limit )
     result[2][1] = m[0][1] * m[2][0] - m[0][0] * m[2][1];
     result[2][2] = m[0][0] * m[1][1] - m[0][1] * m[1][0];
 
-    Real det = m[0][0] * result[0][0] + m[0][1] * result[1][0] + m[0][2] * result[2][0];
+    T det = m[0][0] * result[0][0] + m[0][1] * result[1][0] + m[0][2] * result[2][0];
 
     if ( fabs( det ) <= limit )
         return false; // matrix is not invertible
 
-    Real detinv = 1.0 / det;
+    T detinv = 1.0 / det;
     for (size_t i = 0; i < 3; ++i)
     {
         for (size_t j = 0; j < 3; ++j)
@@ -491,8 +491,8 @@ bool Matrix3< Real >::inverse( Matrix3< Real >& result, Real limit )
 
 }
 
-template< class Real > 
-void Matrix3< Real >::tensor( const Vector3< Real >& u, const Vector3< Real >& v)
+template< typename T > 
+void Matrix3< T >::tensor( const Vector3< T >& u, const Vector3< T >& v)
 {
     int i, j;
     for (j = 0; j < 3; j++)
@@ -500,18 +500,18 @@ void Matrix3< Real >::tensor( const Vector3< Real >& u, const Vector3< Real >& v
             m[j][i] = u[j] * v[i];
 }
 
-template< class Real > 
-Matrix3< Real > Matrix3< Real >::operator-() const
+template< typename T > 
+Matrix3< T > Matrix3< T >::operator-() const
 {
-    Matrix3< Real > result( *this );
+    Matrix3< T > result( *this );
     result *= -1.0;
     return result;
 }
 
-template< class Real > 
-Matrix3< Real > Matrix3< Real >::negate() const
+template< typename T > 
+Matrix3< T > Matrix3< T >::negate() const
 {
-    Matrix3< Real > result( *this );
+    Matrix3< T > result( *this );
     result *= -1.0;
     return result;
 }

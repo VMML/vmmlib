@@ -30,7 +30,7 @@
 namespace vmml
 {
 
-template< class Real > 
+template< typename T > 
 class Vector4
 {
 public:
@@ -38,57 +38,57 @@ public:
     {
         struct
         {
-            Real  x, y, z, w;
+            T  x, y, z, w;
         };
         struct
         {
-            Real  r, g, b, a;
+            T  r, g, b, a;
         };
-        Real xyzw[4];
-        Real rgba[4];
+        T xyzw[4];
+        T rgba[4];
     };
 
     // contructors
     Vector4(); // warning: components NOT initialised ( for performance )
-    Vector4( const Real aa ); 
-    Vector4( const Real xx, const Real yy, const Real zz, const Real ww ); 
+    Vector4( const T aa ); 
+    Vector4( const T xx, const T yy, const T zz, const T ww ); 
     // dangerous, but implemented to allow easy conversion between 
     // Vector< float > and Vector< double >
     //the pointer 'values must be a valid 4 component c array of the resp. type
     Vector4( const float* aa );
     Vector4( const double* aa ); 
-    Vector4( const Vector3< Real >& xxyyzz, const Real aa );   
+    Vector4( const Vector3< T >& xxyyzz, const T aa );   
     ~Vector4();
 
-    void set( Real xx, Real yy, Real zz, Real ww );
+    void set( T xx, T yy, T zz, T ww );
     // dangerous, but implemented to allow easy conversion between 
     // Vector< float > and Vector< double >
     //the pointer 'values must be a valid 4 component c array of the resp. type
     void set( const float* aa );
     void set( const double* aa );
 
-    const Vector4& operator=( Real aa ); 
+    const Vector4& operator=( T aa ); 
     const Vector4& operator=( const Vector4& aa ); 
 
-    Real& operator[]( size_t position);
-    const Real& operator[]( size_t position) const;
+    T& operator[]( size_t position);
+    const T& operator[]( size_t position) const;
 
-    Real length() const; 
-    Real lengthSquared() const;
+    T length() const; 
+    T lengthSquared() const;
 
-    Real normalise();
+    T normalise();
 
     // vector/scalar operations
-    Vector4 operator+( const Real aa ) const;
-    Vector4 operator-( const Real aa ) const; 
-    Vector4 operator*( const Real aa ) const;
-    Vector4 operator/( Real aa ) const;
+    Vector4 operator+( const T aa ) const;
+    Vector4 operator-( const T aa ) const; 
+    Vector4 operator*( const T aa ) const;
+    Vector4 operator/( T aa ) const;
     Vector4 operator-() const;
      
-    const Vector4& operator+=( Real aa );
-    const Vector4& operator-=( Real aa );
-    const Vector4& operator*=( Real aa );
-    const Vector4& operator/=( Real aa ); 
+    const Vector4& operator+=( T aa );
+    const Vector4& operator-=( T aa );
+    const Vector4& operator*=( T aa );
+    const Vector4& operator/=( T aa ); 
 
     // vector/vector operations
     Vector4 operator+( const Vector4 &aa ) const; 
@@ -101,15 +101,15 @@ public:
     const Vector4& operator*=( const Vector4 &aa ); 
     const Vector4& operator/=( const Vector4 &aa ); 
 
-    Real dot( const Vector4 &aa ) const;
+    T dot( const Vector4 &aa ) const;
 
     // other
     bool operator==( const Vector4 &aa ) const;
     bool operator!=(const Vector4 &aa ) const;
     void invert(); 
 
-    Real min();
-    Real max();
+    T min();
+    T max();
 
     friend std::ostream& operator << ( std::ostream& os, const Vector4& v )
     {
@@ -133,61 +133,61 @@ public:
     
 // - implementation - //
        
-template < class Real > 
-Vector4< Real >::Vector4() 
+template < typename T > 
+Vector4< T >::Vector4() 
 {} 
 
-template < class Real > 
-Vector4< Real >::Vector4( const Real  aa )
+template < typename T > 
+Vector4< T >::Vector4( const T  aa )
     : x( aa )
     , y( aa )
     , z( aa ) 
     , w( aa )
 {} 
 
-template < class Real > 
-Vector4< Real >::Vector4( const Real xx, const Real yy, const Real zz, 
-                          const Real ww )
+template < typename T > 
+Vector4< T >::Vector4( const T xx, const T yy, const T zz, 
+                          const T ww )
     : x( xx )
     , y( yy )
     , z( zz ) 
     , w( ww )
 {} 
 
-template < class Real > 
-Vector4< Real >::Vector4( const float* values )
+template < typename T > 
+Vector4< T >::Vector4( const float* values )
 {
     assert( values && "Vector4: Nullpointer argument as source for initialisation!" );
-    x = static_cast< Real > ( values[0] );
-    y = static_cast< Real > ( values[1] );
-    z = static_cast< Real > ( values[2] );
-    w = static_cast< Real > ( values[3] );
+    x = static_cast< T > ( values[0] );
+    y = static_cast< T > ( values[1] );
+    z = static_cast< T > ( values[2] );
+    w = static_cast< T > ( values[3] );
 }
 
-template < class Real > 
-Vector4< Real >::Vector4( const double* values )
+template < typename T > 
+Vector4< T >::Vector4( const double* values )
 {
     assert( values && "Vector4: Nullpointer argument as source for initialisation!" );
-    x = static_cast< Real > ( values[0] );
-    y = static_cast< Real > ( values[1] );
-    z = static_cast< Real > ( values[2] );
-    w = static_cast< Real > ( values[3] );
+    x = static_cast< T > ( values[0] );
+    y = static_cast< T > ( values[1] );
+    z = static_cast< T > ( values[2] );
+    w = static_cast< T > ( values[3] );
 }
 
-template < class Real > 
-Vector4< Real >::Vector4( const Vector3< Real >& v3, const Real aa )
+template < typename T > 
+Vector4< T >::Vector4( const Vector3< T >& v3, const T aa )
     : x ( v3.x )
     , y ( v3.y )
     , z ( v3.z )
     , w ( aa )
 {} 
 
-template < class Real > 
-Vector4< Real >::~Vector4()
+template < typename T > 
+Vector4< T >::~Vector4()
 {}
 
-template < class Real > 
-void Vector4< Real >::set( Real xx, Real yy, Real zz, Real ww )
+template < typename T > 
+void Vector4< T >::set( T xx, T yy, T zz, T ww )
 { 
     x = xx; 
     y = yy; 
@@ -195,35 +195,35 @@ void Vector4< Real >::set( Real xx, Real yy, Real zz, Real ww )
     w = ww;
 }
 
-template < class Real > 
-void Vector4< Real >::set( const float* values )
+template < typename T > 
+void Vector4< T >::set( const float* values )
 { 
     assert( values && "Vector4: Nullpointer argument as source for initialisation!" );
-    x = static_cast< Real > ( values[0] );
-    y = static_cast< Real > ( values[1] );
-    z = static_cast< Real > ( values[2] );
-    w = static_cast< Real > ( values[3] );
+    x = static_cast< T > ( values[0] );
+    y = static_cast< T > ( values[1] );
+    z = static_cast< T > ( values[2] );
+    w = static_cast< T > ( values[3] );
 }
 
-template < class Real > 
-void Vector4< Real >::set( const double* values )
+template < typename T > 
+void Vector4< T >::set( const double* values )
 { 
     assert( values && "Vector4: Nullpointer argument as source for initialisation!" );
-    x = static_cast< Real > ( values[0] );
-    y = static_cast< Real > ( values[1] );
-    z = static_cast< Real > ( values[2] );
-    w = static_cast< Real > ( values[3] );
+    x = static_cast< T > ( values[0] );
+    y = static_cast< T > ( values[1] );
+    z = static_cast< T > ( values[2] );
+    w = static_cast< T > ( values[3] );
 }
 
-template < class Real > 
-const Vector4< Real >& Vector4< Real >::operator=( Real aa )
+template < typename T > 
+const Vector4< T >& Vector4< T >::operator=( T aa )
 { 
     x = y = z = w = aa; 
     return *this; 
 } 
 
-template < class Real > 
-const Vector4< Real >& Vector4< Real >::operator=( const Vector4& aa ) 
+template < typename T > 
+const Vector4< T >& Vector4< T >::operator=( const Vector4& aa ) 
 { 
     x = aa.x; 
     y = aa.y; 
@@ -233,37 +233,37 @@ const Vector4< Real >& Vector4< Real >::operator=( const Vector4& aa )
 } 
 
 
-template < class Real > 
-Real& Vector4< Real >::operator[]( size_t index ) 
+template < typename T > 
+T& Vector4< T >::operator[]( size_t index ) 
 { 
     assert( index < 4 && "Vector4::operator[] Invalid component index!" ); 
     return xyzw[ index ]; 
 }
          
-template < class Real > 
-const Real& Vector4< Real >::operator[]( size_t index ) const
+template < typename T > 
+const T& Vector4< T >::operator[]( size_t index ) const
 { 
     assert( index < 4 && "Vector4::operator[] Invalid component index!" ); 
     return xyzw[ index ]; 
 } 
 	
-template < class Real > 
-Real  Vector4< Real >::length() const 
+template < typename T > 
+T  Vector4< T >::length() const 
 { 
-    const Real l = lengthSquared();
+    const T l = lengthSquared();
     return ( l <= 0 ) ? 0 : sqrt( l ); 
 } 
 
-template < class Real > 
-Real  Vector4< Real >::lengthSquared() const 
+template < typename T > 
+T  Vector4< T >::lengthSquared() const 
 { 
     return x * x + y * y + z * z + w * w; 
 } 
 
-template < class Real > 
-Real Vector4< Real >::normalise()
+template < typename T > 
+T Vector4< T >::normalise()
 { 
-    Real l = length(); 
+    T l = length(); 
     if ( l == 0 ) 
         return 0; 
     l = 1.0f / l; 
@@ -274,41 +274,41 @@ Real Vector4< Real >::normalise()
     return l; 
 } 
 
-template < class Real > 
-Vector4< Real > Vector4< Real >::operator+( const Real  aa ) const 
+template < typename T > 
+Vector4< T > Vector4< T >::operator+( const T  aa ) const 
 { 
     return Vector4( x + aa, y + aa, z + aa, w + aa ); 
 } 
 
-template < class Real > 
-Vector4< Real > Vector4< Real >::operator-( const Real  aa ) const 
+template < typename T > 
+Vector4< T > Vector4< T >::operator-( const T  aa ) const 
 { 
     return Vector4( x - aa, y - aa, z - aa, w - aa ); 
 }
  
-template < class Real > 
-Vector4< Real > Vector4< Real >::operator*( const Real  aa ) const 
+template < typename T > 
+Vector4< T > Vector4< T >::operator*( const T  aa ) const 
 { 
     return Vector4( x * aa, y * aa, z * aa, w * aa ); 
 }
 
-template < class Real > 
-Vector4< Real > Vector4< Real >::operator/( Real  aa ) const 
+template < typename T > 
+Vector4< T > Vector4< T >::operator/( T  aa ) const 
 { 
     assert( aa != 0.0f ); 
     aa = 1.0f / aa; 
     return Vector4( x * aa, y * aa, z * aa, w * aa ); 
 }
 
-template < class Real > 
-Vector4< Real > Vector4< Real >::operator-() const 
+template < typename T > 
+Vector4< T > Vector4< T >::operator-() const 
 { 
     return Vector4( -x, -y, -z, -w );
 }
 
 
-template < class Real > 
-const Vector4< Real >& Vector4< Real >::operator+=( Real  aa ) 
+template < typename T > 
+const Vector4< T >& Vector4< T >::operator+=( T  aa ) 
 { 
     x += aa; 
     y += aa; 
@@ -317,8 +317,8 @@ const Vector4< Real >& Vector4< Real >::operator+=( Real  aa )
     return *this; 
 } 
 
-template < class Real > 
-const Vector4< Real >& Vector4< Real >::operator-=( Real  aa ) 
+template < typename T > 
+const Vector4< T >& Vector4< T >::operator-=( T  aa ) 
 { 
     x -= aa; 
     y -= aa; 
@@ -327,8 +327,8 @@ const Vector4< Real >& Vector4< Real >::operator-=( Real  aa )
     return *this; 
 } 
 
-template < class Real > 
-const Vector4< Real >& Vector4< Real >::operator*=( Real  aa ) 
+template < typename T > 
+const Vector4< T >& Vector4< T >::operator*=( T  aa ) 
 { 
     x *= aa; 
     y *= aa; 
@@ -337,8 +337,8 @@ const Vector4< Real >& Vector4< Real >::operator*=( Real  aa )
     return *this; 
 }
  
-template < class Real > 
-const Vector4< Real >& Vector4< Real >::operator/=( Real  aa ) 
+template < typename T > 
+const Vector4< T >& Vector4< T >::operator/=( T  aa ) 
 { 
     aa = 1.0f / aa; 
     x *= aa; 
@@ -349,32 +349,32 @@ const Vector4< Real >& Vector4< Real >::operator/=( Real  aa )
 } 
 
 // vector/vector operations
-template < class Real > 
-Vector4< Real > Vector4< Real >::operator+( const Vector4 &aa ) const 
+template < typename T > 
+Vector4< T > Vector4< T >::operator+( const Vector4 &aa ) const 
 { 
     return Vector4( x + aa.x, y + aa.y, z + aa.z, w + aa.w ); 
 }
  
-template < class Real > 
-Vector4< Real > Vector4< Real >::operator-( const Vector4 &aa ) const 
+template < typename T > 
+Vector4< T > Vector4< T >::operator-( const Vector4 &aa ) const 
 { 
     return Vector4( x - aa.x, y - aa.y, z - aa.z, w - aa.w ); 
 }
 
-template < class Real > 
-Vector4< Real > Vector4< Real >::operator*( const Vector4 &aa ) const 
+template < typename T > 
+Vector4< T > Vector4< T >::operator*( const Vector4 &aa ) const 
 { 
     return Vector4( x * aa.x, y * aa.y, z * aa.z, w * aa.w ); 
 } 
 
-template < class Real > 
-Vector4< Real > Vector4< Real >::operator/( const Vector4 &aa ) const 
+template < typename T > 
+Vector4< T > Vector4< T >::operator/( const Vector4 &aa ) const 
 { 
     return Vector4( x / aa.x, y / aa.y, z / aa.z, w / aa.w ); 
 } 
 
-template < class Real > 
-const Vector4< Real >& Vector4< Real >::operator+=( const Vector4 &aa ) 
+template < typename T > 
+const Vector4< T >& Vector4< T >::operator+=( const Vector4 &aa ) 
 { 
     x += aa.x; 
     y += aa.y; 
@@ -383,8 +383,8 @@ const Vector4< Real >& Vector4< Real >::operator+=( const Vector4 &aa )
     return *this; 
 } 
 
-template < class Real > 
-const Vector4< Real >& Vector4< Real >::operator-=( const Vector4 &aa ) 
+template < typename T > 
+const Vector4< T >& Vector4< T >::operator-=( const Vector4 &aa ) 
 { 
     x -= aa.x; 
     y -= aa.y; 
@@ -393,8 +393,8 @@ const Vector4< Real >& Vector4< Real >::operator-=( const Vector4 &aa )
     return *this; 
 }
 
-template < class Real > 
-const Vector4< Real >& Vector4< Real >::operator*=( const Vector4 &aa ) 
+template < typename T > 
+const Vector4< T >& Vector4< T >::operator*=( const Vector4 &aa ) 
 { 
     x *= aa.x; 
     y *= aa.y; 
@@ -403,8 +403,8 @@ const Vector4< Real >& Vector4< Real >::operator*=( const Vector4 &aa )
     return *this; 
 }
 
-template < class Real > 
-const Vector4< Real >& Vector4< Real >::operator/=( const Vector4 &aa ) 
+template < typename T > 
+const Vector4< T >& Vector4< T >::operator/=( const Vector4 &aa ) 
 { 
     x /= aa.x; 
     y /= aa.y; 
@@ -413,26 +413,26 @@ const Vector4< Real >& Vector4< Real >::operator/=( const Vector4 &aa )
     return *this; 
 }
 
-template < class Real > 
-Real Vector4< Real >::dot( const Vector4 &aa ) const 
+template < typename T > 
+T Vector4< T >::dot( const Vector4 &aa ) const 
 { 
     return x * aa.x + y * aa.y + z * aa.z + w * aa.w; 
 }
 
-template < class Real > 
-bool Vector4< Real >::operator==( const Vector4 &aa ) const 
+template < typename T > 
+bool Vector4< T >::operator==( const Vector4 &aa ) const 
 { 
     return ( x == aa.x && y == aa.y && z == aa.z && w = aa.w ); 
 }
 
-template < class Real > 
-bool Vector4< Real >::operator!=(const Vector4 &aa ) const 
+template < typename T > 
+bool Vector4< T >::operator!=(const Vector4 &aa ) const 
 { 
     return ( x != aa.x || y != aa.y || z != aa.z || w != aa.w ); 
 }
 
-template < class Real > 
-void Vector4< Real >::invert() 
+template < typename T > 
+void Vector4< T >::invert() 
 {	
     x = -x; 
     y = -y; 
@@ -440,19 +440,19 @@ void Vector4< Real >::invert()
     w = -w;
 }
 
-template < class Real > 
-Real Vector4< Real >::max() 
+template < typename T > 
+T Vector4< T >::max() 
 { 
-    Real m = std::max( x, y ); 
+    T m = std::max( x, y ); 
     m = std::max( m, z); 
     m = std::max( m, w);
     return m; 
 }
 
-template < class Real > 
-Real Vector4< Real >::min() 
+template < typename T > 
+T Vector4< T >::min() 
 { 
-    Real m = std::min( x, y ); 
+    T m = std::min( x, y ); 
     m = std::min( m, z); 
     m = std::min( m, w);
     return m; 

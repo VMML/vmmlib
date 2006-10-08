@@ -44,7 +44,7 @@
 namespace vmml
 {
 
-template< class Real > 
+template< typename T > 
 class Matrix4
 {
 public:
@@ -52,23 +52,23 @@ public:
     {
         struct
         {
-            Real m00, m01, m02, m03, 
+            T m00, m01, m02, m03, 
                  m10, m11, m12, m13, 
                  m20, m21, m22, m23, 
                  m30, m31, m32, m33;
         };
-        Real m[4][4]; 
-        Real ml[16]; // linear
+        T m[4][4]; 
+        T ml[16]; // linear
     };
     
     Matrix4();
     Matrix4( const Matrix4& mm );
-    Matrix4( Real v00, Real v01, Real v02, Real v03, 
-             Real v10, Real v11, Real v12, Real v13,
-             Real v20, Real v21, Real v22, Real v23,
-             Real v30, Real v31, Real v32, Real v33 );
-    Matrix4( const Vector4<Real>& v0, const Vector4<Real>& v1, 
-             const Vector4<Real>& v2, const Vector4<Real>& v3, 
+    Matrix4( T v00, T v01, T v02, T v03, 
+             T v10, T v11, T v12, T v13,
+             T v20, T v21, T v22, T v23,
+             T v30, T v31, T v32, T v33 );
+    Matrix4( const Vector4<T>& v0, const Vector4<T>& v1, 
+             const Vector4<T>& v2, const Vector4<T>& v3, 
              bool column_vectors = false );
 
     // dangerous, but implemented to allow easy conversion between 
@@ -88,60 +88,60 @@ public:
     void set( const float* mm );
     void set( const double* mm );
 
-    inline Real* operator[] ( size_t row ) const;
-    Vector4< Real > getRow( size_t row ) const;
-    Vector4< Real > getColumn( size_t col ) const; 
+    inline T* operator[] ( size_t row ) const;
+    Vector4< T > getRow( size_t row ) const;
+    Vector4< T > getColumn( size_t col ) const; 
     
     // vec3
-    void setRow( size_t row, Vector3< Real > rowvec );
-    void setColumn( size_t col, Vector3< Real > colvec );
+    void setRow( size_t row, Vector3< T > rowvec );
+    void setColumn( size_t col, Vector3< T > colvec );
     // vec4
-    void setRow( size_t row, Vector4< Real > rowvec );
-    void setColumn( size_t col, Vector4< Real > colvec );
+    void setRow( size_t row, Vector4< T > rowvec );
+    void setColumn( size_t col, Vector4< T > colvec );
 
     // arithmetic operations
     Matrix4 operator+ ( const Matrix4& mm ) const;
     Matrix4 operator- ( const Matrix4& mm ) const;
     Matrix4 operator* ( const Matrix4& mm ) const;
-    Matrix4 operator* ( Real scalar ) const; // matrix = matrix * scalar 
-    inline Matrix4 operator/ ( Real scalar ) const
+    Matrix4 operator* ( T scalar ) const; // matrix = matrix * scalar 
+    inline Matrix4 operator/ ( T scalar ) const
         { scalar = 1.0 / scalar; return operator*(scalar); }; 
     
     // vector = matrix * vector
-    Vector3< Real > operator* ( const Vector3< Real >& vv ) const;
-    Vector4< Real > operator* ( const Vector4< Real >& vv ) const;
+    Vector3< T > operator* ( const Vector3< T >& vv ) const;
+    Vector4< T > operator* ( const Vector4< T >& vv ) const;
 
     Matrix4& operator+= ( const Matrix4& mm );
     Matrix4& operator-= ( const Matrix4& mm );
     Matrix4& operator*= ( const Matrix4& mm );
-    Matrix4& operator*= ( Real scalar ); // matrix = matrix * scalar 
-    inline Matrix4& operator/= ( Real scalar )
+    Matrix4& operator*= ( T scalar ); // matrix = matrix * scalar 
+    inline Matrix4& operator/= ( T scalar )
         { scalar = 1.0 / scalar; return operator*=( scalar ); };
 
     Matrix4 negate() const;
     Matrix4 operator-() const;
 
     Matrix4 transpose() const;
-    Real determinant() const;
+    T determinant() const;
     Matrix4 adjoint() const;
     
-    bool inverse( Matrix4& result, Real limit = 0.0000000001 );
+    bool inverse( Matrix4& result, T limit = 0.0000000001 );
 
-    void rotateX( const Real angle );
-    void rotateY( const Real angle );
-    void rotateZ( const Real angle );
-    void scale( const Real scale[3] );
-    void scaleTranslation( const Real scale[3] );
-    void setTranslation( const Real x, const Real y, const Real z );
+    void rotateX( const T angle );
+    void rotateY( const T angle );
+    void rotateZ( const T angle );
+    void scale( const T scale[3] );
+    void scaleTranslation( const T scale[3] );
+    void setTranslation( const T x, const T y, const T z );
 
-    void tensor( const Vector3< Real >& u, const Vector3< Real >& v );
-    void tensor( const Vector4< Real >& u, const Vector4< Real >& v );
+    void tensor( const Vector3< T >& u, const Vector3< T >& v );
+    void tensor( const Vector4< T >& u, const Vector4< T >& v );
 
     // computes the cofactor/minor of a submatrix n-1xn-1 = 3x3
     // specify the index of the row/column to be ignored
-    Real cofactor( const size_t ignoreRow, const size_t ignoreCol ) const;
+    T cofactor( const size_t ignoreRow, const size_t ignoreCol ) const;
     // specify the indices of the rows/columns to be used 
-    Real cofactor( const size_t row0, const size_t row1, const size_t row2,
+    T cofactor( const size_t row0, const size_t row1, const size_t row2,
                    const size_t col0, const size_t col1, const size_t col2 )
         const;
                    
@@ -190,30 +190,30 @@ public:
 //
 // * * * * * * * * * *
 
-template< class Real > 
-const Matrix4< Real > Matrix4< Real >::IDENTITY( 1, 0, 0, 0, 0, 1, 0, 0,
+template< typename T > 
+const Matrix4< T > Matrix4< T >::IDENTITY( 1, 0, 0, 0, 0, 1, 0, 0,
                                                  0, 0, 1, 0, 0, 0, 0, 1 );
 
-template< class Real > 
-const Matrix4< Real > Matrix4< Real >::ZERO( 0, 0, 0, 0, 0, 0, 0, 0,
+template< typename T > 
+const Matrix4< T > Matrix4< T >::ZERO( 0, 0, 0, 0, 0, 0, 0, 0,
                                              0, 0, 0, 0, 0, 0, 0, 0 );
 
 
-template< class Real > 
-Matrix4< Real >::Matrix4()
+template< typename T > 
+Matrix4< T >::Matrix4()
 {}
 
-template< class Real > 
-Matrix4< Real >::Matrix4( const Matrix4< Real >& mm )
+template< typename T > 
+Matrix4< T >::Matrix4( const Matrix4< T >& mm )
 {
-    memcpy(m,mm.m, 16 * sizeof( Real ) );
+    memcpy(m,mm.m, 16 * sizeof( T ) );
 }
 
-template< class Real > 
-Matrix4< Real >::Matrix4( Real v00, Real v01, Real v02, Real v03, 
-                          Real v10, Real v11, Real v12, Real v13,
-                          Real v20, Real v21, Real v22, Real v23,
-                          Real v30, Real v31, Real v32, Real v33 )
+template< typename T > 
+Matrix4< T >::Matrix4( T v00, T v01, T v02, T v03, 
+                          T v10, T v11, T v12, T v13,
+                          T v20, T v21, T v22, T v23,
+                          T v30, T v31, T v32, T v33 )
     : m00( v00 )
     , m01( v01 )
     , m02( v02 )
@@ -232,9 +232,9 @@ Matrix4< Real >::Matrix4( Real v00, Real v01, Real v02, Real v03,
     , m33( v33 )
 {}
          
-template< class Real > 
-Matrix4< Real >::Matrix4( const Vector4< Real >& v0, const Vector4< Real >& v1, 
-                          const Vector4< Real >& v2, const Vector4< Real >& v3,
+template< typename T > 
+Matrix4< T >::Matrix4( const Vector4< T >& v0, const Vector4< T >& v1, 
+                          const Vector4< T >& v2, const Vector4< T >& v3,
                           bool column_vectors )
 {
     if ( column_vectors )
@@ -255,32 +255,32 @@ Matrix4< Real >::Matrix4( const Vector4< Real >& v0, const Vector4< Real >& v1,
         }
 }
 
-template< class Real > 
-Matrix4< Real >::Matrix4( float* values )
+template< typename T > 
+Matrix4< T >::Matrix4( float* values )
 {
     assert( values && "Matrix4: Initialisation of a Matrix from a Nullpointer was requested." );
     for ( size_t i = 0; i < 16; ++i )
-        ml[i] = static_cast< Real > ( values[i] );
+        ml[i] = static_cast< T > ( values[i] );
 }
 
-template< class Real > 
-Matrix4< Real >::Matrix4( double* values )
+template< typename T > 
+Matrix4< T >::Matrix4( double* values )
 {
     assert( values && "Matrix4: Initialisation of a Matrix from a Nullpointer was requested." );
     for ( size_t i = 0; i < 16; ++i )
-        ml[i] = static_cast< Real > ( values[i] );
+        ml[i] = static_cast< T > ( values[i] );
 }
 
 
-template< class Real > 
-Matrix4< Real >& Matrix4< Real >::operator= ( const Matrix4< Real >& mm )
+template< typename T > 
+Matrix4< T >& Matrix4< T >::operator= ( const Matrix4< T >& mm )
 {
-    memcpy( ml, mm.ml, 16 * sizeof(Real) );
+    memcpy( ml, mm.ml, 16 * sizeof(T) );
     return *this;
 }
 
-template< class Real > 
-bool Matrix4< Real >::operator== (const Matrix4< Real >& mm) const
+template< typename T > 
+bool Matrix4< T >::operator== (const Matrix4< T >& mm) const
 {
     bool equal = true;
     for ( size_t i = 0; i < 16 && equal; ++i )
@@ -290,59 +290,59 @@ bool Matrix4< Real >::operator== (const Matrix4< Real >& mm) const
     return equal;
 }
 
-template< class Real > 
-inline bool Matrix4< Real >::operator!= (const Matrix4< Real >& mm) const
+template< typename T > 
+inline bool Matrix4< T >::operator!= (const Matrix4< T >& mm) const
 {
     return !operator==(mm);
 }
 
-template< class Real > 
-void Matrix4< Real >::set( const Matrix4& mm )
+template< typename T > 
+void Matrix4< T >::set( const Matrix4& mm )
 {
-    memcpy( ml, mm.ml, 16 * sizeof( Real ) );
+    memcpy( ml, mm.ml, 16 * sizeof( T ) );
 }
 
-template< class Real > 
-void Matrix4< Real >::set( const float* values )
+template< typename T > 
+void Matrix4< T >::set( const float* values )
 {
     assert( values && "Matrix4: Nullpointer argument as source for initialisation!" );
     for ( size_t i = 0; i < 16; ++i )
-        ml[i] = static_cast< Real > ( values[i] );
+        ml[i] = static_cast< T > ( values[i] );
 }
 
-template< class Real > 
-void Matrix4< Real >::set( const double* values )
+template< typename T > 
+void Matrix4< T >::set( const double* values )
 {
     assert( values && "Matrix4: Nullpointer argument as source for initialisation!" );
     for ( size_t i = 0; i < 16; ++i )
-        ml[i] = static_cast< Real > ( values[i] );
+        ml[i] = static_cast< T > ( values[i] );
 }
 
 
 // returns a row vector
-template< class Real > 
-Real* Matrix4< Real >::operator[] (size_t row) const
+template< typename T > 
+T* Matrix4< T >::operator[] (size_t row) const
 {
     assert( row < 4 && "Matrix4: Requested Row ( operator[] ) with invalid index!" );
-    return const_cast< Real* > ( m[row] );
+    return const_cast< T* > ( m[row] );
 }
 
-template< class Real > 
-Vector4< Real > Matrix4< Real >::getRow( size_t row ) const
+template< typename T > 
+Vector4< T > Matrix4< T >::getRow( size_t row ) const
 {
     assert( row < 4 && "Matrix4: Requested Row ( getRow ) with invalid index!" );
-    return Vector4< Real >( m[row] );
+    return Vector4< T >( m[row] );
 }
 
-template< class Real > 
-Vector4< Real > Matrix4< Real >::getColumn( size_t col ) const
+template< typename T > 
+Vector4< T > Matrix4< T >::getColumn( size_t col ) const
 {
     assert( col < 4 && "Matrix4: Requested Column ( getColumn ) with invalid index!" );
-    return Vector4< Real > ( m[0+col], m[4+col], m[8+col], m[12+col] );
+    return Vector4< T > ( m[0+col], m[4+col], m[8+col], m[12+col] );
 }
 
-template< class Real > 
-void Matrix4< Real >::setRow( size_t row, Vector4< Real > rowvec )
+template< typename T > 
+void Matrix4< T >::setRow( size_t row, Vector4< T > rowvec )
 {
     m[row][0] = rowvec[0];
     m[row][1] = rowvec[1];
@@ -350,8 +350,8 @@ void Matrix4< Real >::setRow( size_t row, Vector4< Real > rowvec )
     m[row][3] = rowvec[3];
 }
 
-template< class Real > 
-void Matrix4< Real >::setColumn( size_t col, Vector4< Real > colvec )
+template< typename T > 
+void Matrix4< T >::setColumn( size_t col, Vector4< T > colvec )
 {
     m[0][col] = colvec[0];
     m[1][col] = colvec[1];
@@ -359,46 +359,46 @@ void Matrix4< Real >::setColumn( size_t col, Vector4< Real > colvec )
     m[3][col] = colvec[3];
 }
 
-template< class Real > 
-void Matrix4< Real >::setRow( size_t row, Vector3< Real > rowvec )
+template< typename T > 
+void Matrix4< T >::setRow( size_t row, Vector3< T > rowvec )
 {
     m[row][0] = rowvec[0];
     m[row][1] = rowvec[1];
     m[row][2] = rowvec[2];
 }
 
-template< class Real > 
-void Matrix4< Real >::setColumn( size_t col, Vector3< Real > colvec )
+template< typename T > 
+void Matrix4< T >::setColumn( size_t col, Vector3< T > colvec )
 {
     m[0][col] = colvec[0];
     m[1][col] = colvec[1];
     m[2][col] = colvec[2];
 }
 
-template< class Real > 
-Matrix4< Real > Matrix4< Real >::operator+ (const Matrix4< Real >& mm) const
+template< typename T > 
+Matrix4< T > Matrix4< T >::operator+ (const Matrix4< T >& mm) const
 {
-    Matrix4< Real > result;
+    Matrix4< T > result;
     for ( size_t i = 0; i < 16; ++i )
         result.ml[i] = ml[i] + mm.ml[i];
     return result;
 }
 
-template< class Real > 
-Matrix4< Real > Matrix4< Real >::operator- (const Matrix4< Real >& mm) const
+template< typename T > 
+Matrix4< T > Matrix4< T >::operator- (const Matrix4< T >& mm) const
 {
-    Matrix4< Real > result;
+    Matrix4< T > result;
     for ( size_t i = 0; i < 16; ++i )
         result.ml[i] = ml[i] - mm.ml[i];
     return result;
 }
 
-template< class Real > 
-Matrix4< Real > Matrix4< Real >::operator* (const Matrix4< Real >& mm) const
+template< typename T > 
+Matrix4< T > Matrix4< T >::operator* (const Matrix4< T >& mm) const
 {
-    Matrix4< Real > result;
+    Matrix4< T > result;
     size_t i, j, k;
-    Real tmp;
+    T tmp;
 
     for (j = 0; j < 4; j++)
         for (i = 0; i < 4; i++) 
@@ -410,38 +410,38 @@ Matrix4< Real > Matrix4< Real >::operator* (const Matrix4< Real >& mm) const
         }
 }
 
-template< class Real > 
-Matrix4< Real > Matrix4< Real >::operator* ( Real scalar ) const
+template< typename T > 
+Matrix4< T > Matrix4< T >::operator* ( T scalar ) const
 {
-    Matrix4< Real > result;
+    Matrix4< T > result;
     for ( size_t i = 0; i < 16; ++i )
         result.ml[i] = ml[i] * scalar;
     return result;
 }
 
-template< class Real > 
-Matrix4< Real >& Matrix4< Real >::operator+= (const Matrix4< Real >& mm) 
+template< typename T > 
+Matrix4< T >& Matrix4< T >::operator+= (const Matrix4< T >& mm) 
 {
     for ( size_t i = 0; i < 16; ++i )
         ml[i]  += mm.ml[i];
     return *this;
 }
 
-template< class Real > 
-Matrix4< Real >& Matrix4< Real >::operator-= ( const Matrix4& mm )
+template< typename T > 
+Matrix4< T >& Matrix4< T >::operator-= ( const Matrix4& mm )
 {
     for ( size_t i = 0; i < 16; ++i )
         ml[i]  -= mm.ml[i];
     return *this;
 }
 
-template< class Real > 
-Matrix4< Real >& Matrix4< Real >::operator*= ( const Matrix4& mm ) 
+template< typename T > 
+Matrix4< T >& Matrix4< T >::operator*= ( const Matrix4& mm ) 
 {
     for( int j = 0; j < 4; ++j )
         for( int i = 0; i < 4; ++i )
         {
-            Real tmp = 0.0;
+            T tmp = 0.0;
             for( int k = 0; k < 4; ++k )
                 tmp += m[j][k] * mm.m[k][i];
             m[j][i] = tmp;
@@ -449,8 +449,8 @@ Matrix4< Real >& Matrix4< Real >::operator*= ( const Matrix4& mm )
     return *this;
 }
 
-template< class Real > 
-Matrix4< Real >& Matrix4< Real >::operator*= ( Real scalar )
+template< typename T > 
+Matrix4< T >& Matrix4< T >::operator*= ( T scalar )
 {
     // matrix = matrix * scalar 
     for ( size_t i = 0; i < 16; ++i )
@@ -458,10 +458,10 @@ Matrix4< Real >& Matrix4< Real >::operator*= ( Real scalar )
     return *this;
 }
 
-template< class Real > 
-Vector4< Real > Matrix4< Real >::operator* (const Vector4< Real >& vv) const
+template< typename T > 
+Vector4< T > Matrix4< T >::operator* (const Vector4< T >& vv) const
 {
-	Vector4< Real > result;
+	Vector4< T > result;
 	result[0] = vv[0] * m[0][0] + vv[1] * m[1][0] + vv[2] * m[2][0] + vv[3] * m[3][0];
 	result[1] = vv[0] * m[0][1] + vv[1] * m[1][1] + vv[2] * m[2][1] + vv[3] * m[3][1];
 	result[2] = vv[0] * m[0][2] + vv[1] * m[1][2] + vv[2] * m[2][2] + vv[3] * m[3][2];
@@ -469,28 +469,28 @@ Vector4< Real > Matrix4< Real >::operator* (const Vector4< Real >& vv) const
 	return result;
 }
 
-template< class Real > 
-Vector3< Real > Matrix4< Real >::operator* (const Vector3< Real >& vv) const
+template< typename T > 
+Vector3< T > Matrix4< T >::operator* (const Vector3< T >& vv) const
 {
-	Vector3< Real > result;
+	Vector3< T > result;
 	result[0] = vv[0] * m[0][0] + vv[1] * m[1][0] + vv[2] * m[2][0];
 	result[1] = vv[0] * m[0][1] + vv[1] * m[1][1] + vv[2] * m[2][1];
 	result[2] = vv[0] * m[0][2] + vv[1] * m[1][2] + vv[2] * m[2][2];
 	return result;
 }
 
-template< class Real > 
-Matrix4< Real > Matrix4< Real >::transpose() const
+template< typename T > 
+Matrix4< T > Matrix4< T >::transpose() const
 {
-    Matrix4< Real > result;
+    Matrix4< T > result;
     for ( size_t i = 0; i < 4; ++i )
         for ( size_t j = 0; j < 4; ++j )
             result.m[i][j] = m[j][i]; 
     return result;
 }
 
-template< class Real > 
-Real Matrix4< Real >::determinant() const
+template< typename T > 
+T Matrix4< T >::determinant() const
 {
     return m[0][0] * cofactor( 1, 2, 3, 1, 2, 3 ) 
          - m[0][1] * cofactor( 1, 2, 3, 0, 2, 3 ) 
@@ -498,8 +498,8 @@ Real Matrix4< Real >::determinant() const
          - m[0][3] * cofactor( 1, 2, 3, 0, 1, 2 ); 
 }
 
-template< class Real > 
-Matrix4< Real > Matrix4< Real >::adjoint() const
+template< typename T > 
+Matrix4< T > Matrix4< T >::adjoint() const
 {
     return Matrix4( 
              cofactor( 1, 2, 3, 1, 2, 3 ),
@@ -520,15 +520,15 @@ Matrix4< Real > Matrix4< Real >::adjoint() const
              cofactor( 0, 1, 2, 0, 1, 2 ) );
 }
 
-template< class Real > 
-bool Matrix4< Real >::inverse( Matrix4< Real >& result, Real limit )
+template< typename T > 
+bool Matrix4< T >::inverse( Matrix4< T >& result, T limit )
 {
-	Matrix4< Real > adj( adjoint() );
+	Matrix4< T > adj( adjoint() );
 
-    Vector4< Real > adv0 ( adj.m[0] );
-    Vector4< Real > v0 ( m[0] );
+    Vector4< T > adv0 ( adj.m[0] );
+    Vector4< T > v0 ( m[0] );
     
-	Real det = adv0.dot( v0 );
+	T det = adv0.dot( v0 );
 	
     if ( fabs(det) <= limit )
         return false;
@@ -539,14 +539,14 @@ bool Matrix4< Real >::inverse( Matrix4< Real >& result, Real limit )
 	return true;		
 }
 
-template< typename Real >
-void Matrix4<Real>::rotateX( const Real angle )
+template< typename T >
+void Matrix4<T>::rotateX( const T angle )
 {
     //matrix multiplication: ml = ml * rotation x axis
-    const Real sinus = sin(angle);
-    const Real cosin = cos(angle);
+    const T sinus = sin(angle);
+    const T cosin = cos(angle);
 
-    Real temp = m[0][0];
+    T temp = m[0][0];
     m[0][0] = m[0][0] * cosin - m[0][2] * sinus;
     m[0][2] = temp    * sinus + m[0][2] * cosin;
 
@@ -589,14 +589,14 @@ inline void Matrix4<float>::rotateX( const float angle )
 
 #endif
 
-template< typename Real >
-void Matrix4<Real>::rotateY( const Real angle )
+template< typename T >
+void Matrix4<T>::rotateY( const T angle )
 {
     //matrix multiplication: ml = ml * rotation y axis
-    const Real sinus = sin(angle);
-    const Real cosin = cos(angle);
+    const T sinus = sin(angle);
+    const T cosin = cos(angle);
 
-    Real temp = m[0][1];
+    T temp = m[0][1];
     m[0][1] = m[0][1] *  cosin + m[0][2] * sinus;
     m[0][2] = temp    * -sinus + m[0][2] * cosin;
 
@@ -639,14 +639,14 @@ inline void Matrix4<float>::rotateY( const float angle )
 }
 #endif
 
-template< typename Real >
-void Matrix4<Real>::rotateZ( const Real angle )
+template< typename T >
+void Matrix4<T>::rotateZ( const T angle )
 {
     //matrix multiplication: ml = ml * rotation z axis
-    const Real sinus = sin(angle);
-    const Real cosin = cos(angle);
+    const T sinus = sin(angle);
+    const T cosin = cos(angle);
 
-    Real temp = m[0][0];
+    T temp = m[0][0];
     m[0][0] = m[0][0] *  cosin + m[0][1] * sinus;
     m[0][1] = temp    * -sinus + m[0][1] * cosin;
 
@@ -689,8 +689,8 @@ inline void Matrix4<float>::rotateZ( const float angle )
 }
 #endif
 
-template< typename Real >
-void Matrix4<Real>::scale( const Real scale[3] )
+template< typename T >
+void Matrix4<T>::scale( const T scale[3] )
 {
     ml[0]  *= scale[0];
     ml[4]  *= scale[0];
@@ -706,25 +706,25 @@ void Matrix4<Real>::scale( const Real scale[3] )
     ml[14] *= scale[2];
 }
 
-template< typename Real >
-void Matrix4<Real>::scaleTranslation( const Real scale[3] )
+template< typename T >
+void Matrix4<T>::scaleTranslation( const T scale[3] )
 {
     ml[3] *= scale[0];
     ml[7] *= scale[1];
     ml[11] *= scale[2];
 }
 
-template< typename Real >
-void Matrix4<Real>::setTranslation( const Real x, const Real y, const Real z )
+template< typename T >
+void Matrix4<T>::setTranslation( const T x, const T y, const T z )
 {
     ml[3] = x;
     ml[7] = y;
     ml[11] = z;
 }
 
-template< class Real > 
-void Matrix4< Real >::tensor( const Vector3< Real >& u, 
-                              const Vector3< Real >& v )
+template< typename T > 
+void Matrix4< T >::tensor( const Vector3< T >& u, 
+                              const Vector3< T >& v )
 {
     int i, j;
     for (j = 0; j < 3; j++) 
@@ -738,9 +738,9 @@ void Matrix4< Real >::tensor( const Vector3< Real >& u,
     m[3][3] = 1.0;    
 }
 
-template< class Real > 
-void Matrix4< Real >::tensor( const Vector4< Real >& u,
-                              const Vector4< Real >& v )
+template< typename T > 
+void Matrix4< T >::tensor( const Vector4< T >& u,
+                              const Vector4< T >& v )
 {
     int i, j;
     for (j = 0; j < 4; j++)
@@ -749,11 +749,11 @@ void Matrix4< Real >::tensor( const Vector4< Real >& u,
 
 }
 
-template< class Real > 
-Real Matrix4< Real >::cofactor( const size_t ignoreRow, 
+template< typename T > 
+T Matrix4< T >::cofactor( const size_t ignoreRow, 
                                 const size_t ignoreCol ) const
 {
-    Matrix3< Real > cof;
+    Matrix3< T > cof;
     size_t srcrow, row, srccol, col;
     srcrow = row = srccol = col = 0;
     
@@ -779,12 +779,12 @@ Real Matrix4< Real >::cofactor( const size_t ignoreRow,
     return cof.determinant();
 }
 
-template< class Real > 
-Real Matrix4< Real >::cofactor( const size_t row0, const size_t row1,
+template< typename T > 
+T Matrix4< T >::cofactor( const size_t row0, const size_t row1,
                                 const size_t row2, const size_t col0,
                                 const size_t col1, const size_t col2 ) const
 {
-    Matrix3< Real > cof( m[row0][col0], m[row0][col1], m[row0][col2], 
+    Matrix3< T > cof( m[row0][col0], m[row0][col1], m[row0][col2], 
                          m[row1][col0], m[row1][col1], m[row1][col2],
                          m[row2][col0], m[row2][col1], m[row2][col2] );
 
@@ -792,18 +792,18 @@ Real Matrix4< Real >::cofactor( const size_t row0, const size_t row1,
 }
 
 
-template< class Real > 
-Matrix4< Real > Matrix4< Real >::operator-() const
+template< typename T > 
+Matrix4< T > Matrix4< T >::operator-() const
 {
-    Matrix4< Real > result( *this );
+    Matrix4< T > result( *this );
     result *= -1.0;
     return result;
 }
 
-template< class Real > 
-Matrix4< Real > Matrix4< Real >::negate() const
+template< typename T > 
+Matrix4< T > Matrix4< T >::negate() const
 {
-    Matrix4< Real > result( *this );
+    Matrix4< T > result( *this );
     result *= -1.0;
     return result;
 }

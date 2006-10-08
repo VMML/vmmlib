@@ -31,7 +31,7 @@
 namespace vmml
 {
 
-template< class Real > 
+template< typename T > 
 class Vector3
 {
 public:
@@ -39,20 +39,20 @@ public:
     {
         struct
         {
-            Real  x, y, z;
+            T  x, y, z;
         };
         struct
         {
-            Real  r, g, b;
+            T  r, g, b;
         };
-        Real xyz[3];
-        Real rgb[3];
+        T xyz[3];
+        T rgb[3];
     };
 
     // contructors
     Vector3(); // warning: components NOT initialised ( for performance )
-    Vector3( const Real  a ); 
-    Vector3( const Real  i, const Real  j, const Real  k ); 
+    Vector3( const T  a ); 
+    Vector3( const T  i, const T  j, const T  k ); 
     
     // dangerous, but implemented to allow easy conversion between 
     // Vector< float > and Vector3< double >
@@ -62,29 +62,29 @@ public:
     
     ~Vector3();
 
-    void set( Real xx, Real yy, Real zz );
+    void set( T xx, T yy, T zz );
     // dangerous, but implemented to allow easy conversion between 
     // Vector< float > and Vector3< double >
     // the pointer 'values' must be a valid 3 component c array of the resp. type
     void set( const float* values );
     void set( const double* values );
 
-    const Vector3& operator=( Real a ); 
+    const Vector3& operator=( T a ); 
     const Vector3& operator=( const Vector3& a ); 
 
-    Real& operator[]( size_t position);
-    const Real& operator[]( size_t position) const;
+    T& operator[]( size_t position);
+    const T& operator[]( size_t position) const;
 
     // vector/scalar operations
-    Vector3 operator+( const Real  a ) const;
-    Vector3 operator-( const Real  a ) const; 
-    Vector3 operator*( const Real  a ) const;
-    Vector3 operator/( Real  a ) const;
+    Vector3 operator+( const T  a ) const;
+    Vector3 operator-( const T  a ) const; 
+    Vector3 operator*( const T  a ) const;
+    Vector3 operator/( T  a ) const;
      
-    const Vector3& operator+=( Real  a );
-    const Vector3& operator-=( Real  a );
-    const Vector3& operator*=( Real  a );
-    const Vector3& operator/=( Real  a ); 
+    const Vector3& operator+=( T  a );
+    const Vector3& operator-=( T  a );
+    const Vector3& operator*=( T  a );
+    const Vector3& operator/=( T  a ); 
 
     // vector/vector operations
     Vector3 operator+( const Vector3& a ) const; 
@@ -101,19 +101,19 @@ public:
     bool operator==( const Vector3 &a ) const;
     bool operator!=(const Vector3 &a ) const;
 
-    Real length() const;
-    Real lengthSquared() const;
+    T length() const;
+    T lengthSquared() const;
 
-    Real normalise();
-    static Real normalise( float* source );
-    void scale( Real scale_factor );
+    T normalise();
+    static T normalise( float* source );
+    void scale( T scale_factor );
 
     // result = vec1.cross( vec2 ) => vec1 x vec2
     Vector3 cross( const Vector3& a ) const;
     // result.cross( vec1, vec2 ) => vec1 x vec2
     void cross( const Vector3 &a, const Vector3 &b);
-    Real dot( const Vector3& a) const;
-    static Real dot( const Vector3& a, const Vector3& b);
+    T dot( const Vector3& a) const;
+    static T dot( const Vector3& a, const Vector3& b);
 
     void invert(); 
 
@@ -122,10 +122,10 @@ public:
     //returns the normal of *this and the two argument vectors
     Vector3 normal( const Vector3& aa, const Vector3& bb );
 
-    Vector3 rotate( Real theta, Real  rx, Real  ry, Real  rz ); 
+    Vector3 rotate( T theta, T  rx, T  ry, T  rz ); 
 
-    Real min();
-    Real max();
+    T min();
+    T max();
 
     friend std::ostream& operator << ( std::ostream& os, const Vector3& v )
     {
@@ -149,82 +149,82 @@ public:
 
 // - implementation - //
        
-template < class Real > 
-Vector3< Real >::Vector3() 
+template < typename T > 
+Vector3< T >::Vector3() 
 {} 
 
-template < class Real > 
-Vector3< Real >::Vector3( const Real  a )
+template < typename T > 
+Vector3< T >::Vector3( const T  a )
     : x(a)
     , y(a)
     , z(a) 
 {} 
 
-template < class Real > 
-Vector3< Real >::Vector3( const Real  i, const Real  j, const Real  k )
+template < typename T > 
+Vector3< T >::Vector3( const T  i, const T  j, const T  k )
     : x(i)
     , y(j)
     , z(k) 
 {} 
 
-template < class Real > 
-Vector3< Real >::Vector3( const float* values )
+template < typename T > 
+Vector3< T >::Vector3( const float* values )
 {
     assert( values && "Vector3: Nullpointer argument as source for initialisation!" );
-    x = static_cast< Real > ( values[0] );
-    y = static_cast< Real > ( values[1] );
-    z = static_cast< Real > ( values[2] );
+    x = static_cast< T > ( values[0] );
+    y = static_cast< T > ( values[1] );
+    z = static_cast< T > ( values[2] );
 }
 
-template < class Real > 
-Vector3< Real >::Vector3( const double* values )
+template < typename T > 
+Vector3< T >::Vector3( const double* values )
 {
     assert( values && "Vector3: Nullpointer argument as source for initialisation!" );
-    x = static_cast< Real > ( values[0] );
-    y = static_cast< Real > ( values[1] );
-    z = static_cast< Real > ( values[2] );
+    x = static_cast< T > ( values[0] );
+    y = static_cast< T > ( values[1] );
+    z = static_cast< T > ( values[2] );
 }
 
 
-template < class Real > 
-Vector3< Real >::~Vector3()
+template < typename T > 
+Vector3< T >::~Vector3()
 {}
 
-template < class Real > 
-void Vector3< Real >::set( Real xx, Real yy, Real zz )
+template < typename T > 
+void Vector3< T >::set( T xx, T yy, T zz )
 { 
     x = xx; 
     y = yy; 
     z = zz; 
 }
 
-template < class Real > 
-void Vector3< Real >::set( const float* values )
+template < typename T > 
+void Vector3< T >::set( const float* values )
 {
     assert( values && "Vector3: Nullpointer argument as source for initialisation!" );
-    x = static_cast< Real > ( values[0] );
-    y = static_cast< Real > ( values[1] );
-    z = static_cast< Real > ( values[2] );
+    x = static_cast< T > ( values[0] );
+    y = static_cast< T > ( values[1] );
+    z = static_cast< T > ( values[2] );
 }
 
-template < class Real > 
-void Vector3< Real >::set( const double* values )
+template < typename T > 
+void Vector3< T >::set( const double* values )
 {
     assert( values && "Vector3: Nullpointer argument as source for initialisation!" );
-    x = static_cast< Real > ( values[0] );
-    y = static_cast< Real > ( values[1] );
-    z = static_cast< Real > ( values[2] );
+    x = static_cast< T > ( values[0] );
+    y = static_cast< T > ( values[1] );
+    z = static_cast< T > ( values[2] );
 }
 
-template < class Real > 
-const Vector3< Real >& Vector3< Real >::operator=( Real a )
+template < typename T > 
+const Vector3< T >& Vector3< T >::operator=( T a )
 { 
     x = y = z = a; 
     return *this; 
 } 
 
-template < class Real > 
-const Vector3< Real >& Vector3< Real >::operator=( const Vector3& a ) 
+template < typename T > 
+const Vector3< T >& Vector3< T >::operator=( const Vector3& a ) 
 { 
     x = a.x; 
     y = a.y; 
@@ -233,37 +233,37 @@ const Vector3< Real >& Vector3< Real >::operator=( const Vector3& a )
 } 
 
 
-template < class Real > 
-Real& Vector3< Real >::operator[]( size_t index ) 
+template < typename T > 
+T& Vector3< T >::operator[]( size_t index ) 
 { 
     assert( index < 3 && "Vector3::operator[] Invalid component index!" ); 
     return xyz[ index ]; 
 }
          
-template < class Real > 
-const Real& Vector3< Real >::operator[]( size_t index ) const
+template < typename T > 
+const T& Vector3< T >::operator[]( size_t index ) const
 { 
     assert( index < 3 && "Vector3::operator[] Invalid component index!" ); 
     return xyz[ index ]; 
 } 
 	
-template < class Real > 
-Real  Vector3< Real >::length() const 
+template < typename T > 
+T  Vector3< T >::length() const 
 { 
-    Real l = lengthSquared();
+    T l = lengthSquared();
     return sqrt( l ); 
 } 
 
-template < class Real > 
-Real  Vector3< Real >::lengthSquared() const 
+template < typename T > 
+T  Vector3< T >::lengthSquared() const 
 { 
     return x * x + y * y + z * z; 
 } 
 
-template < class Real > 
-Real  Vector3< Real >::normalise()
+template < typename T > 
+T  Vector3< T >::normalise()
 { 
-    Real l = length(); 
+    T l = length(); 
     if ( l == 0 ) 
         return 0; 
     l = 1.0f / l; 
@@ -274,11 +274,11 @@ Real  Vector3< Real >::normalise()
 } 
 
 // PRECONDITION: float* source is a valid 3-float array
-template < class Real > 
-Real  Vector3< Real >::normalise( float* source )
+template < typename T > 
+T  Vector3< T >::normalise( float* source )
 {
     Vector3< float >* a = ( Vector3< float >* ) source;
-    Real l = a->length();
+    T l = a->length();
     if ( l == 0 ) 
         return 0;
 
@@ -290,40 +290,40 @@ Real  Vector3< Real >::normalise( float* source )
 }
 
 
-template < class Real >
-void Vector3< Real >::scale( Real scale_factor )
+template < typename T >
+void Vector3< T >::scale( T scale_factor )
 {
     operator*=( scale_factor );
 }
 
-template < class Real > 
-Vector3< Real > Vector3< Real >::operator+( const Real  a ) const 
+template < typename T > 
+Vector3< T > Vector3< T >::operator+( const T  a ) const 
 { 
     return Vector3( x + a, y + a, z + a ); 
 } 
 
-template < class Real > 
-Vector3< Real > Vector3< Real >::operator-( const Real  a ) const 
+template < typename T > 
+Vector3< T > Vector3< T >::operator-( const T  a ) const 
 { 
     return Vector3( x - a, y - a, z - a ); 
 }
  
-template < class Real > 
-Vector3< Real > Vector3< Real >::operator*( const Real  a ) const 
+template < typename T > 
+Vector3< T > Vector3< T >::operator*( const T  a ) const 
 { 
     return Vector3( x * a, y * a, z * a ); 
 }
 
-template < class Real > 
-Vector3< Real > Vector3< Real >::operator/( Real  a ) const 
+template < typename T > 
+Vector3< T > Vector3< T >::operator/( T  a ) const 
 { 
     assert( a != 0.0f ); 
     a = 1.0f / a; 
     return Vector3( x * a, y * a, z * a ); 
 }
 
-template < class Real > 
-const Vector3< Real >& Vector3< Real >::operator+=( Real  a ) 
+template < typename T > 
+const Vector3< T >& Vector3< T >::operator+=( T  a ) 
 { 
     x += a; 
     y += a; 
@@ -331,8 +331,8 @@ const Vector3< Real >& Vector3< Real >::operator+=( Real  a )
     return *this; 
 } 
 
-template < class Real > 
-const Vector3< Real >& Vector3< Real >::operator-=( Real  a ) 
+template < typename T > 
+const Vector3< T >& Vector3< T >::operator-=( T  a ) 
 { 
     x -= a; 
     y -= a; 
@@ -340,8 +340,8 @@ const Vector3< Real >& Vector3< Real >::operator-=( Real  a )
     return *this; 
 } 
 
-template < class Real > 
-const Vector3< Real >& Vector3< Real >::operator*=( Real  a ) 
+template < typename T > 
+const Vector3< T >& Vector3< T >::operator*=( T  a ) 
 { 
     x *= a; 
     y *= a; 
@@ -349,8 +349,8 @@ const Vector3< Real >& Vector3< Real >::operator*=( Real  a )
     return *this; 
 }
  
-template < class Real > 
-const Vector3< Real >& Vector3< Real >::operator/=( Real  a ) 
+template < typename T > 
+const Vector3< T >& Vector3< T >::operator/=( T  a ) 
 { 
     a = 1.0f / a; 
     x *= a; 
@@ -360,38 +360,38 @@ const Vector3< Real >& Vector3< Real >::operator/=( Real  a )
 } 
 
 // vector/vector operations
-template < class Real > 
-Vector3< Real > Vector3< Real >::operator+( const Vector3 &a ) const 
+template < typename T > 
+Vector3< T > Vector3< T >::operator+( const Vector3 &a ) const 
 { 
     return Vector3( x + a.x, y + a.y, z + a.z ); 
 }
  
-template < class Real > 
-Vector3< Real > Vector3< Real >::operator-( const Vector3 &a ) const 
+template < typename T > 
+Vector3< T > Vector3< T >::operator-( const Vector3 &a ) const 
 { 
     return Vector3( x - a.x, y - a.y, z - a.z ); 
 }
 
-template < class Real > 
-Vector3< Real > Vector3< Real >::operator*( const Vector3 &a ) const 
+template < typename T > 
+Vector3< T > Vector3< T >::operator*( const Vector3 &a ) const 
 { 
     return Vector3( x * a.x, y * a.y, z * a.z ); 
 } 
 
-template < class Real > 
-Vector3< Real > Vector3< Real >::operator/( const Vector3 &a ) const 
+template < typename T > 
+Vector3< T > Vector3< T >::operator/( const Vector3 &a ) const 
 { 
     return Vector3( x / a.x, y / a.y, z / a.z ); 
 } 
 
-template < class Real > 
-Vector3< Real > Vector3< Real >::operator-() const 
+template < typename T > 
+Vector3< T > Vector3< T >::operator-() const 
 { 
     return Vector3( -x, -y, -z );
 }
 
-template < class Real > 
-const Vector3< Real >& Vector3< Real >::operator+=( const Vector3 &a ) 
+template < typename T > 
+const Vector3< T >& Vector3< T >::operator+=( const Vector3 &a ) 
 { 
     x += a.x; 
     y += a.y; 
@@ -399,8 +399,8 @@ const Vector3< Real >& Vector3< Real >::operator+=( const Vector3 &a )
     return *this; 
 } 
 
-template < class Real > 
-const Vector3< Real >& Vector3< Real >::operator-=( const Vector3 &a ) 
+template < typename T > 
+const Vector3< T >& Vector3< T >::operator-=( const Vector3 &a ) 
 { 
     x -= a.x; 
     y -= a.y; 
@@ -408,8 +408,8 @@ const Vector3< Real >& Vector3< Real >::operator-=( const Vector3 &a )
     return *this; 
 }
 
-template < class Real > 
-const Vector3< Real >& Vector3< Real >::operator*=( const Vector3 &a ) 
+template < typename T > 
+const Vector3< T >& Vector3< T >::operator*=( const Vector3 &a ) 
 { 
     x *= a.x; 
     y *= a.y; 
@@ -417,8 +417,8 @@ const Vector3< Real >& Vector3< Real >::operator*=( const Vector3 &a )
     return *this; 
 }
 
-template < class Real > 
-const Vector3< Real >& Vector3< Real >::operator/=( const Vector3 &a ) 
+template < typename T > 
+const Vector3< T >& Vector3< T >::operator/=( const Vector3 &a ) 
 { 
     x /= a.x; 
     y /= a.y; 
@@ -427,48 +427,48 @@ const Vector3< Real >& Vector3< Real >::operator/=( const Vector3 &a )
 }
 
 // result = vec1.cross( vec2 ) => vec1 x vec2
-template < class Real > 
-Vector3< Real > Vector3< Real >::cross( const Vector3& a ) const
+template < typename T > 
+Vector3< T > Vector3< T >::cross( const Vector3& a ) const
 { 
     return Vector3( y * a.z - z * a.y, z * a.x - x * a.z, x * a.y - y * a.x ); 
 }
 
 // result.cross( vec1, vec2 ) => vec1 x vec2
-template < class Real > 
-void Vector3< Real >::cross( const Vector3 &a, const Vector3 &b)
+template < typename T > 
+void Vector3< T >::cross( const Vector3 &a, const Vector3 &b)
 { 
     x = a.y * b.z - a.z * b.y; 
     y = a.z * b.x - a.x * b.z; 
     z = a.x * b.y - a.y * b.x; 
 }
 
-template < class Real > 
-Real Vector3< Real >::dot( const Vector3& a) const 
+template < typename T > 
+T Vector3< T >::dot( const Vector3& a) const 
 { 
     return x * a.x + y * a.y + z * a.z; 
 }
 
-template < class Real > 
-Real Vector3< Real >::dot( const Vector3& a, const Vector3& b)
+template < typename T > 
+T Vector3< T >::dot( const Vector3& a, const Vector3& b)
 {
     return a.x * b.x + a.y * b.y + a.z * b.z;
 }
 
 
-template < class Real > 
-bool Vector3< Real >::operator==( const Vector3 &a ) const 
+template < typename T > 
+bool Vector3< T >::operator==( const Vector3 &a ) const 
 { 
     return ( x == a.x && y == a.y && z == a.z ); 
 }
 
-template < class Real > 
-bool Vector3< Real >::operator!=(const Vector3 &a ) const 
+template < typename T > 
+bool Vector3< T >::operator!=(const Vector3 &a ) const 
 { 
     return ( x != a.x || y != a.y || z != a.z ); 
 }
 
-template < class Real > 
-void Vector3< Real >::invert() 
+template < typename T > 
+void Vector3< T >::invert() 
 {	
     x = -x; 
     y = -y; 
@@ -476,12 +476,12 @@ void Vector3< Real >::invert()
 }
 
 // *this is the result
-template< class Real >
-void Vector3< Real >::normal( const Vector3< Real >& aa, 
-                              const Vector3< Real >& bb,
-                              const Vector3< Real >& cc )
+template< typename T >
+void Vector3< T >::normal( const Vector3< T >& aa, 
+                              const Vector3< T >& bb,
+                              const Vector3< T >& cc )
 {
-    Vector3< Real > u,v;
+    Vector3< T > u,v;
 
     // right hand system, CCW triangle
     u = bb - aa;
@@ -491,23 +491,23 @@ void Vector3< Real >::normal( const Vector3< Real >& aa,
 }
 
 //returns the normal of *this and the two argument vectors
-template< class Real >
-Vector3< Real > Vector3< Real >::normal( const Vector3< Real >& aa, 
-                                         const Vector3< Real >& bb )
+template< typename T >
+Vector3< T > Vector3< T >::normal( const Vector3< T >& aa, 
+                                         const Vector3< T >& bb )
 {
-    Vector3< Real > tmp;
+    Vector3< T > tmp;
     tmp.normal( *this, aa, bb);
     return tmp;
 }
 
-template < class Real > 
-Vector3< Real > Vector3< Real >::rotate( Real theta, Real rx, Real ry, 
-                                         Real rz )      
+template < typename T > 
+Vector3< T > Vector3< T >::rotate( T theta, T rx, T ry, 
+                                         T rz )      
 {   
     Vector3 q( 0, 0, 0 ), r( rx, ry, rz );
     r.normalise();
-    const Real costheta = ( Real ) cos( theta );
-    const Real sintheta = ( Real ) sin( theta );
+    const T costheta = ( T ) cos( theta );
+    const T sintheta = ( T ) sin( theta );
     q.x += ( costheta + ( 1.0f - costheta ) * r.x * r.x ) * x;
     q.x += ( ( 1 - costheta ) * r.x * r.y - r.z * sintheta ) * y;
     q.x += ( ( 1 - costheta ) * r.x * r.z + r.y * sintheta ) * z;
@@ -540,18 +540,18 @@ inline Vector3< float > Vector3< float >::rotate( float theta, float rx,
     return q; 
 } 
 
-template < class Real > 
-Real Vector3< Real >::max() 
+template < typename T > 
+T Vector3< T >::max() 
 { 
-    Real m = std::max( x,y ); 
+    T m = std::max( x,y ); 
     m = std::max( m, z); 
     return m; 
 }
 
-template < class Real > 
-Real Vector3< Real >::min() 
+template < typename T > 
+T Vector3< T >::min() 
 { 
-    Real m = std::min( x,y ); 
+    T m = std::min( x,y ); 
     m = std::min( m, z); 
     return m; 
 } 

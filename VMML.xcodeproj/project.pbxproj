@@ -10,14 +10,20 @@
 		8D07F2C00486CC7A007CD1D0 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C1666FE841158C02AAC07 /* InfoPlist.strings */; };
 		980561D80AC933E200BDF55F /* VMMLib.h in Headers */ = {isa = PBXBuildFile; fileRef = 980561D70AC933E200BDF55F /* VMMLib.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9836EF7F0AC958500060C6CB /* JacobiSolver.h in Headers */ = {isa = PBXBuildFile; fileRef = 9836EF7E0AC958500060C6CB /* JacobiSolver.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		984C50D00AD5BD57004330DF /* CodeStyleExample.h in Headers */ = {isa = PBXBuildFile; fileRef = 984C50CF0AD5BD57004330DF /* CodeStyleExample.h */; };
+		984C50D20AD5BD64004330DF /* CodeStyleExample.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 984C50D10AD5BD63004330DF /* CodeStyleExample.cpp */; };
+		984C50D30AD5BD64004330DF /* CodeStyleExample.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 984C50D10AD5BD63004330DF /* CodeStyleExample.cpp */; };
 		9867B4F00AAED08E00651D9B /* Vector3.h in Headers */ = {isa = PBXBuildFile; fileRef = 9867B4EF0AAED08E00651D9B /* Vector3.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9867B5650AAEFDB900651D9B /* Vector4.h in Headers */ = {isa = PBXBuildFile; fileRef = 9867B5640AAEFDB900651D9B /* Vector4.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9867B5760AAEFF1400651D9B /* main_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9867B4EC0AAED07600651D9B /* main_test.cpp */; };
 		9867B62C0AAF0C0200651D9B /* Matrix3.h in Headers */ = {isa = PBXBuildFile; fileRef = 9867B62A0AAF0C0200651D9B /* Matrix3.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9867B62D0AAF0C0200651D9B /* Matrix4.h in Headers */ = {isa = PBXBuildFile; fileRef = 9867B62B0AAF0C0200651D9B /* Matrix4.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		988CCAAF0AD882CE002B0ED6 /* AxisAlignedBoundingBox.h in Headers */ = {isa = PBXBuildFile; fileRef = 988CCAAB0AD882CE002B0ED6 /* AxisAlignedBoundingBox.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		988CCAB00AD882CE002B0ED6 /* OctreeNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 988CCAAC0AD882CE002B0ED6 /* OctreeNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		988CCAC30AD88411002B0ED6 /* Sphere.h in Headers */ = {isa = PBXBuildFile; fileRef = 988CCAC20AD88411002B0ED6 /* Sphere.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		989F5C9C0AC97B09007CC6C9 /* SingularValueDecomposition.h in Headers */ = {isa = PBXBuildFile; fileRef = 989F5C9B0AC97B09007CC6C9 /* SingularValueDecomposition.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		989F5CD90ACA7970007CC6C9 /* HelperFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 989F5CD80ACA7970007CC6C9 /* HelperFunctions.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		C0EFFEB80AD2AD3100EE6C21 /* Vector2.h in Headers */ = {isa = PBXBuildFile; fileRef = C0EFFEB70AD2AD3100EE6C21 /* Vector2.h */; };
+		C0EFFEB80AD2AD3100EE6C21 /* Vector2.h in Headers */ = {isa = PBXBuildFile; fileRef = C0EFFEB70AD2AD3100EE6C21 /* Vector2.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,12 +32,17 @@
 		8D07F2C80486CC7A007CD1D0 /* VMMLib.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = VMMLib.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		980561D70AC933E200BDF55F /* VMMLib.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = VMMLib.h; path = include/VMMLib.h; sourceTree = "<group>"; };
 		9836EF7E0AC958500060C6CB /* JacobiSolver.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = JacobiSolver.h; path = include/JacobiSolver.h; sourceTree = "<group>"; };
+		984C50CF0AD5BD57004330DF /* CodeStyleExample.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = CodeStyleExample.h; path = include/CodeStyleExample.h; sourceTree = "<group>"; };
+		984C50D10AD5BD63004330DF /* CodeStyleExample.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = CodeStyleExample.cpp; path = src/CodeStyleExample.cpp; sourceTree = "<group>"; };
 		9867B4EC0AAED07600651D9B /* main_test.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = main_test.cpp; path = src/main_test.cpp; sourceTree = "<group>"; };
 		9867B4EF0AAED08E00651D9B /* Vector3.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Vector3.h; path = include/Vector3.h; sourceTree = "<group>"; };
 		9867B5640AAEFDB900651D9B /* Vector4.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Vector4.h; path = include/Vector4.h; sourceTree = "<group>"; };
-		9867B5740AAEFEFC00651D9B /* vmml_test */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "compiled.mach-o.executable"; path = vmml_test; sourceTree = BUILT_PRODUCTS_DIR; };
+		9867B5740AAEFEFC00651D9B /* vmml_test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = vmml_test; sourceTree = BUILT_PRODUCTS_DIR; };
 		9867B62A0AAF0C0200651D9B /* Matrix3.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Matrix3.h; path = include/Matrix3.h; sourceTree = "<group>"; };
 		9867B62B0AAF0C0200651D9B /* Matrix4.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Matrix4.h; path = include/Matrix4.h; sourceTree = "<group>"; };
+		988CCAAB0AD882CE002B0ED6 /* AxisAlignedBoundingBox.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = AxisAlignedBoundingBox.h; path = include/AxisAlignedBoundingBox.h; sourceTree = "<group>"; };
+		988CCAAC0AD882CE002B0ED6 /* OctreeNode.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = OctreeNode.h; path = include/OctreeNode.h; sourceTree = "<group>"; };
+		988CCAC20AD88411002B0ED6 /* Sphere.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Sphere.h; path = include/Sphere.h; sourceTree = "<group>"; };
 		989F5C9B0AC97B09007CC6C9 /* SingularValueDecomposition.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = SingularValueDecomposition.h; path = include/SingularValueDecomposition.h; sourceTree = "<group>"; };
 		989F5CD80ACA7970007CC6C9 /* HelperFunctions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = HelperFunctions.h; path = include/HelperFunctions.h; sourceTree = "<group>"; };
 		C0EFFEB70AD2AD3100EE6C21 /* Vector2.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Vector2.h; path = include/Vector2.h; sourceTree = "<group>"; };
@@ -69,7 +80,9 @@
 			children = (
 				9867B4EE0AAED07A00651D9B /* Basics */,
 				9836EF820AC958620060C6CB /* Advanced */,
+				988CCAA70AD881F3002B0ED6 /* Spatial Data Structures */,
 				08FB77ACFE841707C02AAC07 /* Tests */,
+				984C50CE0AD5BD34004330DF /* Examples */,
 				089C1665FE841158C02AAC07 /* Resources */,
 				0867D69AFE84028FC02AAC07 /* External Frameworks and Libraries */,
 				034768DDFF38A45A11DB9C8B /* Products */,
@@ -110,6 +123,15 @@
 			name = Advanced;
 			sourceTree = "<group>";
 		};
+		984C50CE0AD5BD34004330DF /* Examples */ = {
+			isa = PBXGroup;
+			children = (
+				984C50D10AD5BD63004330DF /* CodeStyleExample.cpp */,
+				984C50CF0AD5BD57004330DF /* CodeStyleExample.h */,
+			);
+			name = Examples;
+			sourceTree = "<group>";
+		};
 		9867B4EE0AAED07A00651D9B /* Basics */ = {
 			isa = PBXGroup;
 			children = (
@@ -120,8 +142,18 @@
 				9867B4EF0AAED08E00651D9B /* Vector3.h */,
 				9867B5640AAEFDB900651D9B /* Vector4.h */,
 				989F5CD80ACA7970007CC6C9 /* HelperFunctions.h */,
+				988CCAC20AD88411002B0ED6 /* Sphere.h */,
+				988CCAAB0AD882CE002B0ED6 /* AxisAlignedBoundingBox.h */,
 			);
 			name = Basics;
+			sourceTree = "<group>";
+		};
+		988CCAA70AD881F3002B0ED6 /* Spatial Data Structures */ = {
+			isa = PBXGroup;
+			children = (
+				988CCAAC0AD882CE002B0ED6 /* OctreeNode.h */,
+			);
+			name = "Spatial Data Structures";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -140,6 +172,10 @@
 				989F5C9C0AC97B09007CC6C9 /* SingularValueDecomposition.h in Headers */,
 				989F5CD90ACA7970007CC6C9 /* HelperFunctions.h in Headers */,
 				C0EFFEB80AD2AD3100EE6C21 /* Vector2.h in Headers */,
+				984C50D00AD5BD57004330DF /* CodeStyleExample.h in Headers */,
+				988CCAAF0AD882CE002B0ED6 /* AxisAlignedBoundingBox.h in Headers */,
+				988CCAB00AD882CE002B0ED6 /* OctreeNode.h in Headers */,
+				988CCAC30AD88411002B0ED6 /* Sphere.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -225,6 +261,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				984C50D20AD5BD64004330DF /* CodeStyleExample.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -233,6 +270,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9867B5760AAEFF1400651D9B /* main_test.cpp in Sources */,
+				984C50D30AD5BD64004330DF /* CodeStyleExample.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -291,7 +329,7 @@
 				FRAMEWORK_VERSION = A;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = VMML_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Frameworks";

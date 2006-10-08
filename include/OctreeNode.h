@@ -51,7 +51,7 @@ public:
     // returns 0 if pos is outside of the root aabb
     OctreeNode< T >* findLeaf( const Vector3f& pos );
    
-    OctreeNode< T >* findNode( const Sphere< float >& sphere );
+    //OctreeNode< T >* findNode( const Sphere< float >& sphere );
      
     // getters / setters
     inline void setLoadPtr( T* load ) { _load = load; };

@@ -8,8 +8,11 @@
 
 #include "JacobiSolver.h"
 #include "SingularValueDecomposition.h"
+#include "AxisAlignedBoundingBox.h"
+#include "OctreeNode.h"
 
 #include <iostream>
+#include <vector>
 
 typedef vmml::Vector3< float >  Vector3f;
 typedef vmml::Vector4< float >  Vector4f;
@@ -21,8 +24,32 @@ typedef vmml::Matrix4< float >  Matrix4f;
 typedef vmml::Matrix3< double > Matrix3d;
 typedef vmml::Matrix4< double > Matrix4d;
 
+typedef vmml::OctreeNode< std::vector< float > > ONode;
+typedef vmml::Sphere< float > Spheref;
+
+using namespace std;
+
 int main()
 {
+    Spheref sphere;
+    vmml::Aabbf aabb( sphere );
+    ONode rootNode( aabb );
+    rootNode.createChildren( 5 );
+    Vector3f pos;
+    pos = 0.99f;
+    ONode* child = rootNode.getLeaf( pos );
+    child->spam();
+
+    pos = -0.999f;
+    child = rootNode.getLeaf( pos );
+    child->spam();
+
+    pos.x = 0.66f;    
+    pos.y = -0.23f;
+    child = rootNode.getLeaf( pos );
+    child->spam();
+
+#if 0
     Vector3f a;
     a = 0;
     a.x = 1.0;
@@ -97,5 +124,6 @@ int main()
     Vector3d d = 0.0;
     size_t rotations;
     vmml::solveJacobi3x3< double > ( aaa, d, v, rotations );
-    
+#endif
+    return 0;
 }

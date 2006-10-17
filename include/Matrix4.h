@@ -489,13 +489,12 @@ Vector4< T > Matrix4< T >::operator* (const Vector4< T >& vv) const
 template< typename T > 
 Vector3< T > Matrix4< T >::operator* (const Vector3< T >& vv) const
 {
-    Vector4< T > in( vv );
 	Vector4< T > result;
     
-	result[0] = vv[0] * m00 + vv[1] * m10 + vv[2] * m20 + vv[3] * m30;
-	result[1] = vv[0] * m01 + vv[1] * m11 + vv[2] * m21 + vv[3] * m31;
-	result[2] = vv[0] * m02 + vv[1] * m12 + vv[2] * m22 + vv[3] * m32;
-	result[3] = vv[0] * m03 + vv[1] * m13 + vv[2] * m23 + vv[3] * m33;
+	result[0] = vv[0] * m00 + vv[1] * m10 + vv[2] * m20 + m30;
+	result[1] = vv[0] * m01 + vv[1] * m11 + vv[2] * m21 + m31;
+	result[2] = vv[0] * m02 + vv[1] * m12 + vv[2] * m22 + m32;
+	result[3] = vv[0] * m03 + vv[1] * m13 + vv[2] * m23 + m33;
 	return Vector3<T>( result.x/result.w, result.y/result.w, 
                        result.z/result.w );
 }

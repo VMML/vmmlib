@@ -24,10 +24,6 @@
 *
 */ 
 
-#include "Matrix3.h"
-#include "Vector3.h"
-#include "Vector4.h"
-
 #include <math.h>
 #include <stdlib.h>
 #include <iomanip>
@@ -43,6 +39,9 @@
 
 namespace vmml
 {
+    template< typename T > class Matrix3;
+    template< typename T > class Vector3;
+    template< typename T > class Vector4;
 
 template< typename T > 
 class Matrix4
@@ -194,6 +193,11 @@ public:
 // - implementation -
 //
 // * * * * * * * * * *
+
+#include "Matrix3.h"
+#include "Vector3.h"
+#include "Vector4.h"
+
 
 template< typename T > 
 const Matrix4< T > Matrix4< T >::IDENTITY( 1, 0, 0, 0, 0, 1, 0, 0,
@@ -438,17 +442,17 @@ Matrix4< T > Matrix4< T >::operator* (const Matrix4< T >& o) const
     r.m01 = m01*o.m01 + m02*o.m11 + m03*o.m21 + m00*o.m31;
     r.m11 = m11*o.m01 + m12*o.m11 + m13*o.m21 + m10*o.m31;
     r.m21 = m21*o.m01 + m22*o.m11 + m23*o.m21 + m20*o.m31;
-    r.m21 = m31*o.m01 + m32*o.m11 + m33*o.m21 + m30*o.m31;
+    r.m31 = m31*o.m01 + m32*o.m11 + m33*o.m21 + m30*o.m31;
 
     r.m02 = m02*o.m02 + m03*o.m12 + m00*o.m22 + m01*o.m32;
     r.m12 = m12*o.m02 + m13*o.m12 + m10*o.m22 + m11*o.m32;
     r.m22 = m22*o.m02 + m23*o.m12 + m20*o.m22 + m21*o.m32;
-    r.m22 = m32*o.m02 + m33*o.m12 + m30*o.m22 + m31*o.m32;
+    r.m32 = m32*o.m02 + m33*o.m12 + m30*o.m22 + m31*o.m32;
 
     r.m03 = m03*o.m03 + m00*o.m13 + m01*o.m23 + m02*o.m33;
     r.m13 = m13*o.m03 + m10*o.m13 + m11*o.m23 + m12*o.m33;
     r.m23 = m23*o.m03 + m20*o.m13 + m21*o.m23 + m22*o.m33;
-    r.m23 = m33*o.m03 + m30*o.m13 + m31*o.m23 + m32*o.m33;
+    r.m33 = m33*o.m03 + m30*o.m13 + m31*o.m23 + m32*o.m33;
 
     return r;
 }
@@ -491,17 +495,17 @@ Matrix4< T >& Matrix4< T >::operator*= ( const Matrix4& o )
     r.m01 = m01*o.m01 + m02*o.m11 + m03*o.m21 + m00*o.m31;
     r.m11 = m11*o.m01 + m12*o.m11 + m13*o.m21 + m10*o.m31;
     r.m21 = m21*o.m01 + m22*o.m11 + m23*o.m21 + m20*o.m31;
-    r.m21 = m31*o.m01 + m32*o.m11 + m33*o.m21 + m30*o.m31;
+    r.m31 = m31*o.m01 + m32*o.m11 + m33*o.m21 + m30*o.m31;
 
     r.m02 = m02*o.m02 + m03*o.m12 + m00*o.m22 + m01*o.m32;
     r.m12 = m12*o.m02 + m13*o.m12 + m10*o.m22 + m11*o.m32;
     r.m22 = m22*o.m02 + m23*o.m12 + m20*o.m22 + m21*o.m32;
-    r.m22 = m32*o.m02 + m33*o.m12 + m30*o.m22 + m31*o.m32;
+    r.m32 = m32*o.m02 + m33*o.m12 + m30*o.m22 + m31*o.m32;
 
     r.m03 = m03*o.m03 + m00*o.m13 + m01*o.m23 + m02*o.m33;
     r.m13 = m13*o.m03 + m10*o.m13 + m11*o.m23 + m12*o.m33;
     r.m23 = m23*o.m03 + m20*o.m13 + m21*o.m23 + m22*o.m33;
-    r.m23 = m33*o.m03 + m30*o.m13 + m31*o.m23 + m32*o.m33;
+    r.m33 = m33*o.m03 + m30*o.m13 + m31*o.m23 + m32*o.m33;
 
     *this = r;
     return *this;

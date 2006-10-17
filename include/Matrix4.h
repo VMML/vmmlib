@@ -389,25 +389,25 @@ Matrix4< T > Matrix4< T >::operator* (const Matrix4< T >& o) const
 {
     Matrix4< T > r;
 
-    r.m00 = m00*o.m00 + m10*o.m01 + m20*o.m02 + m30*o.m03;
-    r.m10 = m00*o.m10 + m10*o.m11 + m20*o.m12 + m30*o.m13;
-    r.m20 = m00*o.m20 + m10*o.m21 + m20*o.m22 + m30*o.m23;
-    r.m30 = m00*o.m30 + m10*o.m31 + m20*o.m32 + m30*o.m33;
+    r.m00 = m00*o.m00 + m01*o.m10 + m02*o.m20 + m03*o.m30;
+    r.m10 = m10*o.m00 + m11*o.m10 + m12*o.m20 + m13*o.m30;
+    r.m20 = m20*o.m00 + m21*o.m10 + m22*o.m20 + m23*o.m30;
+    r.m30 = m30*o.m00 + m31*o.m10 + m32*o.m20 + m33*o.m30;
 
-    r.m01 = m01*o.m00 + m11*o.m01 + m21*o.m02 + m31*o.m03;
-    r.m11 = m01*o.m10 + m11*o.m11 + m21*o.m12 + m31*o.m13;
-    r.m21 = m01*o.m20 + m11*o.m21 + m21*o.m22 + m31*o.m23;
-    r.m31 = m01*o.m30 + m11*o.m31 + m21*o.m32 + m31*o.m33;
+    r.m01 = m01*o.m01 + m02*o.m11 + m03*o.m21 + m00*o.m31;
+    r.m11 = m11*o.m01 + m12*o.m11 + m13*o.m21 + m10*o.m31;
+    r.m21 = m21*o.m01 + m22*o.m11 + m23*o.m21 + m20*o.m31;
+    r.m21 = m31*o.m01 + m32*o.m11 + m33*o.m21 + m30*o.m31;
 
-    r.m00 = m02*o.m00 + m12*o.m01 + m22*o.m02 + m32*o.m03;
-    r.m10 = m02*o.m10 + m12*o.m11 + m22*o.m12 + m32*o.m13;
-    r.m20 = m02*o.m20 + m12*o.m21 + m22*o.m22 + m32*o.m23;
-    r.m30 = m02*o.m30 + m12*o.m31 + m22*o.m32 + m32*o.m33;
+    r.m02 = m02*o.m02 + m03*o.m12 + m00*o.m22 + m01*o.m32;
+    r.m12 = m12*o.m02 + m13*o.m12 + m10*o.m22 + m11*o.m32;
+    r.m22 = m22*o.m02 + m23*o.m12 + m20*o.m22 + m21*o.m32;
+    r.m22 = m32*o.m02 + m33*o.m12 + m30*o.m22 + m31*o.m32;
 
-    r.m01 = m03*o.m00 + m13*o.m01 + m23*o.m02 + m33*o.m03;
-    r.m11 = m03*o.m10 + m13*o.m11 + m23*o.m12 + m33*o.m13;
-    r.m21 = m03*o.m20 + m13*o.m21 + m23*o.m22 + m33*o.m23;
-    r.m31 = m03*o.m30 + m13*o.m31 + m23*o.m32 + m33*o.m33;
+    r.m03 = m03*o.m03 + m00*o.m13 + m01*o.m23 + m02*o.m33;
+    r.m13 = m13*o.m03 + m10*o.m13 + m11*o.m23 + m12*o.m33;
+    r.m23 = m23*o.m03 + m20*o.m13 + m21*o.m23 + m22*o.m33;
+    r.m23 = m33*o.m03 + m30*o.m13 + m31*o.m23 + m32*o.m33;
 
     return r;
 }
@@ -440,31 +440,29 @@ Matrix4< T >& Matrix4< T >::operator-= ( const Matrix4& mm )
 template< typename T > 
 Matrix4< T >& Matrix4< T >::operator*= ( const Matrix4& o ) 
 {
-    T t[4];
-    t[0] = m00*o.m00 + m10*o.m01 + m20*o.m02 + m30*o.m03;
-    t[1] = m00*o.m10 + m10*o.m11 + m20*o.m12 + m30*o.m13;
-    t[2] = m00*o.m20 + m10*o.m21 + m20*o.m22 + m30*o.m23;
-    t[3] = m00*o.m30 + m10*o.m31 + m20*o.m32 + m30*o.m33;
-    m00 = t[0]; m10 = t[1]; m20 = t[2]; m30 = t[3];
+    Matrix4< T > r;
 
-    t[0] = m01*o.m00 + m11*o.m01 + m21*o.m02 + m31*o.m03;
-    t[1] = m01*o.m10 + m11*o.m11 + m21*o.m12 + m31*o.m13;
-    t[2] = m01*o.m20 + m11*o.m21 + m21*o.m22 + m31*o.m23;
-    t[3] = m01*o.m30 + m11*o.m31 + m21*o.m32 + m31*o.m33;
-    m01 = t[0]; m11 = t[1]; m21 = t[2]; m31 = t[3];
+    r.m00 = m00*o.m00 + m01*o.m10 + m02*o.m20 + m03*o.m30;
+    r.m10 = m10*o.m00 + m11*o.m10 + m12*o.m20 + m13*o.m30;
+    r.m20 = m20*o.m00 + m21*o.m10 + m22*o.m20 + m23*o.m30;
+    r.m30 = m30*o.m00 + m31*o.m10 + m32*o.m20 + m33*o.m30;
 
-    t[0] = m02*o.m00 + m12*o.m01 + m22*o.m02 + m32*o.m03;
-    t[1] = m02*o.m10 + m12*o.m11 + m22*o.m12 + m32*o.m13;
-    t[2] = m02*o.m20 + m12*o.m21 + m22*o.m22 + m32*o.m23;
-    t[3] = m02*o.m30 + m12*o.m31 + m22*o.m32 + m32*o.m33;
-    m02 = t[0]; m12 = t[1]; m22 = t[2]; m32 = t[3];
+    r.m01 = m01*o.m01 + m02*o.m11 + m03*o.m21 + m00*o.m31;
+    r.m11 = m11*o.m01 + m12*o.m11 + m13*o.m21 + m10*o.m31;
+    r.m21 = m21*o.m01 + m22*o.m11 + m23*o.m21 + m20*o.m31;
+    r.m21 = m31*o.m01 + m32*o.m11 + m33*o.m21 + m30*o.m31;
 
-    t[0] = m03*o.m00 + m13*o.m01 + m23*o.m02 + m33*o.m03;
-    t[1] = m03*o.m10 + m13*o.m11 + m23*o.m12 + m33*o.m13;
-    t[2] = m03*o.m20 + m13*o.m21 + m23*o.m22 + m33*o.m23;
-    t[3] = m03*o.m30 + m13*o.m31 + m23*o.m32 + m33*o.m33;
-    m03 = t[0]; m13 = t[1]; m23 = t[2]; m33 = t[3];
+    r.m02 = m02*o.m02 + m03*o.m12 + m00*o.m22 + m01*o.m32;
+    r.m12 = m12*o.m02 + m13*o.m12 + m10*o.m22 + m11*o.m32;
+    r.m22 = m22*o.m02 + m23*o.m12 + m20*o.m22 + m21*o.m32;
+    r.m22 = m32*o.m02 + m33*o.m12 + m30*o.m22 + m31*o.m32;
 
+    r.m03 = m03*o.m03 + m00*o.m13 + m01*o.m23 + m02*o.m33;
+    r.m13 = m13*o.m03 + m10*o.m13 + m11*o.m23 + m12*o.m33;
+    r.m23 = m23*o.m03 + m20*o.m13 + m21*o.m23 + m22*o.m33;
+    r.m23 = m33*o.m03 + m30*o.m13 + m31*o.m23 + m32*o.m33;
+
+    *this = r;
     return *this;
 }
 
@@ -561,10 +559,28 @@ bool Matrix4< T >::inverse( Matrix4< T >& result, T limit )
 template< typename T >
 void Matrix4<T>::rotateX( const T angle )
 {
-    //matrix multiplication: ml = ml * rotation x axis
     const T sinus = sin(angle);
     const T cosin = cos(angle);
 
+#if 1
+    (*this) *= Matrix4<T>( cosin, -sinus, 0, 0,
+                           sinus, cosin, 0, 0,
+                           0, 0, 1, 0,
+                           0, 0, 0, 1 );
+#else
+    m00 = m00*o.m00 + m01*o.m10;
+    m10 = m10*o.m00 + m11*o.m10;
+    m20 = m20*o.m00 + m21*o.m10;
+
+    m01 = m01*o.m01 + m02*o.m11;
+    m11 = m11*o.m01 + m12*o.m11;
+    m21 = m21*o.m01 + m22*o.m11;
+
+    m02 = m01;
+    m12 = m11;
+    m22 = m21;
+
+    //matrix multiplication: ml = ml * rotation x axis
     T temp = m00;
     m00 = m00  * cosin - m02 * sinus;
     m02 = temp * sinus + m02 * cosin;
@@ -580,8 +596,10 @@ void Matrix4<T>::rotateX( const T angle )
     temp = m30;
     m30 = m30  * cosin - m32 * sinus;
     m32 = temp * sinus + m32 * cosin;
+#endif
 }
 
+#if 0
 template<>
 inline void Matrix4<float>::rotateX( const float angle )
 {
@@ -605,6 +623,7 @@ inline void Matrix4<float>::rotateX( const float angle )
     m30 = m30  * cosin - m32 * sinus;
     m32 = temp * sinus + m32 * cosin;
 }
+#endif
 
 template< typename T >
 void Matrix4<T>::rotateY( const T angle )
@@ -613,6 +632,12 @@ void Matrix4<T>::rotateY( const T angle )
     const T sinus = sin(angle);
     const T cosin = cos(angle);
 
+#if 1
+    *this *= Matrix4<T>( cosin, 0, sinus, 0,
+                         0, 1, 0, 0,
+                      -sinus, 0, cosin, 0,
+                      0, 0, 0, 1 );
+#else
     T temp = m01;
     m01 = m01  *  cosin + m02 * sinus;
     m02 = temp * -sinus + m02 * cosin;
@@ -628,8 +653,10 @@ void Matrix4<T>::rotateY( const T angle )
     temp = m31;
     m31 = m31  *  cosin + m32 * sinus;
     m32 = temp * -sinus + m32 * cosin;
+#endif
 }
 
+#if 0
 template<>
 inline void Matrix4<float>::rotateY( const float angle )
 {
@@ -653,7 +680,7 @@ inline void Matrix4<float>::rotateY( const float angle )
     m31 = m31  *  cosin + m32 * sinus;
     m32 = temp * -sinus + m32 * cosin;
 }
-
+#endif
 template< typename T >
 void Matrix4<T>::rotateZ( const T angle )
 {
@@ -661,6 +688,12 @@ void Matrix4<T>::rotateZ( const T angle )
     const T sinus = sin(angle);
     const T cosin = cos(angle);
 
+#if 1
+    *this *= Matrix4<T>( 1, 0, 0, 0,
+                         0, cosin, -sinus, 0,
+                         0, sinus, cosin, 0,
+                      0, 0, 0, 1 );
+#else
     T temp = m00;
     m00 = m00  *  cosin + m01 * sinus;
     m01 = temp * -sinus + m01 * cosin;
@@ -676,8 +709,10 @@ void Matrix4<T>::rotateZ( const T angle )
     temp = m30;
     m30 = m30  *  cosin + m31 * sinus;
     m31 = temp * -sinus + m31 * cosin;
+#endif
 }
 
+#if 0
 template<>
 inline void Matrix4<float>::rotateZ( const float angle )
 {
@@ -701,6 +736,7 @@ inline void Matrix4<float>::rotateZ( const float angle )
     m30 = m30  *  cosin + m31 * sinus;
     m31 = temp * -sinus + m31 * cosin;
 }
+#endif
 
 template< typename T >
 void Matrix4<T>::scale( const T scale[3] )

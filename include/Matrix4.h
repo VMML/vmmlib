@@ -187,17 +187,18 @@ public:
     typedef Matrix4<float>  Matrix4f;
     typedef Matrix4<double> Matrix4d;
 #endif
-
+}
 // * * * * * * * * * *
 //
 // - implementation -
 //
 // * * * * * * * * * *
-
 #include "Matrix3.h"
 #include "Vector3.h"
 #include "Vector4.h"
 
+namespace vmml
+{
 
 template< typename T > 
 const Matrix4< T > Matrix4< T >::IDENTITY( 1, 0, 0, 0, 0, 1, 0, 0,

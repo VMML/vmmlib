@@ -129,10 +129,13 @@ public:
     typedef Vector4<float>  Vector4f;
     typedef Vector4<double> Vector4d;
 #endif
+}
     
 // - implementation - //
 #include "Vector3.h"
-       
+
+namespace vmml
+{
 template < typename T > 
 Vector4< T >::Vector4() 
 {} 
@@ -147,7 +150,7 @@ Vector4< T >::Vector4( const T  aa )
 
 template < typename T > 
 Vector4< T >::Vector4( const T xx, const T yy, const T zz, 
-                          const T ww )
+                       const T ww )
     : x( xx )
     , y( yy )
     , z( zz ) 

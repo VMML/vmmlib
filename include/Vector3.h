@@ -148,10 +148,12 @@ public:
     typedef Vector3<float>  Vector3f;
     typedef Vector3<double> Vector3d;
 #endif
-
+}
 // - implementation - //
 #include "vector4.h"
-       
+ 
+namespace vmml
+{      
 template < typename T > 
 Vector3< T >::Vector3() 
 {} 

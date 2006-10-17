@@ -440,20 +440,20 @@ Matrix4< T > Matrix4< T >::operator* (const Matrix4< T >& o) const
     r.m20 = m20*o.m00 + m21*o.m10 + m22*o.m20 + m23*o.m30;
     r.m30 = m30*o.m00 + m31*o.m10 + m32*o.m20 + m33*o.m30;
 
-    r.m01 = m01*o.m01 + m02*o.m11 + m03*o.m21 + m00*o.m31;
-    r.m11 = m11*o.m01 + m12*o.m11 + m13*o.m21 + m10*o.m31;
-    r.m21 = m21*o.m01 + m22*o.m11 + m23*o.m21 + m20*o.m31;
-    r.m31 = m31*o.m01 + m32*o.m11 + m33*o.m21 + m30*o.m31;
+    r.m01 = m00*o.m01 + m01*o.m11 + m02*o.m21 + m03*o.m31;
+    r.m11 = m10*o.m01 + m11*o.m11 + m12*o.m21 + m13*o.m31;
+    r.m21 = m20*o.m01 + m21*o.m11 + m22*o.m21 + m23*o.m31;
+    r.m31 = m30*o.m01 + m31*o.m11 + m32*o.m21 + m33*o.m31;
 
-    r.m02 = m02*o.m02 + m03*o.m12 + m00*o.m22 + m01*o.m32;
-    r.m12 = m12*o.m02 + m13*o.m12 + m10*o.m22 + m11*o.m32;
-    r.m22 = m22*o.m02 + m23*o.m12 + m20*o.m22 + m21*o.m32;
-    r.m32 = m32*o.m02 + m33*o.m12 + m30*o.m22 + m31*o.m32;
+    r.m02 = m00*o.m02 + m01*o.m12 + m02*o.m22 + m03*o.m32;
+    r.m12 = m10*o.m02 + m11*o.m12 + m12*o.m22 + m13*o.m32;
+    r.m22 = m20*o.m02 + m21*o.m12 + m22*o.m22 + m23*o.m32;
+    r.m32 = m30*o.m02 + m31*o.m12 + m32*o.m22 + m33*o.m32;
 
-    r.m03 = m03*o.m03 + m00*o.m13 + m01*o.m23 + m02*o.m33;
-    r.m13 = m13*o.m03 + m10*o.m13 + m11*o.m23 + m12*o.m33;
-    r.m23 = m23*o.m03 + m20*o.m13 + m21*o.m23 + m22*o.m33;
-    r.m33 = m33*o.m03 + m30*o.m13 + m31*o.m23 + m32*o.m33;
+    r.m03 = m00*o.m03 + m01*o.m13 + m02*o.m23 + m03*o.m33;
+    r.m13 = m10*o.m03 + m11*o.m13 + m12*o.m23 + m13*o.m33;
+    r.m23 = m20*o.m03 + m21*o.m13 + m22*o.m23 + m23*o.m33;
+    r.m33 = m30*o.m03 + m31*o.m13 + m32*o.m23 + m33*o.m33;
 
     return r;
 }
@@ -493,20 +493,20 @@ Matrix4< T >& Matrix4< T >::operator*= ( const Matrix4& o )
     r.m20 = m20*o.m00 + m21*o.m10 + m22*o.m20 + m23*o.m30;
     r.m30 = m30*o.m00 + m31*o.m10 + m32*o.m20 + m33*o.m30;
 
-    r.m01 = m01*o.m01 + m02*o.m11 + m03*o.m21 + m00*o.m31;
-    r.m11 = m11*o.m01 + m12*o.m11 + m13*o.m21 + m10*o.m31;
-    r.m21 = m21*o.m01 + m22*o.m11 + m23*o.m21 + m20*o.m31;
-    r.m31 = m31*o.m01 + m32*o.m11 + m33*o.m21 + m30*o.m31;
+    r.m01 = m00*o.m01 + m01*o.m11 + m02*o.m21 + m03*o.m31;
+    r.m11 = m10*o.m01 + m11*o.m11 + m12*o.m21 + m13*o.m31;
+    r.m21 = m20*o.m01 + m21*o.m11 + m22*o.m21 + m23*o.m31;
+    r.m31 = m30*o.m01 + m31*o.m11 + m32*o.m21 + m33*o.m31;
 
-    r.m02 = m02*o.m02 + m03*o.m12 + m00*o.m22 + m01*o.m32;
-    r.m12 = m12*o.m02 + m13*o.m12 + m10*o.m22 + m11*o.m32;
-    r.m22 = m22*o.m02 + m23*o.m12 + m20*o.m22 + m21*o.m32;
-    r.m32 = m32*o.m02 + m33*o.m12 + m30*o.m22 + m31*o.m32;
+    r.m02 = m00*o.m02 + m01*o.m12 + m02*o.m22 + m03*o.m32;
+    r.m12 = m10*o.m02 + m11*o.m12 + m12*o.m22 + m13*o.m32;
+    r.m22 = m20*o.m02 + m21*o.m12 + m22*o.m22 + m23*o.m32;
+    r.m32 = m30*o.m02 + m31*o.m12 + m32*o.m22 + m33*o.m32;
 
-    r.m03 = m03*o.m03 + m00*o.m13 + m01*o.m23 + m02*o.m33;
-    r.m13 = m13*o.m03 + m10*o.m13 + m11*o.m23 + m12*o.m33;
-    r.m23 = m23*o.m03 + m20*o.m13 + m21*o.m23 + m22*o.m33;
-    r.m33 = m33*o.m03 + m30*o.m13 + m31*o.m23 + m32*o.m33;
+    r.m03 = m00*o.m03 + m01*o.m13 + m02*o.m23 + m03*o.m33;
+    r.m13 = m10*o.m03 + m11*o.m13 + m12*o.m23 + m13*o.m33;
+    r.m23 = m20*o.m03 + m21*o.m13 + m22*o.m23 + m23*o.m33;
+    r.m33 = m30*o.m03 + m31*o.m13 + m32*o.m23 + m33*o.m33;
 
     *this = r;
     return *this;

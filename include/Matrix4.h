@@ -52,10 +52,8 @@ public:
     {
         struct
         {
-            T   m00, m10, m20, m30, 
-                m01, m11, m21, m31, 
-                m02, m12, m22, m32, 
-                m03, m13, m23, m33;
+            T   m00, m10, m20, m30, m01, m11, m21, m31, 
+                m02, m12, m22, m32, m03, m13, m23, m33;
         };
         T m[4][4]; 
         T ml[16]; // linear
@@ -87,16 +85,22 @@ public:
     //the pointer 'values must be a valid 16 component c array of the resp. type
     void set( const float* mm );
     void set( const double* mm );
+    void set( T v00, T v01, T v02, T v03, T v10, T v11, T v12, T v13, 
+              T v20, T v21, T v22, T v23, T v30, T v31, T v32, T v33 );
 
-    Vector4< T > getColumn( size_t column ) const;
-    Vector4< T > getRow( size_t row ) const; 
+    Vector4< T > getColumn( const size_t column ) const;
+    Vector4< T > getRow( const size_t row ) const; 
+    const T& getElement( const size_t row, const size_t col ) const;
     
     // vec3
-    void setColumn( size_t column, const Vector3< T >& columnvec );
-    void setRow( size_t row, const Vector3< T >& rowvec );
+    void setColumn( const size_t column, const Vector3< T >& columnvec );
+    void setRow( const size_t row, const Vector3< T >& rowvec );
     // vec4
-    void setColumn( size_t column, const Vector4< T >& columnvec );
-    void setRow( size_t row, const Vector4< T >& rowvec );
+    void setColumn( const size_t column, const Vector4< T >& columnvec );
+    void setRow( const size_t row, const Vector4< T >& rowvec );
+
+    void setElement( const size_t row, const size_t col, 
+                         const T& value ) const;
 
     // arithmetic operations
     Matrix4 operator+ ( const Matrix4& mm ) const;
@@ -125,6 +129,7 @@ public:
     Matrix4 adjoint() const;
     
     bool inverse( Matrix4& result, T limit = 0.0000000001 );
+    Matrix4 inverse( bool& isInvertible, T limit = 0.0000000001 );
 
     void rotateX( const T angle );
     void rotateY( const T angle );
@@ -256,6 +261,19 @@ Matrix4< T >::Matrix4( const Vector4< T >& v0, const Vector4< T >& v1,
 }
 
 template< typename T > 
+const T& Matrix4< T >::getElement( const size_t row, const size_t col ) const
+{
+    return m[col][row];
+} 
+
+template< typename T > 
+void Matrix4< T >::setElement( const size_t row, const size_t col, 
+                         const T& value ) const
+{
+    m[col][row] = value;
+}
+
+template< typename T > 
 Matrix4< T >::Matrix4( float* values )
 {
     assert( values && "Matrix4: Initialisation of a Matrix from a Nullpointer was requested." );
@@ -319,6 +337,29 @@ void Matrix4< T >::set( const double* values )
 }
 
 template< typename T > 
+void Matrix4< T >::set( T v00, T v01, T v02, T v03, T v10, T v11, T v12, T v13, 
+              T v20, T v21, T v22, T v23, T v30, T v31, T v32, T v33 )
+{
+    m00 = v00;
+    m10 = v10;
+    m20 = v20;
+    m30 = v30;
+    m01 = v01;
+    m11 = v11;
+    m21 = v21;
+    m31 = v31;
+    m02 = v02;
+    m12 = v12;
+    m22 = v22;
+    m32 = v32;
+    m03 = v03;
+    m13 = v13;
+    m23 = v23;
+    m33 = v33;
+
+}
+
+template< typename T > 
 Vector4< T > Matrix4< T >::getColumn( size_t column ) const
 {
     assert( column < 4 && "Matrix4: Requested Column ( getColumn ) with invalid index!" );
@@ -329,7 +370,7 @@ template< typename T >
 Vector4< T > Matrix4< T >::getRow( size_t row ) const
 {
     assert( row < 4 && "Matrix4: Requested Row ( getRow ) with invalid index!");
-    return Vector4< T > ( m[0+row], m[4+row], m[8+row], m[12+row] );
+    return Vector4< T > ( ml[0+row], ml[4+row], ml[8+row], ml[12+row] );
 }
 
 template< typename T > 
@@ -535,6 +576,14 @@ Matrix4< T > Matrix4< T >::adjoint() const
              cofactor( 0, 2, 3, 0, 1, 2 ),
             -cofactor( 0, 1, 3, 0, 1, 2 ),
              cofactor( 0, 1, 2, 0, 1, 2 ) );
+}
+
+template< typename T > 
+Matrix4< T > Matrix4< T >::inverse( bool& isInvertible, T limit )
+{
+    Matrix4< T > tmp; 
+    isInvertible = inverse( tmp, limit );
+    return tmp;
 }
 
 template< typename T > 

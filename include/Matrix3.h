@@ -105,7 +105,8 @@ public:
     bool isPositiveDefinite( const T limit = -0.0000000001 );
     
     bool inverse( Matrix3& result, const T limit = 0.0000000001 );
-
+    Matrix3 inverse( bool& isInvertible, const T limit = 0.0000000001 );
+    
     void tensor( const Vector3< T >& u, const Vector3< T >& v ); 
 
     Matrix3 operator-() const;
@@ -168,17 +169,16 @@ Matrix3< T >::Matrix3(
             T v00, T v01, T v02, 
             T v10, T v11, T v12, 
             T v20, T v21, T v22 )
-{
-    m00 = v00;
-    m01 = v01;
-    m02 = v02;
-    m10 = v10;
-    m11 = v11;
-    m12 = v12;
-    m20 = v20;
-    m21 = v21;
-    m22 = v22;
-}
+    : m00( v00 )
+    , m10( v10 )
+    , m20( v20 )
+    , m01( v01 )
+    , m11( v11 )
+    , m21( v21 )
+    , m02( v02 )
+    , m12( v12 )
+    , m22( v22 )
+ {}
          
 template< typename T > 
 Matrix3< T >::Matrix3( const Vector3< T >& v0, const Vector3< T >& v1,
@@ -481,6 +481,13 @@ bool Matrix3< T >::isPositiveDefinite( T limit )
     return true;
 }
 
+template< typename T >
+Matrix3< T >  Matrix3< T >::inverse( bool& isInvertible, T limit )
+{
+    Matrix3< T > inv;
+    isInvertible = inverse( inv, limit );
+    return inv;
+}
 
 template< typename T > 
 bool Matrix3< T >::inverse( Matrix3< T >& result, T limit )

@@ -11,7 +11,6 @@
 *
 * parts of the source code of VMMLib were inspired by David Eberly's 
 * Wild Magic and Andrew Willmott's VL.
-* typename T
 */ 
 
 #ifndef _Matrix3_H_
@@ -44,7 +43,9 @@ public:
     {
         struct
         {
-            T m00, m01, m02, m10, m11, m12, m20, m21, m22;
+            T   m00, m10, m20, 
+                m01, m11, m21,
+                m02, m12, m22;
         };
         T m[3][3]; // rows 
         T ml[9]; // linear
@@ -52,12 +53,12 @@ public:
         
     Matrix3();
     Matrix3( const Matrix3& mm );
-    Matrix3( T a, T b, T c, 
-             T d, T e, T f, 
-             T g, T h, T i 
+    Matrix3( T v00, T v01, T v02, 
+             T v01, T v11, T v12, 
+             T v02, T v12, T v22 
              );
     Matrix3( const Vector3<T>& v0, const Vector3<T>& v1, 
-             const Vector3<T>& v2, bool column_vectors = false );
+             const Vector3<T>& v2, bool columnVectors = false );
 
     // dangerous, but implemented to allow easy conversion between 
     // Matrix< float > and Matrix< double >
@@ -78,12 +79,11 @@ public:
     void set( const float* mm );
     void set( const double* mm );
 
-    inline T* operator[] ( size_t row ) const;
-    Vector3< T > getRow( size_t row ) const;
     Vector3< T > getColumn( size_t col ) const; 
+    Vector3< T > getRow( size_t row ) const;
     
-    void setRow( size_t row, Vector3< T > rowvec );
-    void setColumn( size_t col, Vector3< T > colvec );
+    void setColumn( size_t col, const Vector3< T >& colvec );
+    void setRow( size_t row, const Vector3< T >& rowvec );
 
     // arithmetic operations
     Matrix3 operator+ ( const Matrix3& mm ) const;
@@ -162,38 +162,26 @@ Matrix3< T >::Matrix3( const Matrix3< T >& mm )
 
 template< typename T > 
 Matrix3< T >::Matrix3( 
-            T a, T b, T c, 
-            T d, T e, T f, 
-            T g, T h, T i )
+            T v00, T v01, T v02, 
+            T v10, T v11, T v12, 
+            T v20, T v21, T v22 )
 {
-    ml[0] = a;
-    ml[1] = b;
-    ml[2] = c;
-    ml[3] = d;
-    ml[4] = e;
-    ml[5] = f;
-    ml[6] = g;
-    ml[7] = h;
-    ml[8] = i;
+    m00 = v00;
+    m01 = v01;
+    m02 = v02;
+    m10 = v10;
+    m11 = v11;
+    m12 = v12;
+    m20 = v20;
+    m21 = v21;
+    m22 = v22;
 }
          
 template< typename T > 
 Matrix3< T >::Matrix3( const Vector3< T >& v0, const Vector3< T >& v1,
-                          const Vector3< T >& v2, bool column_vectors )
+                          const Vector3< T >& v2, bool columnVectors )
 {
-    if ( column_vectors )
-    {
-        ml[0] = v0.x;
-        ml[1] = v0.y;
-        ml[2] = v0.z;
-        ml[3] = v1.x;
-        ml[4] = v1.y;
-        ml[5] = v1.z;
-        ml[6] = v2.x;
-        ml[7] = v2.y;
-        ml[8] = v2.z;
-    } 
-    else
+    if ( columnVectors )
     {
         ml[0] = v0.x;
         ml[3] = v0.y;
@@ -205,6 +193,18 @@ Matrix3< T >::Matrix3( const Vector3< T >& v0, const Vector3< T >& v1,
         ml[5] = v2.y;
         ml[8] = v2.z;
     }
+    else
+    {
+        ml[0] = v0.x;
+        ml[1] = v0.y;
+        ml[2] = v0.z;
+        ml[3] = v1.x;
+        ml[4] = v1.y;
+        ml[5] = v1.z;
+        ml[6] = v2.x;
+        ml[7] = v2.y;
+        ml[8] = v2.z;
+    } 
 }
 
 template< typename T > 
@@ -244,13 +244,12 @@ Matrix3< T >& Matrix3< T >::operator= ( const Matrix3< T >& mm )
 template< typename T > 
 bool Matrix3< T >::operator== (const Matrix3< T >& mm) const
 {
-    bool equal = true;
-    for ( size_t i = 0; i < 9 && equal; ++i )
+    for ( size_t i = 0; i < 9; ++i )
     {
-        equal = ( ml[i] == mm.ml[i] );
+        if( ml[i] != mm.ml[i] )
+            return false;
     }
-    return equal;
-
+    return true;
 }
 
 template< typename T > 
@@ -282,46 +281,36 @@ void Matrix3< T >::set( const double* mm )
 }
 
 
-// returns a row vector
 template< typename T > 
-T* Matrix3< T >::operator[] ( size_t row ) const
+Vector3< T > Matrix3< T >::getColumn( size_t column ) const
 {
-    if ( row > 2 ) 
-        std::cerr << "Matrix3::op[] - invalid row index " << row << "." << std::endl;
-    assert( row < 3 && "Matrix3: Requested Row ( operator[] ) with invalid index!" );
-    return const_cast< T* > ( m[row] );
+    if ( column > 2 ) 
+        std::cerr << "Matrix3::getColumn - invalid column index " << column << "." << std::endl;
+    assert( column < 3 && "Matrix3: Requested Column ( getColumn ) with invalid index!" );
+    return Vector3< T >( m[column] );
 }
 
 template< typename T > 
 Vector3< T > Matrix3< T >::getRow( size_t row ) const
 {
-    if ( row > 2 ) 
-        std::cerr << "Matrix3::getRow - invalid row index " << row << "." << std::endl;
     assert( row < 3 && "Matrix3: Requested Row ( getRow ) with invalid index!" );
-    return Vector3< T >( m[row] );
+    return Vector3< T > ( m[0+row], m[3+row], m[6+row] );
 }
 
 template< typename T > 
-Vector3< T > Matrix3< T >::getColumn( size_t col ) const
+void Matrix3< T >::setColumn( size_t column, const Vector3< T >& columnVec )
 {
-    assert( col < 3 && "Matrix3: Requested Column ( getColumn ) with invalid index!" );
-    return Vector3< T > ( m[0+col], m[3+col], m[6+col] );
+    m[column][0] = columnVec[0];
+    m[column][1] = columnVec[1];
+    m[column][2] = columnVec[2];
 }
 
 template< typename T > 
-void Matrix3< T >::setRow( size_t row, Vector3< T > rowvec )
+void Matrix3< T >::setRow( size_t row, const Vector3< T >& rowvec )
 {
-    m[row][0] = rowvec[0];
-    m[row][1] = rowvec[1];
-    m[row][2] = rowvec[2];
-}
-
-template< typename T > 
-void Matrix3< T >::setColumn( size_t col, Vector3< T > colvec )
-{
-    m[0][col] = colvec[0];
-    m[1][col] = colvec[1];
-    m[2][col] = colvec[2];
+    m[0][row] = rowvec[0];
+    m[1][row] = rowvec[1];
+    m[2][row] = rowvec[2];
 }
 
 template< typename T > 
@@ -343,20 +332,23 @@ Matrix3< T > Matrix3< T >::operator- ( const Matrix3< T >& mm ) const
 }
 
 template< typename T > 
-Matrix3< T > Matrix3< T >::operator* ( const Matrix3< T >& mm ) const
+Matrix3< T > Matrix3< T >::operator* ( const Matrix3< T >& o ) const
 {
-    Matrix3< T > result;
-    size_t i, j, k;
-    T tmp;
+    Matrix3< T > r;
 
-    for (j = 0; j < 3; j++)
-        for (i = 0; i < 3; i++) 
-        {
-            tmp = 0.0;
-            for (k = 0; k < 3; k++)
-                tmp += m.m[j][k] * mm.m[k][i];
-            result[j][i] = tmp;
-        }
+    r.m00 = m00*o.m00 + m10*o.m01 + m20*o.m02;
+    r.m10 = m00*o.m10 + m10*o.m11 + m20*o.m12;
+    r.m20 = m00*o.m20 + m10*o.m21 + m20*o.m22;
+
+    r.m01 = m01*o.m00 + m11*o.m01 + m21*o.m02;
+    r.m11 = m01*o.m10 + m11*o.m11 + m21*o.m12;
+    r.m21 = m01*o.m20 + m11*o.m21 + m21*o.m22;
+
+    r.m00 = m02*o.m00 + m12*o.m01 + m22*o.m02;
+    r.m10 = m02*o.m10 + m12*o.m11 + m22*o.m12;
+    r.m20 = m02*o.m20 + m12*o.m21 + m22*o.m22;
+
+    return r;
 }
 
 template< typename T > 
@@ -385,19 +377,24 @@ Matrix3< T >& Matrix3< T >::operator-= ( const Matrix3& mm )
 }
 
 template< typename T > 
-Matrix3< T >& Matrix3< T >::operator*= ( const Matrix3& mm )
+Matrix3< T >& Matrix3< T >::operator*= ( const Matrix3& o )
 {
-    size_t i, j, k;
-    T tmp;
+    T t[3];
+    t[0] = m00*o.m00 + m10*o.m01 + m20*o.m02;
+    t[1] = m00*o.m10 + m10*o.m11 + m20*o.m12;
+    t[2] = m00*o.m20 + m10*o.m21 + m20*o.m22;
+    m00 = t[0]; m10 = t[1]; m20 = t[2];
 
-    for (j = 0; j < 3; j++)
-        for (i = 0; i < 3; i++) 
-        {
-            tmp = 0.0;
-            for (k = 0; k < 3; k++)
-                tmp += m[j][k] * mm.m[k][i];
-            m[j][i] = tmp;
-        }
+    t[0] = m01*o.m00 + m11*o.m01 + m21*o.m02;
+    t[1] = m01*o.m10 + m11*o.m11 + m21*o.m12;
+    t[2] = m01*o.m20 + m11*o.m21 + m21*o.m22;
+    m01 = t[0]; m11 = t[1]; m21 = t[2];
+
+    t[0] = m02*o.m00 + m12*o.m01 + m22*o.m02;
+    t[1] = m02*o.m10 + m12*o.m11 + m22*o.m12;
+    t[2] = m02*o.m20 + m12*o.m21 + m22*o.m22;
+    m02 = t[0]; m12 = t[1]; m22 = t[2];
+
     return *this;
 }
 
@@ -412,10 +409,9 @@ Matrix3< T >& Matrix3< T >::operator*= ( T scalar ) // matrix = matrix * scalar
 template< typename T > 
 Vector3< T > Matrix3< T >::operator* ( const Vector3< T >& vv ) const
 {  
-    Vector3< T > result;
-    for (size_t i = 0; i < 3; ++i)
-        result[i] = m[i][0]* vv[0] + m[i][1] * vv[1] + m[i][2] * vv[2];
-    return result;
+    return Vector3< T >( m00 * vv[0] + m01 * vv[1] + m02 * vv[2],
+                         m10 * vv[0] + m11 * vv[1] + m12 * vv[2],
+                         m20 * vv[0] + m21 * vv[1] + m22 * vv[2] );
 }
 
 template< typename T > 
@@ -437,24 +433,21 @@ Matrix3< T > Matrix3< T >::transpose() const
 template< typename T > 
 T Matrix3< T >::determinant() const
 {
-    Vector3< T > cof;
-    cof[0] = m[1][1] * m[2][2] - m[1][2] * m[2][1];
-    cof[1] = m[1][2] * m[2][0] - m[1][0] * m[2][2];
-    cof[2] = m[1][0] * m[2][1] - m[1][1] * m[2][0];
-    return m[0][0] * cof[0] + m[0][1] * cof[1] + m[0][2] * cof[2];
+    const Vector3< T > cof( m11 * m22 - m12 * m21,
+                            m12 * m20 - m10 * m22,
+                            m10 * m21 - m11 * m20 );
+    return m00 * cof[0] + m01 * cof[1] + m02 * cof[2];
 }
 
 template< typename T > 
 bool Matrix3< T >::isPositiveDefinite( T limit )
 {
-    Vector3< T > d;
-    d[0] = m[0][0];
-    d[1] = m[0][0]*m[1][1] - m[0][1]*m[1][0];
-    d[2] = m[0][0]*m[1][1]*m[2][2] - m[0][0]*m[1][2]*m[2][1] + 
-         m[0][1]*m[1][2]*m[2][0] - m[0][1]*m[1][0]*m[2][2] +
-         m[0][2]*m[1][0]*m[2][1] - m[0][2]*m[1][1]*m[2][0];
+    if( ( m00 ) < limit ||
+        ( m00*m11 - m01*m10 ) < limit ||
+        ( m00*m11*m22 - m00*m12*m21 +
+          m01*m12*m20 - m01*m10*m22 +
+          m02*m10*m21 - m02*m11*m20 ) < limit )
 
-    if (d[0] < limit || d[1] < limit || d[2] < limit) 
         return false;
     return true;
 }
@@ -466,27 +459,31 @@ bool Matrix3< T >::inverse( Matrix3< T >& result, T limit )
     // Invert a 3x3 using cofactors.  This is about 8 times faster than
     // the Numerical Recipes code which uses Gaussian elimination.
 
-    result[0][0] = m[1][1] * m[2][2] - m[1][2] * m[2][1];
-    result[0][1] = m[0][2] * m[2][1] - m[0][1] * m[2][2];
-    result[0][2] = m[0][1] * m[1][2] - m[0][2] * m[1][1];
-    result[1][0] = m[1][2] * m[2][0] - m[1][0] * m[2][2];
-    result[1][1] = m[0][0] * m[2][2] - m[0][2] * m[2][0];
-    result[1][2] = m[0][2] * m[1][0] - m[0][0] * m[1][2];
-    result[2][0] = m[1][0] * m[2][1] - m[1][1] * m[2][0];
-    result[2][1] = m[0][1] * m[2][0] - m[0][0] * m[2][1];
-    result[2][2] = m[0][0] * m[1][1] - m[0][1] * m[1][0];
+    result.m00 = m11 * m22 - m12 * m21;
+    result.m01 = m02 * m21 - m01 * m22;
+    result.m02 = m01 * m12 - m02 * m11;
+    result.m10 = m12 * m20 - m10 * m22;
+    result.m11 = m00 * m22 - m02 * m20;
+    result.m12 = m02 * m10 - m00 * m12;
+    result.m20 = m10 * m21 - m11 * m20;
+    result.m21 = m01 * m20 - m00 * m21;
+    result.m22 = m00 * m11 - m01 * m10;
 
-    T det = m[0][0] * result[0][0] + m[0][1] * result[1][0] + m[0][2] * result[2][0];
+    const T det = m00 * result.m00 + m01 * result.m10 + m02 * result.m20;
 
     if ( fabs( det ) <= limit )
         return false; // matrix is not invertible
 
-    T detinv = 1.0 / det;
-    for (size_t i = 0; i < 3; ++i)
-    {
-        for (size_t j = 0; j < 3; ++j)
-            result[i][j] *= detinv;
-    }
+    const T detinv = 1.0 / det;
+    result.m00 *= detinv;
+    result.m01 *= detinv;
+    result.m02 *= detinv;
+    result.m10 *= detinv;
+    result.m11 *= detinv;
+    result.m12 *= detinv;
+    result.m20 *= detinv;
+    result.m21 *= detinv;
+    result.m22 *= detinv;
     return true;
 
 }
@@ -494,10 +491,9 @@ bool Matrix3< T >::inverse( Matrix3< T >& result, T limit )
 template< typename T > 
 void Matrix3< T >::tensor( const Vector3< T >& u, const Vector3< T >& v)
 {
-    int i, j;
-    for (j = 0; j < 3; j++)
-        for (i = 0; i < 3; i++)
-            m[j][i] = u[j] * v[i];
+    for( int j = 0; j < 3; j++)
+        for( int i = 0; i < 3; i++)
+            m[i][j] = u[j] * v[i];
 }
 
 template< typename T > 

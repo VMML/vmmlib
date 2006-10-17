@@ -336,17 +336,17 @@ Matrix3< T > Matrix3< T >::operator* ( const Matrix3< T >& o ) const
 {
     Matrix3< T > r;
 
-    r.m00 = m00*o.m00 + m10*o.m01 + m20*o.m02;
-    r.m10 = m00*o.m10 + m10*o.m11 + m20*o.m12;
-    r.m20 = m00*o.m20 + m10*o.m21 + m20*o.m22;
+    r.m00 = m00*o.m00 + m01*o.m10 + m02*o.m20;
+    r.m10 = m10*o.m00 + m11*o.m10 + m12*o.m20;
+    r.m20 = m20*o.m00 + m21*o.m10 + m22*o.m20;
 
-    r.m01 = m01*o.m00 + m11*o.m01 + m21*o.m02;
-    r.m11 = m01*o.m10 + m11*o.m11 + m21*o.m12;
-    r.m21 = m01*o.m20 + m11*o.m21 + m21*o.m22;
+    r.m01 = m01*o.m01 + m02*o.m11 + m00*o.m21;
+    r.m11 = m11*o.m01 + m12*o.m11 + m10*o.m21;
+    r.m21 = m21*o.m01 + m22*o.m11 + m20*o.m21;
 
-    r.m00 = m02*o.m00 + m12*o.m01 + m22*o.m02;
-    r.m10 = m02*o.m10 + m12*o.m11 + m22*o.m12;
-    r.m20 = m02*o.m20 + m12*o.m21 + m22*o.m22;
+    r.m02 = m02*o.m02 + m00*o.m12 + m01*o.m22;
+    r.m12 = m12*o.m02 + m10*o.m12 + m11*o.m22;
+    r.m22 = m22*o.m02 + m20*o.m12 + m21*o.m22;
 
     return r;
 }
@@ -379,22 +379,21 @@ Matrix3< T >& Matrix3< T >::operator-= ( const Matrix3& mm )
 template< typename T > 
 Matrix3< T >& Matrix3< T >::operator*= ( const Matrix3& o )
 {
-    T t[3];
-    t[0] = m00*o.m00 + m10*o.m01 + m20*o.m02;
-    t[1] = m00*o.m10 + m10*o.m11 + m20*o.m12;
-    t[2] = m00*o.m20 + m10*o.m21 + m20*o.m22;
-    m00 = t[0]; m10 = t[1]; m20 = t[2];
+    Matrix3< T > r;
 
-    t[0] = m01*o.m00 + m11*o.m01 + m21*o.m02;
-    t[1] = m01*o.m10 + m11*o.m11 + m21*o.m12;
-    t[2] = m01*o.m20 + m11*o.m21 + m21*o.m22;
-    m01 = t[0]; m11 = t[1]; m21 = t[2];
+    r.m00 = m00*o.m00 + m01*o.m10 + m02*o.m20;
+    r.m10 = m10*o.m00 + m11*o.m10 + m12*o.m20;
+    r.m20 = m20*o.m00 + m21*o.m10 + m22*o.m20;
 
-    t[0] = m02*o.m00 + m12*o.m01 + m22*o.m02;
-    t[1] = m02*o.m10 + m12*o.m11 + m22*o.m12;
-    t[2] = m02*o.m20 + m12*o.m21 + m22*o.m22;
-    m02 = t[0]; m12 = t[1]; m22 = t[2];
+    r.m01 = m01*o.m01 + m02*o.m11 + m00*o.m21;
+    r.m11 = m11*o.m01 + m12*o.m11 + m10*o.m21;
+    r.m21 = m21*o.m01 + m22*o.m11 + m20*o.m21;
 
+    r.m02 = m02*o.m02 + m00*o.m12 + m01*o.m22;
+    r.m12 = m12*o.m02 + m10*o.m12 + m11*o.m22;
+    r.m22 = m22*o.m02 + m20*o.m12 + m21*o.m22;
+
+    *this = r;
     return *this;
 }
 

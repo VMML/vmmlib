@@ -30,6 +30,7 @@
 
 namespace vmml
 {
+template< typename T > class Vector4;
 
 template< typename T > 
 class Vector3
@@ -53,6 +54,7 @@ public:
     Vector3(); // warning: components NOT initialised ( for performance )
     Vector3( const T  a ); 
     Vector3( const T  i, const T  j, const T  k ); 
+    Vector3( const Vector4<T>& from ); 
     
     // dangerous, but implemented to allow easy conversion between 
     // Vector< float > and Vector3< double >
@@ -148,6 +150,7 @@ public:
 #endif
 
 // - implementation - //
+#include "vector4.h"
        
 template < typename T > 
 Vector3< T >::Vector3() 
@@ -166,6 +169,15 @@ Vector3< T >::Vector3( const T  i, const T  j, const T  k )
     , y(j)
     , z(k) 
 {} 
+
+template < typename T > 
+Vector3< T >::Vector3( const Vector4<T>& from )
+{
+    const T wInv = 1./from.w;
+    x = from.x / wInv;
+    y = from.y / wInv;
+    z = from.z / wInv;
+} 
 
 template < typename T > 
 Vector3< T >::Vector3( const float* values )

@@ -24,11 +24,10 @@
 #include <algorithm>
 #include <assert.h>
 
-#include "Vector3.h"
-
 // - declaration -
 namespace vmml
 {
+template< typename T > class Vector3;
 
 template< typename T > 
 class Vector4
@@ -132,6 +131,7 @@ public:
 #endif
     
 // - implementation - //
+#include "Vector3.h"
        
 template < typename T > 
 Vector4< T >::Vector4() 

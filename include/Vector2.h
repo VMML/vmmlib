@@ -6,8 +6,8 @@
 * @license BSD license, check LICENSE
 */ 
 
-#ifndef _Vector2_H_
-#define _Vector2_H_
+#ifndef _vmml_Vector2_H_
+#define _vmml_Vector2_H_
 
 #include <math.h>
 #include <stdlib.h>

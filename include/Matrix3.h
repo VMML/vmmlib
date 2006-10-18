@@ -100,12 +100,15 @@ public:
     // vector = matrix * vector
     Vector3< T > operator* ( const Vector3< T >& vv ) const;
 
-    Matrix3 transpose() const;
-    T determinant() const;
+    Matrix3 getTransposed() const;
+    
+    T getDeterminant() const;
+    inline T det() const;
+
     bool isPositiveDefinite( const T limit = -0.0000000001 );
     
-    bool inverse( Matrix3& result, const T limit = 0.0000000001 );
-    Matrix3 inverse( bool& isInvertible, const T limit = 0.0000000001 );
+    bool getInverse( Matrix3& result, const T limit = 0.0000000001 );
+    Matrix3 getInverse( bool& isInvertible, const T limit = 0.0000000001 );
     
     void tensor( const Vector3< T >& u, const Vector3< T >& v ); 
 
@@ -444,7 +447,7 @@ Vector3< T > Matrix3< T >::operator* ( const Vector3< T >& vv ) const
 }
 
 template< typename T > 
-Matrix3< T > Matrix3< T >::transpose() const
+Matrix3< T > Matrix3< T >::getTransposed() const
 {
     Matrix3< T > result;
     result.m[0][0] = m[0][0];
@@ -460,7 +463,14 @@ Matrix3< T > Matrix3< T >::transpose() const
 }
 
 template< typename T > 
-T Matrix3< T >::determinant() const
+inline T Matrix3< T >::det() const
+{
+    return getDeterminant();
+}
+
+
+template< typename T > 
+T Matrix3< T >::getDeterminant() const
 {
     const Vector3< T > cof( m11 * m22 - m12 * m21,
                             m12 * m20 - m10 * m22,
@@ -482,15 +492,15 @@ bool Matrix3< T >::isPositiveDefinite( T limit )
 }
 
 template< typename T >
-Matrix3< T >  Matrix3< T >::inverse( bool& isInvertible, T limit )
+Matrix3< T >  Matrix3< T >::getInverse( bool& isInvertible, T limit )
 {
     Matrix3< T > inv;
-    isInvertible = inverse( inv, limit );
+    isInvertible = getInverse( inv, limit );
     return inv;
 }
 
 template< typename T > 
-bool Matrix3< T >::inverse( Matrix3< T >& result, T limit )
+bool Matrix3< T >::getInverse( Matrix3< T >& result, T limit )
 {
     // Invert a 3x3 using cofactors.  This is about 8 times faster than
     // the Numerical Recipes code which uses Gaussian elimination.

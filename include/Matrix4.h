@@ -54,7 +54,7 @@ public:
             T   m00, m10, m20, m30, m01, m11, m21, m31, 
                 m02, m12, m22, m32, m03, m13, m23, m33;
         };
-        T m[4][4]; 
+        T m[4][4]; //cols
         T ml[16]; // linear
     };
     
@@ -122,13 +122,17 @@ public:
 
     Matrix4 negate() const;
     Matrix4 operator-() const;
-
-    Matrix4 transpose() const;
-    T determinant() const;
-    Matrix4 adjoint() const;
     
-    bool inverse( Matrix4& result, T limit = 0.0000000001 );
-    Matrix4 inverse( bool& isInvertible, T limit = 0.0000000001 );
+    Matrix4 getTransposed() const;
+
+    T getDeterminant() const;
+    inline T det() const;
+
+    Matrix4 getAdjugate() const;
+    inline Matrix4 getAdjoint() const;
+    
+    Matrix4 getInverse( bool& isInvertible, T limit = 0.0000000001 );
+    inline bool getInverse( Matrix4& result, T limit = 0.0000000001 );
 
     void rotateX( const T angle );
     void rotateY( const T angle );
@@ -141,13 +145,13 @@ public:
     void tensor( const Vector3< T >& u, const Vector3< T >& v );
     void tensor( const Vector4< T >& u, const Vector4< T >& v );
 
-    // computes the cofactor/minor of a submatrix n-1xn-1 = 3x3
-    // specify the index of the row/column to be ignored
-    T cofactor( const size_t ignoreRow, const size_t ignoreCol ) const;
+    // computes the minor of M, that is, the determinant of an 
+    // n-1 x n-1 ( = 3x3 ) submatrix of M
     // specify the indices of the rows/columns to be used 
-    T cofactor( const size_t row0, const size_t row1, const size_t row2,
-                   const size_t col0, const size_t col1, const size_t col2 )
-        const;
+    T getMinor( const size_t row0, const size_t row1, const size_t row2,
+             const size_t col0, const size_t col1, const size_t col2 ) const;
+    // specify the indices of the rows/columns to be removed ( slower ) 
+    T getMinor( const size_t removeRow, const size_t removeCol ) const;
                    
 
     friend std::ostream& operator << ( std::ostream& os, const Matrix4& m )
@@ -543,7 +547,7 @@ Vector3< T > Matrix4< T >::operator* (const Vector3< T >& vv) const
 }
 
 template< typename T > 
-Matrix4< T > Matrix4< T >::transpose() const
+Matrix4< T > Matrix4< T >::getTransposed() const
 {
     Matrix4< T > result;
     for ( size_t i = 0; i < 4; ++i )
@@ -553,61 +557,88 @@ Matrix4< T > Matrix4< T >::transpose() const
 }
 
 template< typename T > 
-T Matrix4< T >::determinant() const
+inline T Matrix4< T >::det() const
 {
-    return m00 * cofactor( 1, 2, 3, 1, 2, 3 ) 
-         - m01 * cofactor( 1, 2, 3, 0, 2, 3 ) 
-         + m02 * cofactor( 1, 2, 3, 0, 1, 3 ) 
-         - m03 * cofactor( 1, 2, 3, 0, 1, 2 ); 
+    return getDeterminant();
 }
 
 template< typename T > 
-Matrix4< T > Matrix4< T >::adjoint() const
+T Matrix4< T >::getDeterminant() const
 {
-    return Matrix4( 
-             cofactor( 1, 2, 3, 1, 2, 3 ),
-            -cofactor( 0, 2, 3, 1, 2, 3 ),
-             cofactor( 0, 1, 3, 1, 2, 3 ),
-            -cofactor( 0, 1, 2, 1, 2, 3 ),
-            -cofactor( 1, 2, 3, 0, 2, 3 ),
-             cofactor( 0, 2, 3, 0, 2, 3 ),
-            -cofactor( 0, 1, 3, 0, 2, 3 ), 
-             cofactor( 0, 1, 2, 0, 2, 3 ), 
-             cofactor( 1, 2, 3, 0, 1, 3 ),
-            -cofactor( 0, 2, 3, 0, 1, 3 ),
-             cofactor( 0, 1, 3, 0, 1, 3 ),
-            -cofactor( 0, 1, 2, 0, 1, 3 ), 
-            -cofactor( 1, 2, 3, 0, 1, 2 ),
-             cofactor( 0, 2, 3, 0, 1, 2 ),
-            -cofactor( 0, 1, 3, 0, 1, 2 ),
-             cofactor( 0, 1, 2, 0, 1, 2 ) );
+    return m00 * getMinor( 1, 2, 3, 1, 2, 3 ) 
+         - m01 * getMinor( 1, 2, 3, 0, 2, 3 ) 
+         + m02 * getMinor( 1, 2, 3, 0, 1, 3 ) 
+         - m03 * getMinor( 1, 2, 3, 0, 1, 2 ); 
 }
 
 template< typename T > 
-Matrix4< T > Matrix4< T >::inverse( bool& isInvertible, T limit )
+inline Matrix4< T > Matrix4< T >::getAdjoint() const
+{
+    return getAdjugate();
+}
+
+template< typename T >
+Matrix4< T > Matrix4< T >::getAdjugate() const 
+{
+    return Matrix4(    // rows  // cols 
+             getMinor( 1, 2, 3, 1, 2, 3 ), //0,0
+            -getMinor( 0, 2, 3, 1, 2, 3 ), //1,0
+             getMinor( 0, 1, 3, 1, 2, 3 ), //2,0
+            -getMinor( 0, 1, 2, 1, 2, 3 ), //3,0
+            -getMinor( 1, 2, 3, 0, 2, 3 ), //0,1
+             getMinor( 0, 2, 3, 0, 2, 3 ), //1,1
+            -getMinor( 0, 1, 3, 0, 2, 3 ), //2,1
+             getMinor( 0, 1, 2, 0, 2, 3 ), //3,1
+             getMinor( 1, 2, 3, 0, 1, 3 ), //0,2
+            -getMinor( 0, 2, 3, 0, 1, 3 ), //1,2
+             getMinor( 0, 1, 3, 0, 1, 3 ), //2,2
+            -getMinor( 0, 1, 2, 0, 1, 3 ), //3,2
+            -getMinor( 1, 2, 3, 0, 1, 2 ), //0,3
+             getMinor( 0, 2, 3, 0, 1, 2 ), //1,3
+            -getMinor( 0, 1, 3, 0, 1, 2 ), //2,3
+             getMinor( 0, 1, 2, 0, 1, 2 )  //3,3
+             );
+
+#if 0 
+// not transposed
+    return Matrix4(    // rows  // cols 
+             getMinor( 1, 2, 3, 1, 2, 3 ), //0,0
+            -getMinor( 1, 2, 3, 0, 2, 3 ), //0,1
+             getMinor( 1, 2, 3, 0, 1, 3 ), //0,2
+            -getMinor( 1, 2, 3, 0, 1, 2 ), //0,3
+            -getMinor( 0, 2, 3, 1, 2, 3 ), //1,0
+             getMinor( 0, 2, 3, 0, 2, 3 ), //1,1
+            -getMinor( 0, 2, 3, 0, 1, 3 ), //1,2
+             getMinor( 0, 2, 3, 0, 1, 2 ), //1,3
+             getMinor( 0, 1, 3, 1, 2, 3 ), //2,0
+            -getMinor( 0, 1, 3, 0, 2, 3 ), //2,1
+             getMinor( 0, 1, 3, 0, 1, 3 ), //2,2
+            -getMinor( 0, 1, 3, 0, 1, 2 ), //2,3
+            -getMinor( 0, 1, 2, 1, 2, 3 ), //3,0
+             getMinor( 0, 1, 2, 0, 2, 3 ), //3,1
+            -getMinor( 0, 1, 2, 0, 1, 3 ), //3,2
+             getMinor( 0, 1, 2, 0, 1, 2 )  //3,3
+             );
+#endif
+}
+
+template< typename T > 
+Matrix4< T > Matrix4< T >::getInverse( bool& isInvertible, T limit )
 {
     Matrix4< T > tmp; 
-    isInvertible = inverse( tmp, limit );
+    isInvertible = getInverse( tmp, limit );
     return tmp;
 }
 
 template< typename T > 
-bool Matrix4< T >::inverse( Matrix4< T >& result, T limit )
+bool Matrix4< T >::getInverse( Matrix4< T >& result, T limit )
 {
-	Matrix4< T > adj( adjoint() );
-
-    Vector4< T > adv0 ( adj.m[0] );
-    Vector4< T > v0 ( m[0] );
-    
-	T det = adv0.dot( v0 );
-	
-    if ( fabs(det) <= limit )
+    T det = getDeterminant();
+    if ( fabs(det) <= limit ) 
         return false;
-        
-	result = adj.transpose();
-	result *= ( 1.0/det );
-
-	return true;		
+    else
+        result = getAdjugate() * ( 1. / det );
+    return true;
 }
 
 template< typename T >
@@ -617,10 +648,10 @@ void Matrix4<T>::rotateX( const T angle )
     const T cosin = cos(angle);
 
 #if 1
-    (*this) *= Matrix4<T>( cosin, -sinus, 0, 0,
-                           sinus, cosin, 0, 0,
-                           0, 0, 1, 0,
-                           0, 0, 0, 1 );
+    (*this) *= Matrix4< T > ( cosin, -sinus, 0, 0,
+                              sinus, cosin, 0, 0,
+                              0, 0, 1, 0,
+                              0, 0, 0, 1 );
 #else
     m00 = m00*o.m00 + m01*o.m10;
     m10 = m10*o.m00 + m11*o.m10;
@@ -687,10 +718,11 @@ void Matrix4<T>::rotateY( const T angle )
     const T cosin = cos(angle);
 
 #if 1
-    *this *= Matrix4<T>( cosin, 0, sinus, 0,
-                         0, 1, 0, 0,
-                      -sinus, 0, cosin, 0,
-                      0, 0, 0, 1 );
+    *this *= Matrix4< T >( cosin, 0, sinus, 0,
+                           0, 1, 0, 0,
+                           -sinus, 0, cosin, 0,
+                           0, 0, 0, 1 
+                           );
 #else
     T temp = m01;
     m01 = m01  *  cosin + m02 * sinus;
@@ -860,44 +892,36 @@ void Matrix4< T >::tensor( const Vector4< T >& u,
 }
 
 template< typename T > 
-T Matrix4< T >::cofactor( const size_t ignoreRow, const size_t ignoreCol ) const
+T Matrix4< T >::getMinor( const size_t removeRow, const size_t removeCol ) const
 {
-    Matrix3< T > cof;
-    size_t srcrow, row, srccol, col;
-    srcrow = row = srccol = col = 0;
-    
-    if ( ignoreRow == 0 )
-        srcrow++;
-    
-    for ( ; row < 3; ++row )
+    size_t col[3], c = 0;
+    size_t row[3], r = 0;
+    for ( size_t i = 0; i < 3; ++i )
     {
-        srccol = ( ignoreCol == 0 ) ? 1 : 0;
-        for ( col = 0; col < 3; ++col )
-        {
-            std::cout << "row,col: " << row << "," << col
-                      << " srcrow, srccol: " << srcrow << ", " << srccol 
-                      << std::endl; 
-            cof[col][row] = m[srcrow][srccol++];
-            if ( srccol == ignoreCol ) 
-                srccol++;
-        }
-        srcrow++;
-        if ( srcrow == ignoreRow )
-            srcrow++;
+        if ( c == removeCol )
+            ++c;
+        col[i] = c++;
+        if ( r == removeRow )
+            ++r;
+        row[i] = r++;
     }
-    return cof.determinant();
+    
+    Matrix3< T > minorm( m[col[0]][row[0]], m[col[1]][row[0]], m[col[2]][row[0]], 
+                         m[col[0]][row[1]], m[col[1]][row[1]], m[col[2]][row[1]],
+                         m[col[0]][row[2]], m[col[1]][row[2]], m[col[2]][row[2]] );
+    return minorm.det();
 }
 
-template< typename T > 
-T Matrix4< T >::cofactor( const size_t row0, const size_t row1,
-                                const size_t row2, const size_t col0,
-                                const size_t col1, const size_t col2 ) const
-{
-    Matrix3< T > cof( m[row0][col0], m[row0][col1], m[row0][col2], 
-                      m[row1][col0], m[row1][col1], m[row1][col2],
-                      m[row2][col0], m[row2][col1], m[row2][col2] );
 
-    return cof.determinant();
+template< typename T > 
+T Matrix4< T >::getMinor( const size_t row0, const size_t row1,
+                       const size_t row2, const size_t col0,
+                       const size_t col1, const size_t col2 ) const
+{
+    Matrix3< T > minorm( m[col0][row0], m[col1][row0], m[col2][row0], 
+                         m[col0][row1], m[col1][row1], m[col2][row1],
+                         m[col0][row2], m[col1][row2], m[col2][row2] );
+    return minorm.det();
 }
 
 

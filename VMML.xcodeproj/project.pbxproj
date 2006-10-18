@@ -9,18 +9,13 @@
 /* Begin PBXBuildFile section */
 		8D07F2C00486CC7A007CD1D0 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C1666FE841158C02AAC07 /* InfoPlist.strings */; };
 		980561D80AC933E200BDF55F /* VMMLib.h in Headers */ = {isa = PBXBuildFile; fileRef = 980561D70AC933E200BDF55F /* VMMLib.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		980CE5A10AE4E50A00842927 /* Matrix3Test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 980CE59F0AE4E50A00842927 /* Matrix3Test.cpp */; };
-		980CE5A20AE4E50A00842927 /* Matrix4Test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 980CE5A00AE4E50A00842927 /* Matrix4Test.cpp */; };
-		980CE5A60AE4E51900842927 /* Matrix3Test.h in Headers */ = {isa = PBXBuildFile; fileRef = 980CE5A30AE4E51900842927 /* Matrix3Test.h */; };
-		980CE5A70AE4E51900842927 /* Matrix4Test.h in Headers */ = {isa = PBXBuildFile; fileRef = 980CE5A40AE4E51900842927 /* Matrix4Test.h */; };
 		980CE5A80AE4E51900842927 /* Visitor.h in Headers */ = {isa = PBXBuildFile; fileRef = 980CE5A50AE4E51900842927 /* Visitor.h */; };
-		980CE5B10AE4E5A900842927 /* Test.h in Headers */ = {isa = PBXBuildFile; fileRef = 980CE5B00AE4E5A900842927 /* Test.h */; };
-		980CE60F0AE4FFE700842927 /* Matrix3Test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 980CE59F0AE4E50A00842927 /* Matrix3Test.cpp */; };
-		980CE6100AE4FFE700842927 /* Matrix4Test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 980CE5A00AE4E50A00842927 /* Matrix4Test.cpp */; };
+		980CE8E20AE533F100842927 /* main_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 980CE8DC0AE533F100842927 /* main_test.cpp */; };
+		980CE8E30AE533F100842927 /* Matrix3Test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 980CE8DD0AE533F100842927 /* Matrix3Test.cpp */; };
+		980CE8E40AE533F100842927 /* Matrix4Test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 980CE8DF0AE533F100842927 /* Matrix4Test.cpp */; };
 		9836EF7F0AC958500060C6CB /* JacobiSolver.h in Headers */ = {isa = PBXBuildFile; fileRef = 9836EF7E0AC958500060C6CB /* JacobiSolver.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9867B4F00AAED08E00651D9B /* Vector3.h in Headers */ = {isa = PBXBuildFile; fileRef = 9867B4EF0AAED08E00651D9B /* Vector3.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9867B5650AAEFDB900651D9B /* Vector4.h in Headers */ = {isa = PBXBuildFile; fileRef = 9867B5640AAEFDB900651D9B /* Vector4.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9867B5760AAEFF1400651D9B /* main_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9867B4EC0AAED07600651D9B /* main_test.cpp */; };
 		9867B62C0AAF0C0200651D9B /* Matrix3.h in Headers */ = {isa = PBXBuildFile; fileRef = 9867B62A0AAF0C0200651D9B /* Matrix3.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9867B62D0AAF0C0200651D9B /* Matrix4.h in Headers */ = {isa = PBXBuildFile; fileRef = 9867B62B0AAF0C0200651D9B /* Matrix4.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		988CCAAF0AD882CE002B0ED6 /* AxisAlignedBoundingBox.h in Headers */ = {isa = PBXBuildFile; fileRef = 988CCAAB0AD882CE002B0ED6 /* AxisAlignedBoundingBox.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -36,14 +31,14 @@
 		8D07F2C70486CC7A007CD1D0 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D07F2C80486CC7A007CD1D0 /* VMMLib.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = VMMLib.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		980561D70AC933E200BDF55F /* VMMLib.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = VMMLib.h; path = include/VMMLib.h; sourceTree = "<group>"; };
-		980CE59F0AE4E50A00842927 /* Matrix3Test.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Matrix3Test.cpp; path = src/Matrix3Test.cpp; sourceTree = "<group>"; };
-		980CE5A00AE4E50A00842927 /* Matrix4Test.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Matrix4Test.cpp; path = src/Matrix4Test.cpp; sourceTree = "<group>"; };
-		980CE5A30AE4E51900842927 /* Matrix3Test.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Matrix3Test.h; path = include/Matrix3Test.h; sourceTree = "<group>"; };
-		980CE5A40AE4E51900842927 /* Matrix4Test.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Matrix4Test.h; path = include/Matrix4Test.h; sourceTree = "<group>"; };
 		980CE5A50AE4E51900842927 /* Visitor.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Visitor.h; path = include/Visitor.h; sourceTree = "<group>"; };
-		980CE5B00AE4E5A900842927 /* Test.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Test.h; path = include/Test.h; sourceTree = "<group>"; };
+		980CE8DC0AE533F100842927 /* main_test.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = main_test.cpp; path = tests/main_test.cpp; sourceTree = "<group>"; };
+		980CE8DD0AE533F100842927 /* Matrix3Test.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Matrix3Test.cpp; path = tests/Matrix3Test.cpp; sourceTree = "<group>"; };
+		980CE8DE0AE533F100842927 /* Matrix3Test.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Matrix3Test.h; path = tests/Matrix3Test.h; sourceTree = "<group>"; };
+		980CE8DF0AE533F100842927 /* Matrix4Test.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Matrix4Test.cpp; path = tests/Matrix4Test.cpp; sourceTree = "<group>"; };
+		980CE8E00AE533F100842927 /* Matrix4Test.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Matrix4Test.h; path = tests/Matrix4Test.h; sourceTree = "<group>"; };
+		980CE8E10AE533F100842927 /* Test.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Test.h; path = tests/Test.h; sourceTree = "<group>"; };
 		9836EF7E0AC958500060C6CB /* JacobiSolver.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = JacobiSolver.h; path = include/JacobiSolver.h; sourceTree = "<group>"; };
-		9867B4EC0AAED07600651D9B /* main_test.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = main_test.cpp; path = src/main_test.cpp; sourceTree = "<group>"; };
 		9867B4EF0AAED08E00651D9B /* Vector3.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Vector3.h; path = include/Vector3.h; sourceTree = "<group>"; };
 		9867B5640AAEFDB900651D9B /* Vector4.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Vector4.h; path = include/Vector4.h; sourceTree = "<group>"; };
 		9867B5740AAEFEFC00651D9B /* vmml_test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = vmml_test; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -118,12 +113,12 @@
 		08FB77ACFE841707C02AAC07 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				980CE5B00AE4E5A900842927 /* Test.h */,
-				980CE5A30AE4E51900842927 /* Matrix3Test.h */,
-				980CE59F0AE4E50A00842927 /* Matrix3Test.cpp */,
-				980CE5A40AE4E51900842927 /* Matrix4Test.h */,
-				980CE5A00AE4E50A00842927 /* Matrix4Test.cpp */,
-				9867B4EC0AAED07600651D9B /* main_test.cpp */,
+				980CE8DC0AE533F100842927 /* main_test.cpp */,
+				980CE8DD0AE533F100842927 /* Matrix3Test.cpp */,
+				980CE8DE0AE533F100842927 /* Matrix3Test.h */,
+				980CE8DF0AE533F100842927 /* Matrix4Test.cpp */,
+				980CE8E00AE533F100842927 /* Matrix4Test.h */,
+				980CE8E10AE533F100842927 /* Test.h */,
 			);
 			name = Tests;
 			sourceTree = "<group>";
@@ -188,10 +183,7 @@
 				988CCAAF0AD882CE002B0ED6 /* AxisAlignedBoundingBox.h in Headers */,
 				988CCAB00AD882CE002B0ED6 /* OctreeNode.h in Headers */,
 				988CCAC30AD88411002B0ED6 /* Sphere.h in Headers */,
-				980CE5A60AE4E51900842927 /* Matrix3Test.h in Headers */,
-				980CE5A70AE4E51900842927 /* Matrix4Test.h in Headers */,
 				980CE5A80AE4E51900842927 /* Visitor.h in Headers */,
-				980CE5B10AE4E5A900842927 /* Test.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -277,8 +269,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				980CE5A10AE4E50A00842927 /* Matrix3Test.cpp in Sources */,
-				980CE5A20AE4E50A00842927 /* Matrix4Test.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -286,9 +276,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				980CE60F0AE4FFE700842927 /* Matrix3Test.cpp in Sources */,
-				980CE6100AE4FFE700842927 /* Matrix4Test.cpp in Sources */,
-				9867B5760AAEFF1400651D9B /* main_test.cpp in Sources */,
+				980CE8E20AE533F100842927 /* main_test.cpp in Sources */,
+				980CE8E30AE533F100842927 /* Matrix3Test.cpp in Sources */,
+				980CE8E40AE533F100842927 /* Matrix4Test.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

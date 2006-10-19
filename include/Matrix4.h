@@ -19,10 +19,8 @@
 #define _Matrix4_H_
 
 /* 
-*   4x4 Matrix Class
-*
-*
-*/ 
+ *   4x4 Matrix Class
+ */ 
 
 #include <math.h>
 #include <stdlib.h>
@@ -644,47 +642,27 @@ bool Matrix4< T >::getInverse( Matrix4< T >& result, T limit )
 template< typename T >
 void Matrix4<T>::rotateX( const T angle )
 {
+    //matrix multiplication: ml = ml * rotation x axis
     const T sinus = sin(angle);
     const T cosin = cos(angle);
 
-#if 1
-    (*this) *= Matrix4< T > ( cosin, -sinus, 0, 0,
-                              sinus, cosin, 0, 0,
-                              0, 0, 1, 0,
-                              0, 0, 0, 1 );
-#else
-    m00 = m00*o.m00 + m01*o.m10;
-    m10 = m10*o.m00 + m11*o.m10;
-    m20 = m20*o.m00 + m21*o.m10;
+    T temp = m[0][0];
+    m[0][0] = m[0][0] * cosin - m[0][2] * sinus;
+    m[0][2] = temp    * sinus + m[0][2] * cosin;
 
-    m01 = m01*o.m01 + m02*o.m11;
-    m11 = m11*o.m01 + m12*o.m11;
-    m21 = m21*o.m01 + m22*o.m11;
+    temp = m[1][0];
+    m[1][0] = m[1][0] * cosin - m[1][2] * sinus;
+    m[1][2] = temp    * sinus + m[1][2] * cosin;
 
-    m02 = m01;
-    m12 = m11;
-    m22 = m21;
+    temp = m[2][0];
+    m[2][0] = m[2][0] * cosin - m[2][2] * sinus;
+    m[2][2] = temp    * sinus + m[2][2] * cosin;
 
-    //matrix multiplication: ml = ml * rotation x axis
-    T temp = m00;
-    m00 = m00  * cosin - m02 * sinus;
-    m02 = temp * sinus + m02 * cosin;
-
-    temp = m10;
-    m10 = m10  * cosin - m12 * sinus;
-    m12 = temp * sinus + m12 * cosin;
-
-    temp = m20;
-    m20 = m20  * cosin - m22 * sinus;
-    m22 = temp * sinus + m22 * cosin;
-
-    temp = m30;
-    m30 = m30  * cosin - m32 * sinus;
-    m32 = temp * sinus + m32 * cosin;
-#endif
+    temp = m[3][0];
+    m[3][0] = m[3][0] * cosin - m[3][2] * sinus;
+    m[3][2] = temp    * sinus + m[3][2] * cosin;
 }
 
-#if 0
 template<>
 inline void Matrix4<float>::rotateX( const float angle )
 {
@@ -692,23 +670,22 @@ inline void Matrix4<float>::rotateX( const float angle )
     const float sinus = sinf(angle);
     const float cosin = cosf(angle);
 
-    float temp = m00;
-    m00 = m00  * cosin - m02 * sinus;
-    m02 = temp * sinus + m02 * cosin;
+    float temp = m[0][0];
+    m[0][0] = m[0][0] * cosin - m[0][2] * sinus;
+    m[0][2] = temp    * sinus + m[0][2] * cosin;
 
-    temp = m10;
-    m10 = m10  * cosin - m12 * sinus;
-    m12 = temp * sinus + m12 * cosin;
+    temp = m[1][0];
+    m[1][0] = m[1][0] * cosin - m[1][2] * sinus;
+    m[1][2] = temp    * sinus + m[1][2] * cosin;
 
-    temp = m20;
-    m20 = m20  * cosin - m22 * sinus;
-    m22 = temp * sinus + m22 * cosin;
+    temp = m[2][0];
+    m[2][0] = m[2][0] * cosin - m[2][2] * sinus;
+    m[2][2] = temp    * sinus + m[2][2] * cosin;
 
-    temp = m30;
-    m30 = m30  * cosin - m32 * sinus;
-    m32 = temp * sinus + m32 * cosin;
+    temp = m[3][0];
+    m[3][0] = m[3][0] * cosin - m[3][2] * sinus;
+    m[3][2] = temp    * sinus + m[3][2] * cosin;
 }
-#endif
 
 template< typename T >
 void Matrix4<T>::rotateY( const T angle )
@@ -717,32 +694,23 @@ void Matrix4<T>::rotateY( const T angle )
     const T sinus = sin(angle);
     const T cosin = cos(angle);
 
-#if 1
-    *this *= Matrix4< T >( cosin, 0, sinus, 0,
-                           0, 1, 0, 0,
-                           -sinus, 0, cosin, 0,
-                           0, 0, 0, 1 
-                           );
-#else
-    T temp = m01;
-    m01 = m01  *  cosin + m02 * sinus;
-    m02 = temp * -sinus + m02 * cosin;
+    T temp = m[0][1];
+    m[0][1] = m[0][1] *  cosin + m[0][2] * sinus;
+    m[0][2] = temp    * -sinus + m[0][2] * cosin;
 
-    temp = m11;
-    m11 = m11  *  cosin + m12 * sinus;
-    m12 = temp * -sinus + m12 * cosin;
+    temp = m[1][1];
+    m[1][1] = m[1][1] *  cosin + m[1][2] * sinus;
+    m[1][2] = temp    * -sinus + m[1][2] * cosin;
 
-    temp = m21;
-    m21 = m21  *  cosin + m22 * sinus;
-    m22 = temp * -sinus + m22 * cosin;
+    temp = m[2][1];
+    m[2][1] = m[2][1] *  cosin + m[2][2] * sinus;
+    m[2][2] = temp    * -sinus + m[2][2] * cosin;
 
-    temp = m31;
-    m31 = m31  *  cosin + m32 * sinus;
-    m32 = temp * -sinus + m32 * cosin;
-#endif
+    temp = m[3][1];
+    m[3][1] = m[3][1] *  cosin + m[3][2] * sinus;
+    m[3][2] = temp    * -sinus + m[3][2] * cosin;
 }
 
-#if 0
 template<>
 inline void Matrix4<float>::rotateY( const float angle )
 {
@@ -750,23 +718,23 @@ inline void Matrix4<float>::rotateY( const float angle )
     const float sinus = sinf(angle);
     const float cosin = cosf(angle);
 
-    float temp = m01;
-    m01 = m01  *  cosin + m02 * sinus;
-    m02 = temp * -sinus + m02 * cosin;
+    float temp = m[0][1];
+    m[0][1] = m[0][1] *  cosin + m[0][2] * sinus;
+    m[0][2] = temp    * -sinus + m[0][2] * cosin;
 
-    temp = m11;
-    m11 = m11  *  cosin + m12 * sinus;
-    m12 = temp * -sinus + m12 * cosin;
+    temp = m[1][1];
+    m[1][1] = m[1][1] *  cosin + m[1][2] * sinus;
+    m[1][2] = temp    * -sinus + m[1][2] * cosin;
 
-    temp = m21;
-    m21 = m21  *  cosin + m22 * sinus;
-    m22 = temp * -sinus + m22 * cosin;
+    temp = m[2][1];
+    m[2][1] = m[2][1] *  cosin + m[2][2] * sinus;
+    m[2][2] = temp    * -sinus + m[2][2] * cosin;
 
-    temp = m31;
-    m31 = m31  *  cosin + m32 * sinus;
-    m32 = temp * -sinus + m32 * cosin;
+    temp = m[3][1];
+    m[3][1] = m[3][1] *  cosin + m[3][2] * sinus;
+    m[3][2] = temp    * -sinus + m[3][2] * cosin;
 }
-#endif
+
 template< typename T >
 void Matrix4<T>::rotateZ( const T angle )
 {
@@ -774,31 +742,23 @@ void Matrix4<T>::rotateZ( const T angle )
     const T sinus = sin(angle);
     const T cosin = cos(angle);
 
-#if 1
-    *this *= Matrix4<T>( 1, 0, 0, 0,
-                         0, cosin, -sinus, 0,
-                         0, sinus, cosin, 0,
-                      0, 0, 0, 1 );
-#else
-    T temp = m00;
-    m00 = m00  *  cosin + m01 * sinus;
-    m01 = temp * -sinus + m01 * cosin;
+    T temp = m[0][0];
+    m[0][0] = m[0][0] *  cosin + m[0][1] * sinus;
+    m[0][1] = temp    * -sinus + m[0][1] * cosin;
 
-    temp = m10;
-    m10 = m10  *  cosin + m11 * sinus;
-    m11 = temp * -sinus + m11 * cosin;
+    temp = m[1][0];
+    m[1][0] = m[1][0] *  cosin + m[1][1] * sinus;
+    m[1][1] = temp    * -sinus + m[1][1] * cosin;
 
-    temp = m20;
-    m20 = m20  *  cosin + m21 * sinus;
-    m21 = temp * -sinus + m21 * cosin;
+    temp = m[2][0];
+    m[2][0] = m[2][0] *  cosin + m[2][1] * sinus;
+    m[2][1] = temp    * -sinus + m[2][1] * cosin;
 
-    temp = m30;
-    m30 = m30  *  cosin + m31 * sinus;
-    m31 = temp * -sinus + m31 * cosin;
-#endif
+    temp = m[3][0];
+    m[3][0] = m[3][0] *  cosin + m[3][1] * sinus;
+    m[3][1] = temp    * -sinus + m[3][1] * cosin;
 }
 
-#if 0
 template<>
 inline void Matrix4<float>::rotateZ( const float angle )
 {
@@ -806,23 +766,22 @@ inline void Matrix4<float>::rotateZ( const float angle )
     const float sinus = sinf(angle);
     const float cosin = cosf(angle);
 
-    float temp = m00;
-    m00 = m00  *  cosin + m01 * sinus;
-    m01 = temp * -sinus + m01 * cosin;
+    float temp = m[0][0];
+    m[0][0] = m[0][0] *  cosin + m[0][1] * sinus;
+    m[0][1] = temp    * -sinus + m[0][1] * cosin;
 
-    temp = m10;
-    m10 = m10  *  cosin + m11 * sinus;
-    m11 = temp * -sinus + m11 * cosin;
+    temp = m[1][0];
+    m[1][0] = m[1][0] *  cosin + m[1][1] * sinus;
+    m[1][1] = temp    * -sinus + m[1][1] * cosin;
 
-    temp = m20;
-    m20 = m20  *  cosin + m21 * sinus;
-    m21 = temp * -sinus + m21 * cosin;
+    temp = m[2][0];
+    m[2][0] = m[2][0] *  cosin + m[2][1] * sinus;
+    m[2][1] = temp    * -sinus + m[2][1] * cosin;
 
-    temp = m30;
-    m30 = m30  *  cosin + m31 * sinus;
-    m31 = temp * -sinus + m31 * cosin;
+    temp = m[3][0];
+    m[3][0] = m[3][0] *  cosin + m[3][1] * sinus;
+    m[3][1] = temp    * -sinus + m[3][1] * cosin;
 }
-#endif
 
 template< typename T >
 void Matrix4<T>::scale( const T scale[3] )

@@ -52,6 +52,13 @@ public:
             T   m00, m10, m20, m30, m01, m11, m21, m31, 
                 m02, m12, m22, m32, m03, m13, m23, m33;
         };
+        struct
+        {
+            T   rot00, rot10, rot20, d30, 
+                rot01, rot11, rot21, d31, 
+                rot02, rot12, rot22, d32, 
+                x,     y,     z,     d33;
+        };
         T m[4][4]; //cols
         T ml[16]; // linear
     };

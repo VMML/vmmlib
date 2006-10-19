@@ -7,11 +7,11 @@
 #include "VMMLib.h"
 //#include "Pool.h"
 #include "AxisAlignedBoundingBox.h"
-#include "Visitor.h"
+#include "OctreeVisitor.h"
 
 
 /** 
-* an octree class 
+* an balanced octree class 
 * 
 * @author jonas boesch
 **/
@@ -76,7 +76,7 @@ public:
     void createChildren( size_t maxDepth );
     void setupLeaves();
     
-    void accept( Visitor< T >* visitor );
+    void accept( OctreeVisitor< T >* visitor );
     
     // warning: slow!    
     void spam();
@@ -373,7 +373,7 @@ void OctreeNode< T >::setupLeaves()
 };
 
 template< typename T > 
-void OctreeNode< T >::accept( Visitor< T >* visitor )
+void OctreeNode< T >::accept( OctreeVisitor< T >* visitor )
 {
     visitor->visit( this );
 }

@@ -16,8 +16,9 @@ public:
     AxisAlignedBoundingBox( const Sphere< T >& sphere );
     AxisAlignedBoundingBox( T cx, T cy, T cz, T size );
     
-    bool isIn( const Vector3< T >& pos );
-    bool isIn( const Sphere< T >& sphere );
+    inline bool isIn( const Vector3< T >& pos );
+    inline bool isIn2d( const Vector3< T >& pos ); // only x and y components are checked
+    inline bool isIn( const Sphere< T >& sphere );
 
     inline void set( const Vector3< T >& pMin, const Vector3< T >& pMax );
 	inline void setMin( const Vector3< T >& pMin );
@@ -58,7 +59,7 @@ AxisAlignedBoundingBox< T >::AxisAlignedBoundingBox( T cx, T cy, T cz, T size )
 }
 
 template< typename T >
-bool AxisAlignedBoundingBox< T >::isIn( const Sphere< T >& sphere )
+inline bool AxisAlignedBoundingBox< T >::isIn( const Sphere< T >& sphere )
 {
     Vector3< T > sv ( sphere.getCenter() );
     sv += sphere.getRadius();
@@ -71,10 +72,20 @@ bool AxisAlignedBoundingBox< T >::isIn( const Sphere< T >& sphere )
 }
 
 template< typename T >
-bool AxisAlignedBoundingBox< T >::isIn( const Vector3< T >& pos )
+inline bool AxisAlignedBoundingBox< T >::isIn( const Vector3< T >& pos )
 {
     if ( pos.x > _max.x || pos.y > _max.y || pos.z > _max.z 
             || pos.x < _min.x || pos.y < _min.y || pos.z < _min.z )
+    {
+        return false;
+    }
+    return true;
+}
+
+template< typename T >
+inline bool AxisAlignedBoundingBox< T >::isIn2d( const Vector3< T >& pos )
+{
+    if ( pos.x > _max.x || pos.y > _max.y || pos.x < _min.x || pos.y < _min.y )
     {
         return false;
     }

@@ -139,6 +139,7 @@ public:
     void scaleTranslation( const T scale[3] );
     void setTranslation( const T x, const T y, const T z );
     void setTranslation( const T trans[3] );
+    void setTranslation( const Vector3<T>& trans );
 
     void tensor( const Vector3< T >& u, const Vector3< T >& v );
     void tensor( const Vector4< T >& u, const Vector4< T >& v );
@@ -818,10 +819,18 @@ void Matrix4<T>::setTranslation( const T x, const T y, const T z )
 template< typename T >
 void Matrix4<T>::setTranslation( const T trans[3] )
 {
-    ml[12]  = trans[0];
-    ml[13]  = trans[1];
+    ml[12] = trans[0];
+    ml[13] = trans[1];
     ml[14] = trans[2];
 }
+template< typename T >
+void Matrix4<T>::setTranslation( const Vector3<T>& trans )
+{
+    ml[12] = trans.x;
+    ml[13] = trans.y;
+    ml[14] = trans.z;
+}
+
 
 template< typename T > 
 void Matrix4< T >::tensor( const Vector3< T >& u, 

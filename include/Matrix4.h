@@ -76,8 +76,8 @@ public:
     // dangerous, but implemented to allow easy conversion between 
     // Matrix< float > and Matrix< double >
     //the pointer 'values must be a valid 16 component c array of the resp. type
-    Matrix4( float* values );
-    Matrix4( double* values );
+    Matrix4( const float* values );
+    Matrix4( const double* values );
  
     inline Matrix4& operator= ( const Matrix4& mm );
     inline bool operator== ( const Matrix4& mm ) const;
@@ -289,7 +289,7 @@ void Matrix4< T >::setElement( const size_t row, const size_t col,
 }
 
 template< typename T > 
-Matrix4< T >::Matrix4( float* values )
+Matrix4< T >::Matrix4( const float* values )
 {
     assert( values && "Matrix4: Initialisation of a Matrix from a Nullpointer was requested." );
     for ( size_t i = 0; i < 16; ++i )
@@ -297,7 +297,7 @@ Matrix4< T >::Matrix4( float* values )
 }
 
 template< typename T > 
-Matrix4< T >::Matrix4( double* values )
+Matrix4< T >::Matrix4( const double* values )
 {
     assert( values && "Matrix4: Initialisation of a Matrix from a Nullpointer was requested." );
     for ( size_t i = 0; i < 16; ++i )

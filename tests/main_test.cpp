@@ -6,11 +6,6 @@
 
 #include "VMMLib.h"
 
-#include "JacobiSolver.h"
-#include "SingularValueDecomposition.h"
-#include "AxisAlignedBoundingBox.h"
-#include "OctreeNode.h"
-
 #include <iostream>
 #include <vector>
 

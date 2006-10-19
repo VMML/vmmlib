@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		8D07F2C00486CC7A007CD1D0 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C1666FE841158C02AAC07 /* InfoPlist.strings */; };
 		980561D80AC933E200BDF55F /* VMMLib.h in Headers */ = {isa = PBXBuildFile; fileRef = 980561D70AC933E200BDF55F /* VMMLib.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		980CE5A80AE4E51900842927 /* Visitor.h in Headers */ = {isa = PBXBuildFile; fileRef = 980CE5A50AE4E51900842927 /* Visitor.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		980CE8E20AE533F100842927 /* main_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 980CE8DC0AE533F100842927 /* main_test.cpp */; };
 		980CE8E30AE533F100842927 /* Matrix3Test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 980CE8DD0AE533F100842927 /* Matrix3Test.cpp */; };
 		980CE8E40AE533F100842927 /* Matrix4Test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 980CE8DF0AE533F100842927 /* Matrix4Test.cpp */; };
@@ -23,6 +22,10 @@
 		988CCAC30AD88411002B0ED6 /* Sphere.h in Headers */ = {isa = PBXBuildFile; fileRef = 988CCAC20AD88411002B0ED6 /* Sphere.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		989F5C9C0AC97B09007CC6C9 /* SingularValueDecomposition.h in Headers */ = {isa = PBXBuildFile; fileRef = 989F5C9B0AC97B09007CC6C9 /* SingularValueDecomposition.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		989F5CD90ACA7970007CC6C9 /* HelperFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 989F5CD80ACA7970007CC6C9 /* HelperFunctions.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		98E1AB880AE7D6E70051E51E /* QuadtreeNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 98E1AB870AE7D6E70051E51E /* QuadtreeNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		98E1ABA90AE7DBAF0051E51E /* tree_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98E1ABA80AE7DBAF0051E51E /* tree_test.cpp */; };
+		98E1ABB10AE7DC2F0051E51E /* OctreeVisitor.h in Headers */ = {isa = PBXBuildFile; fileRef = 98E1ABAF0AE7DC2F0051E51E /* OctreeVisitor.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		98E1ABB20AE7DC2F0051E51E /* QuadtreeVisitor.h in Headers */ = {isa = PBXBuildFile; fileRef = 98E1ABB00AE7DC2F0051E51E /* QuadtreeVisitor.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C0EFFEB80AD2AD3100EE6C21 /* Vector2.h in Headers */ = {isa = PBXBuildFile; fileRef = C0EFFEB70AD2AD3100EE6C21 /* Vector2.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
@@ -31,7 +34,6 @@
 		8D07F2C70486CC7A007CD1D0 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D07F2C80486CC7A007CD1D0 /* VMMLib.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = VMMLib.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		980561D70AC933E200BDF55F /* VMMLib.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = VMMLib.h; path = include/VMMLib.h; sourceTree = "<group>"; };
-		980CE5A50AE4E51900842927 /* Visitor.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Visitor.h; path = include/Visitor.h; sourceTree = "<group>"; };
 		980CE8DC0AE533F100842927 /* main_test.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = main_test.cpp; path = tests/main_test.cpp; sourceTree = "<group>"; };
 		980CE8DD0AE533F100842927 /* Matrix3Test.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Matrix3Test.cpp; path = tests/Matrix3Test.cpp; sourceTree = "<group>"; };
 		980CE8DE0AE533F100842927 /* Matrix3Test.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Matrix3Test.h; path = tests/Matrix3Test.h; sourceTree = "<group>"; };
@@ -49,6 +51,11 @@
 		988CCAC20AD88411002B0ED6 /* Sphere.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Sphere.h; path = include/Sphere.h; sourceTree = "<group>"; };
 		989F5C9B0AC97B09007CC6C9 /* SingularValueDecomposition.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = SingularValueDecomposition.h; path = include/SingularValueDecomposition.h; sourceTree = "<group>"; };
 		989F5CD80ACA7970007CC6C9 /* HelperFunctions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = HelperFunctions.h; path = include/HelperFunctions.h; sourceTree = "<group>"; };
+		98E1AB870AE7D6E70051E51E /* QuadtreeNode.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = QuadtreeNode.h; path = include/QuadtreeNode.h; sourceTree = "<group>"; };
+		98E1ABA60AE7DB900051E51E /* tree_test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = tree_test; sourceTree = BUILT_PRODUCTS_DIR; };
+		98E1ABA80AE7DBAF0051E51E /* tree_test.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = tree_test.cpp; path = include/tree_test.cpp; sourceTree = "<group>"; };
+		98E1ABAF0AE7DC2F0051E51E /* OctreeVisitor.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = OctreeVisitor.h; path = include/OctreeVisitor.h; sourceTree = "<group>"; };
+		98E1ABB00AE7DC2F0051E51E /* QuadtreeVisitor.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = QuadtreeVisitor.h; path = include/QuadtreeVisitor.h; sourceTree = "<group>"; };
 		C0EFFEB70AD2AD3100EE6C21 /* Vector2.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Vector2.h; path = include/Vector2.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -67,6 +74,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		98E1ABA40AE7DB900051E51E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -75,6 +89,7 @@
 			children = (
 				8D07F2C80486CC7A007CD1D0 /* VMMLib.framework */,
 				9867B5740AAEFEFC00651D9B /* vmml_test */,
+				98E1ABA60AE7DB900051E51E /* tree_test */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -158,8 +173,11 @@
 		988CCAA70AD881F3002B0ED6 /* Spatial Data Structures */ = {
 			isa = PBXGroup;
 			children = (
+				98E1AB870AE7D6E70051E51E /* QuadtreeNode.h */,
+				98E1ABB00AE7DC2F0051E51E /* QuadtreeVisitor.h */,
 				988CCAAC0AD882CE002B0ED6 /* OctreeNode.h */,
-				980CE5A50AE4E51900842927 /* Visitor.h */,
+				98E1ABAF0AE7DC2F0051E51E /* OctreeVisitor.h */,
+				98E1ABA80AE7DBAF0051E51E /* tree_test.cpp */,
 			);
 			name = "Spatial Data Structures";
 			sourceTree = "<group>";
@@ -183,7 +201,9 @@
 				988CCAAF0AD882CE002B0ED6 /* AxisAlignedBoundingBox.h in Headers */,
 				988CCAB00AD882CE002B0ED6 /* OctreeNode.h in Headers */,
 				988CCAC30AD88411002B0ED6 /* Sphere.h in Headers */,
-				980CE5A80AE4E51900842927 /* Visitor.h in Headers */,
+				98E1AB880AE7D6E70051E51E /* QuadtreeNode.h in Headers */,
+				98E1ABB10AE7DC2F0051E51E /* OctreeVisitor.h in Headers */,
+				98E1ABB20AE7DC2F0051E51E /* QuadtreeVisitor.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -226,6 +246,22 @@
 			productReference = 9867B5740AAEFEFC00651D9B /* vmml_test */;
 			productType = "com.apple.product-type.tool";
 		};
+		98E1ABA50AE7DB900051E51E /* tree_test */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 98E1ABAA0AE7DBAF0051E51E /* Build configuration list for PBXNativeTarget "tree_test" */;
+			buildPhases = (
+				98E1ABA30AE7DB900051E51E /* Sources */,
+				98E1ABA40AE7DB900051E51E /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = tree_test;
+			productName = tree_test;
+			productReference = 98E1ABA60AE7DB900051E51E /* tree_test */;
+			productType = "com.apple.product-type.tool";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -239,6 +275,7 @@
 			targets = (
 				8D07F2BC0486CC7A007CD1D0 /* VMML */,
 				9867B5730AAEFEFC00651D9B /* vmml_test */,
+				98E1ABA50AE7DB900051E51E /* tree_test */,
 			);
 		};
 /* End PBXProject section */
@@ -279,6 +316,14 @@
 				980CE8E20AE533F100842927 /* main_test.cpp in Sources */,
 				980CE8E30AE533F100842927 /* Matrix3Test.cpp in Sources */,
 				980CE8E40AE533F100842927 /* Matrix4Test.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		98E1ABA30AE7DB900051E51E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				98E1ABA90AE7DBAF0051E51E /* tree_test.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -410,6 +455,36 @@
 			};
 			name = Release;
 		};
+		98E1ABAB0AE7DBAF0051E51E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = tree_test;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		98E1ABAC0AE7DBAF0051E51E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = tree_test;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -436,6 +511,15 @@
 			buildConfigurations = (
 				9867B5820AAEFF5600651D9B /* Debug */,
 				9867B5830AAEFF5600651D9B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		98E1ABAA0AE7DBAF0051E51E /* Build configuration list for PBXNativeTarget "tree_test" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				98E1ABAB0AE7DBAF0051E51E /* Debug */,
+				98E1ABAC0AE7DBAF0051E51E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

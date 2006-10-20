@@ -26,7 +26,7 @@ namespace vmml
 //
 
 template< typename T >
-class QuadtreeNode
+class QuadtreeNode : public T
 {
     static const unsigned char ROOT = 255;
     static const unsigned char XBIT = 1;
@@ -50,18 +50,15 @@ public:
     // faster version
     // PRECONDITION: pos must be in the node's aabb
     // (this is not checked).
-    QuadtreeNode< T >* getLeaf( const Vector3f& pos );
+    QuadtreeNode< T >* findLeaf( const Vector3f& pos );
 
     // safe version of getLeaf
     // returns 0 if pos is outside of the root aabb
-    QuadtreeNode< T >* findLeaf( const Vector3f& pos );
+    QuadtreeNode< T >* findLeaf( const Vector3f& pos, bool checkBounds );
+    QuadtreeNode< T >* findChild( const Vector3f& pos );
    
     //QuadtreeNode< T >* findNode( const Sphere< float >& sphere );
      
-    // getters / setters
-    inline void setLoadPtr( T* load ) { _load = load; };
-    inline T* getLoadPtr() { return _load; };
-
     inline const Aabbf& getAabb() { return _aabb; };
     inline const Vector3f& getCenter() { return _center; };
 
@@ -95,7 +92,6 @@ protected:
     std::vector< QuadtreeNode< T >* > _children;
     Vector3f _center;
     Aabbf _aabb;
-    T* _load;
     unsigned char _index;
     unsigned char _depth;
 
@@ -111,7 +107,6 @@ QuadtreeNode< T >::QuadtreeNode( const Aabbf& aabb )
     : _parent( 0 )
     , _children( 0 )
     , _aabb( aabb )
-    , _load( 0 )
     , _index( ROOT )
     , _depth( 0 )
 {
@@ -126,7 +121,6 @@ QuadtreeNode< T >::QuadtreeNode( float cx, float cy, float size )
     : _parent( 0 )
     , _children( 0 )
     , _aabb( cx, cy, 0, size )
-    , _load( 0 )
     , _index( ROOT )
     , _depth( 0 )
 {
@@ -141,7 +135,6 @@ QuadtreeNode< T >::QuadtreeNode( QuadtreeNode< T >* parent, unsigned char pIndex
     : _parent( parent )
     , _children( 0 )
     , _aabb()
-    , _load( 0 )
     , _index( pIndex )
     , _depth( parent->getDepth() + 1 )
 
@@ -179,7 +172,6 @@ QuadtreeNode< T >::QuadtreeNode()
     : _parent( 0 )
     , _children( 0 )
     , _aabb()
-    , _load( 0 )
     , _index( ROOT )
     , _depth( 0)
 {}
@@ -244,7 +236,7 @@ QuadtreeNode< T >::~QuadtreeNode()
 }
 
 template< typename T >
-QuadtreeNode< T >* QuadtreeNode< T >::getLeaf( const Vector3f& pos )
+QuadtreeNode< T >* QuadtreeNode< T >::findLeaf( const Vector3f& pos )
 {
     // if this is a leaf node, return this;
     if ( _children.size() == 0 )
@@ -255,18 +247,23 @@ QuadtreeNode< T >* QuadtreeNode< T >::getLeaf( const Vector3f& pos )
         child += XBIT;
     if ( pos.y > _center.y ) 
         child += YBIT;
-    return _children[child]->getLeaf( pos );
+    return _children[child]->findLeaf( pos );
 }
 
 template< typename T >
-QuadtreeNode< T >* QuadtreeNode< T >::findLeaf( const Vector3f& pos )
+QuadtreeNode< T >* QuadtreeNode< T >::findLeaf( const Vector3f& pos, bool checkBounds )
 {
-    if ( ! _aabb.isIn2d( pos ) )
-    { // pos is not in this node's aabb
-        if ( _parent )
-            _parent->findLeaf( pos );
-        else // this is the root node and pos is outside
-            return 0;
+    if ( checkBounds )
+    { 
+        if ( ! _aabb.isIn2d( pos ) )
+        { // pos is not in this node's aabb
+            if ( _parent )
+                _parent->findLeaf( pos );
+            else // this is the root node and pos is outside
+                return 0;
+        }
+        else
+            checkBounds = false;
     }
     // if this is a leaf node, return this;
     if ( _children.size() == 0 )
@@ -277,7 +274,7 @@ QuadtreeNode< T >* QuadtreeNode< T >::findLeaf( const Vector3f& pos )
         child += XBIT;
     if ( pos.y > _center.y ) 
         child += YBIT;
-    return _children[child]->getLeaf( pos );
+    return _children[child]->getLeaf( pos, checkBounds );
 }
 
 template< typename T>
@@ -302,7 +299,7 @@ void QuadtreeNode< T >::getId( std::string& nodeId )
     if ( _depth >= nodeId.size() )
     {
         nodeId = "";
-        for ( ssize_t i = -1; i < _depth; ++i )
+        for ( ssize_t i = 0; i < _depth; ++i )
         {
             nodeId.push_back( 'x' );
         }
@@ -354,10 +351,6 @@ void QuadtreeNode< T >::setupLeaves()
             _children[i]->setupLeaves();
         }
     }
-    //else if ( _load == 0 )
-    //{
-    //    _load = new T();
-    //}
 };
 
 template< typename T > 

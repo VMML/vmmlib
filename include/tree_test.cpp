@@ -21,8 +21,8 @@ int main( int argc, char** argv )
     Vector3f p0( .9f, .9f, .3f );
     Vector3f p1( .1f, .3f, .7f );
 
-    QuadNode* qn0 = qroot.getLeaf( p0 );
-    QuadNode* qn1 = qroot.getLeaf( p1 );
+    QuadNode* qn0 = qroot.findLeaf( p0 );
+    QuadNode* qn1 = qroot.findLeaf( p1 );
     std::cout << "Point 0 : " << p0 << std::endl;
     qn0->spam();
     std::cout << "Point 1 : " << p0 << std::endl;
@@ -32,8 +32,8 @@ int main( int argc, char** argv )
     ONode oroot( .5f, .5f, .5f, 1.f );
     oroot.createChildren( 5 );
 
-    ONode* on0 = oroot.getLeaf( p0 );
-    ONode* on1 = oroot.getLeaf( p1 );
+    ONode* on0 = oroot.findLeaf( p0 );
+    ONode* on1 = oroot.findLeaf( p1 );
     std::cout << "Point 0 : " << p0 << std::endl;
     on0->spam();
     std::cout << "Point 1 : " << p0 << std::endl;

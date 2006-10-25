@@ -17,6 +17,8 @@
 		9867B5650AAEFDB900651D9B /* Vector4.h in Headers */ = {isa = PBXBuildFile; fileRef = 9867B5640AAEFDB900651D9B /* Vector4.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9867B62C0AAF0C0200651D9B /* Matrix3.h in Headers */ = {isa = PBXBuildFile; fileRef = 9867B62A0AAF0C0200651D9B /* Matrix3.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9867B62D0AAF0C0200651D9B /* Matrix4.h in Headers */ = {isa = PBXBuildFile; fileRef = 9867B62B0AAF0C0200651D9B /* Matrix4.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		987699FA0AE97ACB00A9AF89 /* BintreeNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 987699F80AE97ACB00A9AF89 /* BintreeNode.h */; };
+		987699FB0AE97ACB00A9AF89 /* BintreeVisitor.h in Headers */ = {isa = PBXBuildFile; fileRef = 987699F90AE97ACB00A9AF89 /* BintreeVisitor.h */; };
 		988CCAAF0AD882CE002B0ED6 /* AxisAlignedBoundingBox.h in Headers */ = {isa = PBXBuildFile; fileRef = 988CCAAB0AD882CE002B0ED6 /* AxisAlignedBoundingBox.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		988CCAB00AD882CE002B0ED6 /* OctreeNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 988CCAAC0AD882CE002B0ED6 /* OctreeNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		988CCAC30AD88411002B0ED6 /* Sphere.h in Headers */ = {isa = PBXBuildFile; fileRef = 988CCAC20AD88411002B0ED6 /* Sphere.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -46,6 +48,8 @@
 		9867B5740AAEFEFC00651D9B /* vmml_test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = vmml_test; sourceTree = BUILT_PRODUCTS_DIR; };
 		9867B62A0AAF0C0200651D9B /* Matrix3.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Matrix3.h; path = include/Matrix3.h; sourceTree = "<group>"; };
 		9867B62B0AAF0C0200651D9B /* Matrix4.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Matrix4.h; path = include/Matrix4.h; sourceTree = "<group>"; };
+		987699F80AE97ACB00A9AF89 /* BintreeNode.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = BintreeNode.h; path = include/BintreeNode.h; sourceTree = "<group>"; };
+		987699F90AE97ACB00A9AF89 /* BintreeVisitor.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = BintreeVisitor.h; path = include/BintreeVisitor.h; sourceTree = "<group>"; };
 		988CCAAB0AD882CE002B0ED6 /* AxisAlignedBoundingBox.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = AxisAlignedBoundingBox.h; path = include/AxisAlignedBoundingBox.h; sourceTree = "<group>"; };
 		988CCAAC0AD882CE002B0ED6 /* OctreeNode.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = OctreeNode.h; path = include/OctreeNode.h; sourceTree = "<group>"; };
 		988CCAC20AD88411002B0ED6 /* Sphere.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Sphere.h; path = include/Sphere.h; sourceTree = "<group>"; };
@@ -100,7 +104,7 @@
 				9867B4EE0AAED07A00651D9B /* Basics */,
 				9836EF820AC958620060C6CB /* Advanced */,
 				980CE5AB0AE4E53300842927 /* Misc */,
-				988CCAA70AD881F3002B0ED6 /* Spatial Data Structures */,
+				988CCAA70AD881F3002B0ED6 /* Data Structures */,
 				08FB77ACFE841707C02AAC07 /* Tests */,
 				089C1665FE841158C02AAC07 /* Resources */,
 				0867D69AFE84028FC02AAC07 /* External Frameworks and Libraries */,
@@ -170,16 +174,18 @@
 			name = Basics;
 			sourceTree = "<group>";
 		};
-		988CCAA70AD881F3002B0ED6 /* Spatial Data Structures */ = {
+		988CCAA70AD881F3002B0ED6 /* Data Structures */ = {
 			isa = PBXGroup;
 			children = (
+				987699F80AE97ACB00A9AF89 /* BintreeNode.h */,
+				987699F90AE97ACB00A9AF89 /* BintreeVisitor.h */,
 				98E1AB870AE7D6E70051E51E /* QuadtreeNode.h */,
 				98E1ABB00AE7DC2F0051E51E /* QuadtreeVisitor.h */,
 				988CCAAC0AD882CE002B0ED6 /* OctreeNode.h */,
 				98E1ABAF0AE7DC2F0051E51E /* OctreeVisitor.h */,
 				98E1ABA80AE7DBAF0051E51E /* tree_test.cpp */,
 			);
-			name = "Spatial Data Structures";
+			name = "Data Structures";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -204,6 +210,8 @@
 				98E1AB880AE7D6E70051E51E /* QuadtreeNode.h in Headers */,
 				98E1ABB10AE7DC2F0051E51E /* OctreeVisitor.h in Headers */,
 				98E1ABB20AE7DC2F0051E51E /* QuadtreeVisitor.h in Headers */,
+				987699FA0AE97ACB00A9AF89 /* BintreeNode.h in Headers */,
+				987699FB0AE97ACB00A9AF89 /* BintreeVisitor.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -28,6 +28,7 @@
 namespace vmml
 {
 template< typename T > class Vector3;
+template< typename T > class Matrix4;
 
 template< typename T > 
 class Vector4
@@ -100,6 +101,9 @@ public:
     const Vector4& operator*=( const Vector4 &aa ); 
     const Vector4& operator/=( const Vector4 &aa ); 
 
+    // vector'/matrix operations
+    Vector4 operator* (const Matrix4<T>& m ) const;
+
     T dot( const Vector4 &aa ) const;
 
     // other
@@ -133,6 +137,7 @@ public:
     
 // - implementation - //
 #include "Vector3.h"
+#include "Matrix4.h"
 
 namespace vmml
 {
@@ -414,6 +419,16 @@ const Vector4< T >& Vector4< T >::operator/=( const Vector4 &aa )
     z /= aa.z;
     w /= aa.w; 
     return *this; 
+}
+
+// vector'/matrix operations    
+template< typename T > 
+Vector4< T > Vector4< T >::operator * (const Matrix4<T>& m ) const
+{
+	return Vector4< T >( x * m.m00 + y * m.m01 + z * m.m02 + w * m.m03,
+                         x * m.m10 + y * m.m11 + z * m.m12 + w * m.m13,
+                         x * m.m20 + y * m.m21 + z * m.m22 + w * m.m23,
+                         x * m.m30 + y * m.m31 + z * m.m32 + w * m.m33 );
 }
 
 template < typename T > 

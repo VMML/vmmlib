@@ -161,13 +161,38 @@ bool Matrix4Test::test()
     // m * vector
     _matrix.set( 16., 5., 9., 4., 2., 11., 7., 14., 
                  3., 10., 6., 15., 13., 8., 12., 1. );
-    const Vector4d vector( 1., 2., 3., 4. );
-    const Vector4d result = _matrix * vector;
-    const Vector4d expect( 81., 89., 89., 81. );
-    if ( result != expect )
+    Vector4d vector4( 1., 2., 3., 4. );
+    Vector4d resultV4 = _matrix * vector4;
+    Vector4d expectV4( 81., 89., 89., 81. );
+    if ( resultV4 != expectV4 )
     {
         cout << "test: Matrix4::operator*( Vector4 ) failed!" << endl;
-        cout << _matrix << vector << result << expect << endl;
+        cout << _matrix << vector4 << resultV4 << expectV4 << endl;
+        failed();
+        assert( 0 );           
+    }  
+    
+    vector4.set( 12., 13., 14., 1. );
+    _matrix = Matrix4d::IDENTITY;
+    Vector3d resultV3 = _matrix * vector4;
+    if ( resultV3 != vector4 )
+    {
+        cout << "test: Matrix4::operator*( Vector4 ) failed!" << endl;
+        cout << _matrix << vector4 << resultV3 << endl;
+        failed();
+        assert( 0 );           
+    }  
+    
+    // vector' * m
+    vector4.set( 2., 3., 4., 5. );
+    _matrix.set( 16., 5., 9., 4., 2., 11., 7., 14.,
+                 3., 10., 6., 15., 13., 8., 12., 1. );
+    resultV4 = vector4 * _matrix;
+    expectV4.set( 103., 135., 135., 103. );
+    if ( resultV4 != expectV4 )
+    {
+        cout << "test: Vector4::operator*( Matrix4 ) failed!" << endl;
+        cout << vector4 << _matrix << resultV4 << expectV4 << endl;
         failed();
         assert( 0 );           
     }  

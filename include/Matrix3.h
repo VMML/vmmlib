@@ -122,15 +122,15 @@ public:
 
         os.setf( std::ios::right, std::ios::adjustfield );
         os.precision( 5 );
-        os << std::endl << "|" << std::setw(7) << m.ml[0] << " " 
-           << std::setw(7) << m.ml[1] << " " 
-           << std::setw(7) << m.ml[2] << "|" << std::endl
-           << "|" << std::setw(7) << m.ml[3] << " "
-           << std::setw(7) << m.ml[4] << " " 
-           << std::setw(7) << m.ml[5] << "|" << std::endl
-           << "|" << std::setw(7) << m.ml[6] << " "
-           << std::setw(7) << m.ml[7] << " " 
-           << std::setw(7) << m.ml[8] << "|" << std::endl; 
+        os << std::endl << "|" << std::setw(10) << m.ml[0] << " " 
+           << std::setw(10) << m.ml[1] << " " 
+           << std::setw(10) << m.ml[2] << "|" << std::endl
+           << "|" << std::setw(10) << m.ml[3] << " "
+           << std::setw(10) << m.ml[4] << " " 
+           << std::setw(10) << m.ml[5] << "|" << std::endl
+           << "|" << std::setw(10) << m.ml[6] << " "
+           << std::setw(10) << m.ml[7] << " " 
+           << std::setw(10) << m.ml[8] << "|" << std::endl; 
         os.precision( prec );
         os.setf( flags );
         return os;

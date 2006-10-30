@@ -121,8 +121,8 @@ public:
 
         os.setf( std::ios::right, std::ios::adjustfield );
         os.precision( 5 );
-        os << "[" << std::setw(7) << v.x << " " << std::setw(7) << v.y 
-           << " " << std::setw(7) << v.z << " " << std::setw(7) << v.w << "]";
+        os << "[" << std::setw(10) << v.x << " " << std::setw(10) << v.y 
+           << " " << std::setw(10) << v.z << " " << std::setw(10) << v.w << "]";
         os.precision( prec );
         os.setf( flags );
         return os;

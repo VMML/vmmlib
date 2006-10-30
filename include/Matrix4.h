@@ -169,22 +169,22 @@ public:
 
         os.setf( std::ios::right, std::ios::adjustfield );
         os.precision( 5 );
-        os << std::endl << "|" << std::setw(7) << m.m[0][0] << " " 
-           << std::setw(7) << m.m[0][1] << " " 
-           << std::setw(7) << m.m[0][2] << " " 
-           << std::setw(7) << m.m[0][3] << "|" << std::endl
-           << "|" << std::setw(7) << m.m[1][0] << " " 
-           << std::setw(7) << m.m[1][1] << " " 
-           << std::setw(7) << m.m[1][2] << " " 
-           << std::setw(7) << m.m[1][3] << "|" << std::endl
-           << "|" << std::setw(7) << m.m[2][0] << " " 
-           << std::setw(7) << m.m[2][1] << " " 
-           << std::setw(7) << m.m[2][2] << " " 
-           << std::setw(7) << m.m[2][3] << "|" << std::endl
-           << "|" << std::setw(7) << m.m[3][0] << " " 
-           << std::setw(7) << m.m[3][1] << " " 
-           << std::setw(7) << m.m[3][2] << " " 
-           << std::setw(7) << m.m[3][3] << "|" << std::endl;
+        os << std::endl << "|" << std::setw(10) << m.m[0][0] << " " 
+           << std::setw(10) << m.m[0][1] << " " 
+           << std::setw(10) << m.m[0][2] << " " 
+           << std::setw(10) << m.m[0][3] << "|" << std::endl
+           << "|" << std::setw(10) << m.m[1][0] << " " 
+           << std::setw(10) << m.m[1][1] << " " 
+           << std::setw(10) << m.m[1][2] << " " 
+           << std::setw(10) << m.m[1][3] << "|" << std::endl
+           << "|" << std::setw(10) << m.m[2][0] << " " 
+           << std::setw(10) << m.m[2][1] << " " 
+           << std::setw(10) << m.m[2][2] << " " 
+           << std::setw(10) << m.m[2][3] << "|" << std::endl
+           << "|" << std::setw(10) << m.m[3][0] << " " 
+           << std::setw(10) << m.m[3][1] << " " 
+           << std::setw(10) << m.m[3][2] << " " 
+           << std::setw(10) << m.m[3][3] << "|" << std::endl;
         os.precision( prec );
         os.setf( flags );
         return os;

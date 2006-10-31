@@ -102,6 +102,8 @@ public:
 
     bool operator==( const Vector3 &a ) const;
     bool operator!=(const Vector3 &a ) const;
+    bool isAkin(  const Vector3& a, 
+                  const T& delta = std::numeric_limits<T>::epsilon() );
 
     T length() const;
     T lengthSquared() const;
@@ -470,15 +472,33 @@ T Vector3< T >::dot( const Vector3& a, const Vector3& b)
 
 
 template < typename T > 
-bool Vector3< T >::operator==( const Vector3 &a ) const 
+bool Vector3< T >::operator==( const Vector3& a ) const 
 { 
     return ( x == a.x && y == a.y && z == a.z ); 
 }
 
 template < typename T > 
-bool Vector3< T >::operator!=(const Vector3 &a ) const 
+bool Vector3< T >::operator!=(const Vector3& a ) const 
 { 
     return ( x != a.x || y != a.y || z != a.z ); 
+}
+template < typename T > 
+bool Vector3< T >::isAkin( const Vector3& a, const T& delta )
+{
+    if( fabs( x-a.x ) > delta || fabs( y-a.y ) > delta || 
+        fabs( z-a.z ) > delta )
+
+        return false;
+    return true;
+}
+template< > 
+inline bool Vector3< float >::isAkin( const Vector3& a, const float& delta )
+{
+    if( fabsf( x-a.x ) > delta || fabsf( y-a.y ) > delta || 
+        fabsf( z-a.z ) > delta )
+
+        return false;
+    return true;
 }
 
 template < typename T > 

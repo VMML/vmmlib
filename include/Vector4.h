@@ -109,6 +109,9 @@ public:
     // other
     bool operator==( const Vector4 &aa ) const;
     bool operator!=(const Vector4 &aa ) const;
+    bool isAkin( const Vector4& a, 
+                 const T& delta = std::numeric_limits<T>::epsilon() );
+
     void invert(); 
 
     T min();
@@ -447,6 +450,24 @@ template < typename T >
 bool Vector4< T >::operator!=(const Vector4 &aa ) const 
 { 
     return ( x != aa.x || y != aa.y || z != aa.z || w != aa.w ); 
+}
+template < typename T > 
+bool Vector4< T >::isAkin( const Vector4& a, const T& delta )
+{
+    if( fabs( x-a.x ) > delta || fabs( y-a.y ) > delta || 
+        fabs( z-a.z ) > delta || fabs( w-a.w ) > delta )
+
+        return false;
+    return true;
+}
+template< > 
+inline bool Vector4< float >::isAkin( const Vector4& a, const float& delta )
+{
+    if( fabsf( x-a.x ) > delta || fabsf( y-a.y ) > delta || 
+        fabsf( z-a.z ) > delta || fabsf( w-a.w ) > delta )
+
+        return false;
+    return true;
 }
 
 template < typename T > 

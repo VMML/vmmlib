@@ -10,7 +10,8 @@ class Matrix3Test : public Test
 {
 public: 
     Matrix3Test();
-    
+    virtual ~Matrix3Test() {}
+
     virtual bool test();
 
 protected:

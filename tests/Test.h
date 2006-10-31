@@ -6,6 +6,8 @@ namespace vmml
 class Test
 {
 public: 
+    virtual ~Test() {}
+
     virtual bool test() = 0;
 };
 

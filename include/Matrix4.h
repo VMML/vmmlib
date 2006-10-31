@@ -142,6 +142,9 @@ public:
     void rotateX( const T angle );
     void rotateY( const T angle );
     void rotateZ( const T angle );
+    void preRotateX( const T angle );
+    void preRotateY( const T angle );
+    void preRotateZ( const T angle );
     void scale( const T scale[3] );
     void scale( const Vector3< T >& scale );
     void scaleTranslation( const T scale[3] );
@@ -650,25 +653,25 @@ bool Matrix4< T >::getInverse( Matrix4< T >& result, T limit )
 template< typename T >
 void Matrix4<T>::rotateX( const T angle )
 {
-    //matrix multiplication: ml = ml * rotation x axis
+    //matrix multiplication: m = m * m_rot_x
     const T sinus = sin(angle);
     const T cosin = cos(angle);
 
-    T temp = m[0][0];
-    m[0][0] = m[0][0] * cosin - m[0][2] * sinus;
-    m[0][2] = temp    * sinus + m[0][2] * cosin;
+    T tmp =  m01*cosin + m02*sinus;
+    m02   = -m01*sinus + m02*cosin;
+    m01   = tmp;
 
-    temp = m[1][0];
-    m[1][0] = m[1][0] * cosin - m[1][2] * sinus;
-    m[1][2] = temp    * sinus + m[1][2] * cosin;
+    tmp =  m11*cosin + m12*sinus;
+    m12 = -m11*sinus + m12*cosin;
+    m11 = tmp;
 
-    temp = m[2][0];
-    m[2][0] = m[2][0] * cosin - m[2][2] * sinus;
-    m[2][2] = temp    * sinus + m[2][2] * cosin;
+    tmp =  m21*cosin + m22*sinus;
+    m22 = -m21*sinus + m22*cosin;
+    m21 = tmp;
 
-    temp = m[3][0];
-    m[3][0] = m[3][0] * cosin - m[3][2] * sinus;
-    m[3][2] = temp    * sinus + m[3][2] * cosin;
+    tmp =  m31*cosin + m32*sinus;
+    m32 = -m31*sinus + m32*cosin;
+    m31 = tmp;
 }
 
 template<>
@@ -678,21 +681,21 @@ inline void Matrix4<float>::rotateX( const float angle )
     const float sinus = sinf(angle);
     const float cosin = cosf(angle);
 
-    float temp = m[0][0];
-    m[0][0] = m[0][0] * cosin - m[0][2] * sinus;
-    m[0][2] = temp    * sinus + m[0][2] * cosin;
+    float tmp =  m01*cosin + m02*sinus;
+    m02   = -m01*sinus + m02*cosin;
+    m01   = tmp;
 
-    temp = m[1][0];
-    m[1][0] = m[1][0] * cosin - m[1][2] * sinus;
-    m[1][2] = temp    * sinus + m[1][2] * cosin;
+    tmp =  m11*cosin + m12*sinus;
+    m12 = -m11*sinus + m12*cosin;
+    m11 = tmp;
 
-    temp = m[2][0];
-    m[2][0] = m[2][0] * cosin - m[2][2] * sinus;
-    m[2][2] = temp    * sinus + m[2][2] * cosin;
+    tmp =  m21*cosin + m22*sinus;
+    m22 = -m21*sinus + m22*cosin;
+    m21 = tmp;
 
-    temp = m[3][0];
-    m[3][0] = m[3][0] * cosin - m[3][2] * sinus;
-    m[3][2] = temp    * sinus + m[3][2] * cosin;
+    tmp =  m31*cosin + m32*sinus;
+    m32 = -m31*sinus + m32*cosin;
+    m31 = tmp;
 }
 
 template< typename T >
@@ -702,21 +705,21 @@ void Matrix4<T>::rotateY( const T angle )
     const T sinus = sin(angle);
     const T cosin = cos(angle);
 
-    T temp = m[0][1];
-    m[0][1] = m[0][1] *  cosin + m[0][2] * sinus;
-    m[0][2] = temp    * -sinus + m[0][2] * cosin;
+    T tmp = m00*cosin - m02*sinus;
+    m02   = m00*sinus + m02*cosin;
+    m00   = tmp;
 
-    temp = m[1][1];
-    m[1][1] = m[1][1] *  cosin + m[1][2] * sinus;
-    m[1][2] = temp    * -sinus + m[1][2] * cosin;
+    tmp = m10*cosin - m12*sinus;
+    m12 = m10*sinus + m12*cosin;
+    m10 = tmp;
 
-    temp = m[2][1];
-    m[2][1] = m[2][1] *  cosin + m[2][2] * sinus;
-    m[2][2] = temp    * -sinus + m[2][2] * cosin;
+    tmp = m20*cosin - m22*sinus;
+    m22 = m20*sinus + m22*cosin;
+    m20 = tmp;
 
-    temp = m[3][1];
-    m[3][1] = m[3][1] *  cosin + m[3][2] * sinus;
-    m[3][2] = temp    * -sinus + m[3][2] * cosin;
+    tmp = m30*cosin - m32*sinus;
+    m32 = m30*sinus + m32*cosin;
+    m30 = tmp;
 }
 
 template<>
@@ -726,21 +729,21 @@ inline void Matrix4<float>::rotateY( const float angle )
     const float sinus = sinf(angle);
     const float cosin = cosf(angle);
 
-    float temp = m[0][1];
-    m[0][1] = m[0][1] *  cosin + m[0][2] * sinus;
-    m[0][2] = temp    * -sinus + m[0][2] * cosin;
+    float tmp = m00*cosin - m02*sinus;
+    m02   = m00*sinus + m02*cosin;
+    m00   = tmp;
 
-    temp = m[1][1];
-    m[1][1] = m[1][1] *  cosin + m[1][2] * sinus;
-    m[1][2] = temp    * -sinus + m[1][2] * cosin;
+    tmp = m10*cosin - m12*sinus;
+    m12 = m10*sinus + m12*cosin;
+    m10 = tmp;
 
-    temp = m[2][1];
-    m[2][1] = m[2][1] *  cosin + m[2][2] * sinus;
-    m[2][2] = temp    * -sinus + m[2][2] * cosin;
+    tmp = m20*cosin - m22*sinus;
+    m22 = m20*sinus + m22*cosin;
+    m20 = tmp;
 
-    temp = m[3][1];
-    m[3][1] = m[3][1] *  cosin + m[3][2] * sinus;
-    m[3][2] = temp    * -sinus + m[3][2] * cosin;
+    tmp = m30*cosin - m32*sinus;
+    m32 = m30*sinus + m32*cosin;
+    m30 = tmp;
 }
 
 template< typename T >
@@ -750,21 +753,21 @@ void Matrix4<T>::rotateZ( const T angle )
     const T sinus = sin(angle);
     const T cosin = cos(angle);
 
-    T temp = m[0][0];
-    m[0][0] = m[0][0] *  cosin + m[0][1] * sinus;
-    m[0][1] = temp    * -sinus + m[0][1] * cosin;
+    T tmp =  m00*cosin + m01*sinus;
+    m01   = -m00*sinus + m01*cosin;
+    m00   = tmp;
 
-    temp = m[1][0];
-    m[1][0] = m[1][0] *  cosin + m[1][1] * sinus;
-    m[1][1] = temp    * -sinus + m[1][1] * cosin;
+    tmp =  m10*cosin + m11*sinus; 
+    m11 = -m10*sinus + m11*cosin;
+    m10 =  tmp;
 
-    temp = m[2][0];
-    m[2][0] = m[2][0] *  cosin + m[2][1] * sinus;
-    m[2][1] = temp    * -sinus + m[2][1] * cosin;
+    tmp =  m20*cosin + m21*sinus;
+    m21 = -m20*sinus + m21*cosin;
+    m20 =  tmp;
 
-    temp = m[3][0];
-    m[3][0] = m[3][0] *  cosin + m[3][1] * sinus;
-    m[3][1] = temp    * -sinus + m[3][1] * cosin;
+    tmp =  m30*cosin + m31*sinus;
+    m31 = -m30*sinus + m31*cosin;
+    m30 =  tmp;
 }
 
 template<>
@@ -774,21 +777,164 @@ inline void Matrix4<float>::rotateZ( const float angle )
     const float sinus = sinf(angle);
     const float cosin = cosf(angle);
 
-    float temp = m[0][0];
-    m[0][0] = m[0][0] *  cosin + m[0][1] * sinus;
-    m[0][1] = temp    * -sinus + m[0][1] * cosin;
+    float tmp =  m00*cosin + m01*sinus;
+    m01   = -m00*sinus + m01*cosin;
+    m00   = tmp;
 
-    temp = m[1][0];
-    m[1][0] = m[1][0] *  cosin + m[1][1] * sinus;
-    m[1][1] = temp    * -sinus + m[1][1] * cosin;
+    tmp =  m10*cosin + m11*sinus; 
+    m11 = -m10*sinus + m11*cosin;
+    m10 =  tmp;
 
-    temp = m[2][0];
-    m[2][0] = m[2][0] *  cosin + m[2][1] * sinus;
-    m[2][1] = temp    * -sinus + m[2][1] * cosin;
+    tmp =  m20*cosin + m21*sinus;
+    m21 = -m20*sinus + m21*cosin;
+    m20 =  tmp;
 
-    temp = m[3][0];
-    m[3][0] = m[3][0] *  cosin + m[3][1] * sinus;
-    m[3][1] = temp    * -sinus + m[3][1] * cosin;
+    tmp =  m30*cosin + m31*sinus;
+    m31 = -m30*sinus + m31*cosin;
+    m30 =  tmp;
+}
+
+template< typename T >
+void Matrix4<T>::preRotateX( const T angle )
+{
+    const T sinus = sin(angle);
+    const T cosin = cos(angle);
+
+    T temp = m00;
+    m00 = m00  * cosin - m20 * sinus;
+    m20 = temp * sinus + m20 * cosin;
+
+    temp = m01;
+    m01 = m01  * cosin - m21 * sinus;
+    m21 = temp * sinus + m21 * cosin;
+
+    temp = m02;
+    m02 = m02  * cosin - m22 * sinus;
+    m22 = temp * sinus + m22 * cosin;
+
+    temp = m03;
+    m03 = m03  * cosin - m23 * sinus;
+    m23 = temp * sinus + m23 * cosin;
+}
+
+template<>
+inline void Matrix4<float>::preRotateX( const float angle )
+{
+    //matrix multiplication: ml = ml * rotation x axis
+    const float sinus = sinf(angle);
+    const float cosin = cosf(angle);
+
+    float temp = m00;
+    m00 = m00  * cosin - m20 * sinus;
+    m20 = temp * sinus + m20 * cosin;
+
+    temp = m01;
+    m01 = m01  * cosin - m21 * sinus;
+    m21 = temp * sinus + m21 * cosin;
+
+    temp = m02;
+    m02 = m02  * cosin - m22 * sinus;
+    m22 = temp * sinus + m22 * cosin;
+
+    temp = m03;
+    m03 = m03  * cosin - m23 * sinus;
+    m23 = temp * sinus + m23 * cosin;
+}
+
+template< typename T >
+void Matrix4<T>::preRotateY( const T angle )
+{
+    //matrix multiplication: ml = ml * rotation y axis
+    const T sinus = sin(angle);
+    const T cosin = cos(angle);
+
+    T temp = m10;
+    m10 = m10  *  cosin + m20 * sinus;
+    m20 = temp * -sinus + m20 * cosin;
+
+    temp = m11;
+    m11 = m11  *  cosin + m21 * sinus;
+    m21 = temp * -sinus + m21 * cosin;
+
+    temp = m12;
+    m12 = m12  *  cosin + m22 * sinus;
+    m22 = temp * -sinus + m22 * cosin;
+
+    temp = m13;
+    m13 = m13  *  cosin + m23 * sinus;
+    m23 = temp * -sinus + m23 * cosin;
+}
+
+template<>
+inline void Matrix4<float>::preRotateY( const float angle )
+{
+    //matrix multiplication: ml = ml * rotation y axis
+    const float sinus = sinf(angle);
+    const float cosin = cosf(angle);
+
+    float temp = m10;
+    m10 = m10  *  cosin + m20 * sinus;
+    m20 = temp * -sinus + m20 * cosin;
+
+    temp = m11;
+    m11 = m11  *  cosin + m21 * sinus;
+    m21 = temp * -sinus + m21 * cosin;
+
+    temp = m12;
+    m12 = m12  *  cosin + m22 * sinus;
+    m22 = temp * -sinus + m22 * cosin;
+
+    temp = m13;
+    m13 = m13  *  cosin + m23 * sinus;
+    m23 = temp * -sinus + m23 * cosin;
+}
+
+template< typename T >
+void Matrix4<T>::preRotateZ( const T angle )
+{
+    //matrix multiplication: ml = ml * rotation z axis
+    const T sinus = sin(angle);
+    const T cosin = cos(angle);
+
+    T temp = m00;
+    m00 = m00  *  cosin + m10 * sinus;
+    m10 = temp * -sinus + m10 * cosin;
+
+    temp = m01;
+    m01 = m01  *  cosin + m11 * sinus;
+    m11 = temp * -sinus + m11 * cosin;
+
+    temp = m02;
+    m02 = m02  *  cosin + m12 * sinus;
+    m12 = temp * -sinus + m12 * cosin;
+
+    temp = m03;
+    m03 = m03  *  cosin + m13 * sinus;
+    m13 = temp * -sinus + m13 * cosin;
+}
+
+template<>
+inline void Matrix4<float>::preRotateZ( const float angle )
+{
+    //matrix multiplication: ml = ml * rotation z axis
+    const float sinus = sinf(angle);
+    const float cosin = cosf(angle);
+
+    float temp = m00;
+    m00 = m00  *  cosin + m10 * sinus;
+    m10 = temp * -sinus + m10 * cosin;
+
+    temp = m01;
+    m01 = m01  *  cosin + m11 * sinus;
+    m11 = temp * -sinus + m11 * cosin;
+
+    temp = m02;
+    m02 = m02  *  cosin + m12 * sinus;
+    m12 = temp * -sinus + m12 * cosin;
+
+    temp = m03;
+    m03 = m03  *  cosin + m13 * sinus;
+    m13 = temp * -sinus + m13 * cosin;
 }
 
 template< typename T >

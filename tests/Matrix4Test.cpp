@@ -22,7 +22,6 @@ bool Matrix4Test::test()
         {
             cout << "test: Matrix4::Matrix4( ... ) failed!" << endl;
             failed();
-            assert( 0 );            
         }
     }
     // set test    
@@ -36,7 +35,6 @@ bool Matrix4Test::test()
         {
             cout << "test: Matrix4::set( ... ) failed!" << endl;
             failed();
-            assert( 0 );            
         }
     }
     // operator == / != test
@@ -44,7 +42,6 @@ bool Matrix4Test::test()
     {
         cout << "test: Matrix4::operator ==() / !=() failed!" << endl;
         failed();
-        assert( 0 );
     }  
  
     // transpose test
@@ -57,7 +54,6 @@ bool Matrix4Test::test()
     {
         cout << "test: Matrix4::transpose() failed!" << endl;
         failed();
-        assert( 0 );
     }
     
     // get set column/row test
@@ -69,7 +65,6 @@ bool Matrix4Test::test()
         {
             cout << "test: Matrix4::setRow(...) failed!" << endl;
             failed();
-            assert( 0 );       
         } 
     }
     
@@ -78,7 +73,6 @@ bool Matrix4Test::test()
     {
             cout << "test: Matrix4::getRow() failed!" << endl;
             failed();
-            assert( 0 );       
     }
     
     _matrix.setColumn( 2, vrow);
@@ -88,7 +82,6 @@ bool Matrix4Test::test()
         {
             cout << "test: Matrix4::setColumn(...) failed!" << endl;
             failed();
-            assert( 0 );       
         } 
     }
     
@@ -98,7 +91,6 @@ bool Matrix4Test::test()
         {
             cout << "test: Matrix4::getColumn(...) failed!" << endl;
             failed();
-            assert( 0 );       
         }
     }
     
@@ -109,7 +101,6 @@ bool Matrix4Test::test()
     {
         cout << "test: Matrix4::operator=(...) failed!" << endl;
         failed();
-        assert( 0 );           
     }
 
     // m * scalar
@@ -120,8 +111,7 @@ bool Matrix4Test::test()
         {
             cout << "test: Matrix4::operator*=( scalar ) failed!" << endl;
             failed();
-            assert( 0 );           
-        }
+            }
     }
     Matrix4d tmm( _matrix );
     tmm = _matrix * 0.5f;
@@ -129,7 +119,6 @@ bool Matrix4Test::test()
     {
         cout << "test: Matrix4::operator*( scalar ) failed!" << endl;
         failed();
-        assert( 0 );           
     }
     
     // m * m
@@ -145,7 +134,6 @@ bool Matrix4Test::test()
         cout << "test: Matrix4::operator*( matrix ) failed!" << endl;
         cout << _matrix << tm << tmm << tmmm << endl;
         failed();
-        assert( 0 );           
     }  
     
     tmmm = _matrix;
@@ -155,7 +143,6 @@ bool Matrix4Test::test()
         cout << "test: Matrix4::operator*=( matrix ) failed!" << endl;
         cout << tmmm << endl;
         failed();
-        assert( 0 );           
     }
     
     // m * vector
@@ -169,7 +156,6 @@ bool Matrix4Test::test()
         cout << "test: Matrix4::operator*( Vector4 ) failed!" << endl;
         cout << _matrix << vector4 << resultV4 << expectV4 << endl;
         failed();
-        assert( 0 );           
     }  
     
     vector4.set( 12., 13., 14., 1. );
@@ -180,7 +166,6 @@ bool Matrix4Test::test()
         cout << "test: Matrix4::operator*( Vector4 ) failed!" << endl;
         cout << _matrix << vector4 << resultV3 << endl;
         failed();
-        assert( 0 );           
     }  
     
     // vector' * m
@@ -194,9 +179,44 @@ bool Matrix4Test::test()
         cout << "test: Vector4::operator*( Matrix4 ) failed!" << endl;
         cout << vector4 << _matrix << resultV4 << expectV4 << endl;
         failed();
-        assert( 0 );           
     }  
-    
+
+    // axis rotations
+    Vector3d vector3( 83., 42., 17. );
+
+    _matrix = Matrix4d::IDENTITY;
+    _matrix.rotateX( M_PI_2 );
+    resultV3 = _matrix * vector3;
+    Vector3d expectV3( vector3.x, vector3.z, -vector3.y );
+    if( !resultV3.isAkin( expectV3, 0.001 ))
+    {
+        cout << "test: Matrix4::rotateX failed!" << endl;
+        cout << resultV3 << " != " << expectV3 << endl;
+        failed();
+    }
+
+    _matrix = Matrix4d::IDENTITY;
+    _matrix.rotateY( M_PI_2 );
+    resultV3 = _matrix * vector3;
+    expectV3.set( -vector3.z, vector3.y, vector3.x );
+    if( !resultV3.isAkin( expectV3, 0.001 ))
+    {
+        cout << "test: Matrix4::rotateY failed!" << endl;
+        cout << resultV3 << " != " << expectV3 << endl;
+        failed();
+    }
+
+    _matrix = Matrix4d::IDENTITY;
+    _matrix.rotateZ( M_PI_2 );
+    resultV3 = _matrix * vector3;
+    expectV3.set( vector3.y, -vector3.x, vector3.z );
+    if( !resultV3.isAkin( expectV3, 0.001 ))
+    {
+        cout << "test: Matrix4::rotateZ failed!" << endl;
+        cout << resultV3 << " != " << expectV3 << endl;
+        failed();
+    }
+
     // negation
     _matrix.set( 16., 2., 3., 13., 5., 11., 10., 8.,
                  9., 7., 6., 12., 4., 14., 15., 1. );
@@ -208,7 +228,6 @@ bool Matrix4Test::test()
     {
         cout << "test: Matrix4::operator- / negate() failed!" << endl;
         failed();
-        assert( 0 );           
     }
       
     // determinant
@@ -220,7 +239,6 @@ bool Matrix4Test::test()
         cout << "test: Matrix4::determinant() failed!" << endl;
         cout << "det: " << det << " instead of 56225 " << endl;
         failed();
-        assert( 0 );           
     }
 
     // inverse
@@ -254,8 +272,7 @@ bool Matrix4Test::test()
             cout << "corrent result: " << tmf << endl;
             cout << "difference matrix " << invm - tmf << endl;
             failed();
-            assert( 0 );           
-        }
+            }
     }
     
     // tensor product
@@ -269,7 +286,6 @@ bool Matrix4Test::test()
     {
         cout << "test: Matrix4::tensor() failed!" << endl;
         failed();
-        assert( 0 );           
     }
     
     

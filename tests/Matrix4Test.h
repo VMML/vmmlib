@@ -10,11 +10,12 @@ class Matrix4Test : public Test
 {
 public: 
     Matrix4Test();
-    
+    virtual ~Matrix4Test() {}
+
     virtual bool test();
 
 protected:
-    void failed() { ok = false; };
+    void failed() { ok = false; ::abort(); };
     bool ok;
     Matrix4d _matrix;
 };

@@ -146,6 +146,7 @@ public:
     void preRotateY( const T angle );
     void preRotateZ( const T angle );
     void scale( const T scale[3] );
+    void scale( const T x, const T y, const T z );
     void scale( const Vector3< T >& scale );
     void scaleTranslation( const T scale[3] );
     void scaleTranslation( const Vector3< T >& scale );
@@ -952,6 +953,23 @@ void Matrix4<T>::scale( const T scale[3] )
     ml[9]  *= scale[2];
     ml[10] *= scale[2];
     ml[11] *= scale[2];
+}
+
+template< typename T >
+void Matrix4<T>::scale( const T x, const T y, const T z )
+{
+    ml[0]  *= x;
+    ml[1]  *= x;
+    ml[2]  *= x;
+    ml[3]  *= x;
+    ml[4]  *= y;
+    ml[5]  *= y;
+    ml[6]  *= y;
+    ml[7]  *= y;
+    ml[8]  *= z;
+    ml[9]  *= z;
+    ml[10] *= z;
+    ml[11] *= z;
 }
 
 template< typename T >

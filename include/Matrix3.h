@@ -23,12 +23,12 @@
 #include "Vector3.h"
 #include "Vector4.h"
 
-#include <math.h>
-#include <stdlib.h>
+#include <cmath>
+#include <cstdlib>
 #include <iomanip>
 #include <iostream>
 #include <algorithm>
-#include <assert.h>
+#include <cassert>
 
 //
 // - declaration -

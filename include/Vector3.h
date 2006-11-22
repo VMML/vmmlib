@@ -19,12 +19,12 @@
 #ifndef _Vector3_H_
 #define _Vector3_H_
 
-#include <math.h>
-#include <stdlib.h>
+#include <cmath>
+#include <cstdlib>
 #include <iomanip>
 #include <iostream>
 #include <algorithm>
-#include <assert.h>
+#include <cassert>
 
 // - declaration -
 

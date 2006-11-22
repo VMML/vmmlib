@@ -22,12 +22,12 @@
  *   4x4 Matrix Class
  */ 
 
-#include <math.h>
-#include <stdlib.h>
+#include <cmath>
+#include <cstdlib>
 #include <iomanip>
 #include <iostream>
 #include <algorithm>
-#include <assert.h>
+#include <cassert>
 
 // * * * * * * * * * *
 //

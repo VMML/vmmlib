@@ -56,12 +56,12 @@ public:
 
         os.setf( std::ios::right, std::ios::adjustfield );
         os.precision( 5 );
-        os << std::endl << "[" << std::setw(10) << frustum.left << " " 
+        os << "[" << std::setw(10) << frustum.left << " " 
            << std::setw(10) << frustum.right  << " " 
            << std::setw(10) << frustum.top    << " " 
            << std::setw(10) << frustum.bottom << " " 
            << std::setw(10) << frustum.near   << " " 
-           << std::setw(10) << frustum.far    << "]" << std::endl;
+           << std::setw(10) << frustum.far    << "]";
         os.precision( prec );
         os.setf( flags );
         return os;

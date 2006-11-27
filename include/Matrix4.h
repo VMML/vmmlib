@@ -193,7 +193,7 @@ public:
         os.setf( flags );
         return os;
     };  
-    
+
     static const Matrix4 IDENTITY;
     static const Matrix4 ZERO;
 

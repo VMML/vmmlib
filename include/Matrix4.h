@@ -138,8 +138,8 @@ public:
     Matrix4 getAdjugate() const;
     inline Matrix4 getAdjoint() const;
     
-    Matrix4 getInverse( bool& isInvertible, T limit = 0.0000000001 );
-    inline bool getInverse( Matrix4& result, T limit = 0.0000000001 );
+    Matrix4 getInverse( bool& isInvertible, T limit = 0.0000000001 ) const;
+    inline bool getInverse( Matrix4& result, T limit = 0.0000000001 ) const;
 
     void rotateX( const T angle );
     void rotateY( const T angle );
@@ -654,7 +654,7 @@ Matrix4< T > Matrix4< T >::getAdjugate() const
 }
 
 template< typename T > 
-Matrix4< T > Matrix4< T >::getInverse( bool& isInvertible, T limit )
+Matrix4< T > Matrix4< T >::getInverse( bool& isInvertible, T limit ) const
 {
     Matrix4< T > tmp; 
     isInvertible = getInverse( tmp, limit );
@@ -662,7 +662,7 @@ Matrix4< T > Matrix4< T >::getInverse( bool& isInvertible, T limit )
 }
 
 template< typename T > 
-bool Matrix4< T >::getInverse( Matrix4< T >& result, T limit )
+bool Matrix4< T >::getInverse( Matrix4< T >& result, T limit ) const
 {
     T det = getDeterminant();
     if ( fabs(det) <= limit ) 

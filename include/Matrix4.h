@@ -64,7 +64,6 @@ public:
     };
     
     Matrix4();
-    Matrix4( const Matrix4& mm );
     Matrix4( T v00, T v01, T v02, T v03, 
              T v10, T v11, T v12, T v13,
              T v20, T v21, T v22, T v23,
@@ -72,6 +71,9 @@ public:
     Matrix4( const Vector4<T>& v0, const Vector4<T>& v1, 
              const Vector4<T>& v2, const Vector4<T>& v3, 
              bool columnVectors = false );
+
+    Matrix4( const Matrix4<float>& mm );
+    Matrix4( const Matrix4<double>& mm );
 
     // dangerous, but implemented to allow easy conversion between 
     // Matrix< float > and Matrix< double >
@@ -230,12 +232,6 @@ Matrix4< T >::Matrix4()
 {}
 
 template< typename T > 
-Matrix4< T >::Matrix4( const Matrix4< T >& mm )
-{
-    memcpy(m,mm.m, 16 * sizeof( T ) );
-}
-
-template< typename T > 
 Matrix4< T >::Matrix4( T v00, T v01, T v02, T v03, 
                        T v10, T v11, T v12, T v13,
                        T v20, T v21, T v22, T v23,
@@ -292,6 +288,31 @@ void Matrix4< T >::setElement( const size_t row, const size_t col,
                          const T& value ) const
 {
     m[col][row] = value;
+}
+
+template< typename T > 
+Matrix4< T >::Matrix4( const Matrix4<float>& mm )
+{
+    for ( size_t i = 0; i < 16; ++i )
+        ml[i] = static_cast< T > ( mm.ml[i] );
+}
+template<> 
+inline Matrix4< float >::Matrix4( const Matrix4< float >& mm )
+{
+    memcpy(m,mm.m, 16 * sizeof( float ) );
+}
+
+
+template< typename T > 
+Matrix4< T >::Matrix4( const Matrix4<double>& mm )
+{
+    for ( size_t i = 0; i < 16; ++i )
+        ml[i] = static_cast< T > ( mm.ml[i] );
+}
+template<> 
+inline Matrix4< double >::Matrix4( const Matrix4< double >& mm )
+{
+    memcpy(m,mm.m, 16 * sizeof( double ) );
 }
 
 template< typename T > 

@@ -25,8 +25,8 @@ public:
         {
             T left;
             T right;
-            T top;
             T bottom;
+            T top;
             T near;
             T far;
         };
@@ -35,7 +35,7 @@ public:
             
     // contructors
     Frustum(); // warning: components NOT initialised ( for performance )
-    Frustum( const T left, const T right, const T top, const T bottom,
+    Frustum( const T left, const T right, const T bottom, const T top,
              const T near, const T far );
         
     // dangerous, but implemented to allow easy conversion between 
@@ -58,8 +58,8 @@ public:
         os.precision( 5 );
         os << "[" << std::setw(10) << frustum.left << " " 
            << std::setw(10) << frustum.right  << " " 
-           << std::setw(10) << frustum.top    << " " 
            << std::setw(10) << frustum.bottom << " " 
+           << std::setw(10) << frustum.top    << " " 
            << std::setw(10) << frustum.near   << " " 
            << std::setw(10) << frustum.far    << "]";
         os.precision( prec );
@@ -90,12 +90,12 @@ Frustum< T >::Frustum()
 {} 
 
 template < class T > 
-Frustum<T>::Frustum( const T _left, const T _right, const T _top, 
-                     const T _bottom, const T _near, const T _far )
+Frustum<T>::Frustum( const T _left, const T _right, const T _bottom, 
+                     const T _top, const T _near, const T _far )
     : left( _left ),
       right( _right ),
-      top( _top ),
       bottom( _bottom ),
+      top( _top ),
       near( _near ),
       far( _far )
 {} 
@@ -103,11 +103,12 @@ Frustum<T>::Frustum( const T _left, const T _right, const T _top,
 template < class T > 
 Frustum< T >::Frustum( const float* values )
 {
-    assert( values && "Frustum: Nullpointer argument as source for initialisation!" );
+    assert( values && 
+            "Frustum: Nullpointer argument as source for initialisation!" );
     left   = static_cast< T > ( values[0] );
     right  = static_cast< T > ( values[1] );
-    top    = static_cast< T > ( values[2] );
-    bottom = static_cast< T > ( values[3] );
+    bottom = static_cast< T > ( values[2] );
+    top    = static_cast< T > ( values[3] );
     near   = static_cast< T > ( values[4] );
     far    = static_cast< T > ( values[5] );
 }
@@ -115,11 +116,12 @@ Frustum< T >::Frustum( const float* values )
 template < class T > 
 Frustum< T >::Frustum( const double* values )
 {
-    assert( values && "Frustum: Nullpointer argument as source for initialisation!" );
+    assert( values &&
+            "Frustum: Nullpointer argument as source for initialisation!" );
     left   = static_cast< T > ( values[0] );
     right  = static_cast< T > ( values[1] );
-    top    = static_cast< T > ( values[2] );
-    bottom = static_cast< T > ( values[3] );
+    bottom = static_cast< T > ( values[2] );
+    top    = static_cast< T > ( values[3] );
     near   = static_cast< T > ( values[4] );
     far    = static_cast< T > ( values[5] );
 }
@@ -135,14 +137,14 @@ void Frustum<T>::adjustNear( const T _near )
     if( _near == near )
         return;
 
-    const T ratio_2 = 0.5f * _near / near;
+    const T ratio_2 = 0.5 * _near / near;
 
-    const T hMiddle = (right + left) * 0.5f;
+    const T hMiddle = (right + left) * 0.5;
     const T width_2 = (right - left) * ratio_2;
     right = hMiddle + width_2;
     left  = hMiddle - width_2; 
 
-    const T vMiddle  = (top + bottom) * 0.5f;
+    const T vMiddle  = (top + bottom) * 0.5;
     const T height_2 = (top - bottom) * ratio_2;
     top    = vMiddle + height_2;
     bottom = vMiddle - height_2;
@@ -153,19 +155,28 @@ void Frustum<T>::adjustNear( const T _near )
 template < class T > 
 Matrix4<T> Frustum<T>::computeMatrix() const
 {
-    Matrix4<T> matrix = Matrix4<T>::IDENTITY;
+    Matrix4<T> matrix;
 
-    matrix.m00 = 2 * near / (right - left);
-    matrix.m02 = (right + left) / (right - left );
+    matrix.m00 = 2.0 * near / (right - left);
+    matrix.m01 = 0.0;
+    matrix.m02 = (right + left) / (right - left);
+    matrix.m03 = 0.0;
     
-    matrix.m11 = 2 * near / (top - bottom);
+    matrix.m10 = 0.0;
+    matrix.m11 = 2.0 * near / (top - bottom);
     matrix.m12 = (top + bottom) / (top - bottom);
+    matrix.m13 = 0.0;
 
-    matrix.m22 = (far + near) / (far - near);
-    matrix.m23 = 2 * far * near / (far - near);
+    matrix.m20 = 0.0;
+    matrix.m21 = 0.0;
+    // NOTE: Some glFrustum man pages say wrongly '(far + near) / (far - near)'
+    matrix.m22 = -(far + near) / (far - near);
+    matrix.m23 = -2.0 * far * near / (far - near);
 
-    matrix.m32 = -1;
-    matrix.m33 =  0;
+    matrix.m30 = 0.0;
+    matrix.m31 = 0.0;
+    matrix.m32 = -1.0;
+    matrix.m33 =  0.0;
 
     return matrix;
 }

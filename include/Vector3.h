@@ -143,7 +143,9 @@ public:
         os.precision( prec );
         os.setf( flags );
         return os;
-    };        
+    }; 
+
+    static const Vector3 ZERO;
 };
     
 #ifndef VMMLIB_DISABLE_TYPEDEFS
@@ -156,6 +158,9 @@ public:
  
 namespace vmml
 {      
+template< typename T > 
+const Vector3< T > Vector3< T >::ZERO( 0, 0, 0 );
+
 template < typename T > 
 Vector3< T >::Vector3() 
 {} 

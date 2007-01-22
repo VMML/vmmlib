@@ -130,6 +130,7 @@ public:
         os.setf( flags );
         return os;
     };        
+    static const Vector4 ZERO;
 };
 
 #ifndef VMMLIB_DISABLE_TYPEDEFS
@@ -144,6 +145,9 @@ public:
 
 namespace vmml
 {
+template< typename T > 
+const Vector4< T > Vector4< T >::ZERO( 0, 0, 0, 0 );
+
 template < typename T > 
 Vector4< T >::Vector4() 
 {} 

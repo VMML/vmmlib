@@ -108,7 +108,9 @@ public:
         os.precision( prec );
         os.setf( flags );
         return os;
-    };        
+    };
+
+    static const Vector2 ZERO;
 };
 
 #ifndef VMMLIB_DISABLE_TYPEDEFS
@@ -119,6 +121,9 @@ public:
 
 // - implementation - //
        
+template< typename T > 
+const Vector2< T > Vector2< T >::ZERO( 0, 0 );
+
 template < class Real > 
 Vector2< Real >::Vector2() 
 {} 

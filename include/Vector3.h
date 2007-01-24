@@ -19,12 +19,13 @@
 #ifndef _Vector3_H_
 #define _Vector3_H_
 
+#include <algorithm>
+#include <cassert>
 #include <cmath>
 #include <cstdlib>
 #include <iomanip>
 #include <iostream>
-#include <algorithm>
-#include <cassert>
+#include <limits>
 
 // - declaration -
 
@@ -128,8 +129,8 @@ public:
 
     Vector3 rotate( T theta, T  rx, T  ry, T  rz ); 
 
-    T min();
-    T max();
+    T getMinComponent();
+    T getMaxComponent();
 
     friend std::ostream& operator << ( std::ostream& os, const Vector3& v )
     {
@@ -157,7 +158,7 @@ public:
 #include "Vector4.h"
  
 namespace vmml
-{      
+{
 template< typename T > 
 const Vector3< T > Vector3< T >::ZERO( 0, 0, 0 );
 
@@ -580,7 +581,7 @@ inline Vector3< float > Vector3< float >::rotate( float theta, float rx,
 } 
 
 template < typename T > 
-T Vector3< T >::max() 
+T Vector3< T >::getMaxComponent() 
 { 
     T m = std::max( x,y ); 
     m = std::max( m, z); 
@@ -588,7 +589,7 @@ T Vector3< T >::max()
 }
 
 template < typename T > 
-T Vector3< T >::min() 
+T Vector3< T >::getMinComponent() 
 { 
     T m = std::min( x,y ); 
     m = std::min( m, z); 

@@ -114,8 +114,8 @@ public:
 
     void invert(); 
 
-    T min();
-    T max();
+    T getMinComponent();
+    T getMaxComponent();
 
     friend std::ostream& operator << ( std::ostream& os, const Vector4& v )
     {
@@ -484,7 +484,7 @@ void Vector4< T >::invert()
 }
 
 template < typename T > 
-T Vector4< T >::max() 
+T Vector4< T >::getMaxComponent() 
 { 
     T m = std::max( x, y ); 
     m = std::max( m, z); 
@@ -493,7 +493,7 @@ T Vector4< T >::max()
 }
 
 template < typename T > 
-T Vector4< T >::min() 
+T Vector4< T >::getMinComponent() 
 { 
     T m = std::min( x, y ); 
     m = std::min( m, z); 

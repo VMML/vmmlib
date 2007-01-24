@@ -5,9 +5,10 @@ namespace vmml
 {
 
 /*
- * Given a matrix a[1..m][1..n], this routine computes its singular value decomposition, A =
- * U·W·V T. Thematrix U replaces a on output. The diagonal matrix of singular values W is output
- * as a vector w[1..n]. Thematrix V (not the transpose V T ) is output as v[1..n][1..n].
+ * Given a matrix a[1..m][1..n], this routine computes its singular value
+ * decomposition, A = U·W·V T. The matrix U replaces a on output. The diagonal
+ * matrix of singular values W is output as a vector w[1..n]. The matrix V 
+ * (not the transpose V T ) is output as v[1..n][1..n].
  */ 
 template < class Real >
 void svdecompose( Real **a, int m, size_t n, Real  w[], Real **v)

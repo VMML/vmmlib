@@ -94,8 +94,8 @@ public:
     void scale( Real scale_factor );
     void invert();
 
-    Real min();
-    Real max();
+    Real getMinComponent();
+    Real getMaxComponent();
 
     friend std::ostream& operator << ( std::ostream& os, const Vector2& v )
     {
@@ -402,13 +402,13 @@ void Vector2< Real >::invert()
 }
 
 template < class Real > 
-Real Vector2< Real >::max() 
+Real Vector2< Real >::getMaxComponent() 
 { 
     return std::max( x,y ); 
 }
 
 template < class Real > 
-Real Vector2< Real >::min() 
+Real Vector2< Real >::getMinComponent() 
 { 
     return std::min( x,y ); 
 } 

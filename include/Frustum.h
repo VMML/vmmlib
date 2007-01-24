@@ -27,8 +27,8 @@ public:
             T right;
             T bottom;
             T top;
-            T near;
-            T far;
+            T nearPlane;
+            T farPlane;
         };
         T data[6];
     };
@@ -36,7 +36,7 @@ public:
     // contructors
     Frustum(); // warning: components NOT initialised ( for performance )
     Frustum( const T left, const T right, const T bottom, const T top,
-             const T near, const T far );
+             const T nearPlane, const T farPlane );
         
     // dangerous, but implemented to allow easy conversion between 
     // Frustum< float > and Frustum< double >
@@ -47,7 +47,7 @@ public:
     ~Frustum();
 
     Matrix4<T> computeMatrix() const;
-    void       adjustNear( const T near );
+    void       adjustNear( const T nearPlane );
 
     friend std::ostream& operator << ( std::ostream& os, const Frustum& frustum)
     {
@@ -60,8 +60,8 @@ public:
            << std::setw(10) << frustum.right  << " " 
            << std::setw(10) << frustum.bottom << " " 
            << std::setw(10) << frustum.top    << " " 
-           << std::setw(10) << frustum.near   << " " 
-           << std::setw(10) << frustum.far    << "]";
+           << std::setw(10) << frustum.nearPlane   << " " 
+           << std::setw(10) << frustum.farPlane    << "]";
         os.precision( prec );
         os.setf( flags );
         return os;
@@ -96,8 +96,8 @@ Frustum<T>::Frustum( const T _left, const T _right, const T _bottom,
       right( _right ),
       bottom( _bottom ),
       top( _top ),
-      near( _near ),
-      far( _far )
+      nearPlane( _near ),
+      farPlane( _far )
 {} 
 
 template < class T > 
@@ -109,8 +109,8 @@ Frustum< T >::Frustum( const float* values )
     right  = static_cast< T > ( values[1] );
     bottom = static_cast< T > ( values[2] );
     top    = static_cast< T > ( values[3] );
-    near   = static_cast< T > ( values[4] );
-    far    = static_cast< T > ( values[5] );
+    nearPlane   = static_cast< T > ( values[4] );
+    farPlane    = static_cast< T > ( values[5] );
 }
 
 template < class T > 
@@ -122,8 +122,8 @@ Frustum< T >::Frustum( const double* values )
     right  = static_cast< T > ( values[1] );
     bottom = static_cast< T > ( values[2] );
     top    = static_cast< T > ( values[3] );
-    near   = static_cast< T > ( values[4] );
-    far    = static_cast< T > ( values[5] );
+    nearPlane   = static_cast< T > ( values[4] );
+    farPlane    = static_cast< T > ( values[5] );
 }
 
 
@@ -134,10 +134,10 @@ Frustum< T >::~Frustum()
 template < class T > 
 void Frustum<T>::adjustNear( const T _near )
 {
-    if( _near == near )
+    if( _near == nearPlane )
         return;
 
-    const T ratio_2 = 0.5 * _near / near;
+    const T ratio_2 = 0.5 * _near / nearPlane;
 
     const T hMiddle = (right + left) * 0.5;
     const T width_2 = (right - left) * ratio_2;
@@ -149,7 +149,7 @@ void Frustum<T>::adjustNear( const T _near )
     top    = vMiddle + height_2;
     bottom = vMiddle - height_2;
 
-    near = _near;
+    nearPlane = _near;
 }
 
 template < class T > 
@@ -157,21 +157,21 @@ Matrix4<T> Frustum<T>::computeMatrix() const
 {
     Matrix4<T> matrix;
 
-    matrix.m00 = 2.0 * near / (right - left);
+    matrix.m00 = 2.0 * nearPlane / (right - left);
     matrix.m01 = 0.0;
     matrix.m02 = (right + left) / (right - left);
     matrix.m03 = 0.0;
     
     matrix.m10 = 0.0;
-    matrix.m11 = 2.0 * near / (top - bottom);
+    matrix.m11 = 2.0 * nearPlane / (top - bottom);
     matrix.m12 = (top + bottom) / (top - bottom);
     matrix.m13 = 0.0;
 
     matrix.m20 = 0.0;
     matrix.m21 = 0.0;
     // NOTE: Some glFrustum man pages say wrongly '(far + near) / (far - near)'
-    matrix.m22 = -(far + near) / (far - near);
-    matrix.m23 = -2.0 * far * near / (far - near);
+    matrix.m22 = -(farPlane + nearPlane) / (farPlane - nearPlane);
+    matrix.m23 = -2.0 * farPlane * nearPlane / (farPlane - nearPlane);
 
     matrix.m30 = 0.0;
     matrix.m31 = 0.0;

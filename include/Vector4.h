@@ -36,14 +36,31 @@ class Vector4
 public:
     union
     {
-        struct
+        struct // for homogeneous coordinates
         {
             T  x, y, z, w;
         };
-        struct
+        struct // for colors
         {
             T  r, g, b, a;
         };
+        struct // for plane equations
+        {
+            struct
+            {
+                T  x, y, z;
+            } normal;
+            T distance;
+        };
+        struct // for spheres
+        {
+            struct
+            {
+                T  x, y, z;
+            } center;
+            T radius;
+        };
+
         T xyzw[4];
         T rgba[4];
     };

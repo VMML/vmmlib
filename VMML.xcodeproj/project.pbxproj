@@ -12,7 +12,9 @@
 		980CE8E20AE533F100842927 /* main_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 980CE8DC0AE533F100842927 /* main_test.cpp */; };
 		980CE8E30AE533F100842927 /* Matrix3Test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 980CE8DD0AE533F100842927 /* Matrix3Test.cpp */; };
 		980CE8E40AE533F100842927 /* Matrix4Test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 980CE8DF0AE533F100842927 /* Matrix4Test.cpp */; };
+		982481140B7B3D6A00290503 /* Frustum.h in Headers */ = {isa = PBXBuildFile; fileRef = 982481130B7B3D6A00290503 /* Frustum.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9836EF7F0AC958500060C6CB /* JacobiSolver.h in Headers */ = {isa = PBXBuildFile; fileRef = 9836EF7E0AC958500060C6CB /* JacobiSolver.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		9842EB510B9F23DB000760E7 /* FrustumCuller.h in Headers */ = {isa = PBXBuildFile; fileRef = 9842EB500B9F23DB000760E7 /* FrustumCuller.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9867B4F00AAED08E00651D9B /* Vector3.h in Headers */ = {isa = PBXBuildFile; fileRef = 9867B4EF0AAED08E00651D9B /* Vector3.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9867B5650AAEFDB900651D9B /* Vector4.h in Headers */ = {isa = PBXBuildFile; fileRef = 9867B5640AAEFDB900651D9B /* Vector4.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9867B62C0AAF0C0200651D9B /* Matrix3.h in Headers */ = {isa = PBXBuildFile; fileRef = 9867B62A0AAF0C0200651D9B /* Matrix3.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -40,7 +42,9 @@
 		980CE8DF0AE533F100842927 /* Matrix4Test.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Matrix4Test.cpp; path = tests/Matrix4Test.cpp; sourceTree = "<group>"; };
 		980CE8E00AE533F100842927 /* Matrix4Test.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Matrix4Test.h; path = tests/Matrix4Test.h; sourceTree = "<group>"; };
 		980CE8E10AE533F100842927 /* Test.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Test.h; path = tests/Test.h; sourceTree = "<group>"; };
+		982481130B7B3D6A00290503 /* Frustum.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Frustum.h; path = include/Frustum.h; sourceTree = "<group>"; };
 		9836EF7E0AC958500060C6CB /* JacobiSolver.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = JacobiSolver.h; path = include/JacobiSolver.h; sourceTree = "<group>"; };
+		9842EB500B9F23DB000760E7 /* FrustumCuller.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = FrustumCuller.h; path = include/FrustumCuller.h; sourceTree = "<group>"; };
 		9867B4EF0AAED08E00651D9B /* Vector3.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Vector3.h; path = include/Vector3.h; sourceTree = "<group>"; };
 		9867B5640AAEFDB900651D9B /* Vector4.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Vector4.h; path = include/Vector4.h; sourceTree = "<group>"; };
 		9867B5740AAEFEFC00651D9B /* vmml_test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = vmml_test; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -141,6 +145,8 @@
 		980CE5AB0AE4E53300842927 /* Misc */ = {
 			isa = PBXGroup;
 			children = (
+				9842EB500B9F23DB000760E7 /* FrustumCuller.h */,
+				982481130B7B3D6A00290503 /* Frustum.h */,
 				988CCAC20AD88411002B0ED6 /* Sphere.h */,
 				988CCAAB0AD882CE002B0ED6 /* AxisAlignedBoundingBox.h */,
 			);
@@ -204,6 +210,8 @@
 				98E1AB880AE7D6E70051E51E /* QuadtreeNode.h in Headers */,
 				98E1ABB10AE7DC2F0051E51E /* OctreeVisitor.h in Headers */,
 				98E1ABB20AE7DC2F0051E51E /* QuadtreeVisitor.h in Headers */,
+				982481140B7B3D6A00290503 /* Frustum.h in Headers */,
+				9842EB510B9F23DB000760E7 /* FrustumCuller.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

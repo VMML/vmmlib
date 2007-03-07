@@ -25,5 +25,6 @@
 #include "Matrix4.h"
 #include "Frustum.h"
 #include "FrustumCuller.h"
+#include "AxisAlignedBoundingBox.h"
 
 #endif

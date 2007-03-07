@@ -151,8 +151,9 @@ public:
 };
 
 #ifndef VMMLIB_DISABLE_TYPEDEFS
-    typedef Vector4<float>  Vector4f;
-    typedef Vector4<double> Vector4d;
+    typedef Vector4<float>         Vector4f;
+    typedef Vector4<double>        Vector4d;
+    typedef Vector4<unsigned char> Vector4ub;
 #endif
 }
     

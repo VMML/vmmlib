@@ -25,6 +25,8 @@ public:
 	inline void setMax( const Vector3< T >& pMax );
     inline const Vector3< T >& getMin() const;
     inline const Vector3< T >& getMax() const;
+    
+    Vector3< T > getCenter() const;
 
 protected:
 	Vector3< T > _min;
@@ -32,15 +34,21 @@ protected:
     
 };
 
+
+
 template< typename T >
 AxisAlignedBoundingBox< T >::AxisAlignedBoundingBox()
 {}
+
+
 
 template< typename T >
 AxisAlignedBoundingBox< T >::AxisAlignedBoundingBox( const Vector3< T >& pMin, const Vector3< T >& pMax )
     : _min( pMin )
     , _max( pMax )
 {}
+
+
 
 template< typename T >
 AxisAlignedBoundingBox< T >::AxisAlignedBoundingBox( const Sphere< T >& sphere )
@@ -50,6 +58,8 @@ AxisAlignedBoundingBox< T >::AxisAlignedBoundingBox( const Sphere< T >& sphere )
     _min -= sphere.getRadius();
 }
 
+
+
 template< typename T >
 AxisAlignedBoundingBox< T >::AxisAlignedBoundingBox( T cx, T cy, T cz, T size )
 {
@@ -57,6 +67,8 @@ AxisAlignedBoundingBox< T >::AxisAlignedBoundingBox( T cx, T cy, T cz, T size )
     _max += size;
     _min -= size;
 }
+
+
 
 template< typename T >
 inline bool AxisAlignedBoundingBox< T >::isIn( const Sphere< T >& sphere )
@@ -71,6 +83,8 @@ inline bool AxisAlignedBoundingBox< T >::isIn( const Sphere< T >& sphere )
     return true;
 }
 
+
+
 template< typename T >
 inline bool AxisAlignedBoundingBox< T >::isIn( const Vector3< T >& pos )
 {
@@ -81,6 +95,8 @@ inline bool AxisAlignedBoundingBox< T >::isIn( const Vector3< T >& pos )
     }
     return true;
 }
+
+
 
 template< typename T >
 inline bool AxisAlignedBoundingBox< T >::isIn2d( const Vector3< T >& pos )
@@ -93,13 +109,16 @@ inline bool AxisAlignedBoundingBox< T >::isIn2d( const Vector3< T >& pos )
 }
 
 
+
 template< typename T >
-inline void AxisAlignedBoundingBox< T >
-    ::set( const Vector3< T >& pMin, const Vector3< T >& pMax )
+inline void AxisAlignedBoundingBox< T >::set( const Vector3< T >& pMin, 
+    const Vector3< T >& pMax )
 {
     _min = pMin;
     _max = pMax;
 }
+
+
 
 template< typename T >
 inline void AxisAlignedBoundingBox< T >
@@ -108,26 +127,37 @@ inline void AxisAlignedBoundingBox< T >
     _min = pMin; 
 }
 
+
+
 template< typename T >
-inline void AxisAlignedBoundingBox< T >
-    ::setMax( const Vector3< T >& pMax ) 
+inline void AxisAlignedBoundingBox< T >::setMax( const Vector3< T >& pMax ) 
 { 
     _max = pMax; 
 }
 
+
+
 template< typename T >
-inline const Vector3< T >& AxisAlignedBoundingBox< T >
-    ::getMin() const 
+inline const Vector3< T >& AxisAlignedBoundingBox< T >::getMin() const 
 {   
     return _min; 
 }
 
+
+
 template< typename T >
-inline const Vector3< T >& AxisAlignedBoundingBox< T >
-    ::getMax() const
+inline const Vector3< T >& AxisAlignedBoundingBox< T >::getMax() const
 { 
     return _max; 
 };
+
+
+
+template< typename T >
+Vector3< T > AxisAlignedBoundingBox< T >::getCenter() const
+{
+    return _min + ( _max - _min ) * 0.5;
+}
 
 
 typedef AxisAlignedBoundingBox< float > Aabbf;

@@ -26,6 +26,8 @@ public:
     inline const Vector3< T >& getMin() const;
     inline const Vector3< T >& getMax() const;
     
+    inline void merge( const AxisAlignedBoundingBox< T >& aabb );
+    
     Vector3< T > getCenter() const;
 
 protected:
@@ -149,15 +151,41 @@ template< typename T >
 inline const Vector3< T >& AxisAlignedBoundingBox< T >::getMax() const
 { 
     return _max; 
-};
+}
 
 
 
 template< typename T >
-Vector3< T > AxisAlignedBoundingBox< T >::getCenter() const
+Vector3< T > 
+AxisAlignedBoundingBox< T >::getCenter() const
 {
-    return _min + ( _max - _min ) * 0.5;
+    return _min + ( ( _max - _min ) * 0.5f );
 }
+
+
+
+template< typename T >
+void 
+AxisAlignedBoundingBox< T >::merge( const AxisAlignedBoundingBox< T >& aabb )
+{
+    Vector3< T >& min = aabb.getMin();
+    Vector3< T >& max = aabb.getMax();
+    
+    if ( min.x < _min.x )
+        _min.x = min.x;
+    if ( min.y < _min.y )
+        _min.y = min.y;
+    if ( min.z < _min.z )
+        _min.z = min.z;
+
+    if ( max.x > _max.x )
+        _max.x = max.x;
+    if ( max.y > _max.y )
+        _max.y = max.y;
+    if ( max.z > _max.z )
+        _max.z = max.z;
+}
+
 
 
 typedef AxisAlignedBoundingBox< float > Aabbf;

@@ -49,7 +49,7 @@ public:
 
     void set( T x, T y );
     // dangerous, but implemented to allow easy conversion between 
-    // Vector< float > and Vector2< double >
+    // Vector2< float > and Vector2< double >
     //the pointer 'values' must be a valid 2 component c array of the resp. type
     void set( const float* values );
     void set( const double* values );

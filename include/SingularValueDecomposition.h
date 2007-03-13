@@ -7,8 +7,8 @@ namespace vmml
 /*
  * Given a matrix a[1..m][1..n], this routine computes its singular value
  * decomposition, A = U·W·V T. The matrix U replaces a on output. The diagonal
- * matrix of singular values W is output as a vector w[1..n]. The matrix V 
- * (not the transpose V T ) is output as v[1..n][1..n].
+ * matrix of singular values W is output as a vector w[1..n]. The transpose V T 
+ * (not the matrix V ! ) is output as v[1..n][1..n].
  */ 
 template < class Real >
 void svdecompose( Real **a, int m, size_t n, Real  w[], Real **v)
@@ -243,8 +243,31 @@ void svdecompose( Real **a, int m, size_t n, Real  w[], Real **v)
             rv1[k] = f;
             w[k] = x;
         }
+		
     }
     free(rv1);
+	for ( size_t i = 0; i < 3; ++i )
+		for ( size_t j = 0; j < 3; ++j )
+			if ( i < j && w[i] < w[j] )
+			{	
+				double t = w[i];
+				double u = w[j];
+				w[i] = u;
+				w[j] = t;
+				
+				for ( size_t k = 0; k < 3; ++k )
+				{
+					t = v[i][k];
+					u = v[j][k];
+					v[i][k] = u * pow( -1, i );
+					v[j][k] = t * pow( -1, j );
+					t = a[k][i];
+					u = a[k][j];
+					a[k][i] = u * pow( -1, i );
+					a[k][j] = t * pow( -1, j );
+				}
+			}
+	
 }
-
-}; // namespace vmml
+			
+}

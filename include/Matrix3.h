@@ -89,6 +89,9 @@ public:
     // arithmetic operations
     Matrix3 operator+ ( const Matrix3& mm ) const;
     Matrix3 operator- ( const Matrix3& mm ) const;
+	// be aware that this is openGL standard, so if using mathematical formulas, a * b should
+	// be written as b * a !! (this is NOT the same in general, but is due to the equivalency
+	// of premultiplication of row-major and postmultiplication of column-major  matrices)
     Matrix3 operator* ( const Matrix3& mm ) const;
     Matrix3 operator* ( const T scalar ) const; // matrix = matrix * scalar 
 

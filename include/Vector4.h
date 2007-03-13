@@ -465,7 +465,7 @@ T Vector4< T >::dot( const Vector4 &aa ) const
 template < typename T > 
 bool Vector4< T >::operator==( const Vector4 &aa ) const 
 { 
-    return ( x == aa.x && y == aa.y && z == aa.z && w = aa.w ); 
+    return ( x == aa.x && y == aa.y && z == aa.z && w == aa.w ); 
 }
 
 template < typename T > 

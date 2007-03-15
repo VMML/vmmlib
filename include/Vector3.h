@@ -152,6 +152,7 @@ public:
 #ifndef VMMLIB_DISABLE_TYPEDEFS
     typedef Vector3<float>  Vector3f;
     typedef Vector3<double> Vector3d;
+    typedef Vector3< unsigned char > Vector3ub;    
 #endif
 }
 // - implementation - //

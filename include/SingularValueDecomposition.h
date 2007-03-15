@@ -1,3 +1,6 @@
+#ifndef _vmml_SingularValueDecomposition_H_
+#define _vmml_SingularValueDecomposition_H_
+
 #include "VMMLib.h"
 #include "HelperFunctions.h"
 
@@ -10,11 +13,11 @@ namespace vmml
  * matrix of singular values W is output as a vector w[1..n]. The transpose V T 
  * (not the matrix V ! ) is output as v[1..n][1..n].
  */ 
-template < class Real >
-void svdecompose( Real **a, int m, size_t n, Real  w[], Real **v)
+template < class T >
+void svdecompose( T **a, int m, size_t n, T  w[], T **v)
 {
     int flag, i, its, j, jj, k, l, nm;
-    Real anorm, c, f, g, h, s, scale, x, y, z, *rv1;
+    T anorm, c, f, g, h, s, scale, x, y, z, *rv1;
 
     rv1 = (double*)calloc(n, sizeof(double));   // vector(1,n);
     g = scale = anorm = 0.0;					// Householder reduction to bidiagonal form.
@@ -271,3 +274,5 @@ void svdecompose( Real **a, int m, size_t n, Real  w[], Real **v)
 }
 			
 }
+
+#endif

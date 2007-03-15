@@ -1,3 +1,6 @@
+#ifndef _vmmlib_HelperFunctions_H_
+#define _vmmlib_HelperFunctions_H_
+
 /* 
 * VMMLib - Vector & Matrix Math Lib
 *  
@@ -26,20 +29,20 @@
 namespace vmml
 {
 
-template< class Real >
-inline Real min( const Real a, const Real b )
+template< class T >
+inline T min( const T a, const T b )
 {
     return ( a < b ) ? a : b;
 }
 
-template< class Real >
-inline Real max( const Real a, const Real b )
+template< class T >
+inline T max( const T a, const T b )
 {
     return ( a > b ) ? a : b;
 }
 
-template< class Real >
-inline Real squared( const Real a )
+template< class T >
+inline T squared( const T a )
 {
     return ( a == 0.0 ) ? 0.0 : a * a;
 }
@@ -47,8 +50,8 @@ inline Real squared( const Real a )
 /*
  * Computes (a2 + b2)1/2 without destructive underflow or overflow.
  */
-template< class Real >
-inline Real pythag( Real a, Real b )
+template< class T >
+inline T pythag( T a, T b )
 {
     a = fabs(a);
     b = fabs(b);
@@ -58,11 +61,13 @@ inline Real pythag( Real a, Real b )
         return ( b == 0.0 ) ? 0.0 : b * sqrt( 1.0 + squared( a / b ) );
 }
 
-template< class Real >
-inline Real sign( Real a, Real b )
+template< class T >
+inline T sign( T a, T b )
 {
     return ( b >= 0.0 ) ? fabs( a ) : -fabs( a );
 }
 
 
 }; // namespace vmml
+
+#endif

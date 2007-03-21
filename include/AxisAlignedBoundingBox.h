@@ -168,8 +168,8 @@ template< typename T >
 void 
 AxisAlignedBoundingBox< T >::merge( const AxisAlignedBoundingBox< T >& aabb )
 {
-    Vector3< T >& min = aabb.getMin();
-    Vector3< T >& max = aabb.getMax();
+    const Vector3< T >& min = aabb.getMin();
+    const Vector3< T >& max = aabb.getMax();
     
     if ( min.x < _min.x )
         _min.x = min.x;

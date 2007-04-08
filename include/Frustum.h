@@ -46,6 +46,9 @@ public:
 
     ~Frustum();
 
+    void set( const T _left, const T _right, const T _bottom, 
+        const T _top, const T _near, const T _far );
+             
     Matrix4<T> computeMatrix() const;
     void       adjustNear( const T nearPlane );
 
@@ -127,12 +130,30 @@ Frustum< T >::Frustum( const double* values )
 }
 
 
+
 template < class T > 
 Frustum< T >::~Frustum()
 {}
 
+
+
 template < class T > 
-void Frustum<T>::adjustNear( const T _near )
+void 
+Frustum< T >::set( const T _left, const T _right, const T _bottom, 
+    const T _top, const T _near, const T _far )
+{
+    left = _left;
+    right = _right;
+    bottom = _bottom;
+    top = _top;
+    nearPlane = _near;
+    farPlane = _far;
+}
+
+
+template < class T > 
+void 
+Frustum<T>::adjustNear( const T _near )
 {
     if( _near == nearPlane )
         return;
@@ -151,6 +172,7 @@ void Frustum<T>::adjustNear( const T _near )
 
     nearPlane = _near;
 }
+
 
 template < class T > 
 Matrix4<T> Frustum<T>::computeMatrix() const

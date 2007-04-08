@@ -154,7 +154,8 @@ public:
     void scaleTranslation( const Vector3< T >& scale );
     void setTranslation( const T x, const T y, const T z );
     void setTranslation( const T trans[3] );
-    void setTranslation( const Vector3<T>& trans );
+    void setTranslation( const Vector3< T >& trans );
+    Vector3< T > getTranslation();
 
     void tensor( const Vector3< T >& u, const Vector3< T >& v );
     void tensor( const Vector4< T >& u, const Vector4< T >& v );
@@ -1034,6 +1035,9 @@ void Matrix4<T>::setTranslation( const T x, const T y, const T z )
     ml[13] = y;
     ml[14] = z;
 }
+
+
+
 template< typename T >
 void Matrix4<T>::setTranslation( const T trans[3] )
 {
@@ -1041,6 +1045,9 @@ void Matrix4<T>::setTranslation( const T trans[3] )
     ml[13] = trans[1];
     ml[14] = trans[2];
 }
+
+
+
 template< typename T >
 void Matrix4<T>::setTranslation( const Vector3<T>& trans )
 {
@@ -1048,6 +1055,17 @@ void Matrix4<T>::setTranslation( const Vector3<T>& trans )
     ml[13] = trans.y;
     ml[14] = trans.z;
 }
+
+
+
+template< typename T >
+Vector3< T > 
+Matrix4< T >::getTranslation()
+{
+    return Vector3< T > ( ml[12], ml[13], ml[14] );
+}
+
+
 
 
 template< typename T > 

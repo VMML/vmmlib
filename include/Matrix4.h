@@ -665,12 +665,64 @@ Matrix4< T > Matrix4< T >::getInverse( bool& isInvertible, T limit ) const
 template< typename T > 
 bool Matrix4< T >::getInverse( Matrix4< T >& result, T limit ) const
 {
+#if 0
     T det = getDeterminant();
     if ( fabs(det) <= limit ) 
         return false;
     else
         result = getAdjugate() * ( 1. / det );
     return true;
+#else // tuned version from Claude Knaus
+    /* first set of 2x2 determinants: 12 multiplications, 6 additions */
+    const T t1[6] = { ml[ 2] * ml[ 7] - ml[ 6] * ml[ 3],
+                      ml[ 2] * ml[11] - ml[10] * ml[ 3],
+                      ml[ 2] * ml[15] - ml[14] * ml[ 3],
+                      ml[ 6] * ml[11] - ml[10] * ml[ 7],
+                      ml[ 6] * ml[15] - ml[14] * ml[ 7],
+                      ml[10] * ml[15] - ml[14] * ml[11] };
+
+    /* first half of comatrix: 24 multiplications, 16 additions */
+    result.ml[0] = ml[ 5] * t1[5] - ml[ 9] * t1[4] + ml[13] * t1[3];
+    result.ml[1] = ml[ 9] * t1[2] - ml[13] * t1[1] - ml[ 1] * t1[5];
+    result.ml[2] = ml[13] * t1[0] - ml[ 5] * t1[2] + ml[ 1] * t1[4];
+    result.ml[3] = ml[ 5] * t1[1] - ml[ 1] * t1[3] - ml[ 9] * t1[0];
+    result.ml[4] = ml[ 8] * t1[4] - ml[ 4] * t1[5] - ml[12] * t1[3];
+    result.ml[5] = ml[ 0] * t1[5] - ml[ 8] * t1[2] + ml[12] * t1[1];
+    result.ml[6] = ml[ 4] * t1[2] - ml[12] * t1[0] - ml[ 0] * t1[4];
+    result.ml[7] = ml[ 0] * t1[3] - ml[ 4] * t1[1] + ml[ 8] * t1[0];
+
+   /* second set of 2x2 determinants: 12 multiplications, 6 additions */
+    const T t2[6] = { ml[ 0] * ml[ 5] - ml[ 4] * ml[ 1],
+                      ml[ 0] * ml[ 9] - ml[ 8] * ml[ 1],
+                      ml[ 0] * ml[13] - ml[12] * ml[ 1],
+                      ml[ 4] * ml[ 9] - ml[ 8] * ml[ 5],
+                      ml[ 4] * ml[13] - ml[12] * ml[ 5],
+                      ml[ 8] * ml[13] - ml[12] * ml[ 9] };
+
+    /* second half of comatrix: 24 multiplications, 16 additions */
+    result.ml[8] = ml[ 7] * t2[5] - ml[11] * t2[4] + ml[15] * t2[3];
+    result.ml[9] = ml[11] * t2[2] - ml[15] * t2[1] - ml[ 3] * t2[5];
+    result.ml[10] = ml[15] * t2[0] - ml[ 7] * t2[2] + ml[ 3] * t2[4];
+    result.ml[11] = ml[ 7] * t2[1] - ml[ 3] * t2[3] - ml[11] * t2[0];
+    result.ml[12] = ml[10] * t2[4] - ml[ 6] * t2[5] - ml[14] * t2[3];
+    result.ml[13] = ml[ 2] * t2[5] - ml[10] * t2[2] + ml[14] * t2[1];
+    result.ml[14] = ml[ 6] * t2[2] - ml[14] * t2[0] - ml[ 2] * t2[4];
+    result.ml[15] = ml[ 2] * t2[3] - ml[ 6] * t2[1] + ml[10] * t2[0];
+
+   /* determinant: 4 multiplications, 3 additions */
+   const T det = ml[0] * result.ml[0] + ml[4] * result.ml[1] +
+                 ml[8] * result.ml[2] + ml[12] * result.ml[3];
+
+   if( fabs( det ) <= limit )
+       return false;
+
+   /* division: 16 multiplications, 1 division */
+   const T scale = 1.0 / det;
+   for( unsigned i = 0; i != 16; ++i )
+       result.ml[i] *= scale;
+
+   return true;
+#endif
 }
 
 template< typename T >

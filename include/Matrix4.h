@@ -141,6 +141,12 @@ public:
     Matrix4 getInverse( bool& isInvertible, T limit = 0.0000000001 ) const;
     inline bool getInverse( Matrix4& result, T limit = 0.0000000001 ) const;
 
+    /** create rotation matrix from parameters.
+    * @param angle - angle in radians
+    * @param rotation axis - must be normalised!
+    */
+    void rotate( const T angle, const Vector3< T >& axis );
+
     void rotateX( const T angle );
     void rotateY( const T angle );
     void rotateZ( const T angle );
@@ -724,6 +730,36 @@ bool Matrix4< T >::getInverse( Matrix4< T >& result, T limit ) const
    return true;
 #endif
 }
+
+
+template< typename T >
+void 
+Matrix4<T>::rotate( const T angle, const Vector3< T >& axis )
+{
+    T sinus = sin( angle );
+    T cosin = cos( angle );
+
+    ml[0]  = cosin + ( 1.0 - cosin ) * axis.x;
+    ml[1]  = (1.0 - cosin ) * axis.x * axis.y + sinus * axis.z;
+    ml[2]  = (1.0 - cosin ) * axis.x * axis.z - sinus * axis.y;
+    ml[3]  = 0;
+    
+    ml[4]  = ( 1.0 - cosin ) * axis.x * axis.y - sinus * axis.z;
+    ml[5]  = cosin + ( 1.0 - cosin ) * pow( axis.y, 2.0 );
+    ml[6]  = ( 1.0 - cosin ) * axis.y *  axis.z + sinus * axis.x;
+    ml[7]  = 0;
+    
+    ml[8]  = ( 1.0 - cosin ) * axis.x * axis.z + sinus * axis.y;
+    ml[9]  = ( 1.0 - cosin ) * axis.y * axis.z - sinus * axis.x;
+    ml[10] = cosin + ( 1.0 - cosin ) * pow( axis.z, 2.0 );
+    ml[11] = 0;
+    
+    ml[12] = 0;
+    ml[13] = 0;
+    ml[14] = 0;
+    ml[15] = 1;
+}
+
 
 template< typename T >
 void Matrix4<T>::rotateX( const T angle )

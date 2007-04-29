@@ -738,6 +738,13 @@ Matrix4<T>::rotate( const T angle, const Vector3< T >& axis )
 {
     T sinus = sin( angle );
     T cosin = cos( angle );
+    
+    // this is necessary since Visual Studio cannot resolve the
+    // pow()-call correctly if we just use 2.0 directly.
+    // this way, the '2.0' is converted to the same format 
+    // as the axis components
+
+    T two = 2.0;
 
     ml[0]  = cosin + ( 1.0 - cosin ) * axis.x;
     ml[1]  = (1.0 - cosin ) * axis.x * axis.y + sinus * axis.z;
@@ -745,13 +752,13 @@ Matrix4<T>::rotate( const T angle, const Vector3< T >& axis )
     ml[3]  = 0;
     
     ml[4]  = ( 1.0 - cosin ) * axis.x * axis.y - sinus * axis.z;
-    ml[5]  = cosin + ( 1.0 - cosin ) * pow( axis.y, 2.0 );
+    ml[5]  = cosin + ( 1.0 - cosin ) * pow( axis.y, two );
     ml[6]  = ( 1.0 - cosin ) * axis.y *  axis.z + sinus * axis.x;
     ml[7]  = 0;
     
     ml[8]  = ( 1.0 - cosin ) * axis.x * axis.z + sinus * axis.y;
     ml[9]  = ( 1.0 - cosin ) * axis.y * axis.z - sinus * axis.x;
-    ml[10] = cosin + ( 1.0 - cosin ) * pow( axis.z, 2.0 );
+    ml[10] = cosin + ( 1.0 - cosin ) * pow( axis.z, two );
     ml[11] = 0;
     
     ml[12] = 0;

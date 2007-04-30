@@ -29,11 +29,14 @@
 namespace vmml
 {
 
+
 template< class T >
 inline T min( const T a, const T b )
 {
     return ( a < b ) ? a : b;
 }
+
+
 
 template< class T >
 inline T max( const T a, const T b )
@@ -41,11 +44,15 @@ inline T max( const T a, const T b )
     return ( a > b ) ? a : b;
 }
 
+
+
 template< class T >
 inline T squared( const T a )
 {
     return ( a == 0.0 ) ? 0.0 : a * a;
 }
+
+
 
 /*
  * Computes (a2 + b2)1/2 without destructive underflow or overflow.
@@ -61,6 +68,8 @@ inline T pythag( T a, T b )
         return ( b == 0.0 ) ? 0.0 : b * sqrt( 1.0 + squared( a / b ) );
 }
 
+
+
 template< class T >
 inline T sign( T a, T b )
 {
@@ -71,3 +80,4 @@ inline T sign( T a, T b )
 }; // namespace vmml
 
 #endif
+

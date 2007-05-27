@@ -227,6 +227,9 @@ bool Matrix4Test::test()
     if ( tm != - _matrix || tm != _matrix.negate() )
     {
         cout << "test: Matrix4::operator- / negate() failed!" << endl;
+        cout << "tm: " << tm << endl;
+        cout << "- m: " << - _matrix << endl;
+        cout << " m.negate: " << _matrix.negate() << endl;
         failed();
     }
       

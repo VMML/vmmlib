@@ -69,12 +69,13 @@ public:
     Vector4(); // warning: components NOT initialised ( for performance )
     Vector4( const T aa ); 
     Vector4( const T xx, const T yy, const T zz, const T ww ); 
-    // dangerous, but implemented to allow easy conversion between 
-    // Vector< float > and Vector< double >
     //the pointer 'values must be a valid 4 component c array of the resp. type
     Vector4( const float* aa );
     Vector4( const double* aa ); 
     Vector4( const Vector3< T >& xxyyzz, const T aa );   
+    // type conversion ctor
+    template< typename U >
+    Vector4( const Vector4< U >& a );   
     ~Vector4();
 
     void set( T xx, T yy, T zz, T ww );
@@ -86,6 +87,8 @@ public:
 
     const Vector4& operator=( T aa ); 
     const Vector4& operator=( const Vector4& aa ); 
+    template< typename U >
+    const Vector4& operator=( const Vector4< U >& aa ); 
 
     T& operator[]( size_t position);
     const T& operator[]( size_t position) const;
@@ -155,20 +158,26 @@ public:
     typedef Vector4<double>        Vector4d;
     typedef Vector4<unsigned char> Vector4ub;
 #endif
-}
-    
+
+} //namespace vmml
+
 // - implementation - //
 #include "Vector3.h"
 #include "Matrix4.h"
 
 namespace vmml
 {
+
 template< typename T > 
 const Vector4< T > Vector4< T >::ZERO( 0, 0, 0, 0 );
+
+
 
 template < typename T > 
 Vector4< T >::Vector4() 
 {} 
+
+
 
 template < typename T > 
 Vector4< T >::Vector4( const T  aa )
@@ -178,6 +187,8 @@ Vector4< T >::Vector4( const T  aa )
     , w( aa )
 {} 
 
+
+
 template < typename T > 
 Vector4< T >::Vector4( const T xx, const T yy, const T zz, 
                        const T ww )
@@ -186,6 +197,8 @@ Vector4< T >::Vector4( const T xx, const T yy, const T zz,
     , z( zz ) 
     , w( ww )
 {} 
+
+
 
 template < typename T > 
 Vector4< T >::Vector4( const float* values )
@@ -197,6 +210,8 @@ Vector4< T >::Vector4( const float* values )
     w = static_cast< T > ( values[3] );
 }
 
+
+
 template < typename T > 
 Vector4< T >::Vector4( const double* values )
 {
@@ -207,6 +222,8 @@ Vector4< T >::Vector4( const double* values )
     w = static_cast< T > ( values[3] );
 }
 
+
+
 template < typename T > 
 Vector4< T >::Vector4( const Vector3< T >& v3, const T aa )
     : x ( v3.x )
@@ -215,9 +232,24 @@ Vector4< T >::Vector4( const Vector3< T >& v3, const T aa )
     , w ( aa )
 {} 
 
+
+
+template < typename T > 
+template < typename U > 
+Vector4< T >::Vector4( const Vector4< U >& a )
+    : x ( static_cast< T > ( a.x ) )
+    , y ( static_cast< T > ( a.y ) )
+    , z ( static_cast< T > ( a.z ) )
+    , w ( static_cast< T > ( a.w ) )
+{} 
+
+
+
 template < typename T > 
 Vector4< T >::~Vector4()
 {}
+
+
 
 template < typename T > 
 void Vector4< T >::set( T xx, T yy, T zz, T ww )
@@ -227,6 +259,8 @@ void Vector4< T >::set( T xx, T yy, T zz, T ww )
     z = zz; 
     w = ww;
 }
+
+
 
 template < typename T > 
 void Vector4< T >::set( const float* values )
@@ -238,6 +272,8 @@ void Vector4< T >::set( const float* values )
     w = static_cast< T > ( values[3] );
 }
 
+
+
 template < typename T > 
 void Vector4< T >::set( const double* values )
 { 
@@ -248,12 +284,16 @@ void Vector4< T >::set( const double* values )
     w = static_cast< T > ( values[3] );
 }
 
+
+
 template < typename T > 
 const Vector4< T >& Vector4< T >::operator=( T aa )
 { 
     x = y = z = w = aa; 
     return *this; 
 } 
+
+
 
 template < typename T > 
 const Vector4< T >& Vector4< T >::operator=( const Vector4& aa ) 
@@ -266,19 +306,37 @@ const Vector4< T >& Vector4< T >::operator=( const Vector4& aa )
 } 
 
 
+
+template < typename T > 
+template < typename U > 
+const Vector4< T >& Vector4< T >::operator=( const Vector4< U >& aa ) 
+{ 
+    x = static_cast< T >( aa.x ); 
+    y = static_cast< T >( aa.y ); 
+    z = static_cast< T >( aa.z ); 
+    w = static_cast< T >( aa.w ); 
+    return *this;
+} 
+
+
+
 template < typename T > 
 T& Vector4< T >::operator[]( size_t index ) 
 { 
     assert( index < 4 && "Vector4::operator[] Invalid component index!" ); 
     return xyzw[ index ]; 
 }
-         
+
+
+
 template < typename T > 
 const T& Vector4< T >::operator[]( size_t index ) const
 { 
     assert( index < 4 && "Vector4::operator[] Invalid component index!" ); 
     return xyzw[ index ]; 
 } 
+
+
 	
 template < typename T > 
 T  Vector4< T >::length() const 
@@ -287,11 +345,15 @@ T  Vector4< T >::length() const
     return ( l <= 0 ) ? 0 : sqrt( l ); 
 } 
 
+
+
 template < typename T > 
 T  Vector4< T >::lengthSquared() const 
 { 
     return x * x + y * y + z * z + w * w; 
 } 
+
+
 
 template < typename T > 
 T Vector4< T >::normalise()
@@ -307,23 +369,31 @@ T Vector4< T >::normalise()
     return l; 
 } 
 
+
+
 template < typename T > 
 Vector4< T > Vector4< T >::operator+( const T  aa ) const 
 { 
     return Vector4( x + aa, y + aa, z + aa, w + aa ); 
 } 
 
+
+
 template < typename T > 
 Vector4< T > Vector4< T >::operator-( const T  aa ) const 
 { 
     return Vector4( x - aa, y - aa, z - aa, w - aa ); 
 }
+
+
  
 template < typename T > 
 Vector4< T > Vector4< T >::operator*( const T  aa ) const 
 { 
     return Vector4( x * aa, y * aa, z * aa, w * aa ); 
 }
+
+
 
 template < typename T > 
 Vector4< T > Vector4< T >::operator/( T  aa ) const 
@@ -333,11 +403,14 @@ Vector4< T > Vector4< T >::operator/( T  aa ) const
     return Vector4( x * aa, y * aa, z * aa, w * aa ); 
 }
 
+
+
 template < typename T > 
 Vector4< T > Vector4< T >::operator-() const 
 { 
     return Vector4( -x, -y, -z, -w );
 }
+
 
 
 template < typename T > 
@@ -350,6 +423,8 @@ const Vector4< T >& Vector4< T >::operator+=( T  aa )
     return *this; 
 } 
 
+
+
 template < typename T > 
 const Vector4< T >& Vector4< T >::operator-=( T  aa ) 
 { 
@@ -360,6 +435,8 @@ const Vector4< T >& Vector4< T >::operator-=( T  aa )
     return *this; 
 } 
 
+
+
 template < typename T > 
 const Vector4< T >& Vector4< T >::operator*=( T  aa ) 
 { 
@@ -369,6 +446,8 @@ const Vector4< T >& Vector4< T >::operator*=( T  aa )
     w *= aa;
     return *this; 
 }
+
+
  
 template < typename T > 
 const Vector4< T >& Vector4< T >::operator/=( T  aa ) 
@@ -381,12 +460,16 @@ const Vector4< T >& Vector4< T >::operator/=( T  aa )
     return *this; 
 } 
 
+
+
 // vector/vector operations
 template < typename T > 
 Vector4< T > Vector4< T >::operator+( const Vector4 &aa ) const 
 { 
     return Vector4( x + aa.x, y + aa.y, z + aa.z, w + aa.w ); 
 }
+
+
  
 template < typename T > 
 Vector4< T > Vector4< T >::operator-( const Vector4 &aa ) const 
@@ -394,17 +477,23 @@ Vector4< T > Vector4< T >::operator-( const Vector4 &aa ) const
     return Vector4( x - aa.x, y - aa.y, z - aa.z, w - aa.w ); 
 }
 
+
+
 template < typename T > 
 Vector4< T > Vector4< T >::operator*( const Vector4 &aa ) const 
 { 
     return Vector4( x * aa.x, y * aa.y, z * aa.z, w * aa.w ); 
 } 
 
+
+
 template < typename T > 
 Vector4< T > Vector4< T >::operator/( const Vector4 &aa ) const 
 { 
     return Vector4( x / aa.x, y / aa.y, z / aa.z, w / aa.w ); 
 } 
+
+
 
 template < typename T > 
 const Vector4< T >& Vector4< T >::operator+=( const Vector4 &aa ) 
@@ -416,6 +505,8 @@ const Vector4< T >& Vector4< T >::operator+=( const Vector4 &aa )
     return *this; 
 } 
 
+
+
 template < typename T > 
 const Vector4< T >& Vector4< T >::operator-=( const Vector4 &aa ) 
 { 
@@ -425,6 +516,8 @@ const Vector4< T >& Vector4< T >::operator-=( const Vector4 &aa )
     w -= aa.w; 
     return *this; 
 }
+
+
 
 template < typename T > 
 const Vector4< T >& Vector4< T >::operator*=( const Vector4 &aa ) 
@@ -436,6 +529,8 @@ const Vector4< T >& Vector4< T >::operator*=( const Vector4 &aa )
     return *this; 
 }
 
+
+
 template < typename T > 
 const Vector4< T >& Vector4< T >::operator/=( const Vector4 &aa ) 
 { 
@@ -445,6 +540,8 @@ const Vector4< T >& Vector4< T >::operator/=( const Vector4 &aa )
     w /= aa.w; 
     return *this; 
 }
+
+
 
 // vector'/matrix operations    
 template< typename T > 
@@ -456,11 +553,15 @@ Vector4< T > Vector4< T >::operator * (const Matrix4<T>& m ) const
                          x * m.m30 + y * m.m31 + z * m.m32 + w * m.m33 );
 }
 
+
+
 template < typename T > 
 T Vector4< T >::dot( const Vector4 &aa ) const 
 { 
     return x * aa.x + y * aa.y + z * aa.z + w * aa.w; 
 }
+
+
 
 template < typename T > 
 bool Vector4< T >::operator==( const Vector4 &aa ) const 
@@ -468,11 +569,16 @@ bool Vector4< T >::operator==( const Vector4 &aa ) const
     return ( x == aa.x && y == aa.y && z == aa.z && w == aa.w ); 
 }
 
+
+
 template < typename T > 
 bool Vector4< T >::operator!=(const Vector4 &aa ) const 
 { 
     return ( x != aa.x || y != aa.y || z != aa.z || w != aa.w ); 
 }
+
+
+
 template < typename T > 
 bool Vector4< T >::isAkin( const Vector4& a, const T& delta )
 {
@@ -482,6 +588,9 @@ bool Vector4< T >::isAkin( const Vector4& a, const T& delta )
         return false;
     return true;
 }
+
+
+
 template< > 
 inline bool Vector4< float >::isAkin( const Vector4& a, const float& delta )
 {
@@ -492,6 +601,8 @@ inline bool Vector4< float >::isAkin( const Vector4& a, const float& delta )
     return true;
 }
 
+
+
 template < typename T > 
 void Vector4< T >::invert() 
 {	
@@ -500,6 +611,8 @@ void Vector4< T >::invert()
     z = -z; 
     w = -w;
 }
+
+
 
 template < typename T > 
 T Vector4< T >::getMaxComponent() 
@@ -510,6 +623,8 @@ T Vector4< T >::getMaxComponent()
     return m; 
 }
 
+
+
 template < typename T > 
 T Vector4< T >::getMinComponent() 
 { 
@@ -518,5 +633,8 @@ T Vector4< T >::getMinComponent()
     m = std::min( m, w);
     return m; 
 } 
-}	
+
+
+} //namespace vmml
+
 #endif

@@ -18,8 +18,8 @@
 #include "SVDTest.h"
 #include "JacobiSolverTest.h"
 
- 
-using namespace std;
+using std::cout;
+using std::endl;
 
 int main()
 {	

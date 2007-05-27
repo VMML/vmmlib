@@ -57,14 +57,18 @@ public:
     Matrix3( const Vector3<T>& v0, const Vector3<T>& v1, 
              const Vector3<T>& v2, bool columnVectors = false );
 
-    // dangerous, but implemented to allow easy conversion between 
-    // Matrix< float > and Matrix< double >
     //the pointer 'values must be a valid 9 component c-array of the resp. type
     Matrix3( float* values );
     Matrix3( double* values );
+    
+    //type conversion ctor
+    template< typename U >
+    Matrix3( const Matrix3< U >& mm );
  
-    inline Matrix3& operator= ( const Matrix3& mm );
-    inline Matrix3& operator= ( const T r );
+    inline const Matrix3& operator= ( const Matrix3& mm );
+    inline const Matrix3& operator= ( const T r );
+    template< typename U >
+    inline const Matrix3& operator= ( const Matrix3< U >& mm );
     
     inline bool operator== (const Matrix3& mm) const;
     inline bool operator!= (const Matrix3& mm) const;
@@ -153,22 +157,31 @@ public:
 // - implementation -
 //
 
+
 template< typename T > 
 const Matrix3< T > Matrix3< T >::IDENTITY( 1., 0., 0., 0., 1., 0., 0., 0., 1. );
 
+
+
 template< typename T > 
 const Matrix3< T > Matrix3< T >::ZERO( 0., 0., 0., 0., 0., 0., 0., 0., 0. );
+
+
 
 
 template< typename T > 
 Matrix3< T >::Matrix3()
 {}
 
+
+
 template< typename T > 
 Matrix3< T >::Matrix3( const Matrix3< T >& mm )
 {
     memcpy( m, mm.m, 9 * sizeof( T ));
 }
+
+
 
 template< typename T > 
 Matrix3< T >::Matrix3( 
@@ -184,8 +197,26 @@ Matrix3< T >::Matrix3(
     , m02( v02 )
     , m12( v12 )
     , m22( v22 )
- {}
-         
+{}
+
+
+
+template< typename T > 
+template< typename U > 
+Matrix3< T >::Matrix3( const Matrix3< U >& mm )
+    : m00( static_cast< T > ( mm.m00 ) )
+    , m10( static_cast< T > ( mm.m10 ) )
+    , m20( static_cast< T > ( mm.m20 ) )
+    , m01( static_cast< T > ( mm.m01 ) )
+    , m11( static_cast< T > ( mm.m11 ) )
+    , m21( static_cast< T > ( mm.m21 ) )
+    , m02( static_cast< T > ( mm.m02 ) )
+    , m12( static_cast< T > ( mm.m12 ) )
+    , m22( static_cast< T > ( mm.m22 ) )
+{}
+
+
+
 template< typename T > 
 Matrix3< T >::Matrix3( const Vector3< T >& v0, const Vector3< T >& v1,
                           const Vector3< T >& v2, bool columnVectors )
@@ -216,6 +247,8 @@ Matrix3< T >::Matrix3( const Vector3< T >& v0, const Vector3< T >& v1,
     } 
 }
 
+
+
 template< typename T > 
 Matrix3< T >::Matrix3( float* values )
 {
@@ -223,6 +256,8 @@ Matrix3< T >::Matrix3( float* values )
     for ( size_t i = 0; i < 9; ++i )
         ml[i] = static_cast< T > ( values[i] );
 }
+
+
 
 template< typename T > 
 Matrix3< T >::Matrix3( double* values )
@@ -232,8 +267,11 @@ Matrix3< T >::Matrix3( double* values )
         ml[i] = static_cast< T > ( values[i] );
 }
 
+
+
+
 template< typename T > 
-Matrix3< T >& Matrix3< T >::operator= ( const T r )
+const Matrix3< T >& Matrix3< T >::operator= ( const T r )
 {
     for ( size_t i = 0; i < 9; ++i )
     {
@@ -243,12 +281,33 @@ Matrix3< T >& Matrix3< T >::operator= ( const T r )
 }
 
 
+
 template< typename T > 
-Matrix3< T >& Matrix3< T >::operator= ( const Matrix3< T >& mm )
+const Matrix3< T >& Matrix3< T >::operator= ( const Matrix3< T >& mm )
 {
     memcpy(ml,mm.ml,9*sizeof(T));
     return *this;
 }
+
+
+
+template< typename T > 
+template< typename U > 
+const Matrix3< T >& Matrix3< T >::operator= ( const Matrix3< U >& mm )
+{
+    m00 = static_cast< T > ( mm.m00 );
+    m10 = static_cast< T > ( mm.m10 );
+    m20 = static_cast< T > ( mm.m20 );
+    m01 = static_cast< T > ( mm.m01 );
+    m11 = static_cast< T > ( mm.m11 );
+    m21 = static_cast< T > ( mm.m21 );
+    m02 = static_cast< T > ( mm.m02 );
+    m12 = static_cast< T > ( mm.m12 );
+    m22 = static_cast< T > ( mm.m22 );
+    return *this;
+}
+
+
 
 template< typename T > 
 bool Matrix3< T >::operator== (const Matrix3< T >& mm) const
@@ -261,17 +320,23 @@ bool Matrix3< T >::operator== (const Matrix3< T >& mm) const
     return true;
 }
 
+
+
 template< typename T > 
 inline bool Matrix3< T >::operator!= (const Matrix3< T >& mm) const
 {
     return !operator==(mm);
 }
 
+
+
 template< typename T > 
 void Matrix3< T >::set( const Matrix3& mm )
 {
     memcpy( ml, mm.ml, 9 * sizeof( T ) );
 }
+
+
 
 template< typename T > 
 void Matrix3< T >::set( const float* mm )
@@ -281,6 +346,8 @@ void Matrix3< T >::set( const float* mm )
         ml[i] = static_cast< T > ( mm[i] );
 }
 
+
+
 template< typename T > 
 void Matrix3< T >::set( const double* mm )
 {
@@ -288,6 +355,8 @@ void Matrix3< T >::set( const double* mm )
     for ( size_t i = 0; i < 9; ++i )
         ml[i] = static_cast< T > ( mm[i] );
 }
+
+
 
 template< typename T > 
 void Matrix3< T >::set( T v00, T v01, T v02, T v10, T v11, T v12, T v20, 
@@ -304,6 +373,8 @@ void Matrix3< T >::set( T v00, T v01, T v02, T v10, T v11, T v12, T v20,
     m22 = v22;
 }
 
+
+
 template< typename T > 
 Vector3< T > Matrix3< T >::getColumn( size_t column ) const
 {
@@ -313,6 +384,8 @@ Vector3< T > Matrix3< T >::getColumn( size_t column ) const
     return Vector3< T >( m[column] );
 }
 
+
+
 template< typename T > 
 Vector3< T > Matrix3< T >::getRow( const size_t row ) const
 {
@@ -320,11 +393,15 @@ Vector3< T > Matrix3< T >::getRow( const size_t row ) const
     return Vector3< T > ( ml[0+row], ml[3+row], ml[6+row] );
 }
 
+
+
 template< typename T > 
 inline const T& Matrix3< T >::getElement( const size_t row, const size_t col ) const
 {
     return m[col][row];
 }
+
+
 
 template< typename T > 
 void Matrix3< T >::setColumn( size_t column, const Vector3< T >& columnVec )
@@ -334,6 +411,8 @@ void Matrix3< T >::setColumn( size_t column, const Vector3< T >& columnVec )
     m[column][2] = columnVec[2];
 }
 
+
+
 template< typename T > 
 void Matrix3< T >::setRow( size_t row, const Vector3< T >& rowvec )
 {
@@ -342,11 +421,14 @@ void Matrix3< T >::setRow( size_t row, const Vector3< T >& rowvec )
     m[2][row] = rowvec[2];
 }
 
+
+
 template< typename T > 
 inline void Matrix3< T >::setElement( const size_t row, const size_t col, const T value )
 {
     m[col][row] = value;
 }
+
 
 
 template< typename T > 
@@ -358,6 +440,8 @@ Matrix3< T > Matrix3< T >::operator+ ( const Matrix3< T >& mm ) const
     return result;
 }
 
+
+
 template< typename T > 
 Matrix3< T > Matrix3< T >::operator- ( const Matrix3< T >& mm ) const
 {
@@ -366,6 +450,8 @@ Matrix3< T > Matrix3< T >::operator- ( const Matrix3< T >& mm ) const
         result.ml[i] = ml[i] - mm.ml[i];
     return result;
 }
+
+
 
 template< typename T > 
 Matrix3< T > Matrix3< T >::operator* ( const Matrix3< T >& o ) const
@@ -387,6 +473,8 @@ Matrix3< T > Matrix3< T >::operator* ( const Matrix3< T >& o ) const
     return r;
 }
 
+
+
 template< typename T > 
 Matrix3< T > Matrix3< T >::operator* ( const T scalar ) const
 {
@@ -396,6 +484,8 @@ Matrix3< T > Matrix3< T >::operator* ( const T scalar ) const
     return result;
 }
 
+
+
 template< typename T > 
 Matrix3< T >& Matrix3< T >::operator+= ( const Matrix3& mm )
 {
@@ -404,6 +494,8 @@ Matrix3< T >& Matrix3< T >::operator+= ( const Matrix3& mm )
     return *this;
 }
 
+
+
 template< typename T > 
 Matrix3< T >& Matrix3< T >::operator-= ( const Matrix3& mm )
 {
@@ -411,6 +503,8 @@ Matrix3< T >& Matrix3< T >::operator-= ( const Matrix3& mm )
         ml[i] -= mm.ml[i];
     return *this;
 }
+
+
 
 template< typename T > 
 Matrix3< T >& Matrix3< T >::operator*= ( const Matrix3& o )
@@ -433,6 +527,8 @@ Matrix3< T >& Matrix3< T >::operator*= ( const Matrix3& o )
     return *this;
 }
 
+
+
 template< typename T > 
 Matrix3< T >& Matrix3< T >::operator*= ( T scalar ) // matrix = matrix * scalar 
 {
@@ -441,6 +537,8 @@ Matrix3< T >& Matrix3< T >::operator*= ( T scalar ) // matrix = matrix * scalar
     return *this;
 }
 
+
+
 template< typename T > 
 Vector3< T > Matrix3< T >::operator* ( const Vector3< T >& vv ) const
 {  
@@ -448,6 +546,8 @@ Vector3< T > Matrix3< T >::operator* ( const Vector3< T >& vv ) const
                          m10 * vv[0] + m11 * vv[1] + m12 * vv[2],
                          m20 * vv[0] + m21 * vv[1] + m22 * vv[2] );
 }
+
+
 
 template< typename T > 
 Matrix3< T > Matrix3< T >::getTransposed() const
@@ -465,11 +565,14 @@ Matrix3< T > Matrix3< T >::getTransposed() const
     return result;
 }
 
+
+
 template< typename T > 
 inline T Matrix3< T >::det() const
 {
     return getDeterminant();
 }
+
 
 
 template< typename T > 
@@ -480,6 +583,8 @@ T Matrix3< T >::getDeterminant() const
                             m10 * m21 - m11 * m20 );
     return m00 * cof[0] + m01 * cof[1] + m02 * cof[2];
 }
+
+
 
 template< typename T > 
 bool Matrix3< T >::isPositiveDefinite( T limit )
@@ -494,6 +599,8 @@ bool Matrix3< T >::isPositiveDefinite( T limit )
     return true;
 }
 
+
+
 template< typename T >
 Matrix3< T >  Matrix3< T >::getInverse( bool& isInvertible, T limit )
 {
@@ -501,6 +608,8 @@ Matrix3< T >  Matrix3< T >::getInverse( bool& isInvertible, T limit )
     isInvertible = getInverse( inv, limit );
     return inv;
 }
+
+
 
 template< typename T > 
 bool Matrix3< T >::getInverse( Matrix3< T >& result, T limit )
@@ -537,6 +646,8 @@ bool Matrix3< T >::getInverse( Matrix3< T >& result, T limit )
 
 }
 
+
+
 template< typename T > 
 void Matrix3< T >::tensor( const Vector3< T >& u, const Vector3< T >& v)
 {
@@ -544,6 +655,8 @@ void Matrix3< T >::tensor( const Vector3< T >& u, const Vector3< T >& v)
         for( int i = 0; i < 3; i++)
             m[i][j] = u[j] * v[i];
 }
+
+
 
 template< typename T > 
 Matrix3< T > Matrix3< T >::operator-() const
@@ -553,6 +666,8 @@ Matrix3< T > Matrix3< T >::operator-() const
     return result;
 }
 
+
+
 template< typename T > 
 Matrix3< T > Matrix3< T >::negate() const
 {
@@ -560,5 +675,8 @@ Matrix3< T > Matrix3< T >::negate() const
     result *= -1.0;
     return result;
 }
-}
+
+
+} //namespace vmml
+
 #endif

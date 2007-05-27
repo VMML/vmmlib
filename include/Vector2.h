@@ -21,7 +21,7 @@
 namespace vmml
 {
 
-template< class T > 
+template< typename T > 
 class Vector2
 {
 public:
@@ -39,12 +39,11 @@ public:
     Vector2( const T a ); 
     Vector2( const T x, const T y ); 
     
-    // dangerous, but implemented to allow easy conversion between 
-    // Vector< float > and Vector2< double >
     //the pointer 'values' must be a valid 2 component c array of the resp. type
     Vector2( const float* values );
     Vector2( const double* values );
-    
+    template< typename U >
+    Vector2( const Vector2< U >& a );
     ~Vector2();
 
     void set( T x, T y );
@@ -55,7 +54,9 @@ public:
     void set( const double* values );
 
     const Vector2& operator=( T a ); 
-    const Vector2& operator=( const Vector2& a ); 
+    const Vector2& operator=( const Vector2& a );
+    template< typename U > 
+    const Vector2& operator=( const Vector2< U >& a ); 
 
     T& operator[]( size_t position);
     const T& operator[]( size_t position) const;
@@ -120,28 +121,37 @@ public:
     typedef Vector2<double> Vector2d;
 #endif
 
+
 // - implementation - //
        
 template< typename T > 
 const Vector2< T > Vector2< T >::ZERO( 0, 0 );
 
-template < class T > 
+
+
+template < typename T > 
 Vector2< T >::Vector2() 
 {} 
 
-template < class T > 
+
+
+template < typename T > 
 Vector2< T >::Vector2( const T a )
     : x(a)
     , y(a)
 {} 
 
-template < class T > 
+
+
+template < typename T > 
 Vector2< T >::Vector2( const T i, const T j )
     : x(i)
     , y(j)
 {} 
 
-template < class T > 
+
+
+template < typename T > 
 Vector2< T >::Vector2( const float* values )
 {
     assert( values && "Vector2: Nullpointer argument as source for initialisation!" );
@@ -149,7 +159,9 @@ Vector2< T >::Vector2( const float* values )
     y = static_cast< T > ( values[1] );
 }
 
-template < class T > 
+
+
+template < typename T > 
 Vector2< T >::Vector2( const double* values )
 {
     assert( values && "Vector2: Nullpointer argument as source for initialisation!" );
@@ -158,18 +170,31 @@ Vector2< T >::Vector2( const double* values )
 }
 
 
-template < class T > 
+template < typename T > 
+template < typename U >
+Vector2< T >::Vector2( const Vector2< U >& a )
+    : x ( static_cast< T >( a.x ) )
+    , y ( static_cast< T >( a.y ) )
+{}
+
+
+
+template < typename T > 
 Vector2< T >::~Vector2()
 {}
 
-template < class T > 
+
+
+template < typename T > 
 void Vector2< T >::set( T xx, T yy )
 { 
     x = xx; 
     y = yy; 
 }
 
-template < class T > 
+
+
+template < typename T > 
 void Vector2< T >::set( const float* values )
 {
     assert( values && "Vector2: Nullpointer argument as source for initialisation!" );
@@ -177,7 +202,9 @@ void Vector2< T >::set( const float* values )
     y = static_cast< T > ( values[1] );
 }
 
-template < class T > 
+
+
+template < typename T > 
 void Vector2< T >::set( const double* values )
 {
     assert( values && "Vector2: Nullpointer argument as source for initialisation!" );
@@ -185,14 +212,18 @@ void Vector2< T >::set( const double* values )
     y = static_cast< T > ( values[1] );
 }
 
-template < class T > 
+
+
+template < typename T > 
 const Vector2< T >& Vector2< T >::operator=( T a )
 { 
     x = y = a; 
     return *this; 
 } 
 
-template < class T > 
+
+
+template < typename T > 
 const Vector2< T >& Vector2< T >::operator=( const Vector2& a ) 
 { 
     x = a.x; 
@@ -201,34 +232,54 @@ const Vector2< T >& Vector2< T >::operator=( const Vector2& a )
 } 
 
 
-template < class T > 
+
+template < typename T > 
+template < typename U > 
+const Vector2< T >& Vector2< T >::operator=( const Vector2< U >& a ) 
+{ 
+    x = static_cast< T > ( a.x ); 
+    y = static_cast< T > ( a.y ); 
+    return *this;
+} 
+
+
+
+template < typename T > 
 T& Vector2< T >::operator[]( size_t position) 
 { 
     assert( position < 2 && "Vector2::operator[] Invalid component index!" ); 
     return xy[position];
 }
+
+
          
-template < class T > 
+template < typename T > 
 const T& Vector2< T >::operator[]( size_t position) const
 { 
     assert( position < 2 && "Vector2::operator[] Invalid component index!" ); 
     return xy[position]; 
 } 
+
+
 	
-template < class T > 
+template < typename T > 
 T  Vector2< T >::length() const 
 { 
     T l = lengthSquared();
     return sqrt( l ); 
 } 
 
-template < class T > 
+
+
+template < typename T > 
 T  Vector2< T >::lengthSquared() const 
 { 
     return x * x + y * y; 
 } 
 
-template < class T > 
+
+
+template < typename T > 
 T  Vector2< T >::normalise()
 { 
     T l = length(); 
@@ -240,7 +291,9 @@ T  Vector2< T >::normalise()
     return l; 
 } 
 
-template < class T > 
+
+
+template < typename T > 
 T  Vector2< T >::normalise( const float* source )
 {
     Vector2< T > a ( source );
@@ -255,31 +308,40 @@ T  Vector2< T >::normalise( const float* source )
 }
 
 
-template < class T >
+
+template < typename T >
 void Vector2< T >::scale( T scale_factor )
 {
     operator*=( scale_factor );
 }
 
-template < class T > 
+
+
+template < typename T > 
 Vector2< T > Vector2< T >::operator+( const T  a ) const 
 { 
     return Vector2( x + a, y + a ); 
 } 
 
-template < class T > 
+
+
+template < typename T > 
 Vector2< T > Vector2< T >::operator-( const T  a ) const 
 { 
     return Vector2( x - a, y - a ); 
 }
  
-template < class T > 
+
+
+template < typename T > 
 Vector2< T > Vector2< T >::operator*( const T  a ) const 
 { 
     return Vector2( x * a, y * a ); 
 }
 
-template < class T > 
+
+
+template < typename T > 
 Vector2< T > Vector2< T >::operator/( T  a ) const 
 { 
     assert( a != 0.0f ); 
@@ -287,7 +349,9 @@ Vector2< T > Vector2< T >::operator/( T  a ) const
     return Vector2( x * a, y * a ); 
 }
 
-template < class T > 
+
+
+template < typename T > 
 const Vector2< T >& Vector2< T >::operator+=( T  a ) 
 { 
     x += a; 
@@ -295,7 +359,9 @@ const Vector2< T >& Vector2< T >::operator+=( T  a )
     return *this; 
 } 
 
-template < class T > 
+
+
+template < typename T > 
 const Vector2< T >& Vector2< T >::operator-=( T  a ) 
 { 
     x -= a; 
@@ -303,15 +369,19 @@ const Vector2< T >& Vector2< T >::operator-=( T  a )
     return *this; 
 } 
 
-template < class T > 
+
+
+template < typename T > 
 const Vector2< T >& Vector2< T >::operator*=( T  a ) 
 { 
     x *= a; 
     y *= a; 
     return *this; 
 }
+
+
  
-template < class T > 
+template < typename T > 
 const Vector2< T >& Vector2< T >::operator/=( T  a ) 
 { 
     a = 1.0f / a; 
@@ -320,38 +390,50 @@ const Vector2< T >& Vector2< T >::operator/=( T  a )
     return *this; 
 } 
 
+
+
 // vector/vector operations
-template < class T > 
+template < typename T > 
 Vector2< T > Vector2< T >::operator+( const Vector2 &a ) const 
 { 
     return Vector2( x + a.x, y + a.y ); 
 }
- 
-template < class T > 
+
+
+
+template < typename T > 
 Vector2< T > Vector2< T >::operator-( const Vector2 &a ) const 
 { 
     return Vector2( x - a.x, y - a.y ); 
 }
 
-template < class T > 
+
+
+template < typename T > 
 Vector2< T > Vector2< T >::operator*( const Vector2 &a ) const 
 { 
     return Vector2( x * a.x, y * a.y ); 
 } 
 
-template < class T > 
+
+
+template < typename T > 
 Vector2< T > Vector2< T >::operator/( const Vector2 &a ) const 
 { 
     return Vector2( x / a.x, y / a.y ); 
 } 
 
-template < class T > 
+
+
+template < typename T > 
 Vector2< T > Vector2< T >::operator-() const 
 { 
     return Vector2( -x, -y );
 }
 
-template < class T > 
+
+
+template < typename T > 
 const Vector2< T >& Vector2< T >::operator+=( const Vector2 &a ) 
 { 
     x += a.x; 
@@ -359,7 +441,9 @@ const Vector2< T >& Vector2< T >::operator+=( const Vector2 &a )
     return *this; 
 } 
 
-template < class T > 
+
+
+template < typename T > 
 const Vector2< T >& Vector2< T >::operator-=( const Vector2 &a ) 
 { 
     x -= a.x; 
@@ -367,7 +451,9 @@ const Vector2< T >& Vector2< T >::operator-=( const Vector2 &a )
     return *this; 
 }
 
-template < class T > 
+
+
+template < typename T > 
 const Vector2< T >& Vector2< T >::operator*=( const Vector2 &a ) 
 { 
     x *= a.x; 
@@ -375,7 +461,9 @@ const Vector2< T >& Vector2< T >::operator*=( const Vector2 &a )
     return *this; 
 }
 
-template < class T > 
+
+
+template < typename T > 
 const Vector2< T >& Vector2< T >::operator/=( const Vector2 &a ) 
 { 
     x /= a.x; 
@@ -383,41 +471,56 @@ const Vector2< T >& Vector2< T >::operator/=( const Vector2 &a )
     return *this; 
 }
 
-template < class T > 
+
+
+template < typename T > 
 bool Vector2< T >::operator==( const Vector2 &a ) const 
 { 
     return ( x == a.x && y == a.y ); 
 }
 
-template < class T > 
+
+
+template < typename T > 
 bool Vector2< T >::operator!=(const Vector2 &a ) const 
 { 
     return ( x != a.x || y != a.y ); 
 }
 
-template < class T > 
+
+
+template < typename T > 
 void Vector2< T >::invert() 
 {	
     x = -x; 
     y = -y; 
 }
 
-template < class T > 
+
+
+template < typename T > 
 T Vector2< T >::getMaxComponent() const
 { 
     return std::max( x,y ); 
 }
 
-template < class T > 
+
+
+template < typename T > 
 T Vector2< T >::getMinComponent() const
 { 
     return std::min( x,y ); 
 } 
 
-template < class T > 
+
+
+template < typename T > 
 T Vector2< T >::getArea() const
 { 
     return x * y; 
-} 
-}	
+}
+
+ 
+} //namespace vmml
+	
 #endif

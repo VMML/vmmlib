@@ -55,7 +55,11 @@ public:
     Vector3(); // warning: components NOT initialised ( for performance )
     Vector3( const T  a ); 
     Vector3( const T  i, const T  j, const T  k ); 
-    Vector3( const Vector4<T>& from ); 
+    Vector3( const Vector4< T >& from ); 
+
+    // type conversion constructor
+    template< typename U >
+    Vector3( const Vector3< U >& orig );
     
     // dangerous, but implemented to allow easy conversion between 
     // Vector< float > and Vector3< double >
@@ -66,14 +70,14 @@ public:
     ~Vector3();
 
     void set( T xx, T yy, T zz );
-    // dangerous, but implemented to allow easy conversion between 
-    // Vector< float > and Vector3< double >
     // the pointer 'values' must be a valid 3 component c array of the resp. type
     void set( const float* values );
     void set( const double* values );
 
     const Vector3& operator=( T a ); 
     const Vector3& operator=( const Vector3& a ); 
+    template< typename U >
+    const Vector3& operator=( const Vector3< U >& a );
 
     T& operator[]( size_t position);
     const T& operator[]( size_t position) const;
@@ -190,6 +194,18 @@ Vector3< T >::Vector3( const Vector4<T>& from )
     z = from.z * wInv;
 } 
 
+
+
+template < typename T > 
+template < typename U >
+Vector3< T >::Vector3( const Vector3< U >& a )
+    : x( static_cast< T >( a.x ) )
+    , y( static_cast< T >( a.y ) )
+    , z( static_cast< T >( a.z ) )
+{}
+
+
+
 template < typename T > 
 Vector3< T >::Vector3( const float* values )
 {
@@ -198,6 +214,8 @@ Vector3< T >::Vector3( const float* values )
     y = static_cast< T > ( values[1] );
     z = static_cast< T > ( values[2] );
 }
+
+
 
 template < typename T > 
 Vector3< T >::Vector3( const double* values )
@@ -209,9 +227,12 @@ Vector3< T >::Vector3( const double* values )
 }
 
 
+
 template < typename T > 
 Vector3< T >::~Vector3()
 {}
+
+
 
 template < typename T > 
 void Vector3< T >::set( T xx, T yy, T zz )
@@ -220,6 +241,8 @@ void Vector3< T >::set( T xx, T yy, T zz )
     y = yy; 
     z = zz; 
 }
+
+
 
 template < typename T > 
 void Vector3< T >::set( const float* values )
@@ -230,6 +253,8 @@ void Vector3< T >::set( const float* values )
     z = static_cast< T > ( values[2] );
 }
 
+
+
 template < typename T > 
 void Vector3< T >::set( const double* values )
 {
@@ -239,12 +264,16 @@ void Vector3< T >::set( const double* values )
     z = static_cast< T > ( values[2] );
 }
 
+
+
 template < typename T > 
 const Vector3< T >& Vector3< T >::operator=( T a )
 { 
     x = y = z = a; 
     return *this; 
 } 
+
+
 
 template < typename T > 
 const Vector3< T >& Vector3< T >::operator=( const Vector3& a ) 
@@ -256,19 +285,37 @@ const Vector3< T >& Vector3< T >::operator=( const Vector3& a )
 } 
 
 
+
+template < typename T > 
+template < typename U >
+const Vector3< T >& Vector3< T >::operator=( const Vector3< U >& orig )
+{
+    x = static_cast< T > ( orig.x );
+    y = static_cast< T > ( orig.y );
+    z = static_cast< T > ( orig.z );
+    return *this;
+}
+
+
+
 template < typename T > 
 T& Vector3< T >::operator[]( size_t index ) 
 { 
     assert( index < 3 && "Vector3::operator[] Invalid component index!" ); 
     return xyz[ index ]; 
 }
-         
+       
+
+
+
 template < typename T > 
 const T& Vector3< T >::operator[]( size_t index ) const
 { 
     assert( index < 3 && "Vector3::operator[] Invalid component index!" ); 
     return xyz[ index ]; 
 } 
+
+
 	
 template < typename T > 
 T  Vector3< T >::length() const 
@@ -277,11 +324,15 @@ T  Vector3< T >::length() const
     return sqrt( l ); 
 } 
 
+
+
 template < typename T > 
 T  Vector3< T >::lengthSquared() const 
 { 
     return x * x + y * y + z * z; 
 } 
+
+
 
 template < typename T > 
 T  Vector3< T >::normalise()
@@ -295,6 +346,8 @@ T  Vector3< T >::normalise()
     z *= l; 
     return l; 
 } 
+
+
 
 // PRECONDITION: float* source is a valid 3-float array
 template < typename T > 
@@ -313,11 +366,14 @@ T  Vector3< T >::normalise( float* source )
 }
 
 
+
 template < typename T >
 void Vector3< T >::scale( T scale_factor )
 {
     operator*=( scale_factor );
 }
+
+
 
 template < typename T > 
 Vector3< T > Vector3< T >::operator+( const T  a ) const 
@@ -325,17 +381,23 @@ Vector3< T > Vector3< T >::operator+( const T  a ) const
     return Vector3( x + a, y + a, z + a ); 
 } 
 
+
+
 template < typename T > 
 Vector3< T > Vector3< T >::operator-( const T  a ) const 
 { 
     return Vector3( x - a, y - a, z - a ); 
 }
- 
+
+
+
 template < typename T > 
 Vector3< T > Vector3< T >::operator*( const T  a ) const 
 { 
     return Vector3( x * a, y * a, z * a ); 
 }
+
+
 
 template < typename T > 
 Vector3< T > Vector3< T >::operator/( T  a ) const 
@@ -344,6 +406,8 @@ Vector3< T > Vector3< T >::operator/( T  a ) const
     a = 1.0f / a; 
     return Vector3( x * a, y * a, z * a ); 
 }
+
+
 
 template < typename T > 
 const Vector3< T >& Vector3< T >::operator+=( T  a ) 
@@ -354,6 +418,8 @@ const Vector3< T >& Vector3< T >::operator+=( T  a )
     return *this; 
 } 
 
+
+
 template < typename T > 
 const Vector3< T >& Vector3< T >::operator-=( T  a ) 
 { 
@@ -363,6 +429,8 @@ const Vector3< T >& Vector3< T >::operator-=( T  a )
     return *this; 
 } 
 
+
+
 template < typename T > 
 const Vector3< T >& Vector3< T >::operator*=( T  a ) 
 { 
@@ -371,7 +439,9 @@ const Vector3< T >& Vector3< T >::operator*=( T  a )
     z *= a; 
     return *this; 
 }
- 
+
+
+
 template < typename T > 
 const Vector3< T >& Vector3< T >::operator/=( T  a ) 
 { 
@@ -382,18 +452,24 @@ const Vector3< T >& Vector3< T >::operator/=( T  a )
     return *this; 
 } 
 
+
+
 // vector/vector operations
 template < typename T > 
 Vector3< T > Vector3< T >::operator+( const Vector3 &a ) const 
 { 
     return Vector3( x + a.x, y + a.y, z + a.z ); 
 }
- 
+
+
+
 template < typename T > 
 Vector3< T > Vector3< T >::operator-( const Vector3 &a ) const 
 { 
     return Vector3( x - a.x, y - a.y, z - a.z ); 
 }
+
+
 
 template < typename T > 
 Vector3< T > Vector3< T >::operator*( const Vector3 &a ) const 
@@ -401,17 +477,23 @@ Vector3< T > Vector3< T >::operator*( const Vector3 &a ) const
     return Vector3( x * a.x, y * a.y, z * a.z ); 
 } 
 
+
+
 template < typename T > 
 Vector3< T > Vector3< T >::operator/( const Vector3 &a ) const 
 { 
     return Vector3( x / a.x, y / a.y, z / a.z ); 
 } 
 
+
+
 template < typename T > 
 Vector3< T > Vector3< T >::operator-() const 
 { 
     return Vector3( -x, -y, -z );
 }
+
+
 
 template < typename T > 
 const Vector3< T >& Vector3< T >::operator+=( const Vector3 &a ) 
@@ -422,6 +504,8 @@ const Vector3< T >& Vector3< T >::operator+=( const Vector3 &a )
     return *this; 
 } 
 
+
+
 template < typename T > 
 const Vector3< T >& Vector3< T >::operator-=( const Vector3 &a ) 
 { 
@@ -430,6 +514,8 @@ const Vector3< T >& Vector3< T >::operator-=( const Vector3 &a )
     z -= a.z; 
     return *this; 
 }
+
+
 
 template < typename T > 
 const Vector3< T >& Vector3< T >::operator*=( const Vector3 &a ) 
@@ -440,6 +526,8 @@ const Vector3< T >& Vector3< T >::operator*=( const Vector3 &a )
     return *this; 
 }
 
+
+
 template < typename T > 
 const Vector3< T >& Vector3< T >::operator/=( const Vector3 &a ) 
 { 
@@ -449,12 +537,16 @@ const Vector3< T >& Vector3< T >::operator/=( const Vector3 &a )
     return *this; 
 }
 
+
+
 // result = vec1.cross( vec2 ) => vec1 x vec2
 template < typename T > 
 Vector3< T > Vector3< T >::cross( const Vector3& a ) const
 { 
     return Vector3( y * a.z - z * a.y, z * a.x - x * a.z, x * a.y - y * a.x ); 
 }
+
+
 
 // result.cross( vec1, vec2 ) => vec1 x vec2
 template < typename T > 
@@ -465,11 +557,15 @@ void Vector3< T >::cross( const Vector3 &a, const Vector3 &b)
     z = a.x * b.y - a.y * b.x; 
 }
 
+
+
 template < typename T > 
 T Vector3< T >::dot( const Vector3& a) const 
 { 
     return x * a.x + y * a.y + z * a.z; 
 }
+
+
 
 template < typename T > 
 T Vector3< T >::dot( const Vector3& a, const Vector3& b)
@@ -478,17 +574,23 @@ T Vector3< T >::dot( const Vector3& a, const Vector3& b)
 }
 
 
+
 template < typename T > 
 bool Vector3< T >::operator==( const Vector3& a ) const 
 { 
     return ( x == a.x && y == a.y && z == a.z ); 
 }
 
+
+
 template < typename T > 
 bool Vector3< T >::operator!=(const Vector3& a ) const 
 { 
     return ( x != a.x || y != a.y || z != a.z ); 
 }
+
+
+
 template < typename T > 
 bool Vector3< T >::isAkin( const Vector3& a, const T& delta )
 {
@@ -498,6 +600,9 @@ bool Vector3< T >::isAkin( const Vector3& a, const T& delta )
         return false;
     return true;
 }
+
+
+
 template< > 
 inline bool Vector3< float >::isAkin( const Vector3& a, const float& delta )
 {
@@ -508,6 +613,8 @@ inline bool Vector3< float >::isAkin( const Vector3& a, const float& delta )
     return true;
 }
 
+
+
 template < typename T > 
 void Vector3< T >::invert() 
 {	
@@ -515,6 +622,8 @@ void Vector3< T >::invert()
     y = -y; 
     z = -z; 
 }
+
+
 
 // *this is the result
 template< typename T >
@@ -531,6 +640,8 @@ void Vector3< T >::normal( const Vector3< T >& aa,
     normalise();
 }
 
+
+
 //returns the normal of *this and the two argument vectors
 template< typename T >
 Vector3< T > Vector3< T >::normal( const Vector3< T >& aa, 
@@ -540,6 +651,9 @@ Vector3< T > Vector3< T >::normal( const Vector3< T >& aa,
     tmp.normal( *this, aa, bb);
     return tmp;
 }
+
+
+
 
 template < typename T > 
 Vector3< T > Vector3< T >::rotate( T theta, T rx, T ry, 
@@ -561,6 +675,9 @@ Vector3< T > Vector3< T >::rotate( T theta, T rx, T ry,
     return q; 
 } 
 
+
+
+
 template<>
 inline Vector3< float > Vector3< float >::rotate( float theta, float rx, 
                                                   float ry, float rz )      
@@ -581,6 +698,9 @@ inline Vector3< float > Vector3< float >::rotate( float theta, float rx,
     return q; 
 } 
 
+
+
+
 template < typename T > 
 T Vector3< T >::getMaxComponent() 
 { 
@@ -589,6 +709,9 @@ T Vector3< T >::getMaxComponent()
     return m; 
 }
 
+
+
+
 template < typename T > 
 T Vector3< T >::getMinComponent() 
 { 
@@ -596,5 +719,9 @@ T Vector3< T >::getMinComponent()
     m = std::min( m, z); 
     return m; 
 } 
-}	
+
+
+
+} //namespace vmml
+	
 #endif

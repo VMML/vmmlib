@@ -71,17 +71,20 @@ public:
     Matrix4( const Vector4<T>& v0, const Vector4<T>& v1, 
              const Vector4<T>& v2, const Vector4<T>& v3, 
              bool columnVectors = false );
+             
+    Matrix4( const Matrix4& mm );             
+    //type conversion ctor
+    template< typename U >
+    Matrix4( const Matrix4< U >& mm );
 
-    Matrix4( const Matrix4<float>& mm );
-    Matrix4( const Matrix4<double>& mm );
-
-    // dangerous, but implemented to allow easy conversion between 
-    // Matrix< float > and Matrix< double >
     //the pointer 'values must be a valid 16 component c array of the resp. type
     Matrix4( const float* values );
     Matrix4( const double* values );
  
-    inline Matrix4& operator= ( const Matrix4& mm );
+    inline const Matrix4& operator= ( const Matrix4& mm );
+    template< typename U >
+    inline const Matrix4& operator= ( const Matrix4< U >& mm );
+
     inline bool operator== ( const Matrix4& mm ) const;
     inline bool operator!= ( const Matrix4& mm ) const;
 
@@ -212,7 +215,9 @@ public:
     typedef Matrix4<float>  Matrix4f;
     typedef Matrix4<double> Matrix4d;
 #endif
-}
+
+} //namespace vmml
+
 // * * * * * * * * * *
 //
 // - implementation -
@@ -238,6 +243,8 @@ template< typename T >
 Matrix4< T >::Matrix4()
 {}
 
+
+
 template< typename T > 
 Matrix4< T >::Matrix4( T v00, T v01, T v02, T v03, 
                        T v10, T v11, T v12, T v13,
@@ -260,11 +267,31 @@ Matrix4< T >::Matrix4( T v00, T v01, T v02, T v03,
     , m23( v23 )
     , m33( v33 )
 {}
-         
+
+
+
+template< typename T > 
+Matrix4< T >::Matrix4( const Matrix4& mm )
+{
+    memcpy(m,mm.m, 16 * sizeof( T ) );
+}
+
+
+
+template< typename T > 
+template< typename U > 
+Matrix4< T >::Matrix4( const Matrix4< U >& mm )
+{
+    for ( size_t i = 0; i < 16; ++i )
+        ml[i] = static_cast< T > ( mm.ml[i] );
+}
+
+
+
 template< typename T > 
 Matrix4< T >::Matrix4( const Vector4< T >& v0, const Vector4< T >& v1, 
-                          const Vector4< T >& v2, const Vector4< T >& v3,
-                          bool columnVectors )
+    const Vector4< T >& v2, const Vector4< T >& v3,
+    bool columnVectors )
 {
     if ( columnVectors )
         for ( size_t i = 0; i < 4; ++i )
@@ -284,11 +311,15 @@ Matrix4< T >::Matrix4( const Vector4< T >& v0, const Vector4< T >& v1,
         }
 }
 
+
+
 template< typename T > 
 const T& Matrix4< T >::getElement( const size_t row, const size_t col ) const
 {
     return m[col][row];
 } 
+
+
 
 template< typename T > 
 void Matrix4< T >::setElement( const size_t row, const size_t col, 
@@ -297,30 +328,7 @@ void Matrix4< T >::setElement( const size_t row, const size_t col,
     m[col][row] = value;
 }
 
-template< typename T > 
-Matrix4< T >::Matrix4( const Matrix4<float>& mm )
-{
-    for ( size_t i = 0; i < 16; ++i )
-        ml[i] = static_cast< T > ( mm.ml[i] );
-}
-template<> 
-inline Matrix4< float >::Matrix4( const Matrix4< float >& mm )
-{
-    memcpy(m,mm.m, 16 * sizeof( float ) );
-}
 
-
-template< typename T > 
-Matrix4< T >::Matrix4( const Matrix4<double>& mm )
-{
-    for ( size_t i = 0; i < 16; ++i )
-        ml[i] = static_cast< T > ( mm.ml[i] );
-}
-template<> 
-inline Matrix4< double >::Matrix4( const Matrix4< double >& mm )
-{
-    memcpy(m,mm.m, 16 * sizeof( double ) );
-}
 
 template< typename T > 
 Matrix4< T >::Matrix4( const float* values )
@@ -329,6 +337,8 @@ Matrix4< T >::Matrix4( const float* values )
     for ( size_t i = 0; i < 16; ++i )
         ml[i] = static_cast< T > ( values[i] );
 }
+
+
 
 template< typename T > 
 Matrix4< T >::Matrix4( const double* values )
@@ -339,12 +349,40 @@ Matrix4< T >::Matrix4( const double* values )
 }
 
 
+
 template< typename T > 
-Matrix4< T >& Matrix4< T >::operator= ( const Matrix4< T >& mm )
+const Matrix4< T >& Matrix4< T >::operator= ( const Matrix4< T >& mm )
 {
-    memcpy( ml, mm.ml, 16 * sizeof(T) );
+    memcpy( ml, mm.ml, 16 * sizeof( T ) );
     return *this;
 }
+
+
+
+template< typename T > 
+template< typename U > 
+const Matrix4< T >& Matrix4< T >::operator= ( const Matrix4< U >& mm )
+{
+    ml[  0 ] = static_cast< T > ( mm.ml[  0 ] );
+    ml[  1 ] = static_cast< T > ( mm.ml[  1 ] );
+    ml[  2 ] = static_cast< T > ( mm.ml[  2 ] );
+    ml[  3 ] = static_cast< T > ( mm.ml[  3 ] );
+    ml[  4 ] = static_cast< T > ( mm.ml[  4 ] );
+    ml[  5 ] = static_cast< T > ( mm.ml[  5 ] );
+    ml[  6 ] = static_cast< T > ( mm.ml[  6 ] );
+    ml[  7 ] = static_cast< T > ( mm.ml[  7 ] );
+    ml[  8 ] = static_cast< T > ( mm.ml[  8 ] );
+    ml[  9 ] = static_cast< T > ( mm.ml[  9 ] );
+    ml[ 10 ] = static_cast< T > ( mm.ml[ 10 ] );
+    ml[ 11 ] = static_cast< T > ( mm.ml[ 11 ] );
+    ml[ 12 ] = static_cast< T > ( mm.ml[ 12 ] );
+    ml[ 13 ] = static_cast< T > ( mm.ml[ 13 ] );
+    ml[ 14 ] = static_cast< T > ( mm.ml[ 14 ] );
+    ml[ 15 ] = static_cast< T > ( mm.ml[ 15 ] );
+    return *this;
+}
+
+
 
 template< typename T > 
 bool Matrix4< T >::operator== (const Matrix4< T >& mm) const
@@ -357,17 +395,23 @@ bool Matrix4< T >::operator== (const Matrix4< T >& mm) const
     return true;
 }
 
+
+
 template< typename T > 
 inline bool Matrix4< T >::operator!= (const Matrix4< T >& mm) const
 {
     return !operator==(mm);
 }
 
+
+
 template< typename T > 
 void Matrix4< T >::set( const Matrix4& mm )
 {
     memcpy( ml, mm.ml, 16 * sizeof( T ) );
 }
+
+
 
 template< typename T > 
 void Matrix4< T >::set( const float* values )
@@ -377,6 +421,8 @@ void Matrix4< T >::set( const float* values )
         ml[i] = static_cast< T > ( values[i] );
 }
 
+
+
 template< typename T > 
 void Matrix4< T >::set( const double* values )
 {
@@ -384,6 +430,8 @@ void Matrix4< T >::set( const double* values )
     for ( size_t i = 0; i < 16; ++i )
         ml[i] = static_cast< T > ( values[i] );
 }
+
+
 
 template< typename T > 
 void Matrix4< T >::set( T v00, T v01, T v02, T v03, T v10, T v11, T v12, T v13, 
@@ -408,6 +456,8 @@ void Matrix4< T >::set( T v00, T v01, T v02, T v03, T v10, T v11, T v12, T v13,
 
 }
 
+
+
 template< typename T > 
 Vector4< T > Matrix4< T >::getColumn( size_t column ) const
 {
@@ -415,12 +465,16 @@ Vector4< T > Matrix4< T >::getColumn( size_t column ) const
     return Vector4< T >( m[column] );
 }
 
+
+
 template< typename T > 
 Vector4< T > Matrix4< T >::getRow( size_t row ) const
 {
     assert( row < 4 && "Matrix4: Requested Row ( getRow ) with invalid index!");
     return Vector4< T > ( ml[0+row], ml[4+row], ml[8+row], ml[12+row] );
 }
+
+
 
 template< typename T > 
 void Matrix4< T >::setColumn( size_t column, const Vector4< T >& columnvec )
@@ -431,6 +485,8 @@ void Matrix4< T >::setColumn( size_t column, const Vector4< T >& columnvec )
     m[column][3] = columnvec[3];
 }
 
+
+
 template< typename T > 
 void Matrix4< T >::setRow( size_t row, const Vector4< T >& rowvec )
 {
@@ -440,6 +496,8 @@ void Matrix4< T >::setRow( size_t row, const Vector4< T >& rowvec )
     m[3][row] = rowvec[3];
 }
 
+
+
 template< typename T > 
 void Matrix4< T >::setColumn( size_t column, const Vector3< T >& columnvec )
 {
@@ -448,6 +506,8 @@ void Matrix4< T >::setColumn( size_t column, const Vector3< T >& columnvec )
     m[column][2] = columnvec[2];
 }
 
+
+
 template< typename T > 
 void Matrix4< T >::setRow( size_t row, const Vector3< T >& rowvec )
 {
@@ -455,6 +515,8 @@ void Matrix4< T >::setRow( size_t row, const Vector3< T >& rowvec )
     m[1][row] = rowvec[1];
     m[2][row] = rowvec[2];
 }
+
+
 
 template< typename T > 
 Matrix4< T > Matrix4< T >::operator+ (const Matrix4< T >& mm) const
@@ -465,6 +527,8 @@ Matrix4< T > Matrix4< T >::operator+ (const Matrix4< T >& mm) const
     return result;
 }
 
+
+
 template< typename T > 
 Matrix4< T > Matrix4< T >::operator- (const Matrix4< T >& mm) const
 {
@@ -473,6 +537,8 @@ Matrix4< T > Matrix4< T >::operator- (const Matrix4< T >& mm) const
         result.ml[i] = ml[i] - mm.ml[i];
     return result;
 }
+
+
 
 template< typename T > 
 Matrix4< T > Matrix4< T >::operator* (const Matrix4< T >& o) const
@@ -502,6 +568,8 @@ Matrix4< T > Matrix4< T >::operator* (const Matrix4< T >& o) const
     return r;
 }
 
+
+
 template< typename T > 
 Matrix4< T > Matrix4< T >::operator* ( T scalar ) const
 {
@@ -511,6 +579,8 @@ Matrix4< T > Matrix4< T >::operator* ( T scalar ) const
     return result;
 }
 
+
+
 template< typename T > 
 Matrix4< T >& Matrix4< T >::operator+= (const Matrix4< T >& mm) 
 {
@@ -519,6 +589,8 @@ Matrix4< T >& Matrix4< T >::operator+= (const Matrix4< T >& mm)
     return *this;
 }
 
+
+
 template< typename T > 
 Matrix4< T >& Matrix4< T >::operator-= ( const Matrix4& mm )
 {
@@ -526,6 +598,8 @@ Matrix4< T >& Matrix4< T >::operator-= ( const Matrix4& mm )
         ml[i]  -= mm.ml[i];
     return *this;
 }
+
+
 
 template< typename T > 
 Matrix4< T >& Matrix4< T >::operator*= ( const Matrix4& o ) 
@@ -556,6 +630,8 @@ Matrix4< T >& Matrix4< T >::operator*= ( const Matrix4& o )
     return *this;
 }
 
+
+
 template< typename T > 
 Matrix4< T >& Matrix4< T >::operator*= ( T scalar )
 {
@@ -565,6 +641,8 @@ Matrix4< T >& Matrix4< T >::operator*= ( T scalar )
     return *this;
 }
 
+
+
 template< typename T > 
 Vector4< T > Matrix4< T >::operator* (const Vector4< T >& vv) const
 {
@@ -573,6 +651,8 @@ Vector4< T > Matrix4< T >::operator* (const Vector4< T >& vv) const
                          vv[0] * m02 + vv[1] * m12 + vv[2] * m22 + vv[3] * m32,
                          vv[0] * m03 + vv[1] * m13 + vv[2] * m23 + vv[3] * m33);
 }
+
+
 
 template< typename T > 
 Vector3< T > Matrix4< T >::operator* (const Vector3< T >& vv) const
@@ -584,6 +664,8 @@ Vector3< T > Matrix4< T >::operator* (const Vector3< T >& vv) const
 	return Vector3<T>( result );
 }
 
+
+
 template< typename T > 
 Matrix4< T > Matrix4< T >::getTransposed() const
 {
@@ -594,11 +676,15 @@ Matrix4< T > Matrix4< T >::getTransposed() const
     return result;
 }
 
+
+
 template< typename T > 
 inline T Matrix4< T >::det() const
 {
     return getDeterminant();
 }
+
+
 
 template< typename T > 
 T Matrix4< T >::getDeterminant() const
@@ -609,11 +695,15 @@ T Matrix4< T >::getDeterminant() const
          - m03 * getMinor( 1, 2, 3, 0, 1, 2 ); 
 }
 
+
+
 template< typename T > 
 inline Matrix4< T > Matrix4< T >::getAdjoint() const
 {
     return getAdjugate();
 }
+
+
 
 template< typename T >
 Matrix4< T > Matrix4< T >::getAdjugate() const 
@@ -660,6 +750,8 @@ Matrix4< T > Matrix4< T >::getAdjugate() const
 #endif
 }
 
+
+
 template< typename T > 
 Matrix4< T > Matrix4< T >::getInverse( bool& isInvertible, T limit ) const
 {
@@ -667,6 +759,8 @@ Matrix4< T > Matrix4< T >::getInverse( bool& isInvertible, T limit ) const
     isInvertible = getInverse( tmp, limit );
     return tmp;
 }
+
+
 
 template< typename T > 
 bool Matrix4< T >::getInverse( Matrix4< T >& result, T limit ) const
@@ -732,6 +826,7 @@ bool Matrix4< T >::getInverse( Matrix4< T >& result, T limit ) const
 }
 
 
+
 template< typename T >
 void 
 Matrix4<T>::rotate( const T angle, const Vector3< T >& axis )
@@ -768,6 +863,7 @@ Matrix4<T>::rotate( const T angle, const Vector3< T >& axis )
 }
 
 
+
 template< typename T >
 void Matrix4<T>::rotateX( const T angle )
 {
@@ -791,6 +887,8 @@ void Matrix4<T>::rotateX( const T angle )
     m32 = -m31*sinus + m32*cosin;
     m31 = tmp;
 }
+
+
 
 template<>
 inline void Matrix4<float>::rotateX( const float angle )
@@ -816,6 +914,8 @@ inline void Matrix4<float>::rotateX( const float angle )
     m31 = tmp;
 }
 
+
+
 template< typename T >
 void Matrix4<T>::rotateY( const T angle )
 {
@@ -839,6 +939,8 @@ void Matrix4<T>::rotateY( const T angle )
     m32 = m30*sinus + m32*cosin;
     m30 = tmp;
 }
+
+
 
 template<>
 inline void Matrix4<float>::rotateY( const float angle )
@@ -864,6 +966,8 @@ inline void Matrix4<float>::rotateY( const float angle )
     m30 = tmp;
 }
 
+
+
 template< typename T >
 void Matrix4<T>::rotateZ( const T angle )
 {
@@ -887,6 +991,8 @@ void Matrix4<T>::rotateZ( const T angle )
     m31 = -m30*sinus + m31*cosin;
     m30 =  tmp;
 }
+
+
 
 template<>
 inline void Matrix4<float>::rotateZ( const float angle )
@@ -912,6 +1018,8 @@ inline void Matrix4<float>::rotateZ( const float angle )
     m30 =  tmp;
 }
 
+
+
 template< typename T >
 void Matrix4<T>::preRotateX( const T angle )
 {
@@ -934,6 +1042,8 @@ void Matrix4<T>::preRotateX( const T angle )
     m03 = m03  * cosin - m23 * sinus;
     m23 = temp * sinus + m23 * cosin;
 }
+
+
 
 template<>
 inline void Matrix4<float>::preRotateX( const float angle )
@@ -959,6 +1069,8 @@ inline void Matrix4<float>::preRotateX( const float angle )
     m23 = temp * sinus + m23 * cosin;
 }
 
+
+
 template< typename T >
 void Matrix4<T>::preRotateY( const T angle )
 {
@@ -982,6 +1094,8 @@ void Matrix4<T>::preRotateY( const T angle )
     m13 = m13  *  cosin + m23 * sinus;
     m23 = temp * -sinus + m23 * cosin;
 }
+
+
 
 template<>
 inline void Matrix4<float>::preRotateY( const float angle )
@@ -1007,6 +1121,8 @@ inline void Matrix4<float>::preRotateY( const float angle )
     m23 = temp * -sinus + m23 * cosin;
 }
 
+
+
 template< typename T >
 void Matrix4<T>::preRotateZ( const T angle )
 {
@@ -1030,6 +1146,8 @@ void Matrix4<T>::preRotateZ( const T angle )
     m03 = m03  *  cosin + m13 * sinus;
     m13 = temp * -sinus + m13 * cosin;
 }
+
+
 
 template<>
 inline void Matrix4<float>::preRotateZ( const float angle )
@@ -1055,6 +1173,8 @@ inline void Matrix4<float>::preRotateZ( const float angle )
     m13 = temp * -sinus + m13 * cosin;
 }
 
+
+
 template< typename T >
 void Matrix4<T>::scale( const T scale[3] )
 {
@@ -1071,6 +1191,8 @@ void Matrix4<T>::scale( const T scale[3] )
     ml[10] *= scale[2];
     ml[11] *= scale[2];
 }
+
+
 
 template< typename T >
 void Matrix4<T>::scale( const T x, const T y, const T z )
@@ -1089,6 +1211,8 @@ void Matrix4<T>::scale( const T x, const T y, const T z )
     ml[11] *= z;
 }
 
+
+
 template< typename T >
 void Matrix4<T>::scale( const Vector3< T >& scale )
 {
@@ -1106,6 +1230,8 @@ void Matrix4<T>::scale( const Vector3< T >& scale )
     ml[11] *= scale[2];
 }
 
+
+
 template< typename T >
 void Matrix4<T>::scaleTranslation( const T scale[3] )
 {
@@ -1114,6 +1240,8 @@ void Matrix4<T>::scaleTranslation( const T scale[3] )
     ml[14] *= scale[2];
 }
 
+
+
 template< typename T >
 void Matrix4<T>::scaleTranslation( const Vector3< T >& scale )
 {
@@ -1121,6 +1249,7 @@ void Matrix4<T>::scaleTranslation( const Vector3< T >& scale )
     ml[13] *= scale[1];
     ml[14] *= scale[2];
 }
+
 
 
 template< typename T >
@@ -1179,6 +1308,8 @@ void Matrix4< T >::tensor( const Vector3< T >& u,
     m[3][3] = 1.0;    
 }
 
+
+
 template< typename T > 
 void Matrix4< T >::tensor( const Vector4< T >& u,
                               const Vector4< T >& v )
@@ -1189,6 +1320,8 @@ void Matrix4< T >::tensor( const Vector4< T >& u,
             m[i][j] = u[j] * v[i];
 
 }
+
+
 
 template< typename T > 
 T Matrix4< T >::getMinor( const size_t removeRow, const size_t removeCol ) const
@@ -1212,6 +1345,7 @@ T Matrix4< T >::getMinor( const size_t removeRow, const size_t removeCol ) const
 }
 
 
+
 template< typename T > 
 T Matrix4< T >::getMinor( const size_t row0, const size_t row1,
                        const size_t row2, const size_t col0,
@@ -1224,6 +1358,7 @@ T Matrix4< T >::getMinor( const size_t row0, const size_t row1,
 }
 
 
+
 template< typename T > 
 Matrix4< T > Matrix4< T >::operator-() const
 {
@@ -1232,6 +1367,8 @@ Matrix4< T > Matrix4< T >::operator-() const
     return result;
 }
 
+
+
 template< typename T > 
 Matrix4< T > Matrix4< T >::negate() const
 {
@@ -1239,5 +1376,8 @@ Matrix4< T > Matrix4< T >::negate() const
     result *= -1.0;
     return result;
 }
-}
+
+
+} //namespace vmml
+
 #endif

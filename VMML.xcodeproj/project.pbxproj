@@ -15,19 +15,21 @@
 		982481140B7B3D6A00290503 /* Frustum.h in Headers */ = {isa = PBXBuildFile; fileRef = 982481130B7B3D6A00290503 /* Frustum.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9836EF7F0AC958500060C6CB /* JacobiSolver.h in Headers */ = {isa = PBXBuildFile; fileRef = 9836EF7E0AC958500060C6CB /* JacobiSolver.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9842EB510B9F23DB000760E7 /* FrustumCuller.h in Headers */ = {isa = PBXBuildFile; fileRef = 9842EB500B9F23DB000760E7 /* FrustumCuller.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		98647A9E0C09B47E006A306D /* perf_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98647A820C09B364006A306D /* perf_test.cpp */; };
+		98647ACB0C09B544006A306D /* Vector4Test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98647AC00C09B544006A306D /* Vector4Test.cpp */; };
+		98647ACC0C09B544006A306D /* Vector3Test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98647AC20C09B544006A306D /* Vector3Test.cpp */; };
+		98647ACD0C09B544006A306D /* Vector2Test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98647AC40C09B544006A306D /* Vector2Test.cpp */; };
+		98647ACE0C09B544006A306D /* SVDTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98647AC60C09B544006A306D /* SVDTest.cpp */; };
+		98647ACF0C09B544006A306D /* QuaternionTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98647AC80C09B544006A306D /* QuaternionTest.cpp */; };
+		98647AD00C09B544006A306D /* JacobiSolverTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98647ACA0C09B544006A306D /* JacobiSolverTest.cpp */; };
 		9867B4F00AAED08E00651D9B /* Vector3.h in Headers */ = {isa = PBXBuildFile; fileRef = 9867B4EF0AAED08E00651D9B /* Vector3.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9867B5650AAEFDB900651D9B /* Vector4.h in Headers */ = {isa = PBXBuildFile; fileRef = 9867B5640AAEFDB900651D9B /* Vector4.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9867B62C0AAF0C0200651D9B /* Matrix3.h in Headers */ = {isa = PBXBuildFile; fileRef = 9867B62A0AAF0C0200651D9B /* Matrix3.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9867B62D0AAF0C0200651D9B /* Matrix4.h in Headers */ = {isa = PBXBuildFile; fileRef = 9867B62B0AAF0C0200651D9B /* Matrix4.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		988CCAAF0AD882CE002B0ED6 /* AxisAlignedBoundingBox.h in Headers */ = {isa = PBXBuildFile; fileRef = 988CCAAB0AD882CE002B0ED6 /* AxisAlignedBoundingBox.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		988CCAB00AD882CE002B0ED6 /* OctreeNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 988CCAAC0AD882CE002B0ED6 /* OctreeNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		988CCAC30AD88411002B0ED6 /* Sphere.h in Headers */ = {isa = PBXBuildFile; fileRef = 988CCAC20AD88411002B0ED6 /* Sphere.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		989F5C9C0AC97B09007CC6C9 /* SingularValueDecomposition.h in Headers */ = {isa = PBXBuildFile; fileRef = 989F5C9B0AC97B09007CC6C9 /* SingularValueDecomposition.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		989F5CD90ACA7970007CC6C9 /* HelperFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 989F5CD80ACA7970007CC6C9 /* HelperFunctions.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		98E1AB880AE7D6E70051E51E /* QuadtreeNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 98E1AB870AE7D6E70051E51E /* QuadtreeNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		98E1ABA90AE7DBAF0051E51E /* tree_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98E1ABA80AE7DBAF0051E51E /* tree_test.cpp */; };
-		98E1ABB10AE7DC2F0051E51E /* OctreeVisitor.h in Headers */ = {isa = PBXBuildFile; fileRef = 98E1ABAF0AE7DC2F0051E51E /* OctreeVisitor.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		98E1ABB20AE7DC2F0051E51E /* QuadtreeVisitor.h in Headers */ = {isa = PBXBuildFile; fileRef = 98E1ABB00AE7DC2F0051E51E /* QuadtreeVisitor.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C0EFFEB80AD2AD3100EE6C21 /* Vector2.h in Headers */ = {isa = PBXBuildFile; fileRef = C0EFFEB70AD2AD3100EE6C21 /* Vector2.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
@@ -45,26 +47,42 @@
 		982481130B7B3D6A00290503 /* Frustum.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Frustum.h; path = include/Frustum.h; sourceTree = "<group>"; };
 		9836EF7E0AC958500060C6CB /* JacobiSolver.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = JacobiSolver.h; path = include/JacobiSolver.h; sourceTree = "<group>"; };
 		9842EB500B9F23DB000760E7 /* FrustumCuller.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = FrustumCuller.h; path = include/FrustumCuller.h; sourceTree = "<group>"; };
+		98647A820C09B364006A306D /* perf_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = perf_test.cpp; path = tests/perf_test.cpp; sourceTree = "<group>"; };
+		98647A860C09B377006A306D /* perf_test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = perf_test; sourceTree = BUILT_PRODUCTS_DIR; };
+		98647ABF0C09B544006A306D /* Vector4Test.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Vector4Test.h; path = tests/Vector4Test.h; sourceTree = "<group>"; };
+		98647AC00C09B544006A306D /* Vector4Test.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Vector4Test.cpp; path = tests/Vector4Test.cpp; sourceTree = "<group>"; };
+		98647AC10C09B544006A306D /* Vector3Test.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Vector3Test.h; path = tests/Vector3Test.h; sourceTree = "<group>"; };
+		98647AC20C09B544006A306D /* Vector3Test.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Vector3Test.cpp; path = tests/Vector3Test.cpp; sourceTree = "<group>"; };
+		98647AC30C09B544006A306D /* Vector2Test.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Vector2Test.h; path = tests/Vector2Test.h; sourceTree = "<group>"; };
+		98647AC40C09B544006A306D /* Vector2Test.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Vector2Test.cpp; path = tests/Vector2Test.cpp; sourceTree = "<group>"; };
+		98647AC50C09B544006A306D /* SVDTest.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = SVDTest.h; path = tests/SVDTest.h; sourceTree = "<group>"; };
+		98647AC60C09B544006A306D /* SVDTest.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = SVDTest.cpp; path = tests/SVDTest.cpp; sourceTree = "<group>"; };
+		98647AC70C09B544006A306D /* QuaternionTest.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = QuaternionTest.h; path = tests/QuaternionTest.h; sourceTree = "<group>"; };
+		98647AC80C09B544006A306D /* QuaternionTest.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = QuaternionTest.cpp; path = tests/QuaternionTest.cpp; sourceTree = "<group>"; };
+		98647AC90C09B544006A306D /* JacobiSolverTest.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = JacobiSolverTest.h; path = tests/JacobiSolverTest.h; sourceTree = "<group>"; };
+		98647ACA0C09B544006A306D /* JacobiSolverTest.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = JacobiSolverTest.cpp; path = tests/JacobiSolverTest.cpp; sourceTree = "<group>"; };
 		9867B4EF0AAED08E00651D9B /* Vector3.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Vector3.h; path = include/Vector3.h; sourceTree = "<group>"; };
 		9867B5640AAEFDB900651D9B /* Vector4.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Vector4.h; path = include/Vector4.h; sourceTree = "<group>"; };
-		9867B5740AAEFEFC00651D9B /* vmml_test */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "compiled.mach-o.executable"; path = vmml_test; sourceTree = BUILT_PRODUCTS_DIR; };
+		9867B5740AAEFEFC00651D9B /* vmml_test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = vmml_test; sourceTree = BUILT_PRODUCTS_DIR; };
 		9867B62A0AAF0C0200651D9B /* Matrix3.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Matrix3.h; path = include/Matrix3.h; sourceTree = "<group>"; };
 		9867B62B0AAF0C0200651D9B /* Matrix4.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Matrix4.h; path = include/Matrix4.h; sourceTree = "<group>"; };
 		988CCAAB0AD882CE002B0ED6 /* AxisAlignedBoundingBox.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = AxisAlignedBoundingBox.h; path = include/AxisAlignedBoundingBox.h; sourceTree = "<group>"; };
-		988CCAAC0AD882CE002B0ED6 /* OctreeNode.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = OctreeNode.h; path = include/OctreeNode.h; sourceTree = "<group>"; };
 		988CCAC20AD88411002B0ED6 /* Sphere.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Sphere.h; path = include/Sphere.h; sourceTree = "<group>"; };
 		989F5C9B0AC97B09007CC6C9 /* SingularValueDecomposition.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = SingularValueDecomposition.h; path = include/SingularValueDecomposition.h; sourceTree = "<group>"; };
 		989F5CD80ACA7970007CC6C9 /* HelperFunctions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = HelperFunctions.h; path = include/HelperFunctions.h; sourceTree = "<group>"; };
-		98E1AB870AE7D6E70051E51E /* QuadtreeNode.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = QuadtreeNode.h; path = include/QuadtreeNode.h; sourceTree = "<group>"; };
 		98E1ABA60AE7DB900051E51E /* tree_test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = tree_test; sourceTree = BUILT_PRODUCTS_DIR; };
-		98E1ABA80AE7DBAF0051E51E /* tree_test.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = tree_test.cpp; path = include/tree_test.cpp; sourceTree = "<group>"; };
-		98E1ABAF0AE7DC2F0051E51E /* OctreeVisitor.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = OctreeVisitor.h; path = include/OctreeVisitor.h; sourceTree = "<group>"; };
-		98E1ABB00AE7DC2F0051E51E /* QuadtreeVisitor.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = QuadtreeVisitor.h; path = include/QuadtreeVisitor.h; sourceTree = "<group>"; };
 		C0EFFEB70AD2AD3100EE6C21 /* Vector2.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Vector2.h; path = include/Vector2.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		8D07F2C30486CC7A007CD1D0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		98647A840C09B377006A306D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -94,6 +112,7 @@
 				8D07F2C80486CC7A007CD1D0 /* VMMLib.framework */,
 				9867B5740AAEFEFC00651D9B /* vmml_test */,
 				98E1ABA60AE7DB900051E51E /* tree_test */,
+				98647A860C09B377006A306D /* perf_test */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -104,7 +123,6 @@
 				9867B4EE0AAED07A00651D9B /* Basics */,
 				9836EF820AC958620060C6CB /* Advanced */,
 				980CE5AB0AE4E53300842927 /* Misc */,
-				988CCAA70AD881F3002B0ED6 /* Data Structures */,
 				08FB77ACFE841707C02AAC07 /* Tests */,
 				089C1665FE841158C02AAC07 /* Resources */,
 				0867D69AFE84028FC02AAC07 /* External Frameworks and Libraries */,
@@ -132,12 +150,8 @@
 		08FB77ACFE841707C02AAC07 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				980CE8DC0AE533F100842927 /* main_test.cpp */,
-				980CE8DD0AE533F100842927 /* Matrix3Test.cpp */,
-				980CE8DE0AE533F100842927 /* Matrix3Test.h */,
-				980CE8DF0AE533F100842927 /* Matrix4Test.cpp */,
-				980CE8E00AE533F100842927 /* Matrix4Test.h */,
-				980CE8E10AE533F100842927 /* Test.h */,
+				98647AD10C09B54C006A306D /* correctness */,
+				98647AD20C09B55E006A306D /* performance */,
 			);
 			name = Tests;
 			sourceTree = "<group>";
@@ -162,6 +176,39 @@
 			name = Advanced;
 			sourceTree = "<group>";
 		};
+		98647AD10C09B54C006A306D /* correctness */ = {
+			isa = PBXGroup;
+			children = (
+				98647ABF0C09B544006A306D /* Vector4Test.h */,
+				98647AC00C09B544006A306D /* Vector4Test.cpp */,
+				98647AC10C09B544006A306D /* Vector3Test.h */,
+				98647AC20C09B544006A306D /* Vector3Test.cpp */,
+				98647AC30C09B544006A306D /* Vector2Test.h */,
+				98647AC40C09B544006A306D /* Vector2Test.cpp */,
+				98647AC50C09B544006A306D /* SVDTest.h */,
+				98647AC60C09B544006A306D /* SVDTest.cpp */,
+				98647AC70C09B544006A306D /* QuaternionTest.h */,
+				98647AC80C09B544006A306D /* QuaternionTest.cpp */,
+				98647AC90C09B544006A306D /* JacobiSolverTest.h */,
+				98647ACA0C09B544006A306D /* JacobiSolverTest.cpp */,
+				980CE8DC0AE533F100842927 /* main_test.cpp */,
+				980CE8DD0AE533F100842927 /* Matrix3Test.cpp */,
+				980CE8DE0AE533F100842927 /* Matrix3Test.h */,
+				980CE8DF0AE533F100842927 /* Matrix4Test.cpp */,
+				980CE8E00AE533F100842927 /* Matrix4Test.h */,
+				980CE8E10AE533F100842927 /* Test.h */,
+			);
+			name = correctness;
+			sourceTree = "<group>";
+		};
+		98647AD20C09B55E006A306D /* performance */ = {
+			isa = PBXGroup;
+			children = (
+				98647A820C09B364006A306D /* perf_test.cpp */,
+			);
+			name = performance;
+			sourceTree = "<group>";
+		};
 		9867B4EE0AAED07A00651D9B /* Basics */ = {
 			isa = PBXGroup;
 			children = (
@@ -174,18 +221,6 @@
 				989F5CD80ACA7970007CC6C9 /* HelperFunctions.h */,
 			);
 			name = Basics;
-			sourceTree = "<group>";
-		};
-		988CCAA70AD881F3002B0ED6 /* Data Structures */ = {
-			isa = PBXGroup;
-			children = (
-				98E1AB870AE7D6E70051E51E /* QuadtreeNode.h */,
-				98E1ABB00AE7DC2F0051E51E /* QuadtreeVisitor.h */,
-				988CCAAC0AD882CE002B0ED6 /* OctreeNode.h */,
-				98E1ABAF0AE7DC2F0051E51E /* OctreeVisitor.h */,
-				98E1ABA80AE7DBAF0051E51E /* tree_test.cpp */,
-			);
-			name = "Data Structures";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -205,11 +240,7 @@
 				989F5C9C0AC97B09007CC6C9 /* SingularValueDecomposition.h in Headers */,
 				989F5CD90ACA7970007CC6C9 /* HelperFunctions.h in Headers */,
 				988CCAAF0AD882CE002B0ED6 /* AxisAlignedBoundingBox.h in Headers */,
-				988CCAB00AD882CE002B0ED6 /* OctreeNode.h in Headers */,
 				988CCAC30AD88411002B0ED6 /* Sphere.h in Headers */,
-				98E1AB880AE7D6E70051E51E /* QuadtreeNode.h in Headers */,
-				98E1ABB10AE7DC2F0051E51E /* OctreeVisitor.h in Headers */,
-				98E1ABB20AE7DC2F0051E51E /* QuadtreeVisitor.h in Headers */,
 				982481140B7B3D6A00290503 /* Frustum.h in Headers */,
 				9842EB510B9F23DB000760E7 /* FrustumCuller.h in Headers */,
 			);
@@ -237,6 +268,22 @@
 			productName = VMML;
 			productReference = 8D07F2C80486CC7A007CD1D0 /* VMMLib.framework */;
 			productType = "com.apple.product-type.framework";
+		};
+		98647A850C09B377006A306D /* perf_test */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 98647A8D0C09B3B5006A306D /* Build configuration list for PBXNativeTarget "perf_test" */;
+			buildPhases = (
+				98647A830C09B377006A306D /* Sources */,
+				98647A840C09B377006A306D /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = perf_test;
+			productName = perf_test;
+			productReference = 98647A860C09B377006A306D /* perf_test */;
+			productType = "com.apple.product-type.tool";
 		};
 		9867B5730AAEFEFC00651D9B /* vmml_test */ = {
 			isa = PBXNativeTarget;
@@ -284,6 +331,7 @@
 				8D07F2BC0486CC7A007CD1D0 /* VMML */,
 				9867B5730AAEFEFC00651D9B /* vmml_test */,
 				98E1ABA50AE7DB900051E51E /* tree_test */,
+				98647A850C09B377006A306D /* perf_test */,
 			);
 		};
 /* End PBXProject section */
@@ -317,6 +365,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		98647A830C09B377006A306D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				98647A9E0C09B47E006A306D /* perf_test.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		9867B5710AAEFEFC00651D9B /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -324,6 +380,12 @@
 				980CE8E20AE533F100842927 /* main_test.cpp in Sources */,
 				980CE8E30AE533F100842927 /* Matrix3Test.cpp in Sources */,
 				980CE8E40AE533F100842927 /* Matrix4Test.cpp in Sources */,
+				98647ACB0C09B544006A306D /* Vector4Test.cpp in Sources */,
+				98647ACC0C09B544006A306D /* Vector3Test.cpp in Sources */,
+				98647ACD0C09B544006A306D /* Vector2Test.cpp in Sources */,
+				98647ACE0C09B544006A306D /* SVDTest.cpp in Sources */,
+				98647ACF0C09B544006A306D /* QuaternionTest.cpp in Sources */,
+				98647AD00C09B544006A306D /* JacobiSolverTest.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -331,7 +393,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				98E1ABA90AE7DBAF0051E51E /* tree_test.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -439,6 +500,37 @@
 			};
 			name = Release;
 		};
+		98647A8E0C09B3B5006A306D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH)";
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = perf_test;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		98647A8F0C09B3B5006A306D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = perf_test;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
 		9867B5820AAEFF5600651D9B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -516,6 +608,15 @@
 			buildConfigurations = (
 				4FADC24708B4156D00ABE55E /* Debug */,
 				4FADC24808B4156D00ABE55E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		98647A8D0C09B3B5006A306D /* Build configuration list for PBXNativeTarget "perf_test" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				98647A8E0C09B3B5006A306D /* Debug */,
+				98647A8F0C09B3B5006A306D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

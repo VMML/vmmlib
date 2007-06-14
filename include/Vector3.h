@@ -31,6 +31,7 @@
 
 namespace vmml
 {
+template< typename T > class Vector2;
 template< typename T > class Vector4;
 
 template< typename T > 
@@ -55,6 +56,7 @@ public:
     Vector3(); // warning: components NOT initialised ( for performance )
     Vector3( const T  a ); 
     Vector3( const T  i, const T  j, const T  k ); 
+    Vector3( const Vector2< T >& xy, const T z ); 
     Vector3( const Vector4< T >& from ); 
 
     // type conversion constructor
@@ -159,8 +161,10 @@ public:
     typedef Vector3< unsigned char > Vector3ub;    
 #endif
 }
+
 // - implementation - //
 #include "Vector4.h"
+#include "Vector2.h"
  
 namespace vmml
 {
@@ -185,6 +189,8 @@ Vector3< T >::Vector3( const T  i, const T  j, const T  k )
     , z(k) 
 {} 
 
+
+
 template < typename T > 
 Vector3< T >::Vector3( const Vector4<T>& from )
 {
@@ -193,6 +199,15 @@ Vector3< T >::Vector3( const Vector4<T>& from )
     y = from.y * wInv;
     z = from.z * wInv;
 } 
+
+
+
+template < typename T > 
+Vector3< T >::Vector3( const Vector2< T >& xy, const T z_ )
+    : x( xy.x )
+    , y( xy.y )
+    , z( z_ )
+{} 
 
 
 

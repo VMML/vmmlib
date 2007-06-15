@@ -7,14 +7,14 @@
 * @author David H. Eberly ( Wild Magic )
 * @author Andrew Willmott ( VL )
 *
-* @license BSD license, check LICENSE
+* @license revised BSD license, check LICENSE
 *
 * parts of the source code of VMMLib were inspired by David Eberly's 
 * Wild Magic and Andrew Willmott's VL.
 */ 
 
-#ifndef _Matrix3_H_
-#define _Matrix3_H_
+#ifndef __VMML__MATRIX3__H__
+#define __VMML__MATRIX3__H__
 
 /* 
  *   3x3 Matrix Class
@@ -149,8 +149,13 @@ public:
 
 
 #ifndef VMMLIB_DISABLE_TYPEDEFS
+
     typedef Matrix3< float >  Matrix3f;
     typedef Matrix3< double > Matrix3d;
+
+    typedef Matrix3< float >  mat3f;
+    typedef Matrix3< double > mat3d;
+
 #endif
 
 //

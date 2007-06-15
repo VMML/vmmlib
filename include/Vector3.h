@@ -7,17 +7,15 @@
 * @author David H. Eberly ( Wild Magic )
 * @author Andrew Willmott ( VL )
 *
-* @license BSD license, check LICENSE
+* @license revised BSD license, check LICENSE
 *
 * parts of the source code of VMMLib were inspired by David Eberly's 
 * Wild Magic and Andrew Willmott's VL.
 * 
 */ 
 
-
-
-#ifndef _Vector3_H_
-#define _Vector3_H_
+#ifndef __VMML__VECTOR3__H__
+#define __VMML__VECTOR3__H__
 
 #include <algorithm>
 #include <cassert>
@@ -160,9 +158,15 @@ public:
 };
     
 #ifndef VMMLIB_DISABLE_TYPEDEFS
-    typedef Vector3<float>  Vector3f;
-    typedef Vector3<double> Vector3d;
-    typedef Vector3< unsigned char > Vector3ub;    
+    typedef Vector3< float >            Vector3f;
+    typedef Vector3< double >           Vector3d;
+    typedef Vector3< int >              Vector3i;
+    typedef Vector3< unsigned char >    Vector3ub;    
+
+    typedef Vector3< float >            vec3f;
+    typedef Vector3< double >           vec3d;
+    typedef Vector3< int >              vec3i;
+    typedef Vector3< unsigned char >    vec3ub;    
 #endif
 }
 

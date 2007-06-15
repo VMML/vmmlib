@@ -2,12 +2,13 @@
 * VMMLib - Vector & Matrix Math Lib
 *  
 * @author Stefan Eilemann
+* @author Jonas Boesch
 *
-* @license BSD license, check LICENSE
+* @license revised BSD license, check LICENSE
 */ 
 
-#ifndef _vmml_Vector2_H_
-#define _vmml_Vector2_H_
+#ifndef __VMML__VECTOR2__H__
+#define __VMML__VECTOR2__H__
 
 #include <cmath>
 #include <cstdlib>
@@ -120,9 +121,17 @@ public:
 };
 
 #ifndef VMMLIB_DISABLE_TYPEDEFS
-    typedef Vector2<int>    Vector2i;
-    typedef Vector2<float>  Vector2f;
-    typedef Vector2<double> Vector2d;
+
+    typedef Vector2< unsigned char >    Vector2ub;
+    typedef Vector2< int >              Vector2i;
+    typedef Vector2< float >            Vector2f;
+    typedef Vector2< double >           Vector2d;
+    
+    typedef Vector2< unsigned char >    vec2ub;
+    typedef Vector2< int >              vec2i;
+    typedef Vector2< float >            vec2f;
+    typedef Vector2< double >           vec2d;
+
 #endif
 
 

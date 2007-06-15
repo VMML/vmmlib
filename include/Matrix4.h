@@ -7,7 +7,7 @@
 * @author David H. Eberly ( Wild Magic )
 * @author Andrew Willmott ( VL )
 *
-* @license BSD license, check LICENSE
+* @license revised BSD license, check LICENSE
 *
 * parts of the source code of VMMLib were inspired by David Eberly's 
 * Wild Magic and Andrew Willmott's VL.
@@ -15,8 +15,8 @@
 */ 
 
 
-#ifndef _Matrix4_H_
-#define _Matrix4_H_
+#ifndef __VMML__MATRIX4__H__
+#define __VMML__MATRIX4__H__
 
 /* 
  *   4x4 Matrix Class
@@ -212,8 +212,13 @@ public:
 };
 
 #ifndef VMMLIB_DISABLE_TYPEDEFS
-    typedef Matrix4<float>  Matrix4f;
-    typedef Matrix4<double> Matrix4d;
+
+    typedef Matrix4< float >  Matrix4f;
+    typedef Matrix4< double > Matrix4d;
+
+    typedef Matrix4< float >  mat4f;
+    typedef Matrix4< double > mat4d;
+
 #endif
 
 } //namespace vmml

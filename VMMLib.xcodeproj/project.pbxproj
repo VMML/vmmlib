@@ -38,7 +38,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 988F59AA0C22C9A90005AC92 /* VMMLib */;
+			remoteGlobalIDString = 988F59AA0C22C9A90005AC92;
 			remoteInfo = VMMLib;
 		};
 /* End PBXContainerItemProxy section */

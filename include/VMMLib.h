@@ -7,7 +7,7 @@
 * @author David H. Eberly ( Wild Magic )
 * @author Andrew Willmott ( VL )
 *
-* @license BSD license, check LICENSE
+* @license revised BSD license, check LICENSE
 *
 * parts of the source code of VMMLib were inspired by David Eberly's 
 * Wild Magic and Andrew Willmott's VL.
@@ -15,8 +15,8 @@
 */ 
 
 
-#ifndef _vmml_h_
-#define _vmml_h_
+#ifndef __VMML__VMMLIB__H__
+#define __VMML__VMMLIB__H__
 
 #include "Vector2.h"
 #include "Vector3.h"
@@ -26,6 +26,5 @@
 #include "Quaternion.h"
 #include "Frustum.h"
 #include "FrustumCuller.h"
-#include "AxisAlignedBoundingBox.h"
 
 #endif

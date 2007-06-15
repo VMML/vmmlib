@@ -7,15 +7,15 @@
 * @author David H. Eberly ( Wild Magic )
 * @author Andrew Willmott ( VL )
 *
-* @license BSD license, check LICENSE
+* @license revised BSD license, check LICENSE
 *
 * parts of the source code of VMMLib were inspired by David Eberly's 
 * Wild Magic and Andrew Willmott's VL.
 * 
 */ 
 
-#ifndef _Vector4_H_
-#define _Vector4_H_
+#ifndef __VMML__VECTOR4__H__
+#define __VMML__VECTOR4__H__
 
 #include <cmath>
 #include <cstdlib>
@@ -154,9 +154,17 @@ public:
 };
 
 #ifndef VMMLIB_DISABLE_TYPEDEFS
-    typedef Vector4<float>         Vector4f;
-    typedef Vector4<double>        Vector4d;
-    typedef Vector4<unsigned char> Vector4ub;
+
+    typedef Vector4< float >            Vector4f;
+    typedef Vector4< double >           Vector4d;
+    typedef Vector4< int >              Vector4i;
+    typedef Vector4< unsigned char >    Vector4ub;
+
+    typedef Vector4< float >            vec4f;
+    typedef Vector4< double >           vec4d;
+    typedef Vector4< int >              vec4i;
+    typedef Vector4< unsigned char >    vec4ub;
+
 #endif
 
 } //namespace vmml

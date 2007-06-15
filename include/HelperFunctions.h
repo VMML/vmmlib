@@ -1,5 +1,5 @@
-#ifndef _vmmlib_HelperFunctions_H_
-#define _vmmlib_HelperFunctions_H_
+#ifndef __VMML__HELPER_FUNCTIONS__H__
+#define __VMML__HELPER_FUNCTIONS__H__
 
 /* 
 * VMMLib - Vector & Matrix Math Lib
@@ -10,7 +10,7 @@
 * @author David H. Eberly ( Wild Magic )
 * @author Andrew Willmott ( VL )
 *
-* @license BSD license, check LICENSE
+* @license revised BSD license, check LICENSE
 *
 * parts of the source code of VMMLib were inspired by David Eberly's 
 * Wild Magic and Andrew Willmott's VL.

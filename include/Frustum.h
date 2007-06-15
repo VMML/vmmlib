@@ -3,11 +3,11 @@
 *  
 * @author Stefan Eilemann
 *
-* @license BSD license, check LICENSE
+* @license revised BSD license, check LICENSE
 */ 
 
-#ifndef _vmml_Frustum_H_
-#define _vmml_Frustum_H_
+#ifndef __VMML__FRUSTUM__H__
+#define __VMML__FRUSTUM__H__
 
 
 // - declaration -
@@ -72,8 +72,13 @@ public:
 };
 
 #ifndef VMMLIB_DISABLE_TYPEDEFS
-    typedef Frustum<float>  Frustumf;
-    typedef Frustum<double> Frustumd;
+    
+    typedef Frustum< float >  Frustumf;
+    typedef Frustum< double > Frustumd;
+
+    typedef Frustum< float >  frustumf;
+    typedef Frustum< double > frustumd;
+
 #endif
 }
 

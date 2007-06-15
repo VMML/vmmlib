@@ -1,5 +1,5 @@
-#ifndef _vmml_SingularValueDecomposition_H_
-#define _vmml_SingularValueDecomposition_H_
+#ifndef __VMML__SINGULAR_VALUE_DECOMPOSITION__H__
+#define __VMML__SINGULAR_VALUE_DECOMPOSITION__H__
 
 #include "VMMLib.h"
 #include "HelperFunctions.h"

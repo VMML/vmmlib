@@ -3,11 +3,11 @@
 *  
 * @author Stefan Eilemann
 *
-* @license BSD license, check LICENSE
+* @license revised BSD license, check LICENSE
 */ 
 
-#ifndef _vmml_FrustumCuller_H_
-#define _vmml_FrustumCuller_H_
+#ifndef __VMML__FRUSTUM_CULLER__H__
+#define __VMML__FRUSTUM_CULLER__H__
 
 #include "Vector4.h" // member
 
@@ -46,8 +46,10 @@ private:
 };
 
 #ifndef VMMLIB_DISABLE_TYPEDEFS
-    typedef FrustumCuller<float>  FrustumCullerf;
-    typedef FrustumCuller<double> FrustumCullerd;
+
+    typedef FrustumCuller< float >  FrustumCullerf;
+    typedef FrustumCuller< double > FrustumCullerd;
+
 #endif
 }
 

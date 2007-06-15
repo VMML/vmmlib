@@ -7,19 +7,19 @@
 * @author David H. Eberly ( Wild Magic )
 * @author Andrew Willmott ( VL )
 *
-* @license BSD license, check LICENSE
+* @license revised BSD license, check LICENSE
 *
 * parts of the source code of VMMLib were inspired by David Eberly's 
 * Wild Magic and Andrew Willmott's VL.
 * 
 */ 
 
-#ifndef _JacobiSolver_H_
-#define _JacobiSolver_H_
+#ifndef __VMML__JACOBI_SOLVER__H__
+#define __VMML__JACOBI_SOLVER__H__
 
 #include "VMMLib.h"
-#include <math.h>
-#include <assert.h>
+#include <cmath>
+#include <cassert>
 
 namespace vmml
 {

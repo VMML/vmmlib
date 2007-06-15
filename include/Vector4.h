@@ -132,6 +132,16 @@ public:
     bool isAkin( const Vector4& a, 
                  const T& delta = std::numeric_limits<T>::epsilon() );
 
+
+    // component-component compare
+    // returns a size_t with a bitmask of the component comparison results
+    // -> if this->xy[k] is smaller a[k], the kth bit will be enabled;
+    const size_t smaller( const Vector4& a ) const;
+    const size_t smaller( const Vector4& a, const size_t axis ) const;
+    // -> if this->xy[k] is greater a[k], the kth bit will be enabled;
+    const size_t greater( const Vector4& a ) const;
+    const size_t greater( const Vector4& a, const size_t axis ) const;
+    
     void invert(); 
 
     T getMinComponent();
@@ -613,6 +623,59 @@ bool Vector4< T >::isAkin( const Vector4& a, const T& delta )
     return true;
 }
 
+
+
+template < typename T > 
+const size_t 
+Vector4< T >::smaller( const Vector4< T >& a ) const
+{
+    size_t result = 0;
+    if ( x < a.x )
+        result |= 1;
+    if ( y < a.y )
+        result |= 2;
+    if ( z < a.z )
+        result |= 4;
+    if ( w < a.w )
+        result |= 8;
+    return result;
+}
+
+
+
+template < typename T > 
+const size_t 
+Vector4< T >::smaller( const Vector4< T >& a, const size_t axis  ) const
+{
+    return ( xyzw[ axis ] < a.xyzw[ axis ] ) ? 1 << axis : 0;
+}
+
+
+
+template < typename T > 
+const size_t 
+Vector4< T >::greater( const Vector4< T >& a ) const
+{
+    size_t result = 0;
+    if ( x > a.x )
+        result |= 1;
+    if ( y > a.y )
+        result |= 2;
+    if ( z > a.z )
+        result |= 4;
+    if ( w > a.w )
+        result |= 8;
+    return result;
+}
+
+
+
+template < typename T > 
+const size_t 
+Vector4< T >::greater( const Vector4< T >& a, const size_t axis  ) const
+{
+    return ( xyzw[ axis ] > a.xyzw[ axis ] ) ? 1 << axis : 0;
+}
 
 
 template< > 

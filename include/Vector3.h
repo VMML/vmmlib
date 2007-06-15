@@ -110,6 +110,16 @@ public:
     bool isAkin(  const Vector3& a, 
                   const T& delta = std::numeric_limits<T>::epsilon() );
 
+    // component-component compare
+    // returns a size_t with a bitmask of the component comparison results
+    // -> if this->xy[k] is smaller than a[k], the kth bit will be enabled;
+    const size_t smaller( const Vector3& a ) const;
+    const size_t smaller( const Vector3& a, const size_t axis ) const;
+    // -> if this->xy[k] is smaller than a[k], the kth bit will be enabled;
+    const size_t greater( const Vector3& a ) const;
+    const size_t greater( const Vector3& a, const size_t axis ) const;
+    
+
     T length() const;
     T lengthSquared() const;
 
@@ -591,6 +601,56 @@ const Vector3< T >& Vector3< T >::operator/=( const Vector3 &a )
     y /= a.y; 
     z /= a.z; 
     return *this; 
+}
+
+
+
+template < typename T > 
+const size_t 
+Vector3< T >::smaller( const Vector3< T >& a ) const
+{
+    size_t result = 0;
+    if ( x < a.x )
+        result |= 1;
+    if ( y < a.y )
+        result |= 2;
+    if ( z < a.z )
+        result |= 4;
+    return result;
+}
+
+
+
+template < typename T > 
+const size_t 
+Vector3< T >::smaller( const Vector3< T >& a, const size_t axis  ) const
+{
+    return ( xyz[ axis ] < a.xyz[ axis ] ) ? 1 << axis : 0;
+}
+
+
+
+template < typename T > 
+const size_t 
+Vector3< T >::greater( const Vector3< T >& a ) const
+{
+    size_t result = 0;
+    if ( x > a.x )
+        result |= 1;
+    if ( y > a.y )
+        result |= 2;
+    if ( z > a.z )
+        result |= 4;
+    return result;
+}
+
+
+
+template < typename T > 
+const size_t 
+Vector3< T >::greater( const Vector3< T >& a, const size_t axis  ) const
+{
+    return ( xyz[ axis ] > a.xyz[ axis ] ) ? 1 << axis : 0;
 }
 
 

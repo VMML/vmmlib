@@ -15,8 +15,9 @@ bool JacobiSolverTest::test()
 	Matrix3<double> vmatrix3_test( 0., 0., 0., 0., 0., 0., 0., 0., 0. );
 	size_t r = 1;
 	ok = solveJacobi3x3( _matrix, dvector3_test, vmatrix3_test, r );
-	std:: cout << _matrix << std::endl << dvector3_test << std::endl << vmatrix3_test
-			   << std::endl << r << std::endl;
+	//std:: cout << _matrix << std::endl << dvector3_test << std::endl << vmatrix3_test
+	//		   << std::endl << r << std::endl;
+
     return ok;
 }
 

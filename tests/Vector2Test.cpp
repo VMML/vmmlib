@@ -215,7 +215,9 @@ bool Vector2Test::test()
 		failed();
 		assert( 0 );
 	}
-	
+
+    if ( ok )
+        cout << "Vector2: all tests passed!" << std::endl;	
 
 	return ok;
 }

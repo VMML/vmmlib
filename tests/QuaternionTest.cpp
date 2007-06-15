@@ -201,6 +201,9 @@ bool QuaternionTest::test()
 		failed();
 		assert( 0 );
 	}
+
+    if ( ok )
+        cout << "Quaternion: all tests passed!" << endl;
 		
 	return ok;
 }

@@ -217,6 +217,8 @@ bool Matrix3Test::test()
         assert( 0 );           
     }
     
+    if ( ok )
+        cout << "Matrix3: all tests passed!" << endl;
     
     return ok;
 }

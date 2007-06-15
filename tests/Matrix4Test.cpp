@@ -291,6 +291,8 @@ bool Matrix4Test::test()
         failed();
     }
     
+    if ( ok )
+        cout << "Matrix4: all tests passed!" << endl;
     
     return ok;
 }

@@ -32,7 +32,8 @@ bool SVDTest::test()
 		}
 	}
 	
-	for ( size_t i = 0; i < 3; ++i )
+	/*
+    for ( size_t i = 0; i < 3; ++i )
 	{
 		for ( size_t j = 0; j < 3; ++j )
 		{
@@ -41,10 +42,7 @@ bool SVDTest::test()
 		std::cout << std::endl;
 	}
 	
-	
-	
-	
-	
+    */
 	
 	double** v = new double*[3];
 	for ( size_t i = 0; i < 3; ++i )
@@ -145,7 +143,11 @@ bool SVDTest::test()
 					failed();
 					assert(0);
 				}
-	
+
+
+    if ( ok )
+        std::cout << "SVD: All tests passed!" << std::endl;
+    
 	return ok;
 }
 

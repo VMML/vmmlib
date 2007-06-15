@@ -234,6 +234,8 @@ bool Vector3Test::test()
 		assert( 0 );
 	}
 	
+    if ( ok )
+        cout << "Vector3: all tests passed!" << std::endl;
 
 	return ok;
 }

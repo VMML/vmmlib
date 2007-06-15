@@ -29,6 +29,8 @@
 		988F59BF0C22CA070005AC92 /* SingularValueDecomposition.h in Headers */ = {isa = PBXBuildFile; fileRef = 988F581F0C22C00F0005AC92 /* SingularValueDecomposition.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		988F59C00C22CA070005AC92 /* VMMLib.h in Headers */ = {isa = PBXBuildFile; fileRef = 988F58230C22C00F0005AC92 /* VMMLib.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		988F59C10C22CA070005AC92 /* HelperFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 988F581A0C22C00F0005AC92 /* HelperFunctions.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		988F5A110C22CAFE0005AC92 /* README in Resources */ = {isa = PBXBuildFile; fileRef = 988F5A100C22CAFE0005AC92 /* README */; };
+		988F5A130C22CB090005AC92 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 988F5A120C22CB090005AC92 /* LICENSE */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -78,6 +80,8 @@
 		988F58780C22C1B90005AC92 /* VMMLibTest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = VMMLibTest; sourceTree = BUILT_PRODUCTS_DIR; };
 		988F59AB0C22C9A90005AC92 /* VMMLib.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = VMMLib.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		988F59AC0C22C9A90005AC92 /* VMMLib-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "VMMLib-Info.plist"; sourceTree = "<group>"; };
+		988F5A100C22CAFE0005AC92 /* README */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
+		988F5A120C22CB090005AC92 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = LICENSE; path = include/LICENSE; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -126,6 +130,8 @@
 		089C1665FE841158C02AAC07 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				988F5A120C22CB090005AC92 /* LICENSE */,
+				988F5A100C22CAFE0005AC92 /* README */,
 				8DC2EF5A0486A6940098B216 /* Info.plist */,
 				089C1666FE841158C02AAC07 /* InfoPlist.strings */,
 			);
@@ -303,6 +309,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				988F59B50C22C9F20005AC92 /* InfoPlist.strings in Resources */,
+				988F5A110C22CAFE0005AC92 /* README in Resources */,
+				988F5A130C22CB090005AC92 /* LICENSE in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

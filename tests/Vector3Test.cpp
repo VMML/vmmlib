@@ -233,6 +233,28 @@ bool Vector3Test::test()
 		failed();
 		assert( 0 );
 	}
+
+
+    vec3f cmp0( 1.0, 2.5, 4.0 );
+    vec3f cmp1( 3.0, 2.0, 5.0 );
+    
+    size_t smaller = cmp0.smaller( cmp1 );
+    size_t greater = cmp0.greater( cmp1 );
+    
+    if ( smaller != 5 || greater != 2 )
+    {
+        failed();
+        assert( 0 );
+    }
+
+    smaller = cmp0.smaller( cmp1, 2 );
+    greater = cmp0.greater( cmp1, 2 );
+
+    if ( smaller != 4 || greater != 0 )
+    {
+        failed();
+        assert( 0 );
+    }
 	
     if ( ok )
         cout << "Vector3: all tests passed!" << std::endl;

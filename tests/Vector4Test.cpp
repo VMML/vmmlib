@@ -241,6 +241,28 @@ bool Vector4Test::test()
 		failed();
 		assert( 0 );
 	}
+
+
+    vec4f cmp0( 1.0, 2.5, 4.0, 1.0 );
+    vec4f cmp1( 3.0, 2.0, 5.0, 2.0 );
+    
+    size_t smaller = cmp0.smaller( cmp1 );
+    size_t greater = cmp0.greater( cmp1 );
+    
+    if ( smaller != 13 || greater != 2 )
+    {
+        failed();
+        assert( 0 );
+    }
+
+    smaller = cmp0.smaller( cmp1, 3 );
+    greater = cmp0.greater( cmp1, 3 );
+
+    if ( smaller != 8 || greater != 0 )
+    {
+        failed();
+        assert( 0 );
+    }
 	
     if ( ok )
         cout << "Vector4: all tests passed!" << std::endl;

@@ -79,8 +79,6 @@ public:
     ~Vector4();
 
     void set( T xx, T yy, T zz, T ww );
-    // dangerous, but implemented to allow easy conversion between 
-    // Vector< float > and Vector< double >
     //the pointer 'values must be a valid 4 component c array of the resp. type
     void set( const float* aa );
     void set( const double* aa );
@@ -96,6 +94,8 @@ public:
     T length() const; 
     T lengthSquared() const;
 
+    T normalize();
+    // deprecated
     T normalise();
 
     // vector/scalar operations
@@ -357,6 +357,22 @@ T  Vector4< T >::lengthSquared() const
 
 template < typename T > 
 T Vector4< T >::normalise()
+{ 
+    T l = length(); 
+    if ( l == 0 ) 
+        return 0; 
+    l = 1.0f / l; 
+    x *= l; 
+    y *= l; 
+    z *= l; 
+    w *= l;
+    return l; 
+} 
+
+
+
+template < typename T > 
+T Vector4< T >::normalize()
 { 
     T l = length(); 
     if ( l == 0 ) 

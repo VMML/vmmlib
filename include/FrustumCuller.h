@@ -72,12 +72,12 @@ void FrustumCuller< T >::setup( const Matrix4<T>& projection )
     _nearPlane   = projection.getRow(3) + projection.getRow(2);
     _farPlane    = projection.getRow(3) - projection.getRow(2);
 
-    _leftPlane.normalise();
-    _rightPlane.normalise();
-    _bottomPlane.normalise(); 
-    _topPlane.normalise();
-    _nearPlane.normalise();
-    _farPlane.normalise();
+    _leftPlane.normalize();
+    _rightPlane.normalize();
+    _bottomPlane.normalize(); 
+    _topPlane.normalize();
+    _nearPlane.normalize();
+    _farPlane.normalize();
 }
 
 template < class T > 

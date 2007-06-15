@@ -115,8 +115,12 @@ public:
     T length() const;
     T lengthSquared() const;
 
+    T normalize();
+    static T normalize( float* source );
+    // deprecated
     T normalise();
     static T normalise( float* source );
+
     void scale( T scale_factor );
 
     // result = vec1.cross( vec2 ) => vec1 x vec2
@@ -373,6 +377,39 @@ T  Vector3< T >::normalise( float* source )
     if ( l == 0 ) 
         return 0;
 
+    l = 1.0f / l;
+    source[0] *= l;
+    source[1] *= l;
+    source[2] *= l;
+    return l;
+}
+
+
+
+template < typename T > 
+T  Vector3< T >::normalize()
+{ 
+    T l = length(); 
+    if ( l == 0 ) 
+        return 0; 
+    l = 1.0f / l; 
+    x *= l; 
+    y *= l; 
+    z *= l; 
+    return l; 
+} 
+
+
+
+// PRECONDITION: float* source is a valid 3-float array
+template < typename T > 
+T  Vector3< T >::normalize( float* source )
+{
+    Vector3< float >* a = ( Vector3< float >* ) source;
+    T l = a->length();
+    if ( l == 0 ) 
+        return 0;
+    
     l = 1.0f / l;
     source[0] *= l;
     source[1] *= l;
@@ -652,7 +689,7 @@ void Vector3< T >::normal( const Vector3< T >& aa,
     u = bb - aa;
     v = cc - aa;
     cross( u, v );
-    normalise();
+    normalize();
 }
 
 
@@ -675,7 +712,7 @@ Vector3< T > Vector3< T >::rotate( T theta, T rx, T ry,
                                          T rz )      
 {   
     Vector3 q( 0, 0, 0 ), r( rx, ry, rz );
-    r.normalise();
+    r.normalize();
     const T costheta = ( T ) cos( theta );
     const T sintheta = ( T ) sin( theta );
     q.x += ( costheta + ( 1.0f - costheta ) * r.x * r.x ) * x;
@@ -698,7 +735,7 @@ inline Vector3< float > Vector3< float >::rotate( float theta, float rx,
                                                   float ry, float rz )      
 {   
     Vector3 q( 0, 0, 0 ), r( rx, ry, rz );
-    r.normalise();
+    r.normalize();
     const float costheta = cosf( theta );
     const float sintheta = sinf( theta );
     q.x += ( costheta + ( 1.0f - costheta ) * r.x * r.x ) * x;

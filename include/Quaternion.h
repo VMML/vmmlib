@@ -89,8 +89,12 @@ public:
 	T abs() const;
 	T absSquared() const;
 	
+	T normalize();
+	static T normalize( float* source );
+    // deprecated
 	T normalise();
 	static T normalise( float* source );
+
 	void scale( T scale_factor );
 	
 	
@@ -451,6 +455,41 @@ T Quaternion< T >::normalise( float* source )
 	return l;
 }
 
+
+
+
+template < typename T >
+T Quaternion< T >::normalize()
+{
+	T l = abs();
+	if( l == 0 )
+		return 0;
+	l = 1.0f / l;
+	w *= l;
+	x *= l;
+	y *= l;
+	z *= l;
+	return l;
+}
+
+
+
+//PRECONDITION: float* source is a valid 3-float array
+template < typename T >
+T Quaternion< T >::normalize( float* source )
+{
+	Quaternion< float >* a = ( Quaternion< float >* ) source;
+	T l = a->abs();
+	if ( l == 0 )
+		return 0;
+	
+	l = 1.0f / l;
+	source[0] *= l;
+	source[1] *= l;
+	source[2] *= l;
+	source[3] *= l;
+	return l;
+}
 
 //quaternion/scalar operations		
 template < typename T >

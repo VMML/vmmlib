@@ -90,8 +90,12 @@ public:
     T length() const;
     T lengthSquared() const;
 
+    T normalize();
+    T normalize( const float* source );
+    // deprecated
     T normalise();
     T normalise( const float* source );
+    
     void scale( T scale_factor );
     void invert();
 
@@ -295,6 +299,36 @@ T  Vector2< T >::normalise()
 
 template < typename T > 
 T  Vector2< T >::normalise( const float* source )
+{
+    Vector2< T > a ( source );
+    T l = a.length();
+    if ( l == 0 ) 
+        return 0;
+    
+    l = 1.0f / l;
+    source[0] *= l;
+    source[1] *= l;
+    return l;
+}
+
+
+
+template < typename T > 
+T  Vector2< T >::normalize()
+{ 
+    T l = length(); 
+    if ( l == 0 ) 
+        return 0; 
+    l = 1.0f / l; 
+    x *= l; 
+    y *= l; 
+    return l; 
+} 
+
+
+
+template < typename T > 
+T  Vector2< T >::normalize( const float* source )
 {
     Vector2< T > a ( source );
     T l = a.length();

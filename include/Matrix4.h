@@ -146,7 +146,7 @@ public:
 
     /** create rotation matrix from parameters.
     * @param angle - angle in radians
-    * @param rotation axis - must be normalised!
+    * @param rotation axis - must be normalized!
     */
     void rotate( const T angle, const Vector3< T >& axis );
 

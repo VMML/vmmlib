@@ -38,8 +38,6 @@ public:
     Frustum( const T left, const T right, const T bottom, const T top,
              const T nearPlane, const T farPlane );
         
-    // dangerous, but implemented to allow easy conversion between 
-    // Frustum< float > and Frustum< double >
     //the pointer 'values' must be a valid 6 component c array of the resp. type
     Frustum( const float* values );
     Frustum( const double* values );

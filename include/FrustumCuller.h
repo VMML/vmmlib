@@ -19,9 +19,9 @@ namespace vmml
 
 enum Visibility
 {
-    VISIBILITY_FULL,
+    VISIBILITY_NONE     = 0,
     VISIBILITY_PARTIAL,
-    VISIBILITY_NONE
+    VISIBILITY_FULL,
 };
 
 /** Helper class for OpenGL view frustum culling. */

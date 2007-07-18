@@ -20,8 +20,8 @@ namespace vmml
 enum Visibility
 {
     VISIBILITY_NONE     = 0,
-    VISIBILITY_PARTIAL,
-    VISIBILITY_FULL,
+    VISIBILITY_PARTIAL  = 1,
+    VISIBILITY_FULL     = 2
 };
 
 /** Helper class for OpenGL view frustum culling. */
@@ -33,16 +33,16 @@ public:
     FrustumCuller() {}// warning: components NOT initialised ( for performance )
     ~FrustumCuller(){}
 
-    void setup( const Matrix4<T>& projection );
-    Visibility testSphere( const Vector4<T>& sphere );
+    void setup( const Matrix4< T >& projModelView );
+    Visibility testSphere( const Vector4< T >& sphere );
 
 private:
-    Vector4<T> _leftPlane;
-    Vector4<T> _rightPlane;
-    Vector4<T> _bottomPlane;
-    Vector4<T> _topPlane;
-    Vector4<T> _nearPlane;
-    Vector4<T> _farPlane;
+    Vector4< T > _leftPlane;
+    Vector4< T > _rightPlane;
+    Vector4< T > _bottomPlane;
+    Vector4< T > _topPlane;
+    Vector4< T > _nearPlane;
+    Vector4< T > _farPlane;
 };
 
 #ifndef VMMLIB_DISABLE_TYPEDEFS
@@ -64,15 +64,15 @@ namespace vmml
  * matrix. The projection matrix should contain the viewing transformation.
  */
 template < class T > 
-void FrustumCuller< T >::setup( const Matrix4<T>& projection )
+void FrustumCuller< T >::setup( const Matrix4< T >& projModelView )
 {
     // See http://www2.ravensoft.com/users/ggribb/plane%20extraction.pdf pp.5
-    _leftPlane   = projection.getRow(3) + projection.getRow(0);
-    _rightPlane  = projection.getRow(3) - projection.getRow(0);
-    _bottomPlane = projection.getRow(3) + projection.getRow(1);
-    _topPlane    = projection.getRow(3) - projection.getRow(1);
-    _nearPlane   = projection.getRow(3) + projection.getRow(2);
-    _farPlane    = projection.getRow(3) - projection.getRow(2);
+    _leftPlane   = projModelView.getRow(3) + projModelView.getRow(0);
+    _rightPlane  = projModelView.getRow(3) - projModelView.getRow(0);
+    _bottomPlane = projModelView.getRow(3) + projModelView.getRow(1);
+    _topPlane    = projModelView.getRow(3) - projModelView.getRow(1);
+    _nearPlane   = projModelView.getRow(3) + projModelView.getRow(2);
+    _farPlane    = projModelView.getRow(3) - projModelView.getRow(2);
 
     _leftPlane.normalize();
     _rightPlane.normalize();

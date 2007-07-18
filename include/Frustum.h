@@ -47,7 +47,8 @@ public:
     void set( const T _left, const T _right, const T _bottom, 
         const T _top, const T _near, const T _far );
              
-    Matrix4<T> computeMatrix() const;
+    Matrix4< T > computeMatrix() const;
+    Matrix4< T > computeOrthoMatrix() const;
     void       adjustNear( const T nearPlane );
 
     friend std::ostream& operator << ( std::ostream& os, const Frustum& frustum)
@@ -90,10 +91,14 @@ namespace vmml
 
 template< typename T > 
 const Frustum< T > Frustum< T >::DEFAULT( -1.0, 1.0, -1.0, 1.0, 0.1, 100.0 );
-       
+
+
+
 template < class T > 
 Frustum< T >::Frustum() 
 {} 
+
+
 
 template < class T > 
 Frustum<T>::Frustum( const T _left, const T _right, const T _bottom, 
@@ -105,6 +110,8 @@ Frustum<T>::Frustum( const T _left, const T _right, const T _bottom,
       nearPlane( _near ),
       farPlane( _far )
 {} 
+
+
 
 template < class T > 
 Frustum< T >::Frustum( const float* values )
@@ -118,6 +125,8 @@ Frustum< T >::Frustum( const float* values )
     nearPlane   = static_cast< T > ( values[4] );
     farPlane    = static_cast< T > ( values[5] );
 }
+
+
 
 template < class T > 
 Frustum< T >::Frustum( const double* values )
@@ -154,6 +163,7 @@ Frustum< T >::set( const T _left, const T _right, const T _bottom,
 }
 
 
+
 template < class T > 
 void 
 Frustum<T>::adjustNear( const T _near )
@@ -175,6 +185,7 @@ Frustum<T>::adjustNear( const T _near )
 
     nearPlane = _near;
 }
+
 
 
 template < class T > 
@@ -206,5 +217,36 @@ Matrix4<T> Frustum<T>::computeMatrix() const
     return matrix;
 }
 
+
+
+template < typename T > 
+Matrix4< T > 
+Frustum< T >::computeOrthoMatrix() const
+{
+	return Matrix4< T > (  
+        2.0 / ( right - left ), 
+        0.0f , 
+        0.0f, 
+        -( right + left ) / ( right - left ), 
+
+        0.0f, 
+        2.0 / ( top-bottom ),
+        0.0f,
+
+        -( top + bottom ) / ( top - bottom ), 
+        0.0f, 
+        0.0f, 
+        2.0 / ( nearPlane-farPlane ), 
+
+        -( farPlane + nearPlane ) / ( farPlane - nearPlane ),
+        0.0f, 
+        0.0f, 
+        0.0f, 
+        1.0f 
+       );
 }	
+
+
+}; //namespace vmml
+
 #endif

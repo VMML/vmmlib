@@ -1,5 +1,5 @@
-#ifndef _vmml_AxisAlignedBoundingBox_H_
-#define _vmml_AxisAlignedBoundingBox_H_
+#ifndef __VMML__AXIS_ALIGNED_BOUNDING_BOX__H__
+#define __VMML__AXIS_ALIGNED_BOUNDING_BOX__H__
 
 #include "VMMLib.h"
 #include "Sphere.h"

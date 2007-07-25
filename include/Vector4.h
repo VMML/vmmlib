@@ -97,6 +97,10 @@ public:
     T normalize();
     // deprecated
     T normalise();
+    
+    // this normalizes the vector3 consisting of the first three 
+    // coordinates, and leaves the fourth as is.
+    void normalizePlane();
 
     // vector/scalar operations
     Vector4 operator+( const T aa ) const;
@@ -401,6 +405,19 @@ T Vector4< T >::normalize()
     z *= l; 
     w *= l;
     return l; 
+} 
+
+
+
+template < typename T > 
+void
+Vector4< T >::normalizePlane()
+{ 
+    T length = sqrt( x * x + y * y + z * z );
+    x /= length;
+    y /= length;
+    z /= length;
+    w /= length;
 } 
 
 

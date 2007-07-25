@@ -67,19 +67,25 @@ template < class T >
 void FrustumCuller< T >::setup( const Matrix4< T >& projModelView )
 {
     // See http://www2.ravensoft.com/users/ggribb/plane%20extraction.pdf pp.5
-    _leftPlane   = projModelView.getRow(3) + projModelView.getRow(0);
-    _rightPlane  = projModelView.getRow(3) - projModelView.getRow(0);
-    _bottomPlane = projModelView.getRow(3) + projModelView.getRow(1);
-    _topPlane    = projModelView.getRow(3) - projModelView.getRow(1);
-    _nearPlane   = projModelView.getRow(3) + projModelView.getRow(2);
-    _farPlane    = projModelView.getRow(3) - projModelView.getRow(2);
+    
+    const Vector4< T >& row0 = projModelView.getRow( 0 );
+    const Vector4< T >& row1 = projModelView.getRow( 1 );
+    const Vector4< T >& row2 = projModelView.getRow( 2 );
+    const Vector4< T >& row3 = projModelView.getRow( 3 );
 
-    _leftPlane.normalize();
-    _rightPlane.normalize();
-    _bottomPlane.normalize(); 
-    _topPlane.normalize();
-    _nearPlane.normalize();
-    _farPlane.normalize();
+    _leftPlane   = row3 + row0;
+    _rightPlane  = row3 - row0;
+    _bottomPlane = row3 + row1;
+    _topPlane    = row3 - row1;
+    _nearPlane   = row3 + row2;
+    _farPlane    = row3 - row2;
+
+    _leftPlane.normalizePlane();
+    _rightPlane.normalizePlane();
+    _bottomPlane.normalizePlane(); 
+    _topPlane.normalizePlane();
+    _nearPlane.normalizePlane();
+    _farPlane.normalizePlane();
 }
 
 template < class T > 

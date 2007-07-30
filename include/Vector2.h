@@ -289,8 +289,13 @@ const T& Vector2< T >::operator[]( size_t position) const
 template < typename T > 
 T  Vector2< T >::length() const 
 { 
-    T l = lengthSquared();
-    return sqrt( l ); 
+    return sqrt( lengthSquared( )); 
+} 
+
+template <> 
+inline float Vector2< float >::length() const 
+{ 
+    return sqrtf( lengthSquared( )); 
 } 
 
 
@@ -306,12 +311,11 @@ T  Vector2< T >::lengthSquared() const
 template < typename T > 
 T  Vector2< T >::normalise()
 { 
-    T l = length(); 
+    const T l = length(); 
     if ( l == 0 ) 
         return 0; 
-    l = 1.0f / l; 
-    x *= l; 
-    y *= l; 
+    x /= l; 
+    y /= l; 
     return l; 
 } 
 
@@ -321,13 +325,12 @@ template < typename T >
 T  Vector2< T >::normalise( const float* source )
 {
     Vector2< T > a ( source );
-    T l = a.length();
+    const T l = a.length();
     if ( l == 0 ) 
         return 0;
     
-    l = 1.0f / l;
-    source[0] *= l;
-    source[1] *= l;
+    source[0] /= l;
+    source[1] /= l;
     return l;
 }
 
@@ -336,12 +339,11 @@ T  Vector2< T >::normalise( const float* source )
 template < typename T > 
 T  Vector2< T >::normalize()
 { 
-    T l = length(); 
+    const T l = length(); 
     if ( l == 0 ) 
         return 0; 
-    l = 1.0f / l; 
-    x *= l; 
-    y *= l; 
+    x /= l; 
+    y /= l; 
     return l; 
 } 
 
@@ -351,13 +353,12 @@ template < typename T >
 T  Vector2< T >::normalize( const float* source )
 {
     Vector2< T > a ( source );
-    T l = a.length();
+    const T l = a.length();
     if ( l == 0 ) 
         return 0;
     
-    l = 1.0f / l;
-    source[0] *= l;
-    source[1] *= l;
+    source[0] /= l;
+    source[1] /= l;
     return l;
 }
 

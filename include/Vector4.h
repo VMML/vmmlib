@@ -363,8 +363,13 @@ const T& Vector4< T >::operator[]( size_t index ) const
 template < typename T > 
 T  Vector4< T >::length() const 
 { 
-    const T l = lengthSquared();
-    return ( l <= 0 ) ? 0 : sqrt( l ); 
+    return sqrt( lengthSquared( )); 
+} 
+
+template <> 
+inline float Vector4< float >::length() const 
+{ 
+    return sqrtf( lengthSquared( )); 
 } 
 
 
@@ -380,14 +385,14 @@ T  Vector4< T >::lengthSquared() const
 template < typename T > 
 T Vector4< T >::normalise()
 { 
-    T l = length(); 
+    const T l = length(); 
     if ( l == 0 ) 
         return 0; 
-    l = 1.0f / l; 
-    x *= l; 
-    y *= l; 
-    z *= l; 
-    w *= l;
+
+    x /= l; 
+    y /= l; 
+    z /= l; 
+    w /= l;
     return l; 
 } 
 
@@ -396,24 +401,33 @@ T Vector4< T >::normalise()
 template < typename T > 
 T Vector4< T >::normalize()
 { 
-    T l = length(); 
+    const T l = length(); 
     if ( l == 0 ) 
         return 0; 
-    l = 1.0f / l; 
-    x *= l; 
-    y *= l; 
-    z *= l; 
-    w *= l;
+
+    x /= l; 
+    y /= l; 
+    z /= l; 
+    w /= l;
     return l; 
 } 
 
 
 
 template < typename T > 
-void
-Vector4< T >::normalizePlane()
+void Vector4< T >::normalizePlane()
 { 
-    T length = sqrt( x * x + y * y + z * z );
+    const T length = sqrt( x * x + y * y + z * z );
+    x /= length;
+    y /= length;
+    z /= length;
+    w /= length;
+} 
+
+template <> 
+inline void Vector4< float >::normalizePlane()
+{ 
+    const float length = sqrtf( x * x + y * y + z * z );
     x /= length;
     y /= length;
     z /= length;

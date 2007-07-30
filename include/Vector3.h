@@ -353,8 +353,13 @@ const T& Vector3< T >::operator[]( size_t index ) const
 template < typename T > 
 T  Vector3< T >::length() const 
 { 
-    T l = lengthSquared();
-    return sqrt( l ); 
+    return sqrt( lengthSquared( )); 
+} 
+
+template <> 
+inline float Vector3< float >::length() const 
+{ 
+    return sqrtf( lengthSquared( )); 
 } 
 
 
@@ -370,13 +375,12 @@ T  Vector3< T >::lengthSquared() const
 template < typename T > 
 T  Vector3< T >::normalise()
 { 
-    T l = length(); 
+    const T l = length(); 
     if ( l == 0 ) 
         return 0; 
-    l = 1.0f / l; 
-    x *= l; 
-    y *= l; 
-    z *= l; 
+    x /= l; 
+    y /= l; 
+    z /= l; 
     return l; 
 } 
 
@@ -387,14 +391,13 @@ template < typename T >
 T  Vector3< T >::normalise( float* source )
 {
     Vector3< float >* a = ( Vector3< float >* ) source;
-    T l = a->length();
+    const T l = a->length();
     if ( l == 0 ) 
         return 0;
 
-    l = 1.0f / l;
-    source[0] *= l;
-    source[1] *= l;
-    source[2] *= l;
+    source[0] /= l;
+    source[1] /= l;
+    source[2] /= l;
     return l;
 }
 
@@ -403,13 +406,12 @@ T  Vector3< T >::normalise( float* source )
 template < typename T > 
 T  Vector3< T >::normalize()
 { 
-    T l = length(); 
+    const T l = length();
     if ( l == 0 ) 
         return 0; 
-    l = 1.0f / l; 
-    x *= l; 
-    y *= l; 
-    z *= l; 
+    x /= l; 
+    y /= l; 
+    z /= l; 
     return l; 
 } 
 
@@ -420,14 +422,13 @@ template < typename T >
 T  Vector3< T >::normalize( float* source )
 {
     Vector3< float >* a = ( Vector3< float >* ) source;
-    T l = a->length();
+    const T l = a->length();
     if ( l == 0 ) 
         return 0;
     
-    l = 1.0f / l;
-    source[0] *= l;
-    source[1] *= l;
-    source[2] *= l;
+    source[0] /= l;
+    source[1] /= l;
+    source[2] /= l;
     return l;
 }
 

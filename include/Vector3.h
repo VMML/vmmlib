@@ -123,6 +123,9 @@ public:
     T length() const;
     T lengthSquared() const;
 
+    T distance( const Vector3& other ) const;
+    T distanceSquared( const Vector3& other ) const;
+
     T normalize();
     static T normalize( float* source );
     // deprecated
@@ -353,7 +356,7 @@ const T& Vector3< T >::operator[]( size_t index ) const
 template < typename T > 
 T  Vector3< T >::length() const 
 { 
-    return sqrt( lengthSquared( )); 
+    return sqrt( lengthSquared( ) ); 
 } 
 
 template <> 
@@ -369,6 +372,24 @@ T  Vector3< T >::lengthSquared() const
 { 
     return x * x + y * y + z * z; 
 } 
+
+
+
+template < typename T > 
+T 
+Vector3< T >::distance( const Vector3& other ) const
+{
+    return (*this - other).length();
+}
+
+
+
+template < typename T > 
+T 
+Vector3< T >::distanceSquared( const Vector3& other ) const
+{
+    return (*this - other).lengthSquared();
+}
 
 
 

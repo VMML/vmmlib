@@ -1,8 +1,8 @@
 #ifndef __VMML__SINGULAR_VALUE_DECOMPOSITION__H__
 #define __VMML__SINGULAR_VALUE_DECOMPOSITION__H__
 
-#include "VMMLib.h"
-#include "HelperFunctions.h"
+#include <vmmlib/vmmlib.h>
+#include <vmmlib/helperFunctions.h>
 
 namespace vmml
 {

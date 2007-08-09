@@ -72,16 +72,14 @@ public:
     static const Frustum DEFAULT;
 };
 
-#ifndef VMMLIB_DISABLE_TYPEDEFS
     
-    typedef Frustum< float >  Frustumf;
-    typedef Frustum< double > Frustumd;
+typedef Frustum< float >  Frustumf;
+typedef Frustum< double > Frustumd;
 
-    typedef Frustum< float >  frustumf;
-    typedef Frustum< double > frustumd;
+typedef Frustum< float >  frustumf;
+typedef Frustum< double > frustumd;
 
-#endif
-}
+} // namespace vmml
 
 // - implementation - //
 #include <vmmlib/matrix4.h>

@@ -165,23 +165,21 @@ public:
         return os;
     };        
     static const Vector4 ZERO;
-};
 
-#ifndef VMMLIB_DISABLE_TYPEDEFS
+}; // class vector4
 
-    typedef Vector4< float >            Vector4f;
-    typedef Vector4< double >           Vector4d;
-    typedef Vector4< int >              Vector4i;
-    typedef Vector4< unsigned char >    Vector4ub;
 
-    typedef Vector4< float >            vec4f;
-    typedef Vector4< double >           vec4d;
-    typedef Vector4< int >              vec4i;
-    typedef Vector4< unsigned char >    vec4ub;
+typedef Vector4< float >            Vector4f;
+typedef Vector4< double >           Vector4d;
+typedef Vector4< int >              Vector4i;
+typedef Vector4< unsigned char >    Vector4ub;
 
-#endif
+typedef Vector4< float >            vec4f;
+typedef Vector4< double >           vec4d;
+typedef Vector4< int >              vec4i;
+typedef Vector4< unsigned char >    vec4ub;
 
-} //namespace vmml
+} // namespace vmml
 
 // - implementation - //
 
@@ -754,6 +752,6 @@ T Vector4< T >::getMinComponent()
 } 
 
 
-} //namespace vmml
+} // namespace vmml
 
 #endif

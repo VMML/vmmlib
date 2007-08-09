@@ -168,20 +168,21 @@ public:
     }; 
 
     static const Vector3 ZERO;
-};
-    
-#ifndef VMMLIB_DISABLE_TYPEDEFS
-    typedef Vector3< float >            Vector3f;
-    typedef Vector3< double >           Vector3d;
-    typedef Vector3< int >              Vector3i;
-    typedef Vector3< unsigned char >    Vector3ub;    
 
-    typedef Vector3< float >            vec3f;
-    typedef Vector3< double >           vec3d;
-    typedef Vector3< int >              vec3i;
-    typedef Vector3< unsigned char >    vec3ub;    
-#endif
-}
+}; // class vector3
+    
+
+typedef Vector3< float >            Vector3f;
+typedef Vector3< double >           Vector3d;
+typedef Vector3< int >              Vector3i;
+typedef Vector3< unsigned char >    Vector3ub;    
+
+typedef Vector3< float >            vec3f;
+typedef Vector3< double >           vec3d;
+typedef Vector3< int >              vec3i;
+typedef Vector3< unsigned char >    vec3ub;    
+
+} // namespace vmml
 
 // - implementation - //
 #include <vmmlib/vector2.h>
@@ -189,6 +190,7 @@ public:
  
 namespace vmml
 {
+
 template< typename T > 
 const Vector3< T > Vector3< T >::ZERO( 0, 0, 0 );
 

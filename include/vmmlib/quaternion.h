@@ -180,13 +180,11 @@ public:
 	static const Quaternion QUATERI;
 	static const Quaternion QUATERJ;
 	static const Quaternion QUATERK;
-};
 
-#ifndef VMMLIB_DISABLE_TYPEDEFS
-	typedef Quaternion<float>  Quaternionf;
-	typedef Quaternion<double> Quaterniond;
-#endif
+}; // class quaternion
 
+typedef Quaternion<float>  Quaternionf;
+typedef Quaternion<double> Quaterniond;
 
 // - implementation - //
 

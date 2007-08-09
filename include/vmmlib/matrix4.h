@@ -209,19 +209,16 @@ public:
     static const Matrix4 IDENTITY;
     static const Matrix4 ZERO;
 
-};
+}; // class matrix4
 
-#ifndef VMMLIB_DISABLE_TYPEDEFS
 
-    typedef Matrix4< float >  Matrix4f;
-    typedef Matrix4< double > Matrix4d;
+typedef Matrix4< float >  Matrix4f;
+typedef Matrix4< double > Matrix4d;
 
-    typedef Matrix4< float >  mat4f;
-    typedef Matrix4< double > mat4d;
+typedef Matrix4< float >  mat4f;
+typedef Matrix4< double > mat4d;
 
-#endif
-
-} //namespace vmml
+} // namespace vmml
 
 // * * * * * * * * * *
 //
@@ -1383,6 +1380,6 @@ Matrix4< T > Matrix4< T >::negate() const
 }
 
 
-} //namespace vmml
+} // namespace vmml
 
 #endif

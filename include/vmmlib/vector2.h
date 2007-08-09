@@ -129,22 +129,18 @@ public:
     };
 
     static const Vector2 ZERO;
-};
 
-#ifndef VMMLIB_DISABLE_TYPEDEFS
+}; // class vector2
 
-    typedef Vector2< unsigned char >    Vector2ub;
-    typedef Vector2< int >              Vector2i;
-    typedef Vector2< float >            Vector2f;
-    typedef Vector2< double >           Vector2d;
+typedef Vector2< unsigned char >    Vector2ub;
+typedef Vector2< int >              Vector2i;
+typedef Vector2< float >            Vector2f;
+typedef Vector2< double >           Vector2d;
     
-    typedef Vector2< unsigned char >    vec2ub;
-    typedef Vector2< int >              vec2i;
-    typedef Vector2< float >            vec2f;
-    typedef Vector2< double >           vec2d;
-
-#endif
-
+typedef Vector2< unsigned char >    vec2ub;
+typedef Vector2< int >              vec2i;
+typedef Vector2< float >            vec2f;
+typedef Vector2< double >           vec2d;
 
 // - implementation - //
        

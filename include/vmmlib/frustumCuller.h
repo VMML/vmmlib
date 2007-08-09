@@ -43,15 +43,13 @@ private:
     Vector4< T > _topPlane;
     Vector4< T > _nearPlane;
     Vector4< T > _farPlane;
-};
 
-#ifndef VMMLIB_DISABLE_TYPEDEFS
+}; // class frustumCuller
 
-    typedef FrustumCuller< float >  FrustumCullerf;
-    typedef FrustumCuller< double > FrustumCullerd;
+typedef FrustumCuller< float >  FrustumCullerf;
+typedef FrustumCuller< double > FrustumCullerd;
 
-#endif
-}
+} // namespace vmml
 
 // - implementation - //
 #include <vmmlib/matrix4.h>

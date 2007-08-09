@@ -145,18 +145,16 @@ public:
     
     static const Matrix3 IDENTITY;
     static const Matrix3 ZERO;
-};
+
+}; // class matrix3
 
 
-#ifndef VMMLIB_DISABLE_TYPEDEFS
+typedef Matrix3< float >  Matrix3f;
+typedef Matrix3< double > Matrix3d;
 
-    typedef Matrix3< float >  Matrix3f;
-    typedef Matrix3< double > Matrix3d;
+typedef Matrix3< float >  mat3f;
+typedef Matrix3< double > mat3d;
 
-    typedef Matrix3< float >  mat3f;
-    typedef Matrix3< double > mat3d;
-
-#endif
 
 //
 // - implementation -
@@ -682,6 +680,7 @@ Matrix3< T > Matrix3< T >::negate() const
 }
 
 
-} //namespace vmml
+} // namespace vmml
 
 #endif
+

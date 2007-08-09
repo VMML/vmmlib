@@ -1,7 +1,7 @@
 #ifndef _SVDTest_H_
 #define _SVDTest_H_
 
-#include "SingularValueDecomposition.h"
+#include <vmmlib/svd.h>
 #include "Test.h"
 
 namespace vmml

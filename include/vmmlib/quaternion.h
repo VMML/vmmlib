@@ -16,9 +16,9 @@
 #include <iostream>
 #include <limits>
 
-#include "Vector4.h"
-#include "Vector3.h"
-#include "Matrix3.h"
+#include <vmmlib/vector3.h>
+#include <vmmlib/vector4.h>
+#include <vmmlib/matrix3.h>
 
 // - declaration - //
 

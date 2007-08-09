@@ -16,49 +16,25 @@
 		988F58850C22C1F10005AC92 /* QuaternionTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 988F583B0C22C09C0005AC92 /* QuaternionTest.cpp */; };
 		988F58860C22C1F10005AC92 /* JacobiSolverTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 988F58340C22C09C0005AC92 /* JacobiSolverTest.cpp */; };
 		988F58870C22C1F10005AC92 /* SVDTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 988F583D0C22C09C0005AC92 /* SVDTest.cpp */; };
-		988F59B50C22C9F20005AC92 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C1666FE841158C02AAC07 /* InfoPlist.strings */; };
-		988F59B60C22C9FB0005AC92 /* Vector2.h in Headers */ = {isa = PBXBuildFile; fileRef = 988F58200C22C00F0005AC92 /* Vector2.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		988F59B70C22C9FB0005AC92 /* Vector3.h in Headers */ = {isa = PBXBuildFile; fileRef = 988F58210C22C00F0005AC92 /* Vector3.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		988F59B80C22C9FB0005AC92 /* Vector4.h in Headers */ = {isa = PBXBuildFile; fileRef = 988F58220C22C00F0005AC92 /* Vector4.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		988F59B90C22C9FB0005AC92 /* Matrix3.h in Headers */ = {isa = PBXBuildFile; fileRef = 988F581C0C22C00F0005AC92 /* Matrix3.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		988F59BA0C22C9FB0005AC92 /* Matrix4.h in Headers */ = {isa = PBXBuildFile; fileRef = 988F581D0C22C00F0005AC92 /* Matrix4.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		988F59BB0C22C9FB0005AC92 /* Quaternion.h in Headers */ = {isa = PBXBuildFile; fileRef = 988F581E0C22C00F0005AC92 /* Quaternion.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		988F59BC0C22CA070005AC92 /* Frustum.h in Headers */ = {isa = PBXBuildFile; fileRef = 988F58180C22C00F0005AC92 /* Frustum.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		988F59BD0C22CA070005AC92 /* FrustumCuller.h in Headers */ = {isa = PBXBuildFile; fileRef = 988F58190C22C00F0005AC92 /* FrustumCuller.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		988F59BE0C22CA070005AC92 /* JacobiSolver.h in Headers */ = {isa = PBXBuildFile; fileRef = 988F581B0C22C00F0005AC92 /* JacobiSolver.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		988F59BF0C22CA070005AC92 /* SingularValueDecomposition.h in Headers */ = {isa = PBXBuildFile; fileRef = 988F581F0C22C00F0005AC92 /* SingularValueDecomposition.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		988F59C00C22CA070005AC92 /* VMMLib.h in Headers */ = {isa = PBXBuildFile; fileRef = 988F58230C22C00F0005AC92 /* VMMLib.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		988F59C10C22CA070005AC92 /* HelperFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 988F581A0C22C00F0005AC92 /* HelperFunctions.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		988F5A110C22CAFE0005AC92 /* README in Resources */ = {isa = PBXBuildFile; fileRef = 988F5A100C22CAFE0005AC92 /* README */; };
-		988F5A130C22CB090005AC92 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 988F5A120C22CB090005AC92 /* LICENSE */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		988F59C40C22CA330005AC92 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 988F59AA0C22C9A90005AC92;
-			remoteInfo = VMMLib;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		089C1667FE841158C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		32DBCF5E0370ADEE00C91783 /* VMMLib_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VMMLib_Prefix.pch; sourceTree = "<group>"; };
 		8DC2EF5A0486A6940098B216 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		988F58180C22C00F0005AC92 /* Frustum.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Frustum.h; path = include/Frustum.h; sourceTree = "<group>"; };
-		988F58190C22C00F0005AC92 /* FrustumCuller.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = FrustumCuller.h; path = include/FrustumCuller.h; sourceTree = "<group>"; };
-		988F581A0C22C00F0005AC92 /* HelperFunctions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = HelperFunctions.h; path = include/HelperFunctions.h; sourceTree = "<group>"; };
-		988F581B0C22C00F0005AC92 /* JacobiSolver.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = JacobiSolver.h; path = include/JacobiSolver.h; sourceTree = "<group>"; };
-		988F581C0C22C00F0005AC92 /* Matrix3.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Matrix3.h; path = include/Matrix3.h; sourceTree = "<group>"; };
-		988F581D0C22C00F0005AC92 /* Matrix4.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Matrix4.h; path = include/Matrix4.h; sourceTree = "<group>"; };
-		988F581E0C22C00F0005AC92 /* Quaternion.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Quaternion.h; path = include/Quaternion.h; sourceTree = "<group>"; };
-		988F581F0C22C00F0005AC92 /* SingularValueDecomposition.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = SingularValueDecomposition.h; path = include/SingularValueDecomposition.h; sourceTree = "<group>"; };
-		988F58200C22C00F0005AC92 /* Vector2.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Vector2.h; path = include/Vector2.h; sourceTree = "<group>"; };
-		988F58210C22C00F0005AC92 /* Vector3.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Vector3.h; path = include/Vector3.h; sourceTree = "<group>"; };
-		988F58220C22C00F0005AC92 /* Vector4.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Vector4.h; path = include/Vector4.h; sourceTree = "<group>"; };
-		988F58230C22C00F0005AC92 /* VMMLib.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = VMMLib.h; path = include/VMMLib.h; sourceTree = "<group>"; };
+		985F6FC40C6B7C67002B05C5 /* vmmlib.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = vmmlib.h; path = include/vmmlib/vmmlib.h; sourceTree = "<group>"; };
+		985F6FC50C6B7C67002B05C5 /* vector4.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = vector4.h; path = include/vmmlib/vector4.h; sourceTree = "<group>"; };
+		985F6FC60C6B7C67002B05C5 /* vector3.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = vector3.h; path = include/vmmlib/vector3.h; sourceTree = "<group>"; };
+		985F6FC70C6B7C67002B05C5 /* vector2.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = vector2.h; path = include/vmmlib/vector2.h; sourceTree = "<group>"; };
+		985F6FC80C6B7C67002B05C5 /* svd.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = svd.h; path = include/vmmlib/svd.h; sourceTree = "<group>"; };
+		985F6FC90C6B7C67002B05C5 /* quaternion.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = quaternion.h; path = include/vmmlib/quaternion.h; sourceTree = "<group>"; };
+		985F6FCA0C6B7C67002B05C5 /* matrix4.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = matrix4.h; path = include/vmmlib/matrix4.h; sourceTree = "<group>"; };
+		985F6FCB0C6B7C67002B05C5 /* matrix3.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = matrix3.h; path = include/vmmlib/matrix3.h; sourceTree = "<group>"; };
+		985F6FCC0C6B7C67002B05C5 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = LICENSE; path = include/vmmlib/LICENSE; sourceTree = "<group>"; };
+		985F6FCD0C6B7C67002B05C5 /* jacobiSolver.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = jacobiSolver.h; path = include/vmmlib/jacobiSolver.h; sourceTree = "<group>"; };
+		985F6FCE0C6B7C67002B05C5 /* helperFunctions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = helperFunctions.h; path = include/vmmlib/helperFunctions.h; sourceTree = "<group>"; };
+		985F6FCF0C6B7C67002B05C5 /* frustumCuller.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = frustumCuller.h; path = include/vmmlib/frustumCuller.h; sourceTree = "<group>"; };
+		985F6FD00C6B7C67002B05C5 /* frustum.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = frustum.h; path = include/vmmlib/frustum.h; sourceTree = "<group>"; };
+		985F6FD10C6B7C67002B05C5 /* axisAlignedBoundingBox.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = axisAlignedBoundingBox.h; path = include/vmmlib/axisAlignedBoundingBox.h; sourceTree = "<group>"; };
 		988F58340C22C09C0005AC92 /* JacobiSolverTest.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = JacobiSolverTest.cpp; path = tests/JacobiSolverTest.cpp; sourceTree = "<group>"; };
 		988F58350C22C09C0005AC92 /* JacobiSolverTest.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = JacobiSolverTest.h; path = tests/JacobiSolverTest.h; sourceTree = "<group>"; };
 		988F58360C22C09C0005AC92 /* main_test.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = main_test.cpp; path = tests/main_test.cpp; sourceTree = "<group>"; };
@@ -78,10 +54,8 @@
 		988F58440C22C09C0005AC92 /* Vector4Test.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Vector4Test.cpp; path = tests/Vector4Test.cpp; sourceTree = "<group>"; };
 		988F58450C22C09C0005AC92 /* Vector4Test.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Vector4Test.h; path = tests/Vector4Test.h; sourceTree = "<group>"; };
 		988F58780C22C1B90005AC92 /* VMMLibTest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = VMMLibTest; sourceTree = BUILT_PRODUCTS_DIR; };
-		988F59AB0C22C9A90005AC92 /* VMMLib.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = VMMLib.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		988F59AC0C22C9A90005AC92 /* VMMLib-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "VMMLib-Info.plist"; sourceTree = "<group>"; };
 		988F5A100C22CAFE0005AC92 /* README */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
-		988F5A120C22CB090005AC92 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = LICENSE; path = include/LICENSE; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,7 +72,6 @@
 		034768DFFF38A50411DB9C8B /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				988F59AB0C22C9A90005AC92 /* VMMLib.framework */,
 				988F58780C22C1B90005AC92 /* VMMLibTest */,
 			);
 			name = Products;
@@ -130,7 +103,7 @@
 		089C1665FE841158C02AAC07 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				988F5A120C22CB090005AC92 /* LICENSE */,
+				985F6FCC0C6B7C67002B05C5 /* LICENSE */,
 				988F5A100C22CAFE0005AC92 /* README */,
 				8DC2EF5A0486A6940098B216 /* Info.plist */,
 				089C1666FE841158C02AAC07 /* InfoPlist.strings */,
@@ -141,11 +114,10 @@
 		08FB77AEFE84172EC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				985F6FC40C6B7C67002B05C5 /* vmmlib.h */,
 				988F58300C22C0160005AC92 /* Basics */,
 				988F58320C22C0570005AC92 /* Frustum */,
 				988F58310C22C01D0005AC92 /* Advanced */,
-				988F58230C22C00F0005AC92 /* VMMLib.h */,
-				988F581A0C22C00F0005AC92 /* HelperFunctions.h */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -167,7 +139,6 @@
 		32C88DFF0371C24200C91783 /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
-				32DBCF5E0370ADEE00C91783 /* VMMLib_Prefix.pch */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -175,12 +146,13 @@
 		988F58300C22C0160005AC92 /* Basics */ = {
 			isa = PBXGroup;
 			children = (
-				988F58200C22C00F0005AC92 /* Vector2.h */,
-				988F58210C22C00F0005AC92 /* Vector3.h */,
-				988F58220C22C00F0005AC92 /* Vector4.h */,
-				988F581C0C22C00F0005AC92 /* Matrix3.h */,
-				988F581D0C22C00F0005AC92 /* Matrix4.h */,
-				988F581E0C22C00F0005AC92 /* Quaternion.h */,
+				985F6FC70C6B7C67002B05C5 /* vector2.h */,
+				985F6FC60C6B7C67002B05C5 /* vector3.h */,
+				985F6FC50C6B7C67002B05C5 /* vector4.h */,
+				985F6FCB0C6B7C67002B05C5 /* matrix3.h */,
+				985F6FCA0C6B7C67002B05C5 /* matrix4.h */,
+				985F6FC90C6B7C67002B05C5 /* quaternion.h */,
+				985F6FD10C6B7C67002B05C5 /* axisAlignedBoundingBox.h */,
 			);
 			name = Basics;
 			sourceTree = "<group>";
@@ -188,8 +160,9 @@
 		988F58310C22C01D0005AC92 /* Advanced */ = {
 			isa = PBXGroup;
 			children = (
-				988F581B0C22C00F0005AC92 /* JacobiSolver.h */,
-				988F581F0C22C00F0005AC92 /* SingularValueDecomposition.h */,
+				985F6FCE0C6B7C67002B05C5 /* helperFunctions.h */,
+				985F6FC80C6B7C67002B05C5 /* svd.h */,
+				985F6FCD0C6B7C67002B05C5 /* jacobiSolver.h */,
 			);
 			name = Advanced;
 			sourceTree = "<group>";
@@ -197,8 +170,8 @@
 		988F58320C22C0570005AC92 /* Frustum */ = {
 			isa = PBXGroup;
 			children = (
-				988F58180C22C00F0005AC92 /* Frustum.h */,
-				988F58190C22C00F0005AC92 /* FrustumCuller.h */,
+				985F6FD00C6B7C67002B05C5 /* frustum.h */,
+				985F6FCF0C6B7C67002B05C5 /* frustumCuller.h */,
 			);
 			name = Frustum;
 			sourceTree = "<group>";
@@ -230,28 +203,6 @@
 		};
 /* End PBXGroup section */
 
-/* Begin PBXHeadersBuildPhase section */
-		988F59A60C22C9A90005AC92 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				988F59C00C22CA070005AC92 /* VMMLib.h in Headers */,
-				988F59B60C22C9FB0005AC92 /* Vector2.h in Headers */,
-				988F59B70C22C9FB0005AC92 /* Vector3.h in Headers */,
-				988F59B80C22C9FB0005AC92 /* Vector4.h in Headers */,
-				988F59B90C22C9FB0005AC92 /* Matrix3.h in Headers */,
-				988F59BA0C22C9FB0005AC92 /* Matrix4.h in Headers */,
-				988F59BB0C22C9FB0005AC92 /* Quaternion.h in Headers */,
-				988F59BC0C22CA070005AC92 /* Frustum.h in Headers */,
-				988F59BD0C22CA070005AC92 /* FrustumCuller.h in Headers */,
-				988F59BE0C22CA070005AC92 /* JacobiSolver.h in Headers */,
-				988F59BF0C22CA070005AC92 /* SingularValueDecomposition.h in Headers */,
-				988F59C10C22CA070005AC92 /* HelperFunctions.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXHeadersBuildPhase section */
-
 /* Begin PBXNativeTarget section */
 		988F58770C22C1B90005AC92 /* VMMLibTest */ = {
 			isa = PBXNativeTarget;
@@ -263,28 +214,11 @@
 			buildRules = (
 			);
 			dependencies = (
-				988F59C50C22CA330005AC92 /* PBXTargetDependency */,
 			);
 			name = VMMLibTest;
 			productName = VMMLibTest;
 			productReference = 988F58780C22C1B90005AC92 /* VMMLibTest */;
 			productType = "com.apple.product-type.tool";
-		};
-		988F59AA0C22C9A90005AC92 /* VMMLib */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 988F59AD0C22C9A90005AC92 /* Build configuration list for PBXNativeTarget "VMMLib" */;
-			buildPhases = (
-				988F59A60C22C9A90005AC92 /* Headers */,
-				988F59A70C22C9A90005AC92 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = VMMLib;
-			productName = VMMLib;
-			productReference = 988F59AB0C22C9A90005AC92 /* VMMLib.framework */;
-			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
 
@@ -297,24 +231,10 @@
 			productRefGroup = 034768DFFF38A50411DB9C8B /* Products */;
 			projectDirPath = "";
 			targets = (
-				988F59AA0C22C9A90005AC92 /* VMMLib */,
 				988F58770C22C1B90005AC92 /* VMMLibTest */,
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXResourcesBuildPhase section */
-		988F59A70C22C9A90005AC92 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				988F59B50C22C9F20005AC92 /* InfoPlist.strings in Resources */,
-				988F5A110C22CAFE0005AC92 /* README in Resources */,
-				988F5A130C22CB090005AC92 /* LICENSE in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		988F58750C22C1B90005AC92 /* Sources */ = {
@@ -334,14 +254,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		988F59C50C22CA330005AC92 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 988F59AA0C22C9A90005AC92 /* VMMLib */;
-			targetProxy = 988F59C40C22CA330005AC92 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		089C1666FE841158C02AAC07 /* InfoPlist.strings */ = {
@@ -419,70 +331,6 @@
 			};
 			name = Release;
 		};
-		988F59AE0C22C9A90005AC92 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_SEARCH_PATHS = (
-					"@executable_path/../Frameworks",
-					"$(HOME)/Library/Frameworks",
-					/Library/Frameworks,
-				);
-				FRAMEWORK_VERSION = A;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
-				INFOPLIST_FILE = "VMMLib-Info.plist";
-				INSTALL_PATH = "$(HOME)/Library/Frameworks";
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
-				);
-				PREBINDING = NO;
-				PRODUCT_NAME = VMMLib;
-				ZERO_LINK = YES;
-			};
-			name = Debug;
-		};
-		988F59AF0C22C9A90005AC92 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_SEARCH_PATHS = (
-					"@executable_path/../Frameworks",
-					"$(HOME)/Library/Frameworks",
-					/Library/Frameworks,
-				);
-				FRAMEWORK_VERSION = A;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_MODEL_TUNING = G5;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
-				INFOPLIST_FILE = "VMMLib-Info.plist";
-				INSTALL_PATH = "$(HOME)/Library/Frameworks";
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
-				);
-				PREBINDING = NO;
-				PRODUCT_NAME = VMMLib;
-				ZERO_LINK = NO;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -500,15 +348,6 @@
 			buildConfigurations = (
 				988F587B0C22C1D70005AC92 /* Debug */,
 				988F587C0C22C1D70005AC92 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		988F59AD0C22C9A90005AC92 /* Build configuration list for PBXNativeTarget "VMMLib" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				988F59AE0C22C9A90005AC92 /* Debug */,
-				988F59AF0C22C9A90005AC92 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

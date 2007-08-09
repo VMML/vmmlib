@@ -18,13 +18,13 @@
 #ifndef __VMML__VMMLIB__H__
 #define __VMML__VMMLIB__H__
 
-#include "Vector2.h"
-#include "Vector3.h"
-#include "Vector4.h"
-#include "Matrix3.h"
-#include "Matrix4.h"
-#include "Quaternion.h"
-#include "Frustum.h"
-#include "FrustumCuller.h"
+#include <vmmlib/vector2.h>
+#include <vmmlib/vector3.h>
+#include <vmmlib/vector4.h>
+#include <vmmlib/matrix3.h>
+#include <vmmlib/matrix4.h>
+#include <vmmlib/quaternion.h>
+#include <vmmlib/frustum.h>
+#include <vmmlib/frustumCuller.h>
 
 #endif

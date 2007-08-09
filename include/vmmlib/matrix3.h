@@ -20,8 +20,8 @@
  *   3x3 Matrix Class
  */ 
 
-#include "Vector3.h"
-#include "Vector4.h"
+#include <vmmlib/vector3.h>
+#include <vmmlib/vector4.h>
 
 #include <cmath>
 #include <cstdlib>

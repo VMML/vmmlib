@@ -84,7 +84,7 @@ public:
 }
 
 // - implementation - //
-#include "Matrix4.h"
+#include <vmmlib/matrix4.h>
 
 namespace vmml
 {

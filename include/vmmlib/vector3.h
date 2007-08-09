@@ -184,8 +184,8 @@ public:
 }
 
 // - implementation - //
-#include "Vector4.h"
-#include "Vector2.h"
+#include <vmmlib/vector2.h>
+#include <vmmlib/vector4.h>
  
 namespace vmml
 {

@@ -1,8 +1,8 @@
 #ifndef __VMML__AXIS_ALIGNED_BOUNDING_BOX__H__
 #define __VMML__AXIS_ALIGNED_BOUNDING_BOX__H__
 
-#include "VMMLib.h"
-#include "Sphere.h"
+#include <vmmlib/vector3.h>
+#include <vmmlib/vector4.h>
 
 namespace vmml
 {
@@ -13,12 +13,12 @@ class AxisAlignedBoundingBox
 public:
     AxisAlignedBoundingBox();
     AxisAlignedBoundingBox( const Vector3< T >& pMin, const Vector3< T >& pMax );
-    AxisAlignedBoundingBox( const Sphere< T >& sphere );
+    AxisAlignedBoundingBox( const Vector4< T >& sphere );
     AxisAlignedBoundingBox( T cx, T cy, T cz, T size );
     
     inline bool isIn( const Vector3< T >& pos );
     inline bool isIn2d( const Vector3< T >& pos ); // only x and y components are checked
-    inline bool isIn( const Sphere< T >& sphere );
+    inline bool isIn( const Vector4< T >& sphere );
 
     inline void set( const Vector3< T >& pMin, const Vector3< T >& pMax );
     inline void set( T cx, T cy, T cz, T size );
@@ -65,7 +65,7 @@ AxisAlignedBoundingBox< T >::AxisAlignedBoundingBox( const Vector3< T >& pMin, c
 
 
 template< typename T >
-AxisAlignedBoundingBox< T >::AxisAlignedBoundingBox( const Sphere< T >& sphere )
+AxisAlignedBoundingBox< T >::AxisAlignedBoundingBox( const Vector4< T >& sphere )
     : _dirty( false )
     , _empty( false )
 {
@@ -89,7 +89,7 @@ AxisAlignedBoundingBox< T >::AxisAlignedBoundingBox( T cx, T cy, T cz, T size )
 
 
 template< typename T >
-inline bool AxisAlignedBoundingBox< T >::isIn( const Sphere< T >& sphere )
+inline bool AxisAlignedBoundingBox< T >::isIn( const Vector4< T >& sphere )
 {
     if ( _empty ) 
         return false;

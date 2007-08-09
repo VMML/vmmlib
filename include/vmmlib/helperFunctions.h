@@ -24,8 +24,6 @@
 *
 */
 
-#include "VMMLib.h"
-
 namespace vmml
 {
 

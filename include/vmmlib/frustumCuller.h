@@ -9,7 +9,7 @@
 #ifndef __VMML__FRUSTUM_CULLER__H__
 #define __VMML__FRUSTUM_CULLER__H__
 
-#include "Vector4.h" // member
+#include <vmmlib/vector4.h>
 
 // - declaration -
 
@@ -54,7 +54,7 @@ private:
 }
 
 // - implementation - //
-#include "Matrix4.h"
+#include <vmmlib/matrix4.h>
 
 namespace vmml
 {

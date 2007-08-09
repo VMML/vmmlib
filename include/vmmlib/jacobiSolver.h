@@ -17,7 +17,7 @@
 #ifndef __VMML__JACOBI_SOLVER__H__
 #define __VMML__JACOBI_SOLVER__H__
 
-#include "VMMLib.h"
+#include <vmmlib/vmmlib.h>
 #include <cmath>
 #include <cassert>
 

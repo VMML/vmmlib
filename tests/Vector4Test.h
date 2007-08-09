@@ -1,7 +1,7 @@
 #ifndef _Vector4Test_H_
 #define _Vector4Test_H_
 
-#include "Vector4.h"
+#include <vmmlib/vector4.h>
 #include "Test.h"
 
 namespace vmml

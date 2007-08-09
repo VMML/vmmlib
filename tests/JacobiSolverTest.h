@@ -1,7 +1,7 @@
 #ifndef _JacobiSolverTest_H_
 #define _JacobiSolverTest_H_
 
-#include "JacobiSolver.h"
+#include <vmmlib/jacobiSolver.h>
 #include "Test.h"
 
 namespace vmml

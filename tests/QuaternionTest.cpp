@@ -1,5 +1,4 @@
 #include "QuaternionTest.h"
-#include "Quaternion.h"
 #include <iostream>
 
 using namespace std;

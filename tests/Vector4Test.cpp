@@ -1,5 +1,4 @@
 #include "Vector4Test.h"
-#include "Vector4.h"
 #include <iostream>
 
 using namespace std;

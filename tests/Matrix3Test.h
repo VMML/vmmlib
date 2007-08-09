@@ -1,7 +1,7 @@
 #ifndef _Matrix3Test_H_
 #define _Matrix3Test_H_
 
-#include "Matrix3.h"
+#include <vmmlib/matrix3.h>
 #include "Test.h"
 
 namespace vmml

@@ -1,7 +1,7 @@
 #ifndef _QuaternionTest_H_
 #define _QuaternionTest_H_
 
-#include "Quaternion.h"
+#include <vmmlib/quaternion.h>
 #include "Test.h"
 
 namespace vmml

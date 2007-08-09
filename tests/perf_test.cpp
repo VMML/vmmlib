@@ -1,5 +1,5 @@
-
-#include "Vector3.h"
+#if 0
+#include <vmmlib/vector3.h>
 
 #include <cstdlib>
 #include <sys/time.h>
@@ -44,3 +44,4 @@ int main( int argc, const char* argv )
    
     end();
 };
+#endif

@@ -4,7 +4,7 @@
 *                                                                         *
 ***************************************************************************/
 
-#include <vmmlib/VMMLib.h>
+#include <vmmlib/vmmlib.h>
 
 #include <iostream>
 #include <vector>

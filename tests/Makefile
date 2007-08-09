@@ -12,4 +12,8 @@ tests: vmmltest
 vmmltest: $(OBJECTS)
 	$(CXX) -o $@ $(OBJECTS)
 
+clean: 
+	rm -rf $(OBJECTS) vmmltest
+
 $(OBJECTS): ../include
+

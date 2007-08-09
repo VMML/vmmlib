@@ -1,7 +1,7 @@
 #ifndef _Vector2Test_H_
 #define _Vector2Test_H_
 
-#include "Vector2.h"
+#include <vmmlib/vector2.h>
 #include "Test.h"
 
 namespace vmml

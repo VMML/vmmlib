@@ -32,6 +32,10 @@ public:
         {
             T  x, y;
         };
+        struct
+        {
+            T min, max;
+        };
         T xy[2];
     };
 

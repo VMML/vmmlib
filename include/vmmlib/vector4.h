@@ -60,7 +60,10 @@ public:
             } center;
             T radius;
         };
-
+        struct // for viewports
+        {
+            T lowerLeftX, lowerLeftY, width, height; 
+        };
         T xyzw[4];
         T rgba[4];
     };

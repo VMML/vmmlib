@@ -146,11 +146,14 @@ bool Matrix4Test::test()
     }
     
     // m * vector
-    _matrix.set( 16., 5., 9., 4., 2., 11., 7., 14., 
-                 3., 10., 6., 15., 13., 8., 12., 1. );
+    _matrix.set( 16.,  5., 9.,  4., 
+                  2., 11., 8., 14., 
+                  3., 10., 6., 15.,
+                 13.,  8., 12., 2. );
+    
     Vector4d vector4( 1., 2., 3., 4. );
     Vector4d resultV4 = _matrix * vector4;
-    Vector4d expectV4( 81., 89., 89., 81. );
+    Vector4d expectV4( 69., 104., 101., 73. );
     if ( resultV4 != expectV4 )
     {
         cout << "test: Matrix4::operator*( Vector4 ) failed!" << endl;
@@ -168,26 +171,13 @@ bool Matrix4Test::test()
         failed();
     }  
     
-    // vector' * m
-    vector4.set( 2., 3., 4., 5. );
-    _matrix.set( 16., 5., 9., 4., 2., 11., 7., 14.,
-                 3., 10., 6., 15., 13., 8., 12., 1. );
-    resultV4 = vector4 * _matrix;
-    expectV4.set( 103., 135., 135., 103. );
-    if ( resultV4 != expectV4 )
-    {
-        cout << "test: Vector4::operator*( Matrix4 ) failed!" << endl;
-        cout << vector4 << _matrix << resultV4 << expectV4 << endl;
-        failed();
-    }  
-
     // axis rotations
     Vector3d vector3( 83., 42., 17. );
 
     _matrix = Matrix4d::IDENTITY;
     _matrix.rotateX( M_PI_2 );
     resultV3 = _matrix * vector3;
-    Vector3d expectV3( vector3.x, vector3.z, -vector3.y );
+    Vector3d expectV3( vector3.x, -vector3.z, vector3.y );
     if( !resultV3.isAkin( expectV3, 0.001 ))
     {
         cout << "test: Matrix4::rotateX failed!" << endl;
@@ -198,7 +188,7 @@ bool Matrix4Test::test()
     _matrix = Matrix4d::IDENTITY;
     _matrix.rotateY( M_PI_2 );
     resultV3 = _matrix * vector3;
-    expectV3.set( -vector3.z, vector3.y, vector3.x );
+    expectV3.set( vector3.z, vector3.y, -vector3.x );
     if( !resultV3.isAkin( expectV3, 0.001 ))
     {
         cout << "test: Matrix4::rotateY failed!" << endl;
@@ -209,7 +199,7 @@ bool Matrix4Test::test()
     _matrix = Matrix4d::IDENTITY;
     _matrix.rotateZ( M_PI_2 );
     resultV3 = _matrix * vector3;
-    expectV3.set( vector3.y, -vector3.x, vector3.z );
+    expectV3.set( -vector3.y, vector3.x, vector3.z );
     if( !resultV3.isAkin( expectV3, 0.001 ))
     {
         cout << "test: Matrix4::rotateZ failed!" << endl;

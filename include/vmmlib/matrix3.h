@@ -43,6 +43,9 @@ class Matrix3
 public:
     union
     {
+        /** This is a mathematical representation of the matrix; 
+            this means the naming scheme is the same as in to most 
+            math texts. */
         struct
         {
             T   m00, m10, m20, m01, m11, m21, m02, m12, m22;
@@ -129,15 +132,19 @@ public:
 
         os.setf( std::ios::right, std::ios::adjustfield );
         os.precision( 5 );
-        os << std::endl << "|" << std::setw(10) << m.ml[0] << " " 
-           << std::setw(10) << m.ml[1] << " " 
-           << std::setw(10) << m.ml[2] << "|" << std::endl
-           << "|" << std::setw(10) << m.ml[3] << " "
-           << std::setw(10) << m.ml[4] << " " 
-           << std::setw(10) << m.ml[5] << "|" << std::endl
-           << "|" << std::setw(10) << m.ml[6] << " "
-           << std::setw(10) << m.ml[7] << " " 
-           << std::setw(10) << m.ml[8] << "|" << std::endl; 
+        os << std::endl << "|" 
+            << std::setw(10) << m.ml[0] << " " 
+            << std::setw(10) << m.ml[3] << " " 
+            << std::setw(10) << m.ml[6] 
+            << "|" << std::endl << "|" 
+            << std::setw(10) << m.ml[1] << " "
+            << std::setw(10) << m.ml[4] << " " 
+            << std::setw(10) << m.ml[7] 
+            << "|" << std::endl << "|" 
+            << std::setw(10) << m.ml[2] << " "
+            << std::setw(10) << m.ml[5] << " " 
+            << std::setw(10) << m.ml[8] 
+            << "|" << std::endl; 
         os.precision( prec );
         os.setf( flags );
         return os;

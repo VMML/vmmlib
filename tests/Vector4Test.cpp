@@ -193,20 +193,10 @@ bool Vector4Test::test()
 		assert( 0 );
 	}
 	
-	// vector/matrix operation test
-	Matrix4d tmatrix4_test( 1., 0., 0., 1., 0., 0., 1., 1., 0., 1., 1., 0., 1., 1., 0., 0. );
-	tvector4_test.set( 11., 9., 7., 9. );
-	if ( _vector4 * tmatrix4_test != tvector4_test )
-	{
-		cout << "test: Vector4::operator*( matrix4 ) failed!" << endl;
-		failed();
-		assert( 0 );
-	}
-	
 	// dot() test
-	if ( _vector4.dot( tvector4_test ) != 166. )
+	if ( _vector4.dot( tvector4_test ) != 36. )
 	{
-		cout << "test: Vector4::dot( vector4 ) failed!" << endl;
+		cout << "test: Vector4::dot( vector4 ) failed! " << _vector4 << " . " << tvector4_test << " = " << _vector4.dot( tvector4_test ) << endl;
 		failed();
 		assert( 0 );
 	}

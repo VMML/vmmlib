@@ -49,8 +49,13 @@ public:
     {
         struct
         {
-            T   m00, m10, m20, m30, m01, m11, m21, m31, 
-                m02, m12, m22, m32, m03, m13, m23, m33;
+            // This is a mathematical representation of the matrix.
+            // First index is the row and the second is column. 
+            // m21 means row #2, col #1
+            T   m00, m10, m20, m30, 
+                m01, m11, m21, m31, 
+                m02, m12, m22, m32, 
+                m03, m13, m23, m33;
         };
         struct
         {
@@ -59,8 +64,12 @@ public:
                 rot02, rot12, rot22, d32, 
                 x,     y,     z,     d33;
         };
-        T m[4][4]; //cols
         T ml[16]; // linear
+        
+        // Following representation is for internal purposes. 
+        // First index of array means __column's__ number.
+        // m[2][1] - row #1, col #2
+        T m[4][4];//[col][row]
     };
     
     Matrix4();
@@ -185,22 +194,26 @@ public:
 
         os.setf( std::ios::right, std::ios::adjustfield );
         os.precision( 5 );
-        os << std::endl << "|" << std::setw(10) << m.m[0][0] << " " 
-           << std::setw(10) << m.m[0][1] << " " 
-           << std::setw(10) << m.m[0][2] << " " 
-           << std::setw(10) << m.m[0][3] << "|" << std::endl
-           << "|" << std::setw(10) << m.m[1][0] << " " 
-           << std::setw(10) << m.m[1][1] << " " 
-           << std::setw(10) << m.m[1][2] << " " 
-           << std::setw(10) << m.m[1][3] << "|" << std::endl
-           << "|" << std::setw(10) << m.m[2][0] << " " 
-           << std::setw(10) << m.m[2][1] << " " 
-           << std::setw(10) << m.m[2][2] << " " 
-           << std::setw(10) << m.m[2][3] << "|" << std::endl
-           << "|" << std::setw(10) << m.m[3][0] << " " 
-           << std::setw(10) << m.m[3][1] << " " 
-           << std::setw(10) << m.m[3][2] << " " 
-           << std::setw(10) << m.m[3][3] << "|" << std::endl;
+        os << std::endl << "|" 
+            << std::setw(10) << m.m00 << " " 
+            << std::setw(10) << m.m01 << " " 
+            << std::setw(10) << m.m02 << " " 
+            << std::setw(10) << m.m03 << "|" 
+            << std::endl << "|" 
+            << std::setw(10) << m.m10 << " " 
+            << std::setw(10) << m.m11 << " " 
+            << std::setw(10) << m.m12 << " " 
+            << std::setw(10) << m.m13 << "|" 
+            << std::endl << "|" 
+            << std::setw(10) << m.m20 << " " 
+            << std::setw(10) << m.m21 << " " 
+            << std::setw(10) << m.m22 << " " 
+            << std::setw(10) << m.m23 << "|" 
+            << std::endl << "|" 
+            << std::setw(10) << m.m30 << " " 
+            << std::setw(10) << m.m31 << " " 
+            << std::setw(10) << m.m32 << " " 
+            << std::setw(10) << m.m33 << "|" << std::endl;
         os.precision( prec );
         os.setf( flags );
         return os;
@@ -275,7 +288,7 @@ Matrix4< T >::Matrix4( T v00, T v01, T v02, T v03,
 template< typename T > 
 Matrix4< T >::Matrix4( const Matrix4& mm )
 {
-    memcpy(m,mm.m, 16 * sizeof( T ) );
+    memcpy(ml,mm.ml, 16 * sizeof( T ) );
 }
 
 
@@ -481,6 +494,7 @@ Vector4< T > Matrix4< T >::getRow( size_t row ) const
 template< typename T > 
 void Matrix4< T >::setColumn( size_t column, const Vector4< T >& columnvec )
 {
+    assert( column < 4 && "Matrix4: Writing Column ( setColumn ) with invalid index!" );
     m[column][0] = columnvec[0];
     m[column][1] = columnvec[1];
     m[column][2] = columnvec[2];
@@ -492,6 +506,7 @@ void Matrix4< T >::setColumn( size_t column, const Vector4< T >& columnvec )
 template< typename T > 
 void Matrix4< T >::setRow( size_t row, const Vector4< T >& rowvec )
 {
+    assert( row < 4 && "Matrix4: Writing Row ( setRow ) with invalid index!" );
     m[0][row] = rowvec[0];
     m[1][row] = rowvec[1];
     m[2][row] = rowvec[2];
@@ -503,6 +518,7 @@ void Matrix4< T >::setRow( size_t row, const Vector4< T >& rowvec )
 template< typename T > 
 void Matrix4< T >::setColumn( size_t column, const Vector3< T >& columnvec )
 {
+    assert( column < 4 && "Matrix4: Writing Column ( setColumn ) with invalid index!" );
     m[column][0] = columnvec[0];
     m[column][1] = columnvec[1];
     m[column][2] = columnvec[2];
@@ -513,6 +529,7 @@ void Matrix4< T >::setColumn( size_t column, const Vector3< T >& columnvec )
 template< typename T > 
 void Matrix4< T >::setRow( size_t row, const Vector3< T >& rowvec )
 {
+    assert( row < 4 && "Matrix4: Writing Row ( setRow ) with invalid index!" );
     m[0][row] = rowvec[0];
     m[1][row] = rowvec[1];
     m[2][row] = rowvec[2];
@@ -648,10 +665,10 @@ Matrix4< T >& Matrix4< T >::operator*= ( T scalar )
 template< typename T > 
 Vector4< T > Matrix4< T >::operator* (const Vector4< T >& vv) const
 {
-	return Vector4< T >( vv[0] * m00 + vv[1] * m10 + vv[2] * m20 + vv[3] * m30,
-                         vv[0] * m01 + vv[1] * m11 + vv[2] * m21 + vv[3] * m31,
-                         vv[0] * m02 + vv[1] * m12 + vv[2] * m22 + vv[3] * m32,
-                         vv[0] * m03 + vv[1] * m13 + vv[2] * m23 + vv[3] * m33);
+	return Vector4< T >( vv[0] * m00 + vv[1] * m01 + vv[2] * m02 + vv[3] * m03,
+                         vv[0] * m10 + vv[1] * m11 + vv[2] * m12 + vv[3] * m13,
+                         vv[0] * m20 + vv[1] * m21 + vv[2] * m22 + vv[3] * m23,
+                         vv[0] * m30 + vv[1] * m31 + vv[2] * m32 + vv[3] * m33);
 }
 
 
@@ -659,10 +676,10 @@ Vector4< T > Matrix4< T >::operator* (const Vector4< T >& vv) const
 template< typename T > 
 Vector3< T > Matrix4< T >::operator* (const Vector3< T >& vv) const
 {
-	const Vector4< T > result( vv[0] * m00 + vv[1] * m10 + vv[2] * m20 + m30,
-                               vv[0] * m01 + vv[1] * m11 + vv[2] * m21 + m31,
-                               vv[0] * m02 + vv[1] * m12 + vv[2] * m22 + m32,
-                               vv[0] * m03 + vv[1] * m13 + vv[2] * m23 + m33 );
+	const Vector4< T > result( vv[0] * m00 + vv[1] * m01 + vv[2] * m02 + m03,
+                               vv[0] * m10 + vv[1] * m11 + vv[2] * m12 + m13,
+                               vv[0] * m20 + vv[1] * m21 + vv[2] * m22 + m23,
+                               vv[0] * m30 + vv[1] * m31 + vv[2] * m32 + m33 );
 	return Vector3<T>( result );
 }
 

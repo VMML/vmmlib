@@ -82,7 +82,11 @@ typedef Frustum< double > frustumd;
 } // namespace vmml
 
 // - implementation - //
-#include <vmmlib/matrix4.h>
+#ifdef EQ_DEFINES_H
+#  include <eq/vmmlib/matrix4.h>
+#else
+#  include <vmmlib/matrix4.h>
+#endif
 
 namespace vmml
 {

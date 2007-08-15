@@ -238,9 +238,15 @@ typedef Matrix4< double > mat4d;
 // - implementation -
 //
 // * * * * * * * * * *
-#include <vmmlib/matrix3.h>
-#include <vmmlib/vector3.h>
-#include <vmmlib/vector4.h>
+#ifdef EQ_DEFINES_H
+#  include <eq/vmmlib/matrix3.h>
+#  include <eq/vmmlib/vector3.h>
+#  include <eq/vmmlib/vector4.h>
+#else
+#  include <vmmlib/matrix3.h>
+#  include <vmmlib/vector3.h>
+#  include <vmmlib/vector4.h>
+#endif
 
 namespace vmml
 {

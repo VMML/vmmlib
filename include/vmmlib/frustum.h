@@ -167,27 +167,18 @@ Frustum< T >::set( const T _left, const T _right, const T _bottom,
 
 
 template < class T > 
-void 
-Frustum<T>::adjustNear( const T _near )
+void Frustum<T>::adjustNear( const T newNear )
 {
-    if( _near == nearPlane )
-        return;
+	if( newNear == nearPlane )
+		return;
 
-    const T ratio_2 = 0.5 * _near / nearPlane;
-
-    const T hMiddle = (right + left) * 0.5;
-    const T width_2 = (right - left) * ratio_2;
-    right = hMiddle + width_2;
-    left  = hMiddle - width_2; 
-
-    const T vMiddle  = (top + bottom) * 0.5;
-    const T height_2 = (top - bottom) * ratio_2;
-    top    = vMiddle + height_2;
-    bottom = vMiddle - height_2;
-
-    nearPlane = _near;
+	const T ratio = newNear / nearPlane;
+	right  *= ratio;
+	left   *= ratio;
+	top    *= ratio;
+	bottom *= ratio;
+	nearPlane = newNear;
 }
-
 
 
 template < class T > 

@@ -49,13 +49,15 @@ public:
     {
         struct
         {
-            // This is a mathematical representation of the matrix.
-            // First index is the row and the second is column. 
-            // m21 means row #2, col #1
-            T   m00, m10, m20, m30, 
-                m01, m11, m21, m31, 
-                m02, m12, m22, m32, 
-                m03, m13, m23, m33;
+            /** 
+            * The matrix element in 'math' notation, e.g. similar to the way 
+            * it is done in mathematical texts. 
+            * 
+            * The first index denotes the row, the second the column. This 
+            * means that m21 is the element at row #2, col #1.
+            */
+            T   m00, m10, m20, m30, m01, m11, m21, m31, 
+                m02, m12, m22, m32, m03, m13, m23, m33;
         };
         struct
         {
@@ -64,12 +66,21 @@ public:
                 rot02, rot12, rot22, d32, 
                 x,     y,     z,     d33;
         };
-        T ml[16]; // linear
         
-        // Following representation is for internal purposes. 
-        // First index of array means __column's__ number.
-        // m[2][1] - row #1, col #2
-        T m[4][4];//[col][row]
+        /**
+        *   The linear / 1d-array representation of the matrix. Useful for 
+        *   usage with the OpenGL API. E.g.: glLoadMatrix( mymat.ml );
+        */
+        T ml[16]; 
+        
+        /**
+        *   The following representation is for internal purposes. 
+        *   The first array index specifies the __column__ number, the second 
+        *   the row: m[col][row].
+        *
+        *   Example: m[2][1] -> row #1, col #2
+        */
+        T m[4][4]; 
     };
     
     Matrix4();

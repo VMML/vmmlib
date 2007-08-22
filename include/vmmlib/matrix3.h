@@ -42,6 +42,9 @@
 namespace vmml
 {
 
+template< typename U >
+class Matrix4;
+    
 template< typename T > 
 class Matrix3
 {
@@ -77,6 +80,8 @@ public:
     inline const Matrix3& operator= ( const T r );
     template< typename U >
     inline const Matrix3& operator= ( const Matrix3< U >& mm );
+    template< typename U >
+    inline const Matrix3& operator= ( const Matrix4< U >& mm );
     
     inline bool operator== (const Matrix3& mm) const;
     inline bool operator!= (const Matrix3& mm) const;
@@ -322,6 +327,22 @@ const Matrix3< T >& Matrix3< T >::operator= ( const Matrix3< U >& mm )
     return *this;
 }
 
+
+template< typename T > 
+template< typename U > 
+const Matrix3< T >& Matrix3< T >::operator= ( const Matrix4< U >& mm )
+{
+    m00 = static_cast< T > ( mm.m00 );
+    m10 = static_cast< T > ( mm.m10 );
+    m20 = static_cast< T > ( mm.m20 );
+    m01 = static_cast< T > ( mm.m01 );
+    m11 = static_cast< T > ( mm.m11 );
+    m21 = static_cast< T > ( mm.m21 );
+    m02 = static_cast< T > ( mm.m02 );
+    m12 = static_cast< T > ( mm.m12 );
+    m22 = static_cast< T > ( mm.m22 );
+    return *this;
+}
 
 
 template< typename T > 

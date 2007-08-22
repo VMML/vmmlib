@@ -97,6 +97,21 @@ bool Matrix3Test::test()
     }
     
     // misc operators 
+    {
+        Matrix4f src( 1.1, 1.2, 1.3, 1.4, 2.1, 2.2, 2.3, 2.4, 
+                      3.1, 3.2, 3.3, 3.4, 4.1, 4.2, 4.3, 4.4 );
+        Matrix3f res( 1.1, 1.2, 1.3, 2.1, 2.2, 2.3, 3.1, 3.2, 3.3 );
+        Matrix3d dst;
+        dst  = src;
+        if ( dst != res )
+        {
+            cout << "test: Matrix3::operator=( Matrix4 ) failed!" << endl;
+            failed();
+            assert( 0 );           
+        }
+    }
+    
+    
     Matrix3d tm;
     tm = _matrix;
     if ( tm != _matrix )
@@ -105,7 +120,7 @@ bool Matrix3Test::test()
         failed();
         assert( 0 );           
     }
-
+    
     tm *= 0.5f;
     for ( size_t i = 0; i < 9; ++i )
     {

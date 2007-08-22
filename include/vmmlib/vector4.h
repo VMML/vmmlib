@@ -103,6 +103,9 @@ public:
     // this normalizes the vector3 consisting of the first three 
     // coordinates, and leaves the fourth as is.
     void normalizePlane();
+    
+    /** Return normalized Vector3, using only xyz coordinates */
+	Vector3 <T> getNormalizedVector3() const;
 
     // vector/scalar operations
     Vector4 operator+( const T aa ) const;
@@ -446,6 +449,13 @@ inline void Vector4< float >::normalizePlane()
     w /= length;
 } 
 
+template < typename T > 
+Vector3< T > 
+Vector4< T >::getNormalizedVector3() const
+{
+    T len = sqrt( x * x + y * y + z * z );
+	return Vector3<T>( x/len, y/len, z/len );
+}
 
 
 template < typename T > 

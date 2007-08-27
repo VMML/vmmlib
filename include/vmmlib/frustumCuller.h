@@ -9,11 +9,7 @@
 #ifndef __VMML__FRUSTUM_CULLER__H__
 #define __VMML__FRUSTUM_CULLER__H__
 
-#ifdef EQ_DEFINES_H
-#  include <eq/vmmlib/vector4.h>
-#else
-#  include <vmmlib/vector4.h>
-#endif
+#include <vmmlib/vector4.h>
 
 // - declaration -
 
@@ -56,11 +52,7 @@ typedef FrustumCuller< double > FrustumCullerd;
 } // namespace vmml
 
 // - implementation - //
-#ifdef EQ_DEFINES_H
-#  include <eq/vmmlib/matrix4.h>
-#else
-#  include <vmmlib/matrix4.h>
-#endif
+#include <vmmlib/matrix4.h>
 
 namespace vmml
 {

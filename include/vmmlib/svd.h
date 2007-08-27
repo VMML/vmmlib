@@ -1,14 +1,8 @@
 #ifndef __VMML__SINGULAR_VALUE_DECOMPOSITION__H__
 #define __VMML__SINGULAR_VALUE_DECOMPOSITION__H__
 
-
-#ifdef EQ_DEFINES_H
-#  include <eq/vmmlib/vmmlib.h>
-#  include <eq/vmmlib/helperFunctions.h>
-#else
-#  include <vmmlib/vmmlib.h>
-#  include <vmmlib/helperFunctions.h>
-#endif
+#include <vmmlib/vmmlib.h>
+#include <vmmlib/helperFunctions.h>
 
 namespace vmml
 {

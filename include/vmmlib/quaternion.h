@@ -16,15 +16,9 @@
 #include <iostream>
 #include <limits>
 
-#ifdef EQ_DEFINES_H
-#  include <eq/vmmlib/vector3.h>
-#  include <eq/vmmlib/vector4.h>
-#  include <eq/vmmlib/matrix3.h>
-#else
-#  include <vmmlib/vector3.h>
-#  include <vmmlib/vector4.h>
-#  include <vmmlib/matrix3.h>
-#endif
+#include <vmmlib/vector3.h>
+#include <vmmlib/vector4.h>
+#include <vmmlib/matrix3.h>
 
 // - declaration - //
 

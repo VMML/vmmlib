@@ -194,13 +194,8 @@ typedef Vector4< unsigned char >    vec4ub;
 
 // - implementation - //
 
-#ifdef EQ_DEFINES_H
-#  include <eq/vmmlib/vector3.h>
-#  include <eq/vmmlib/matrix4.h>
-#else
-#  include <vmmlib/vector3.h>
-#  include <vmmlib/matrix4.h>
-#endif
+#include <vmmlib/vector3.h>
+#include <vmmlib/matrix4.h>
 
 namespace vmml
 {

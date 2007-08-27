@@ -17,11 +17,7 @@
 #ifndef __VMML__JACOBI_SOLVER__H__
 #define __VMML__JACOBI_SOLVER__H__
 
-#ifdef EQ_DEFINES_H
-#  include <eq/vmmlib/vmmlib.h>
-#else
-#  include <vmmlib/vmmlib.h>
-#endif
+#include <vmmlib/vmmlib.h>
 
 #include <cmath>
 #include <cassert>

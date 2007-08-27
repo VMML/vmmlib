@@ -185,13 +185,8 @@ typedef Vector3< unsigned char >    vec3ub;
 } // namespace vmml
 
 // - implementation - //
-#ifdef EQ_DEFINES_H
-#  include <eq/vmmlib/vector2.h>
-#  include <eq/vmmlib/vector4.h>
-#else
-#  include <vmmlib/vector2.h>
-#  include <vmmlib/vector4.h>
-#endif
+#include <vmmlib/vector2.h>
+#include <vmmlib/vector4.h>
  
 namespace vmml
 {

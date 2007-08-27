@@ -1,13 +1,8 @@
 #ifndef __VMML__AXIS_ALIGNED_BOUNDING_BOX__H__
 #define __VMML__AXIS_ALIGNED_BOUNDING_BOX__H__
 
-#ifdef EQ_DEFINES_H
-#  include <eq/vmmlib/vector3.h>
-#  include <eq/vmmlib/vector4.h>
-#else
-#  include <vmmlib/vector3.h>
-#  include <vmmlib/vector4.h>
-#endif
+#include <vmmlib/vector3.h>
+#include <vmmlib/vector4.h>
 
 namespace vmml
 {

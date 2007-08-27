@@ -18,24 +18,13 @@
 #ifndef __VMML__VMMLIB__H__
 #define __VMML__VMMLIB__H__
 
-#ifdef EQ_DEFINES_H
-#  include <eq/vmmlib/vector2.h>
-#  include <eq/vmmlib/vector3.h>
-#  include <eq/vmmlib/vector4.h>
-#  include <eq/vmmlib/matrix3.h>
-#  include <eq/vmmlib/matrix4.h>
-#  include <eq/vmmlib/quaternion.h>
-#  include <eq/vmmlib/frustum.h>
-#  include <eq/vmmlib/frustumCuller.h>
-#else
-#  include <vmmlib/vector2.h>
-#  include <vmmlib/vector3.h>
-#  include <vmmlib/vector4.h>
-#  include <vmmlib/matrix3.h>
-#  include <vmmlib/matrix4.h>
-#  include <vmmlib/quaternion.h>
-#  include <vmmlib/frustum.h>
-#  include <vmmlib/frustumCuller.h>
-#endif
+#include <vmmlib/vector2.h>
+#include <vmmlib/vector3.h>
+#include <vmmlib/vector4.h>
+#include <vmmlib/matrix3.h>
+#include <vmmlib/matrix4.h>
+#include <vmmlib/quaternion.h>
+#include <vmmlib/frustum.h>
+#include <vmmlib/frustumCuller.h>
 
 #endif

@@ -75,7 +75,7 @@ inline T sign( T a, T b )
 }
 
 
-}; // namespace vmml
+} // namespace vmml
 
 #endif
 

@@ -236,6 +236,6 @@ Frustum< T >::computeOrthoMatrix() const
 }	
 
 
-}; //namespace vmml
+} //namespace vmml
 
 #endif

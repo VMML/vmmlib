@@ -39,7 +39,7 @@ namespace vmml
  *
  */
 
-template < class Real > 
+template < typename Real > 
 bool solveJacobi3x3( Matrix3< Real >& a, Vector3< Real >& d, 
                   Matrix3< Real >& v, size_t& rotationCount )
 {
@@ -161,8 +161,8 @@ bool solveJacobi3x3( Matrix3< Real >& a, Vector3< Real >& d,
   }
   return false;
 
-};
+}
 
-}; // namespace vmml
+} // namespace vmml
 
 #endif

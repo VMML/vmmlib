@@ -13,13 +13,15 @@ namespace vmml
  * matrix of singular values W is output as a vector w[1..n]. The transpose V T 
  * (not the matrix V ! ) is output as v[1..n][1..n].
  */ 
+//static double rv1[16]; 
+ 
 template < class T >
 void svdecompose( T **a, int m, size_t n, T  w[], T **v)
 {
     int flag, i, its, j, jj, k, l, nm;
-    T anorm, c, f, g, h, s, scale, x, y, z, *rv1;
+    T anorm, c, f, g, h, s, scale, x, y, z;
 
-    rv1 = (double*)calloc(n, sizeof(double));   // vector(1,n);
+    T* rv1 = (T*)calloc(n, sizeof(T));   // vector(1,n);
     g = scale = anorm = 0.0;					// Householder reduction to bidiagonal form.
     for ( i = 0; i < n; ++i ) 
     {

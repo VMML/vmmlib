@@ -1323,8 +1323,7 @@ Matrix4< T >::getTranslation()
 
 
 template< typename T > 
-void Matrix4< T >::tensor( const Vector3< T >& u, 
-                              const Vector3< T >& v )
+void Matrix4< T >::tensor( const Vector3< T >& u, const Vector3< T >& v )
 {
     int i, j;
     for (j = 0; j < 3; j++) 
@@ -1341,8 +1340,7 @@ void Matrix4< T >::tensor( const Vector3< T >& u,
 
 
 template< typename T > 
-void Matrix4< T >::tensor( const Vector4< T >& u,
-                              const Vector4< T >& v )
+void Matrix4< T >::tensor( const Vector4< T >& u, const Vector4< T >& v )
 {
     int i, j;
     for (j = 0; j < 4; j++)

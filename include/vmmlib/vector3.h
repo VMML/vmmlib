@@ -167,6 +167,15 @@ public:
         return os;
     }; 
 
+    // component iterators
+    typedef T*                      iterator;
+    typedef const T*                const_iterator;
+
+    iterator begin()                { return xyz; }
+    const_iterator begin() const    { return xyz; };
+    iterator end()                  { return xyz + 3; }
+    const_iterator end() const      { return xyz + 3; }
+
     static const Vector3 ZERO;
 
 }; // class vector3

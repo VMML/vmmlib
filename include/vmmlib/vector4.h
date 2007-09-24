@@ -174,7 +174,17 @@ public:
         os.precision( prec );
         os.setf( flags );
         return os;
-    };        
+    };
+    
+    // component iterators
+    typedef T*                      iterator;
+    typedef const T*                const_iterator;
+
+    iterator begin()                { return xyzw; }
+    const_iterator begin() const    { return xyzw; };
+    iterator end()                  { return xyzw + 4; }
+    const_iterator end() const      { return xyzw + 4; }
+
     static const Vector4 ZERO;
 
 }; // class vector4

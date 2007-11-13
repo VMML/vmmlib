@@ -840,16 +840,16 @@ bool Matrix4< T >::getInverse( Matrix4< T >& result, T limit ) const
     result.ml[15] = ml[ 2] * t2[3] - ml[ 6] * t2[1] + ml[10] * t2[0];
 
    /* determinant: 4 multiplications, 3 additions */
-   const T det = ml[0] * result.ml[0] + ml[4] * result.ml[1] +
-                 ml[8] * result.ml[2] + ml[12] * result.ml[3];
+   const T determinant = ml[0] * result.ml[0] + ml[4] * result.ml[1] +
+                         ml[8] * result.ml[2] + ml[12] * result.ml[3];
 
-   if( fabs( det ) <= limit )
+   if( fabs( determinant ) <= limit )
        return false;
 
    /* division: 16 multiplications, 1 division */
-   const T scale = 1.0 / det;
+   const T detinv = 1.0 / determinant;
    for( unsigned i = 0; i != 16; ++i )
-       result.ml[i] *= scale;
+       result.ml[i] *= detinv;
 
    return true;
 #endif
@@ -1206,88 +1206,88 @@ inline void Matrix4<float>::preRotateZ( const float angle )
 
 
 template< typename T >
-void Matrix4<T>::scale( const T scale[3] )
+void Matrix4<T>::scale( const T s[3] )
 {
-    ml[0]  *= scale[0];
-    ml[1]  *= scale[0];
-    ml[2]  *= scale[0];
-    ml[3]  *= scale[0];
-    ml[4]  *= scale[1];
-    ml[5]  *= scale[1];
-    ml[6]  *= scale[1];
-    ml[7]  *= scale[1];
-    ml[8]  *= scale[2];
-    ml[9]  *= scale[2];
-    ml[10] *= scale[2];
-    ml[11] *= scale[2];
+    ml[0]  *= s[0];
+    ml[1]  *= s[0];
+    ml[2]  *= s[0];
+    ml[3]  *= s[0];
+    ml[4]  *= s[1];
+    ml[5]  *= s[1];
+    ml[6]  *= s[1];
+    ml[7]  *= s[1];
+    ml[8]  *= s[2];
+    ml[9]  *= s[2];
+    ml[10] *= s[2];
+    ml[11] *= s[2];
 }
 
 
 
 template< typename T >
-void Matrix4<T>::scale( const T x, const T y, const T z )
+void Matrix4<T>::scale( const T xScale, const T yScale, const T zScale )
 {
-    ml[0]  *= x;
-    ml[1]  *= x;
-    ml[2]  *= x;
-    ml[3]  *= x;
-    ml[4]  *= y;
-    ml[5]  *= y;
-    ml[6]  *= y;
-    ml[7]  *= y;
-    ml[8]  *= z;
-    ml[9]  *= z;
-    ml[10] *= z;
-    ml[11] *= z;
+    ml[0]  *= xScale;
+    ml[1]  *= xScale;
+    ml[2]  *= xScale;
+    ml[3]  *= xScale;
+    ml[4]  *= yScale;
+    ml[5]  *= yScale;
+    ml[6]  *= yScale;
+    ml[7]  *= yScale;
+    ml[8]  *= zScale;
+    ml[9]  *= zScale;
+    ml[10] *= zScale;
+    ml[11] *= zScale;
 }
 
 
 
 template< typename T >
-void Matrix4<T>::scale( const Vector3< T >& scale )
+void Matrix4<T>::scale( const Vector3< T >& s )
 {
-    ml[0]  *= scale[0];
-    ml[1]  *= scale[0];
-    ml[2]  *= scale[0];
-    ml[3]  *= scale[0];
-    ml[4]  *= scale[1];
-    ml[5]  *= scale[1];
-    ml[6]  *= scale[1];
-    ml[7]  *= scale[1];
-    ml[8]  *= scale[2];
-    ml[9]  *= scale[2];
-    ml[10] *= scale[2];
-    ml[11] *= scale[2];
+    ml[0]  *= s[0];
+    ml[1]  *= s[0];
+    ml[2]  *= s[0];
+    ml[3]  *= s[0];
+    ml[4]  *= s[1];
+    ml[5]  *= s[1];
+    ml[6]  *= s[1];
+    ml[7]  *= s[1];
+    ml[8]  *= s[2];
+    ml[9]  *= s[2];
+    ml[10] *= s[2];
+    ml[11] *= s[2];
 }
 
 
 
 template< typename T >
-void Matrix4<T>::scaleTranslation( const T scale[3] )
+void Matrix4<T>::scaleTranslation( const T s[3] )
 {
-    ml[12] *= scale[0];
-    ml[13] *= scale[1];
-    ml[14] *= scale[2];
+    ml[12] *= s[0];
+    ml[13] *= s[1];
+    ml[14] *= s[2];
 }
 
 
 
 template< typename T >
-void Matrix4<T>::scaleTranslation( const Vector3< T >& scale )
+void Matrix4<T>::scaleTranslation( const Vector3< T >& s )
 {
-    ml[12] *= scale[0];
-    ml[13] *= scale[1];
-    ml[14] *= scale[2];
+    ml[12] *= s[0];
+    ml[13] *= s[1];
+    ml[14] *= s[2];
 }
 
 
 
 template< typename T >
-void Matrix4<T>::setTranslation( const T x, const T y, const T z )
+void Matrix4<T>::setTranslation( const T xTrans, const T yTrans, const T zTrans)
 {
-    ml[12] = x;
-    ml[13] = y;
-    ml[14] = z;
+    ml[12] = xTrans;
+    ml[13] = yTrans;
+    ml[14] = zTrans;
 }
 
 

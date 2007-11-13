@@ -658,12 +658,13 @@ bool Matrix3< T >::getInverse( Matrix3< T >& result, T limit )
     result.m21 = m01 * m20 - m00 * m21;
     result.m22 = m00 * m11 - m01 * m10;
 
-    const T det = m00 * result.m00 + m01 * result.m10 + m02 * result.m20;
+    const T determinant = m00 * result.m00 + m01 * result.m10 +
+                          m02 * result.m20;
 
-    if ( fabs( det ) <= limit )
+    if ( fabs( determinant ) <= limit )
         return false; // matrix is not invertible
 
-    const T detinv = 1.0 / det;
+    const T detinv = 1.0 / determinant;
     result.m00 *= detinv;
     result.m01 *= detinv;
     result.m02 *= detinv;
@@ -674,7 +675,6 @@ bool Matrix3< T >::getInverse( Matrix3< T >& result, T limit )
     result.m21 *= detinv;
     result.m22 *= detinv;
     return true;
-
 }
 
 

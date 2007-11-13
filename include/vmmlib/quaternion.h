@@ -233,12 +233,12 @@ Quaternion< T >::Quaternion( const T& real, const Vector3< T >& imag )
 }
 
 template < typename T >
-Quaternion< T >::Quaternion( const Vector3< T >& v )
+Quaternion< T >::Quaternion( const Vector3< T >& v3 )
 {
 	w = 0;
-	x = v.x;
-	y = v.y;
-	z = v.z;
+	x = v3.x;
+	y = v3.y;
+	z = v3.z;
 }
 
 // use rotation matrices only!
@@ -721,14 +721,12 @@ void Quaternion< T >::normal( const Quaternion< T >& aa,
 							  const Quaternion< T >& cc,
 							  const Quaternion< T >& dd )
 {
-	Quaternion< T > t, u, v;
-	
 	//right hand system, CCW triangle
-	t = bb - aa;
-	u = cc - aa;
-	v = dd - aa;
-	cross ( t, u, v );
-	normalise();
+	const Quaternion< T > quat_t = bb - aa;
+	const Quaternion< T > quat_u = cc - aa;
+	const Quaternion< T > quat_v = dd - aa;
+	cross( quat_t, quat_u, quat_v );
+	normalize();
 }
 
 template < typename T >
@@ -749,7 +747,7 @@ Quaternion< T > Quaternion< T >::rotate( T theta, Vector3< T >& axis, const Vect
 {
 	Quaternion< T > p = a;
 	T alpha = theta / 2;
-	Quaternion< T > q = cos( alpha ) + ( sin( alpha ) * axis.normalise() );
+	Quaternion< T > q = cos( alpha ) + ( sin( alpha ) * axis.normalize() );
 	return q * p * q.invert();
 }
 
@@ -802,20 +800,20 @@ T Quaternion< T >::getMaxComponent()
 template < typename T >
 Quaternion< T > Quaternion< T >::slerp ( T a, const Quaternion< T >& p, const Quaternion< T >& q )
 {
-	p = p.normalise();
-	q = q.normalise();
+	p = p.normalize();
+	q = q.normalize();
 	T cosine = p.dot(q);
-	Quaternion< T > t;
+	Quaternion< T > quat_t;
 	
 	// check if inverted rotation is needed
 	if ( cosine < 0.0 )
 	{
 		cosine = -cosine;
-		t = -q;
+		quat_t = -q;
 	}
 	else
 	{
-		t = q;
+		quat_t = q;
 	}
 	
 	if( cosine.abs() < 1 - 1e-13 )
@@ -825,14 +823,14 @@ Quaternion< T > Quaternion< T >::slerp ( T a, const Quaternion< T >& p, const Qu
 		T angle = atan2( sine, cosine );
 		T coeff1 = sin( 1.0 - a ) * angle / sine;
 		T coeff2 = sin( a * angle ) / sine;
-		return coeff1 * p + coeff2 * t;
+		return coeff1 * p + coeff2 * quat_t;
 	}
 	else
 	{
 		// linear interpolation for very small angles  
-		Quaternion< T > u = ( 1. - a ) * p + a * t;
-		u.normalise();
-		return u;
+		Quaternion< T > quat_u = ( 1. - a ) * p + a * quat_t;
+		quat_u.normalize();
+		return quat_u;
 	}
 }
 

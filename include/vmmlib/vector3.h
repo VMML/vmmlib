@@ -75,9 +75,9 @@ public:
     void set( const double* values );
 
     const Vector3& operator=( T a ); 
-    const Vector3& operator=( const Vector3& a ); 
+    const Vector3& operator=( const Vector3& rhs ); 
     template< typename U >
-    const Vector3& operator=( const Vector3< U >& a );
+    const Vector3& operator=( const Vector3< U >& rhs );
 
     T& operator[]( size_t position);
     const T& operator[]( size_t position) const;
@@ -94,30 +94,30 @@ public:
     const Vector3& operator/=( T  a ); 
 
     // vector/vector operations
-    Vector3 operator+( const Vector3& a ) const; 
-    Vector3 operator-( const Vector3& a ) const;
-    Vector3 operator*( const Vector3& a ) const; 
-    Vector3 operator/( const Vector3& a ) const; 
+    Vector3 operator+( const Vector3& rhs ) const; 
+    Vector3 operator-( const Vector3& rhs ) const;
+    Vector3 operator*( const Vector3& rhs ) const; 
+    Vector3 operator/( const Vector3& rhs ) const; 
     Vector3 operator-() const;
 
-    const Vector3& operator+=( const Vector3& a ); 
-    const Vector3& operator-=( const Vector3& a ); 
-    const Vector3& operator*=( const Vector3& a ); 
-    const Vector3& operator/=( const Vector3& a ); 
+    const Vector3& operator+=( const Vector3& rhs ); 
+    const Vector3& operator-=( const Vector3& rhs ); 
+    const Vector3& operator*=( const Vector3& rhs ); 
+    const Vector3& operator/=( const Vector3& rhs ); 
 
-    bool operator==( const Vector3 &a ) const;
-    bool operator!=(const Vector3 &a ) const;
-    bool isAkin(  const Vector3& a, 
+    bool operator==( const Vector3& rhs ) const;
+    bool operator!=(const Vector3& rhs ) const;
+    bool isAkin(  const Vector3& rhs, 
                   const T& delta = std::numeric_limits<T>::epsilon() );
 
     // component-component compare
     // returns a size_t with a bitmask of the component comparison results
     // -> if this->xy[k] is smaller than a[k], the kth bit will be enabled;
-    const size_t smaller( const Vector3& a ) const;
-    const size_t smaller( const Vector3& a, const size_t axis ) const;
+    const size_t smaller( const Vector3& rhs ) const;
+    const size_t smaller( const Vector3& rhs, const size_t axis ) const;
     // -> if this->xy[k] is smaller than a[k], the kth bit will be enabled;
-    const size_t greater( const Vector3& a ) const;
-    const size_t greater( const Vector3& a, const size_t axis ) const;
+    const size_t greater( const Vector3& rhs ) const;
+    const size_t greater( const Vector3& rhs, const size_t axis ) const;
     
 
     T length() const;
@@ -135,10 +135,10 @@ public:
     void scale( T scale_factor );
 
     // result = vec1.cross( vec2 ) => vec1 x vec2
-    Vector3 cross( const Vector3& a ) const;
+    Vector3 cross( const Vector3& rhs ) const;
     // result.cross( vec1, vec2 ) => vec1 x vec2
     void cross( const Vector3 &a, const Vector3 &b);
-    T dot( const Vector3& a) const;
+    T dot( const Vector3& rhs) const;
     static T dot( const Vector3& a, const Vector3& b);
 
     void invert(); 
@@ -245,10 +245,10 @@ Vector3< T >::Vector3( const Vector2< T >& xy, const T z_ )
 
 template < typename T > 
 template < typename U >
-Vector3< T >::Vector3( const Vector3< U >& a )
-    : x( static_cast< T >( a.x ) )
-    , y( static_cast< T >( a.y ) )
-    , z( static_cast< T >( a.z ) )
+Vector3< T >::Vector3( const Vector3< U >& rhs )
+    : x( static_cast< T >( rhs.x ) )
+    , y( static_cast< T >( rhs.y ) )
+    , z( static_cast< T >( rhs.z ) )
 {}
 
 
@@ -323,11 +323,11 @@ const Vector3< T >& Vector3< T >::operator=( T a )
 
 
 template < typename T > 
-const Vector3< T >& Vector3< T >::operator=( const Vector3& a ) 
+const Vector3< T >& Vector3< T >::operator=( const Vector3& rhs ) 
 { 
-    x = a.x; 
-    y = a.y; 
-    z = a.z; 
+    x = rhs.x; 
+    y = rhs.y; 
+    z = rhs.z; 
     return *this;
 } 
 
@@ -555,33 +555,33 @@ const Vector3< T >& Vector3< T >::operator/=( T  a )
 
 // vector/vector operations
 template < typename T > 
-Vector3< T > Vector3< T >::operator+( const Vector3 &a ) const 
+Vector3< T > Vector3< T >::operator+( const Vector3 &rhs ) const 
 { 
-    return Vector3( x + a.x, y + a.y, z + a.z ); 
+    return Vector3( x + rhs.x, y + rhs.y, z + rhs.z ); 
 }
 
 
 
 template < typename T > 
-Vector3< T > Vector3< T >::operator-( const Vector3 &a ) const 
+Vector3< T > Vector3< T >::operator-( const Vector3 &rhs ) const 
 { 
-    return Vector3( x - a.x, y - a.y, z - a.z ); 
+    return Vector3( x - rhs.x, y - rhs.y, z - rhs.z ); 
 }
 
 
 
 template < typename T > 
-Vector3< T > Vector3< T >::operator*( const Vector3 &a ) const 
+Vector3< T > Vector3< T >::operator*( const Vector3 &rhs ) const 
 { 
-    return Vector3( x * a.x, y * a.y, z * a.z ); 
+    return Vector3( x * rhs.x, y * rhs.y, z * rhs.z ); 
 } 
 
 
 
 template < typename T > 
-Vector3< T > Vector3< T >::operator/( const Vector3 &a ) const 
+Vector3< T > Vector3< T >::operator/( const Vector3 &rhs ) const 
 { 
-    return Vector3( x / a.x, y / a.y, z / a.z ); 
+    return Vector3( x / rhs.x, y / rhs.y, z / rhs.z ); 
 } 
 
 
@@ -595,44 +595,44 @@ Vector3< T > Vector3< T >::operator-() const
 
 
 template < typename T > 
-const Vector3< T >& Vector3< T >::operator+=( const Vector3 &a ) 
+const Vector3< T >& Vector3< T >::operator+=( const Vector3& rhs ) 
 { 
-    x += a.x; 
-    y += a.y; 
-    z += a.z; 
+    x += rhs.x; 
+    y += rhs.y; 
+    z += rhs.z; 
     return *this; 
 } 
 
 
 
 template < typename T > 
-const Vector3< T >& Vector3< T >::operator-=( const Vector3 &a ) 
+const Vector3< T >& Vector3< T >::operator-=( const Vector3& rhs ) 
 { 
-    x -= a.x; 
-    y -= a.y; 
-    z -= a.z; 
+    x -= rhs.x; 
+    y -= rhs.y; 
+    z -= rhs.z; 
     return *this; 
 }
 
 
 
 template < typename T > 
-const Vector3< T >& Vector3< T >::operator*=( const Vector3 &a ) 
+const Vector3< T >& Vector3< T >::operator*=( const Vector3& rhs ) 
 { 
-    x *= a.x; 
-    y *= a.y; 
-    z *= a.z; 
+    x *= rhs.x; 
+    y *= rhs.y; 
+    z *= rhs.z; 
     return *this; 
 }
 
 
 
 template < typename T > 
-const Vector3< T >& Vector3< T >::operator/=( const Vector3 &a ) 
+const Vector3< T >& Vector3< T >::operator/=( const Vector3& rhs ) 
 { 
-    x /= a.x; 
-    y /= a.y; 
-    z /= a.z; 
+    x /= rhs.x; 
+    y /= rhs.y; 
+    z /= rhs.z; 
     return *this; 
 }
 
@@ -640,14 +640,14 @@ const Vector3< T >& Vector3< T >::operator/=( const Vector3 &a )
 
 template < typename T > 
 const size_t 
-Vector3< T >::smaller( const Vector3< T >& a ) const
+Vector3< T >::smaller( const Vector3< T >& rhs ) const
 {
     size_t result = 0;
-    if ( x < a.x )
+    if ( x < rhs.x )
         result |= 1;
-    if ( y < a.y )
+    if ( y < rhs.y )
         result |= 2;
-    if ( z < a.z )
+    if ( z < rhs.z )
         result |= 4;
     return result;
 }
@@ -656,23 +656,23 @@ Vector3< T >::smaller( const Vector3< T >& a ) const
 
 template < typename T > 
 const size_t 
-Vector3< T >::smaller( const Vector3< T >& a, const size_t axis  ) const
+Vector3< T >::smaller( const Vector3< T >& rhs, const size_t axis  ) const
 {
-    return ( xyz[ axis ] < a.xyz[ axis ] ) ? 1 << axis : 0;
+    return ( xyz[ axis ] < rhs.xyz[ axis ] ) ? 1 << axis : 0;
 }
 
 
 
 template < typename T > 
 const size_t 
-Vector3< T >::greater( const Vector3< T >& a ) const
+Vector3< T >::greater( const Vector3< T >& rhs ) const
 {
     size_t result = 0;
-    if ( x > a.x )
+    if ( x > rhs.x )
         result |= 1;
-    if ( y > a.y )
+    if ( y > rhs.y )
         result |= 2;
-    if ( z > a.z )
+    if ( z > rhs.z )
         result |= 4;
     return result;
 }
@@ -681,70 +681,72 @@ Vector3< T >::greater( const Vector3< T >& a ) const
 
 template < typename T > 
 const size_t 
-Vector3< T >::greater( const Vector3< T >& a, const size_t axis  ) const
+Vector3< T >::greater( const Vector3< T >& rhs, const size_t axis  ) const
 {
-    return ( xyz[ axis ] > a.xyz[ axis ] ) ? 1 << axis : 0;
+    return ( xyz[ axis ] > rhs.xyz[ axis ] ) ? 1 << axis : 0;
 }
 
 
 
 // result = vec1.cross( vec2 ) => vec1 x vec2
 template < typename T > 
-Vector3< T > Vector3< T >::cross( const Vector3& a ) const
+Vector3< T > Vector3< T >::cross( const Vector3& rhs ) const
 { 
-    return Vector3( y * a.z - z * a.y, z * a.x - x * a.z, x * a.y - y * a.x ); 
+    return Vector3( y * rhs.z - z * rhs.y, 
+                    z * rhs.x - x * rhs.z,
+                    x * rhs.y - y * rhs.x ); 
 }
 
 
 
 // result.cross( vec1, vec2 ) => vec1 x vec2
 template < typename T > 
-void Vector3< T >::cross( const Vector3 &a, const Vector3 &b)
+void Vector3< T >::cross( const Vector3& aa, const Vector3& bb )
 { 
-    x = a.y * b.z - a.z * b.y; 
-    y = a.z * b.x - a.x * b.z; 
-    z = a.x * b.y - a.y * b.x; 
+    x = aa.y * bb.z - aa.z * bb.y; 
+    y = aa.z * bb.x - aa.x * bb.z; 
+    z = aa.x * bb.y - aa.y * bb.x; 
 }
 
 
 
 template < typename T > 
-T Vector3< T >::dot( const Vector3& a) const 
+T Vector3< T >::dot( const Vector3& rhs) const 
 { 
-    return x * a.x + y * a.y + z * a.z; 
+    return x * rhs.x + y * rhs.y + z * rhs.z; 
 }
 
 
 
 template < typename T > 
-T Vector3< T >::dot( const Vector3& a, const Vector3& b)
+T Vector3< T >::dot( const Vector3& aa, const Vector3& bb )
 {
-    return a.x * b.x + a.y * b.y + a.z * b.z;
+    return aa.x * bb.x + aa.y * bb.y + aa.z * bb.z;
 }
 
 
 
 template < typename T > 
-bool Vector3< T >::operator==( const Vector3& a ) const 
+bool Vector3< T >::operator==( const Vector3& rhs ) const 
 { 
-    return ( x == a.x && y == a.y && z == a.z ); 
+    return ( x == rhs.x && y == rhs.y && z == rhs.z ); 
 }
 
 
 
 template < typename T > 
-bool Vector3< T >::operator!=(const Vector3& a ) const 
+bool Vector3< T >::operator!=(const Vector3& rhs ) const 
 { 
-    return ( x != a.x || y != a.y || z != a.z ); 
+    return ( x != rhs.x || y != rhs.y || z != rhs.z ); 
 }
 
 
 
 template < typename T > 
-bool Vector3< T >::isAkin( const Vector3& a, const T& delta )
+bool Vector3< T >::isAkin( const Vector3& rhs, const T& delta )
 {
-    if( fabs( x-a.x ) > delta || fabs( y-a.y ) > delta || 
-        fabs( z-a.z ) > delta )
+    if( fabs( x-rhs.x ) > delta || fabs( y-rhs.y ) > delta || 
+        fabs( z-rhs.z ) > delta )
 
         return false;
     return true;
@@ -753,10 +755,10 @@ bool Vector3< T >::isAkin( const Vector3& a, const T& delta )
 
 
 template< > 
-inline bool Vector3< float >::isAkin( const Vector3& a, const float& delta )
+inline bool Vector3< float >::isAkin( const Vector3& rhs, const float& delta )
 {
-    if( fabsf( x-a.x ) > delta || fabsf( y-a.y ) > delta || 
-        fabsf( z-a.z ) > delta )
+    if( fabsf( x-rhs.x ) > delta || fabsf( y-rhs.y ) > delta || 
+        fabsf( z-rhs.z ) > delta )
 
         return false;
     return true;
@@ -805,23 +807,26 @@ Vector3< T > Vector3< T >::normal( const Vector3< T >& aa,
 
 
 template < typename T > 
-Vector3< T > Vector3< T >::rotate( T theta, T rx, T ry, 
-                                         T rz )      
+Vector3< T > Vector3< T >::rotate( T theta, T rx, T ry, T rz )      
 {   
-    Vector3 q( 0, 0, 0 ), r( rx, ry, rz );
-    r.normalize();
-    const T costheta = ( T ) cos( theta );
-    const T sintheta = ( T ) sin( theta );
-    q.x += ( costheta + ( 1.0f - costheta ) * r.x * r.x ) * x;
-    q.x += ( ( 1 - costheta ) * r.x * r.y - r.z * sintheta ) * y;
-    q.x += ( ( 1 - costheta ) * r.x * r.z + r.y * sintheta ) * z;
-    q.y += ( ( 1 - costheta ) * r.x * r.y + r.z * sintheta ) * x;
-    q.y += ( costheta + ( 1 - costheta ) * r.y * r.y ) * y;
-    q.y += ( ( 1 - costheta ) * r.y * r.z - r.x * sintheta ) * z;
-    q.z += ( ( 1 - costheta ) * r.x * r.z - r.y * sintheta ) * x;
-    q.z += ( ( 1 - costheta ) * r.y * r.z + r.x * sintheta ) * y;
-    q.z += ( costheta + ( 1 - costheta ) * r.z * r.z ) * z;
-    return q; 
+    Vector3 axis( rx, ry, rz );
+    axis.normalize();
+
+    const T costheta = static_cast< T >( cos( theta ));
+    const T sintheta = static_cast< T >( sin( theta ));
+
+    return Vector3(
+        (costheta + ( 1.0f - costheta ) * axis.x * axis.x ) * x    +
+        (( 1 - costheta ) * axis.x * axis.y - axis.z * sintheta ) * y +
+        (( 1 - costheta ) * axis.x * axis.z + axis.y * sintheta ) * z,
+
+        (( 1 - costheta ) * axis.x * axis.y + axis.z * sintheta ) * x +
+        ( costheta + ( 1 - costheta ) * axis.y * axis.y ) * y +
+        (( 1 - costheta ) * axis.y * axis.z - axis.x * sintheta ) * z,
+
+        (( 1 - costheta ) * axis.x * axis.z - axis.y * sintheta ) * x +
+        (( 1 - costheta ) * axis.y * axis.z + axis.x * sintheta ) * y +
+        ( costheta + ( 1 - costheta ) * axis.z * axis.z ) * z );
 } 
 
 
@@ -831,20 +836,24 @@ template<>
 inline Vector3< float > Vector3< float >::rotate( float theta, float rx, 
                                                   float ry, float rz )      
 {   
-    Vector3 q( 0, 0, 0 ), r( rx, ry, rz );
-    r.normalize();
+    Vector3< float > axis( rx, ry, rz );
+    axis.normalize();
+
     const float costheta = cosf( theta );
     const float sintheta = sinf( theta );
-    q.x += ( costheta + ( 1.0f - costheta ) * r.x * r.x ) * x;
-    q.x += ( ( 1 - costheta ) * r.x * r.y - r.z * sintheta ) * y;
-    q.x += ( ( 1 - costheta ) * r.x * r.z + r.y * sintheta ) * z;
-    q.y += ( ( 1 - costheta ) * r.x * r.y + r.z * sintheta ) * x;
-    q.y += ( costheta + ( 1 - costheta ) * r.y * r.y ) * y;
-    q.y += ( ( 1 - costheta ) * r.y * r.z - r.x * sintheta ) * z;
-    q.z += ( ( 1 - costheta ) * r.x * r.z - r.y * sintheta ) * x;
-    q.z += ( ( 1 - costheta ) * r.y * r.z + r.x * sintheta ) * y;
-    q.z += ( costheta + ( 1 - costheta ) * r.z * r.z ) * z;
-    return q; 
+
+    return Vector3< float >(
+        (costheta + ( 1.0f - costheta ) * axis.x * axis.x ) * x    +
+        (( 1 - costheta ) * axis.x * axis.y - axis.z * sintheta ) * y +
+        (( 1 - costheta ) * axis.x * axis.z + axis.y * sintheta ) * z,
+
+        (( 1 - costheta ) * axis.x * axis.y + axis.z * sintheta ) * x +
+        ( costheta + ( 1 - costheta ) * axis.y * axis.y ) * y +
+        (( 1 - costheta ) * axis.y * axis.z - axis.x * sintheta ) * z,
+
+        (( 1 - costheta ) * axis.x * axis.z - axis.y * sintheta ) * x +
+        (( 1 - costheta ) * axis.y * axis.z + axis.x * sintheta ) * y +
+        ( costheta + ( 1 - costheta ) * axis.z * axis.z ) * z );
 } 
 
 

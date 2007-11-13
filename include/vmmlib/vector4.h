@@ -278,11 +278,11 @@ Vector4< T >::Vector4( const Vector3< T >& v3, const T aa )
 
 template < typename T > 
 template < typename U > 
-Vector4< T >::Vector4( const Vector4< U >& a )
-    : x ( static_cast< T > ( a.x ) )
-    , y ( static_cast< T > ( a.y ) )
-    , z ( static_cast< T > ( a.z ) )
-    , w ( static_cast< T > ( a.w ) )
+Vector4< T >::Vector4( const Vector4< U >& rhs )
+    : x ( static_cast< T > ( rhs.x ) )
+    , y ( static_cast< T > ( rhs.y ) )
+    , z ( static_cast< T > ( rhs.z ) )
+    , w ( static_cast< T > ( rhs.w ) )
 {} 
 
 
@@ -437,21 +437,21 @@ T Vector4< T >::normalize()
 template < typename T > 
 void Vector4< T >::normalizePlane()
 { 
-    const T length = sqrt( x * x + y * y + z * z );
-    x /= length;
-    y /= length;
-    z /= length;
-    w /= length;
+    const T l = sqrt( x * x + y * y + z * z );
+    x /= l;
+    y /= l;
+    z /= l;
+    w /= l;
 } 
 
 template <> 
 inline void Vector4< float >::normalizePlane()
 { 
-    const float length = sqrtf( x * x + y * y + z * z );
-    x /= length;
-    y /= length;
-    z /= length;
-    w /= length;
+    const float l = sqrtf( x * x + y * y + z * z );
+    x /= l;
+    y /= l;
+    z /= l;
+    w /= l;
 } 
 
 template < typename T > 
@@ -659,10 +659,10 @@ bool Vector4< T >::operator!=(const Vector4 &aa ) const
 
 
 template < typename T > 
-bool Vector4< T >::isAkin( const Vector4& a, const T& delta )
+bool Vector4< T >::isAkin( const Vector4& rhs, const T& delta )
 {
-    if( fabs( x-a.x ) > delta || fabs( y-a.y ) > delta || 
-        fabs( z-a.z ) > delta || fabs( w-a.w ) > delta )
+    if( fabs( x-rhs.x ) > delta || fabs( y-rhs.y ) > delta || 
+        fabs( z-rhs.z ) > delta || fabs( w-rhs.w ) > delta )
 
         return false;
     return true;
@@ -672,16 +672,16 @@ bool Vector4< T >::isAkin( const Vector4& a, const T& delta )
 
 template < typename T > 
 const size_t 
-Vector4< T >::smaller( const Vector4< T >& a ) const
+Vector4< T >::smaller( const Vector4< T >& rhs ) const
 {
     size_t result = 0;
-    if ( x < a.x )
+    if ( x < rhs.x )
         result |= 1;
-    if ( y < a.y )
+    if ( y < rhs.y )
         result |= 2;
-    if ( z < a.z )
+    if ( z < rhs.z )
         result |= 4;
-    if ( w < a.w )
+    if ( w < rhs.w )
         result |= 8;
     return result;
 }
@@ -690,25 +690,25 @@ Vector4< T >::smaller( const Vector4< T >& a ) const
 
 template < typename T > 
 const size_t 
-Vector4< T >::smaller( const Vector4< T >& a, const size_t axis  ) const
+Vector4< T >::smaller( const Vector4< T >& rhs, const size_t axis  ) const
 {
-    return ( xyzw[ axis ] < a.xyzw[ axis ] ) ? 1 << axis : 0;
+    return ( xyzw[ axis ] < rhs.xyzw[ axis ] ) ? 1 << axis : 0;
 }
 
 
 
 template < typename T > 
 const size_t 
-Vector4< T >::greater( const Vector4< T >& a ) const
+Vector4< T >::greater( const Vector4< T >& rhs ) const
 {
     size_t result = 0;
-    if ( x > a.x )
+    if ( x > rhs.x )
         result |= 1;
-    if ( y > a.y )
+    if ( y > rhs.y )
         result |= 2;
-    if ( z > a.z )
+    if ( z > rhs.z )
         result |= 4;
-    if ( w > a.w )
+    if ( w > rhs.w )
         result |= 8;
     return result;
 }
@@ -717,17 +717,17 @@ Vector4< T >::greater( const Vector4< T >& a ) const
 
 template < typename T > 
 const size_t 
-Vector4< T >::greater( const Vector4< T >& a, const size_t axis  ) const
+Vector4< T >::greater( const Vector4< T >& rhs, const size_t axis  ) const
 {
-    return ( xyzw[ axis ] > a.xyzw[ axis ] ) ? 1 << axis : 0;
+    return ( xyzw[ axis ] > rhs.xyzw[ axis ] ) ? 1 << axis : 0;
 }
 
 
 template< > 
-inline bool Vector4< float >::isAkin( const Vector4& a, const float& delta )
+inline bool Vector4< float >::isAkin( const Vector4& rhs, const float& delta )
 {
-    if( fabsf( x-a.x ) > delta || fabsf( y-a.y ) > delta || 
-        fabsf( z-a.z ) > delta || fabsf( w-a.w ) > delta )
+    if( fabsf( x-rhs.x ) > delta || fabsf( y-rhs.y ) > delta || 
+        fabsf( z-rhs.z ) > delta || fabsf( w-rhs.w ) > delta )
 
         return false;
     return true;

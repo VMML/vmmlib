@@ -92,28 +92,28 @@ public:
              const Vector4<T>& v2, const Vector4<T>& v3, 
              bool columnVectors = false );
              
-    Matrix4( const Matrix4& mm );             
+    Matrix4( const Matrix4& other );             
     //type conversion ctor
     template< typename U >
-    Matrix4( const Matrix4< U >& mm );
+    Matrix4( const Matrix4< U >& other );
 
     //the pointer 'values must be a valid 16 component c array of the resp. type
     Matrix4( const float* values );
     Matrix4( const double* values );
  
-    inline const Matrix4& operator= ( const Matrix4& mm );
+    inline const Matrix4& operator= ( const Matrix4& other );
     template< typename U >
-    inline const Matrix4& operator= ( const Matrix4< U >& mm );
+    inline const Matrix4& operator= ( const Matrix4< U >& other );
 
-    inline bool operator== ( const Matrix4& mm ) const;
-    inline bool operator!= ( const Matrix4& mm ) const;
+    inline bool operator== ( const Matrix4& other ) const;
+    inline bool operator!= ( const Matrix4& other ) const;
 
-    void set( const Matrix4& mm );
+    void set( const Matrix4& other );
     // dangerous, but implemented to allow easy conversion between 
     // Matrix< float > and Matrix< double >
     //the pointer 'values must be a valid 16 component c array of the resp. type
-    void set( const float* mm );
-    void set( const double* mm );
+    void set( const float* other );
+    void set( const double* other );
     void set( T v00, T v01, T v02, T v03, T v10, T v11, T v12, T v13, 
               T v20, T v21, T v22, T v23, T v30, T v31, T v32, T v33 );
 
@@ -132,20 +132,20 @@ public:
                          const T& value ) const;
 
     // arithmetic operations
-    Matrix4 operator+ ( const Matrix4& mm ) const;
-    Matrix4 operator- ( const Matrix4& mm ) const;
-    Matrix4 operator* ( const Matrix4& mm ) const;
+    Matrix4 operator+ ( const Matrix4& other ) const;
+    Matrix4 operator- ( const Matrix4& other ) const;
+    Matrix4 operator* ( const Matrix4& other ) const;
     Matrix4 operator* ( T scalar ) const; // matrix = matrix * scalar 
     inline Matrix4 operator/ ( T scalar ) const
         { scalar = 1.0 / scalar; return operator*(scalar); }; 
     
     // vector = matrix * vector
-    Vector3< T > operator* ( const Vector3< T >& vv ) const;
-    Vector4< T > operator* ( const Vector4< T >& vv ) const;
+    Vector3< T > operator* ( const Vector3< T >& other ) const;
+    Vector4< T > operator* ( const Vector4< T >& other ) const;
 
-    Matrix4& operator+= ( const Matrix4& mm );
-    Matrix4& operator-= ( const Matrix4& mm );
-    Matrix4& operator*= ( const Matrix4& mm );
+    Matrix4& operator+= ( const Matrix4& other );
+    Matrix4& operator-= ( const Matrix4& other );
+    Matrix4& operator*= ( const Matrix4& other );
     Matrix4& operator*= ( T scalar ); // matrix = matrix * scalar 
     inline Matrix4& operator/= ( T scalar )
         { scalar = 1.0 / scalar; return operator*=( scalar ); };
@@ -178,9 +178,9 @@ public:
     void preRotateZ( const T angle );
     void scale( const T scale[3] );
     void scale( const T x, const T y, const T z );
-    void scale( const Vector3< T >& scale );
-    void scaleTranslation( const T scale[3] );
-    void scaleTranslation( const Vector3< T >& scale );
+    void scale( const Vector3< T >& scale_ );
+    void scaleTranslation( const T scale_[3] );
+    void scaleTranslation( const Vector3< T >& scale_ );
     void setTranslation( const T x, const T y, const T z );
     void setTranslation( const T trans[3] );
     void setTranslation( const Vector3< T >& trans );
@@ -297,19 +297,19 @@ Matrix4< T >::Matrix4( T v00, T v01, T v02, T v03,
 
 
 template< typename T > 
-Matrix4< T >::Matrix4( const Matrix4& mm )
+Matrix4< T >::Matrix4( const Matrix4& other )
 {
-    memcpy(ml,mm.ml, 16 * sizeof( T ) );
+    memcpy(ml,other.ml, 16 * sizeof( T ) );
 }
 
 
 
 template< typename T > 
 template< typename U > 
-Matrix4< T >::Matrix4( const Matrix4< U >& mm )
+Matrix4< T >::Matrix4( const Matrix4< U >& other )
 {
     for ( size_t i = 0; i < 16; ++i )
-        ml[i] = static_cast< T > ( mm.ml[i] );
+        ml[i] = static_cast< T > ( other.ml[i] );
 }
 
 
@@ -377,9 +377,9 @@ Matrix4< T >::Matrix4( const double* values )
 
 
 template< typename T > 
-const Matrix4< T >& Matrix4< T >::operator= ( const Matrix4< T >& mm )
+const Matrix4< T >& Matrix4< T >::operator= ( const Matrix4< T >& other )
 {
-    memcpy( ml, mm.ml, 16 * sizeof( T ) );
+    memcpy( ml, other.ml, 16 * sizeof( T ) );
     return *this;
 }
 
@@ -387,35 +387,35 @@ const Matrix4< T >& Matrix4< T >::operator= ( const Matrix4< T >& mm )
 
 template< typename T > 
 template< typename U > 
-const Matrix4< T >& Matrix4< T >::operator= ( const Matrix4< U >& mm )
+const Matrix4< T >& Matrix4< T >::operator= ( const Matrix4< U >& other )
 {
-    ml[  0 ] = static_cast< T > ( mm.ml[  0 ] );
-    ml[  1 ] = static_cast< T > ( mm.ml[  1 ] );
-    ml[  2 ] = static_cast< T > ( mm.ml[  2 ] );
-    ml[  3 ] = static_cast< T > ( mm.ml[  3 ] );
-    ml[  4 ] = static_cast< T > ( mm.ml[  4 ] );
-    ml[  5 ] = static_cast< T > ( mm.ml[  5 ] );
-    ml[  6 ] = static_cast< T > ( mm.ml[  6 ] );
-    ml[  7 ] = static_cast< T > ( mm.ml[  7 ] );
-    ml[  8 ] = static_cast< T > ( mm.ml[  8 ] );
-    ml[  9 ] = static_cast< T > ( mm.ml[  9 ] );
-    ml[ 10 ] = static_cast< T > ( mm.ml[ 10 ] );
-    ml[ 11 ] = static_cast< T > ( mm.ml[ 11 ] );
-    ml[ 12 ] = static_cast< T > ( mm.ml[ 12 ] );
-    ml[ 13 ] = static_cast< T > ( mm.ml[ 13 ] );
-    ml[ 14 ] = static_cast< T > ( mm.ml[ 14 ] );
-    ml[ 15 ] = static_cast< T > ( mm.ml[ 15 ] );
+    ml[  0 ] = static_cast< T > ( other.ml[  0 ] );
+    ml[  1 ] = static_cast< T > ( other.ml[  1 ] );
+    ml[  2 ] = static_cast< T > ( other.ml[  2 ] );
+    ml[  3 ] = static_cast< T > ( other.ml[  3 ] );
+    ml[  4 ] = static_cast< T > ( other.ml[  4 ] );
+    ml[  5 ] = static_cast< T > ( other.ml[  5 ] );
+    ml[  6 ] = static_cast< T > ( other.ml[  6 ] );
+    ml[  7 ] = static_cast< T > ( other.ml[  7 ] );
+    ml[  8 ] = static_cast< T > ( other.ml[  8 ] );
+    ml[  9 ] = static_cast< T > ( other.ml[  9 ] );
+    ml[ 10 ] = static_cast< T > ( other.ml[ 10 ] );
+    ml[ 11 ] = static_cast< T > ( other.ml[ 11 ] );
+    ml[ 12 ] = static_cast< T > ( other.ml[ 12 ] );
+    ml[ 13 ] = static_cast< T > ( other.ml[ 13 ] );
+    ml[ 14 ] = static_cast< T > ( other.ml[ 14 ] );
+    ml[ 15 ] = static_cast< T > ( other.ml[ 15 ] );
     return *this;
 }
 
 
 
 template< typename T > 
-bool Matrix4< T >::operator== (const Matrix4< T >& mm) const
+bool Matrix4< T >::operator== (const Matrix4< T >& other) const
 {
     for( size_t i = 0; i < 16; ++i )
     {
-        if( ml[i] != mm.ml[i] )
+        if( ml[i] != other.ml[i] )
             return false;
     }
     return true;
@@ -424,17 +424,17 @@ bool Matrix4< T >::operator== (const Matrix4< T >& mm) const
 
 
 template< typename T > 
-inline bool Matrix4< T >::operator!= (const Matrix4< T >& mm) const
+inline bool Matrix4< T >::operator!= (const Matrix4< T >& other) const
 {
-    return !operator==(mm);
+    return !operator==(other);
 }
 
 
 
 template< typename T > 
-void Matrix4< T >::set( const Matrix4& mm )
+void Matrix4< T >::set( const Matrix4& other )
 {
-    memcpy( ml, mm.ml, 16 * sizeof( T ) );
+    memcpy( ml, other.ml, 16 * sizeof( T ) );
 }
 
 
@@ -549,22 +549,22 @@ void Matrix4< T >::setRow( size_t row, const Vector3< T >& rowvec )
 
 
 template< typename T > 
-Matrix4< T > Matrix4< T >::operator+ (const Matrix4< T >& mm) const
+Matrix4< T > Matrix4< T >::operator+ (const Matrix4< T >& other) const
 {
     Matrix4< T > result;
     for ( size_t i = 0; i < 16; ++i )
-        result.ml[i] = ml[i] + mm.ml[i];
+        result.ml[i] = ml[i] + other.ml[i];
     return result;
 }
 
 
 
 template< typename T > 
-Matrix4< T > Matrix4< T >::operator- (const Matrix4< T >& mm) const
+Matrix4< T > Matrix4< T >::operator- (const Matrix4< T >& other) const
 {
     Matrix4< T > result;
     for( size_t i = 0; i < 16; ++i )
-        result.ml[i] = ml[i] - mm.ml[i];
+        result.ml[i] = ml[i] - other.ml[i];
     return result;
 }
 
@@ -612,49 +612,49 @@ Matrix4< T > Matrix4< T >::operator* ( T scalar ) const
 
 
 template< typename T > 
-Matrix4< T >& Matrix4< T >::operator+= (const Matrix4< T >& mm) 
+Matrix4< T >& Matrix4< T >::operator+= (const Matrix4< T >& other) 
 {
     for ( size_t i = 0; i < 16; ++i )
-        ml[i]  += mm.ml[i];
+        ml[i]  += other.ml[i];
     return *this;
 }
 
 
 
 template< typename T > 
-Matrix4< T >& Matrix4< T >::operator-= ( const Matrix4& mm )
+Matrix4< T >& Matrix4< T >::operator-= ( const Matrix4& other )
 {
     for ( size_t i = 0; i < 16; ++i )
-        ml[i]  -= mm.ml[i];
+        ml[i]  -= other.ml[i];
     return *this;
 }
 
 
 
 template< typename T > 
-Matrix4< T >& Matrix4< T >::operator*= ( const Matrix4& o ) 
+Matrix4< T >& Matrix4< T >::operator*= ( const Matrix4& other ) 
 {
     Matrix4< T > r;
 
-    r.m00 = m00*o.m00 + m01*o.m10 + m02*o.m20 + m03*o.m30;
-    r.m10 = m10*o.m00 + m11*o.m10 + m12*o.m20 + m13*o.m30;
-    r.m20 = m20*o.m00 + m21*o.m10 + m22*o.m20 + m23*o.m30;
-    r.m30 = m30*o.m00 + m31*o.m10 + m32*o.m20 + m33*o.m30;
+    r.m00 = m00*other.m00 + m01*other.m10 + m02*other.m20 + m03*other.m30;
+    r.m10 = m10*other.m00 + m11*other.m10 + m12*other.m20 + m13*other.m30;
+    r.m20 = m20*other.m00 + m21*other.m10 + m22*other.m20 + m23*other.m30;
+    r.m30 = m30*other.m00 + m31*other.m10 + m32*other.m20 + m33*other.m30;
 
-    r.m01 = m00*o.m01 + m01*o.m11 + m02*o.m21 + m03*o.m31;
-    r.m11 = m10*o.m01 + m11*o.m11 + m12*o.m21 + m13*o.m31;
-    r.m21 = m20*o.m01 + m21*o.m11 + m22*o.m21 + m23*o.m31;
-    r.m31 = m30*o.m01 + m31*o.m11 + m32*o.m21 + m33*o.m31;
+    r.m01 = m00*other.m01 + m01*other.m11 + m02*other.m21 + m03*other.m31;
+    r.m11 = m10*other.m01 + m11*other.m11 + m12*other.m21 + m13*other.m31;
+    r.m21 = m20*other.m01 + m21*other.m11 + m22*other.m21 + m23*other.m31;
+    r.m31 = m30*other.m01 + m31*other.m11 + m32*other.m21 + m33*other.m31;
 
-    r.m02 = m00*o.m02 + m01*o.m12 + m02*o.m22 + m03*o.m32;
-    r.m12 = m10*o.m02 + m11*o.m12 + m12*o.m22 + m13*o.m32;
-    r.m22 = m20*o.m02 + m21*o.m12 + m22*o.m22 + m23*o.m32;
-    r.m32 = m30*o.m02 + m31*o.m12 + m32*o.m22 + m33*o.m32;
+    r.m02 = m00*other.m02 + m01*other.m12 + m02*other.m22 + m03*other.m32;
+    r.m12 = m10*other.m02 + m11*other.m12 + m12*other.m22 + m13*other.m32;
+    r.m22 = m20*other.m02 + m21*other.m12 + m22*other.m22 + m23*other.m32;
+    r.m32 = m30*other.m02 + m31*other.m12 + m32*other.m22 + m33*other.m32;
 
-    r.m03 = m00*o.m03 + m01*o.m13 + m02*o.m23 + m03*o.m33;
-    r.m13 = m10*o.m03 + m11*o.m13 + m12*o.m23 + m13*o.m33;
-    r.m23 = m20*o.m03 + m21*o.m13 + m22*o.m23 + m23*o.m33;
-    r.m33 = m30*o.m03 + m31*o.m13 + m32*o.m23 + m33*o.m33;
+    r.m03 = m00*other.m03 + m01*other.m13 + m02*other.m23 + m03*other.m33;
+    r.m13 = m10*other.m03 + m11*other.m13 + m12*other.m23 + m13*other.m33;
+    r.m23 = m20*other.m03 + m21*other.m13 + m22*other.m23 + m23*other.m33;
+    r.m33 = m30*other.m03 + m31*other.m13 + m32*other.m23 + m33*other.m33;
 
     *this = r;
     return *this;
@@ -674,23 +674,23 @@ Matrix4< T >& Matrix4< T >::operator*= ( T scalar )
 
 
 template< typename T > 
-Vector4< T > Matrix4< T >::operator* (const Vector4< T >& vv) const
+Vector4< T > Matrix4< T >::operator* (const Vector4< T >& other) const
 {
-	return Vector4< T >( vv[0] * m00 + vv[1] * m01 + vv[2] * m02 + vv[3] * m03,
-                         vv[0] * m10 + vv[1] * m11 + vv[2] * m12 + vv[3] * m13,
-                         vv[0] * m20 + vv[1] * m21 + vv[2] * m22 + vv[3] * m23,
-                         vv[0] * m30 + vv[1] * m31 + vv[2] * m32 + vv[3] * m33);
+	return Vector4< T >( other[0] * m00 + other[1] * m01 + other[2] * m02 + other[3] * m03,
+                         other[0] * m10 + other[1] * m11 + other[2] * m12 + other[3] * m13,
+                         other[0] * m20 + other[1] * m21 + other[2] * m22 + other[3] * m23,
+                         other[0] * m30 + other[1] * m31 + other[2] * m32 + other[3] * m33);
 }
 
 
 
 template< typename T > 
-Vector3< T > Matrix4< T >::operator* (const Vector3< T >& vv) const
+Vector3< T > Matrix4< T >::operator* (const Vector3< T >& other) const
 {
-	const Vector4< T > result( vv[0] * m00 + vv[1] * m01 + vv[2] * m02 + m03,
-                               vv[0] * m10 + vv[1] * m11 + vv[2] * m12 + m13,
-                               vv[0] * m20 + vv[1] * m21 + vv[2] * m22 + m23,
-                               vv[0] * m30 + vv[1] * m31 + vv[2] * m32 + m33 );
+	const Vector4< T > result( other[0] * m00 + other[1] * m01 + other[2] * m02 + m03,
+                               other[0] * m10 + other[1] * m11 + other[2] * m12 + m13,
+                               other[0] * m20 + other[1] * m21 + other[2] * m22 + m23,
+                               other[0] * m30 + other[1] * m31 + other[2] * m32 + m33 );
 	return Vector3<T>( result );
 }
 
@@ -1244,40 +1244,40 @@ void Matrix4<T>::scale( const T xScale, const T yScale, const T zScale )
 
 
 template< typename T >
-void Matrix4<T>::scale( const Vector3< T >& s )
+void Matrix4<T>::scale( const Vector3< T >& scale_ )
 {
-    ml[0]  *= s[0];
-    ml[1]  *= s[0];
-    ml[2]  *= s[0];
-    ml[3]  *= s[0];
-    ml[4]  *= s[1];
-    ml[5]  *= s[1];
-    ml[6]  *= s[1];
-    ml[7]  *= s[1];
-    ml[8]  *= s[2];
-    ml[9]  *= s[2];
-    ml[10] *= s[2];
-    ml[11] *= s[2];
+    ml[0]  *= scale_[0];
+    ml[1]  *= scale_[0];
+    ml[2]  *= scale_[0];
+    ml[3]  *= scale_[0];
+    ml[4]  *= scale_[1];
+    ml[5]  *= scale_[1];
+    ml[6]  *= scale_[1];
+    ml[7]  *= scale_[1];
+    ml[8]  *= scale_[2];
+    ml[9]  *= scale_[2];
+    ml[10] *= scale_[2];
+    ml[11] *= scale_[2];
 }
 
 
 
 template< typename T >
-void Matrix4<T>::scaleTranslation( const T s[3] )
+void Matrix4<T>::scaleTranslation( const T scale_[3] )
 {
-    ml[12] *= s[0];
-    ml[13] *= s[1];
-    ml[14] *= s[2];
+    ml[12] *= scale_[0];
+    ml[13] *= scale_[1];
+    ml[14] *= scale_[2];
 }
 
 
 
 template< typename T >
-void Matrix4<T>::scaleTranslation( const Vector3< T >& s )
+void Matrix4<T>::scaleTranslation( const Vector3< T >& scale_ )
 {
-    ml[12] *= s[0];
-    ml[13] *= s[1];
-    ml[14] *= s[2];
+    ml[12] *= scale_[0];
+    ml[13] *= scale_[1];
+    ml[14] *= scale_[2];
 }
 
 

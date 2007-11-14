@@ -58,7 +58,7 @@ public:
     };
         
     Matrix3();
-    Matrix3( const Matrix3& mm );
+    Matrix3( const Matrix3& other );
     Matrix3( T v00, T v01, T v02, T v10, T v11, T v12, T v20, T v21, T v22 );
     Matrix3( const Vector3<T>& v0, const Vector3<T>& v1, 
              const Vector3<T>& v2, bool columnVectors = false );
@@ -69,24 +69,24 @@ public:
     
     //type conversion ctor
     template< typename U >
-    Matrix3( const Matrix3< U >& mm );
+    Matrix3( const Matrix3< U >& other );
  
-    inline const Matrix3& operator= ( const Matrix3& mm );
+    inline const Matrix3& operator= ( const Matrix3& other );
     inline const Matrix3& operator= ( const T r );
     template< typename U >
-    inline const Matrix3& operator= ( const Matrix3< U >& mm );
+    inline const Matrix3& operator= ( const Matrix3< U >& other );
     template< typename U >
-    inline const Matrix3& operator= ( const Matrix4< U >& mm );
+    inline const Matrix3& operator= ( const Matrix4< U >& other );
     
-    inline bool operator== (const Matrix3& mm) const;
-    inline bool operator!= (const Matrix3& mm) const;
+    inline bool operator== (const Matrix3& other) const;
+    inline bool operator!= (const Matrix3& other) const;
 
-    void set( const Matrix3& mm );
+    void set( const Matrix3& other );
     // dangerous, but implemented to allow easy conversion between 
     // Matrix< float > and Matrix< double >
     //the pointer 'values must be a valid 9 component c array of the resp. type
-    void set( const float* mm );
-    void set( const double* mm );
+    void set( const float* other );
+    void set( const double* other );
     void set( T v00, T v01, T v02, T v10, T v11, T v12, T v20, T v21, T v22 );
     
     inline Vector3< T > getColumn( const size_t col ) const; 
@@ -99,21 +99,21 @@ public:
                             const T value );
 
     // arithmetic operations
-    Matrix3 operator+ ( const Matrix3& mm ) const;
-    Matrix3 operator- ( const Matrix3& mm ) const;
+    Matrix3 operator+ ( const Matrix3& other ) const;
+    Matrix3 operator- ( const Matrix3& other ) const;
 	// be aware that this is openGL standard, so if using mathematical formulas, a * b should
 	// be written as b * a !! (this is NOT the same in general, but is due to the equivalency
 	// of premultiplication of row-major and postmultiplication of column-major  matrices)
-    Matrix3 operator* ( const Matrix3& mm ) const;
+    Matrix3 operator* ( const Matrix3& other ) const;
     Matrix3 operator* ( const T scalar ) const; // matrix = matrix * scalar 
 
-    Matrix3& operator+= ( const Matrix3& mm );
-    Matrix3& operator-= ( const Matrix3& mm );
-    Matrix3& operator*= ( const Matrix3& mm );
+    Matrix3& operator+= ( const Matrix3& other );
+    Matrix3& operator-= ( const Matrix3& other );
+    Matrix3& operator*= ( const Matrix3& other );
     Matrix3& operator*= ( const T scalar ); // matrix = matrix * scalar 
 
     // vector = matrix * vector
-    Vector3< T > operator* ( const Vector3< T >& vv ) const;
+    Vector3< T > operator* ( const Vector3< T >& other ) const;
 
     Matrix3 getTransposed() const;
     
@@ -191,9 +191,9 @@ Matrix3< T >::Matrix3()
 
 
 template< typename T > 
-Matrix3< T >::Matrix3( const Matrix3< T >& mm )
+Matrix3< T >::Matrix3( const Matrix3< T >& other )
 {
-    memcpy( m, mm.m, 9 * sizeof( T ));
+    memcpy( m, other.m, 9 * sizeof( T ));
 }
 
 
@@ -218,16 +218,16 @@ Matrix3< T >::Matrix3(
 
 template< typename T > 
 template< typename U > 
-Matrix3< T >::Matrix3( const Matrix3< U >& mm )
-    : m00( static_cast< T > ( mm.m00 ) )
-    , m10( static_cast< T > ( mm.m10 ) )
-    , m20( static_cast< T > ( mm.m20 ) )
-    , m01( static_cast< T > ( mm.m01 ) )
-    , m11( static_cast< T > ( mm.m11 ) )
-    , m21( static_cast< T > ( mm.m21 ) )
-    , m02( static_cast< T > ( mm.m02 ) )
-    , m12( static_cast< T > ( mm.m12 ) )
-    , m22( static_cast< T > ( mm.m22 ) )
+Matrix3< T >::Matrix3( const Matrix3< U >& other )
+    : m00( static_cast< T > ( other.m00 ) )
+    , m10( static_cast< T > ( other.m10 ) )
+    , m20( static_cast< T > ( other.m20 ) )
+    , m01( static_cast< T > ( other.m01 ) )
+    , m11( static_cast< T > ( other.m11 ) )
+    , m21( static_cast< T > ( other.m21 ) )
+    , m02( static_cast< T > ( other.m02 ) )
+    , m12( static_cast< T > ( other.m12 ) )
+    , m22( static_cast< T > ( other.m22 ) )
 {}
 
 
@@ -298,9 +298,9 @@ const Matrix3< T >& Matrix3< T >::operator= ( const T r )
 
 
 template< typename T > 
-const Matrix3< T >& Matrix3< T >::operator= ( const Matrix3< T >& mm )
+const Matrix3< T >& Matrix3< T >::operator= ( const Matrix3< T >& other )
 {
-    memcpy(ml,mm.ml,9*sizeof(T));
+    memcpy(ml,other.ml,9*sizeof(T));
     return *this;
 }
 
@@ -308,44 +308,44 @@ const Matrix3< T >& Matrix3< T >::operator= ( const Matrix3< T >& mm )
 
 template< typename T > 
 template< typename U > 
-const Matrix3< T >& Matrix3< T >::operator= ( const Matrix3< U >& mm )
+const Matrix3< T >& Matrix3< T >::operator= ( const Matrix3< U >& other )
 {
-    m00 = static_cast< T > ( mm.m00 );
-    m10 = static_cast< T > ( mm.m10 );
-    m20 = static_cast< T > ( mm.m20 );
-    m01 = static_cast< T > ( mm.m01 );
-    m11 = static_cast< T > ( mm.m11 );
-    m21 = static_cast< T > ( mm.m21 );
-    m02 = static_cast< T > ( mm.m02 );
-    m12 = static_cast< T > ( mm.m12 );
-    m22 = static_cast< T > ( mm.m22 );
+    m00 = static_cast< T > ( other.m00 );
+    m10 = static_cast< T > ( other.m10 );
+    m20 = static_cast< T > ( other.m20 );
+    m01 = static_cast< T > ( other.m01 );
+    m11 = static_cast< T > ( other.m11 );
+    m21 = static_cast< T > ( other.m21 );
+    m02 = static_cast< T > ( other.m02 );
+    m12 = static_cast< T > ( other.m12 );
+    m22 = static_cast< T > ( other.m22 );
     return *this;
 }
 
 
 template< typename T > 
 template< typename U > 
-const Matrix3< T >& Matrix3< T >::operator= ( const Matrix4< U >& mm )
+const Matrix3< T >& Matrix3< T >::operator= ( const Matrix4< U >& other )
 {
-    m00 = static_cast< T > ( mm.m00 );
-    m10 = static_cast< T > ( mm.m10 );
-    m20 = static_cast< T > ( mm.m20 );
-    m01 = static_cast< T > ( mm.m01 );
-    m11 = static_cast< T > ( mm.m11 );
-    m21 = static_cast< T > ( mm.m21 );
-    m02 = static_cast< T > ( mm.m02 );
-    m12 = static_cast< T > ( mm.m12 );
-    m22 = static_cast< T > ( mm.m22 );
+    m00 = static_cast< T > ( other.m00 );
+    m10 = static_cast< T > ( other.m10 );
+    m20 = static_cast< T > ( other.m20 );
+    m01 = static_cast< T > ( other.m01 );
+    m11 = static_cast< T > ( other.m11 );
+    m21 = static_cast< T > ( other.m21 );
+    m02 = static_cast< T > ( other.m02 );
+    m12 = static_cast< T > ( other.m12 );
+    m22 = static_cast< T > ( other.m22 );
     return *this;
 }
 
 
 template< typename T > 
-bool Matrix3< T >::operator== (const Matrix3< T >& mm) const
+bool Matrix3< T >::operator== (const Matrix3< T >& other) const
 {
     for ( size_t i = 0; i < 9; ++i )
     {
-        if( ml[i] != mm.ml[i] )
+        if( ml[i] != other.ml[i] )
             return false;
     }
     return true;
@@ -354,37 +354,37 @@ bool Matrix3< T >::operator== (const Matrix3< T >& mm) const
 
 
 template< typename T > 
-inline bool Matrix3< T >::operator!= (const Matrix3< T >& mm) const
+inline bool Matrix3< T >::operator!= (const Matrix3< T >& other) const
 {
-    return !operator==(mm);
+    return !operator==( other);
 }
 
 
 
 template< typename T > 
-void Matrix3< T >::set( const Matrix3& mm )
+void Matrix3< T >::set( const Matrix3& other )
 {
-    memcpy( ml, mm.ml, 9 * sizeof( T ) );
+    memcpy( ml, other.ml, 9 * sizeof( T ) );
 }
 
 
 
 template< typename T > 
-void Matrix3< T >::set( const float* mm )
+void Matrix3< T >::set( const float* other )
 {
-    assert( mm && "Matrix3: Nullpointer argument as source for initialisation!" );
+    assert( other && "Matrix3: Nullpointer argument as source for initialisation!" );
     for ( size_t i = 0; i < 9; ++i )
-        ml[i] = static_cast< T > ( mm[i] );
+        ml[i] = static_cast< T > ( other[i] );
 }
 
 
 
 template< typename T > 
-void Matrix3< T >::set( const double* mm )
+void Matrix3< T >::set( const double* other )
 {
-    assert( mm && "Matrix3: Nullpointer argument as source for initialisation!" );
+    assert( other && "Matrix3: Nullpointer argument as source for initialisation!" );
     for ( size_t i = 0; i < 9; ++i )
-        ml[i] = static_cast< T > ( mm[i] );
+        ml[i] = static_cast< T > ( other[i] );
 }
 
 
@@ -463,22 +463,22 @@ inline void Matrix3< T >::setElement( const size_t row, const size_t col, const 
 
 
 template< typename T > 
-Matrix3< T > Matrix3< T >::operator+ ( const Matrix3< T >& mm ) const
+Matrix3< T > Matrix3< T >::operator+ ( const Matrix3< T >& other ) const
 {
     Matrix3< T > result;
     for ( size_t i = 0; i < 9; ++i ) 
-        result.ml[i] = ml[i] + mm.ml[i];
+        result.ml[i] = ml[i] + other.ml[i];
     return result;
 }
 
 
 
 template< typename T > 
-Matrix3< T > Matrix3< T >::operator- ( const Matrix3< T >& mm ) const
+Matrix3< T > Matrix3< T >::operator- ( const Matrix3< T >& other ) const
 {
     Matrix3< T > result;
     for ( size_t i = 0; i < 9; ++i ) 
-        result.ml[i] = ml[i] - mm.ml[i];
+        result.ml[i] = ml[i] - other.ml[i];
     return result;
 }
 
@@ -518,20 +518,20 @@ Matrix3< T > Matrix3< T >::operator* ( const T scalar ) const
 
 
 template< typename T > 
-Matrix3< T >& Matrix3< T >::operator+= ( const Matrix3& mm )
+Matrix3< T >& Matrix3< T >::operator+= ( const Matrix3& other )
 {
     for ( size_t i = 0; i < 9; ++i )
-        ml[i] += mm.ml[i];
+        ml[i] += other.ml[i];
     return *this;
 }
 
 
 
 template< typename T > 
-Matrix3< T >& Matrix3< T >::operator-= ( const Matrix3& mm )
+Matrix3< T >& Matrix3< T >::operator-= ( const Matrix3& other )
 {
     for ( size_t i = 0; i < 9; ++i )
-        ml[i] -= mm.ml[i];
+        ml[i] -= other.ml[i];
     return *this;
 }
 
@@ -571,11 +571,11 @@ Matrix3< T >& Matrix3< T >::operator*= ( T scalar ) // matrix = matrix * scalar
 
 
 template< typename T > 
-Vector3< T > Matrix3< T >::operator* ( const Vector3< T >& vv ) const
+Vector3< T > Matrix3< T >::operator* ( const Vector3< T >& other ) const
 {  
-    return Vector3< T >( m00 * vv[0] + m01 * vv[1] + m02 * vv[2],
-                         m10 * vv[0] + m11 * vv[1] + m12 * vv[2],
-                         m20 * vv[0] + m21 * vv[1] + m22 * vv[2] );
+    return Vector3< T >( m00 * other[0] + m01 * other[1] + m02 * other[2],
+                         m10 * other[0] + m11 * other[1] + m12 * other[2],
+                         m20 * other[0] + m21 * other[1] + m22 * other[2] );
 }
 
 

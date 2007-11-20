@@ -27,7 +27,8 @@
 // - declaration -
 namespace vmml
 {
-template< typename T > class Vector3;
+
+#include <vmmlib/vector3.h>
 
 template< typename T > 
 class Vector4
@@ -85,6 +86,8 @@ public:
     void set( const float* aa );
     void set( const double* aa );
 
+	void set( const Vector3< T >& xyz_, const T& w_ );
+
     const Vector4& operator=( T aa ); 
     const Vector4& operator=( const Vector4& aa ); 
     template< typename U >
@@ -99,10 +102,6 @@ public:
     T normalize();
     // deprecated
     T normalise();
-    
-    // this normalizes the vector3 consisting of the first three 
-    // coordinates, and leaves the fourth as is.
-    void normalizePlane();
     
     /** Return normalized Vector3, using only xyz coordinates */
 	Vector3 <T> getNormalizedVector3() const;
@@ -146,21 +145,25 @@ public:
     bool operator!=(const Vector4 &aa ) const;
     bool isAkin( const Vector4& a, 
                  const T& delta = std::numeric_limits<T>::epsilon() );
-
-
-    // component-component compare
-    // returns a size_t with a bitmask of the component comparison results
-    // -> if this->xy[k] is smaller a[k], the kth bit will be enabled;
-    const size_t smaller( const Vector4& a ) const;
-    const size_t smaller( const Vector4& a, const size_t axis ) const;
-    // -> if this->xy[k] is greater a[k], the kth bit will be enabled;
-    const size_t greater( const Vector4& a ) const;
-    const size_t greater( const Vector4& a, const size_t axis ) const;
-    
+   
     void invert(); 
 
     T getMinComponent();
     T getMaxComponent();
+	
+	// sphere functions
+	inline Vector3< T > projectPointOntoSphere( const Vector3< T >& point ) const;
+	// returns a negative distance if the point lies in the sphere
+	inline T getDistanceToSphere( const Vector3< T >& point ) const;
+
+	// plane functions
+	inline Vector3< T > projectPointOntoPlane( const Vector3< T >& point ) const;
+    // this normalizes the vector3 consisting of the first three 
+    // coordinates, and leaves the fourth as is.
+	inline T getDistanceToPlane( const Vector3< T >& point ) const;
+    void normalizePlane();
+    
+
 
     friend std::ostream& operator << ( std::ostream& os, const Vector4& v )
     {
@@ -176,6 +179,15 @@ public:
         return os;
     };
     
+    // component-component compare
+    // returns a size_t with a bitmask of the component comparison results
+    // -> if this->xy[k] is smaller a[k], the kth bit will be enabled;
+    const size_t smaller( const Vector4& a ) const;
+    const size_t smaller( const Vector4& a, const size_t axis ) const;
+    // -> if this->xy[k] is greater a[k], the kth bit will be enabled;
+    const size_t greater( const Vector4& a ) const;
+    const size_t greater( const Vector4& a, const size_t axis ) const;
+
     // component iterators
     typedef T*                      iterator;
     typedef const T*                const_iterator;
@@ -204,7 +216,6 @@ typedef Vector4< unsigned char >    vec4ub;
 
 // - implementation - //
 
-#include <vmmlib/vector3.h>
 #include <vmmlib/matrix4.h>
 
 namespace vmml
@@ -324,6 +335,18 @@ void Vector4< T >::set( const double* values )
     y = static_cast< T > ( values[1] );
     z = static_cast< T > ( values[2] );
     w = static_cast< T > ( values[3] );
+}
+
+
+
+template < typename T > 
+void
+Vector4< T >::set( const Vector3< T >& xyz_, const T& w_ )
+{
+	x = xyz_.x;
+	y = xyz_.y;
+	z = xyz_.z;
+	w = w_;
 }
 
 
@@ -764,7 +787,47 @@ T Vector4< T >::getMinComponent()
     m = std::min( m, z); 
     m = std::min( m, w);
     return m; 
-} 
+}
+
+
+
+template < typename T > 
+inline Vector3< T >
+Vector4< T >::projectPointOntoSphere( const Vector3< T >& point ) const
+{
+	const Vector3< T >& center_ = *reinterpret_cast< Vector3< T >* >( &x );
+	return ( point - center_ ).normalize() * radius + center_; 
+}
+
+
+
+template < typename T > 
+inline T
+Vector4< T >::getDistanceToSphere( const Vector3< T >& point ) const
+{
+	const Vector3< T >& center_ = *reinterpret_cast< Vector3< T >* >( &x );
+	return ( point - center_ ).length() - radius;
+}
+
+
+
+template < typename T > 
+inline Vector3< T >
+Vector4< T >::projectPointOntoPlane( const Vector3< T >& point ) const
+{
+	const Vector3< T >& normal_ = *reinterpret_cast< Vector3< T >* >( &x );
+	return point - getDistanceToPlane( point ) * normal_;
+}
+
+
+
+template < typename T > 
+inline T
+Vector4< T >::getDistanceToPlane( const Vector3< T >& point ) const
+{
+	const Vector3< T >& normal_ = *reinterpret_cast< Vector3< T >* >( &x );
+    return normal_.dot( point ) + distance;
+}
 
 
 } // namespace vmml

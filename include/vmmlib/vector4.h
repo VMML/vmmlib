@@ -151,6 +151,11 @@ public:
     T getMinComponent();
     T getMaxComponent();
 	
+	// uses the very bad cstdlib (rand()) rng. do NOT use for anything that needs
+	// real random numbers. also, srand() is not called, this is the duty of the 
+	// user. all random numbers are normalized to [0,1].
+	void randomize();
+
 	// sphere functions
 	inline Vector3< T > projectPointOntoSphere( const Vector3< T >& point ) const;
 	// returns a negative distance if the point lies in the sphere
@@ -828,6 +833,19 @@ Vector4< T >::getDistanceToPlane( const Vector3< T >& point ) const
 	const Vector3< T >& normal_ = *reinterpret_cast< Vector3< T >* >( &x );
     return normal_.dot( point ) + distance;
 }
+
+
+
+template < typename T > 
+void
+Vector4< T >::randomize()
+{
+	x = (double) rand() / RAND_MAX;
+	y = (double) rand() / RAND_MAX;
+	z = (double) rand() / RAND_MAX;
+	w = (double) rand() / RAND_MAX;
+}
+
 
 
 } // namespace vmml

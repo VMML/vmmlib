@@ -152,6 +152,11 @@ public:
 
     T getMinComponent();
     T getMaxComponent();
+	
+	// uses the very bad cstdlib (rand()) rng. do NOT use for anything that needs
+	// real random numbers. also, srand() is not called, this is the duty of the 
+	// user. all random numbers are normalized to [0,1].
+	void randomize();
 
     friend std::ostream& operator << ( std::ostream& os, const Vector3& v )
     {
@@ -877,6 +882,18 @@ T Vector3< T >::getMinComponent()
     m = std::min( m, z); 
     return m; 
 } 
+
+
+
+template < typename T > 
+void
+Vector3< T >::randomize()
+{
+	x = (double) rand() / RAND_MAX;
+	y = (double) rand() / RAND_MAX;
+	z = (double) rand() / RAND_MAX;
+}
+
 
 
 

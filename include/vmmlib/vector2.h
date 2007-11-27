@@ -119,7 +119,12 @@ public:
     T getMaxComponent() const;
     T getArea() const;
 
-    friend std::ostream& operator << ( std::ostream& os, const Vector2& v )
+	// uses the very bad cstdlib (rand()) rng. do NOT use for anything that needs
+	// real random numbers. also, srand() is not called, this is the duty of the 
+	// user. all random numbers are normalized to [0,1].
+	void randomize();
+
+	friend std::ostream& operator << ( std::ostream& os, const Vector2& v )
     {
         const std::ios::fmtflags flags = os.flags();
         const int                prec  = os.precision();
@@ -631,6 +636,14 @@ T Vector2< T >::getArea() const
     return x * y; 
 }
 
+
+template< typename T >
+void
+Vector2< T >::randomize()
+{
+	x = (double) rand() / RAND_MAX;
+	y = (double) rand() / RAND_MAX;
+}
  
 } //namespace vmml
 	

@@ -103,6 +103,8 @@ public:
     // deprecated
     T normalise();
     
+    Vector4 getNormalized() const;
+    
     /** Return normalized Vector3, using only xyz coordinates */
 	Vector3 <T> getNormalizedVector3() const;
 
@@ -462,6 +464,16 @@ T Vector4< T >::normalize()
 
 
 
+template< typename T>
+Vector4< T > Vector4< T >::getNormalized() const
+{
+    Vector4< T > n( *this );
+    n.normalize();
+    return n;
+}
+
+
+
 template < typename T > 
 void Vector4< T >::normalizePlane()
 { 
@@ -800,8 +812,8 @@ template < typename T >
 inline Vector3< T >
 Vector4< T >::projectPointOntoSphere( const Vector3< T >& point ) const
 {
-	const Vector3< T >& center_ = *reinterpret_cast< Vector3< T >* >( &x );
-	return ( point - center_ ).normalize() * radius + center_; 
+	const Vector3< T >& center_ = *reinterpret_cast< const Vector3< T >* >( &x );
+	return center_ + ( point - center_ ).normalize() * radius; 
 }
 
 
@@ -820,8 +832,8 @@ template < typename T >
 inline Vector3< T >
 Vector4< T >::projectPointOntoPlane( const Vector3< T >& point ) const
 {
-	const Vector3< T >& normal_ = *reinterpret_cast< Vector3< T >* >( &x );
-	return point - getDistanceToPlane( point ) * normal_;
+	const Vector3< T >& normal_ = *reinterpret_cast< const Vector3< T >* >( &x );
+	return point - ( normal_ * getDistanceToPlane( point ) );
 }
 
 
@@ -830,7 +842,7 @@ template < typename T >
 inline T
 Vector4< T >::getDistanceToPlane( const Vector3< T >& point ) const
 {
-	const Vector3< T >& normal_ = *reinterpret_cast< Vector3< T >* >( &x );
+	const Vector3< T >& normal_ = *reinterpret_cast< const Vector3< T >* >( &x );
     return normal_.dot( point ) + distance;
 }
 

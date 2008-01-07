@@ -126,11 +126,15 @@ public:
     T distance( const Vector3& other ) const;
     T distanceSquared( const Vector3& other ) const;
 
+    // normalizes *this
     T normalize();
     static T normalize( float* source );
     // deprecated
     T normalise();
     static T normalise( float* source );
+    
+    // returns a normalized copy of *this
+    Vector3 getNormalized() const;
 
     void scale( T scale_factor );
 
@@ -467,6 +471,16 @@ T  Vector3< T >::normalize( float* source )
     source[1] /= l;
     source[2] /= l;
     return l;
+}
+
+
+
+template< typename T >
+Vector3< T > Vector3< T >::getNormalized() const
+{
+    Vector3< T > n( *this );
+    n.normalize();
+    return n;
 }
 
 

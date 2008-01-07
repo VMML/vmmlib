@@ -106,11 +106,15 @@ public:
     T length() const;
     T lengthSquared() const;
 
+    // normalizes *this
     T normalize();
     T normalize( const float* source );
     // deprecated
     T normalise();
     T normalise( const float* source );
+    
+    // returns a normalized copy of *this
+    Vector2 getNormalized() const;
     
     void scale( T scale_factor );
     void invert();
@@ -375,6 +379,16 @@ T  Vector2< T >::normalize( const float* source )
     source[0] /= l;
     source[1] /= l;
     return l;
+}
+
+
+
+template< typename T >
+Vector2< T > Vector2< T >::getNormalized() const
+{
+    Vector2< T > n( *this );
+    n.normalize();
+    return n;
 }
 
 

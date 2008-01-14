@@ -163,6 +163,10 @@ public:
 	// returns a negative distance if the point lies in the sphere
 	inline T getDistanceToSphere( const Vector3< T >& point ) const;
 
+    inline Vector3< T >& getSphereCenter();
+    inline const Vector3< T >& getSphereCenter() const;
+    
+
 	// plane functions
 	inline Vector3< T > projectPointOntoPlane( const Vector3< T >& point ) const;
     // this normalizes the vector3 consisting of the first three 
@@ -822,8 +826,25 @@ template < typename T >
 inline T
 Vector4< T >::getDistanceToSphere( const Vector3< T >& point ) const
 {
-	const Vector3< T >& center_ = *reinterpret_cast< Vector3< T >* >( &x );
+	const Vector3< T >& center_ = *reinterpret_cast< const Vector3< T >* >( &x );
 	return ( point - center_ ).length() - radius;
+}
+
+
+template < typename T > 
+inline Vector3< T >&
+Vector4< T >::getSphereCenter()
+{
+    return reinterpret_cast< Vector3< T >& >( x );
+}
+
+
+
+template < typename T > 
+inline const Vector3< T >&
+Vector4< T >::getSphereCenter() const
+{
+    return reinterpret_cast< const Vector3< T >& >( x );
 }
 
 

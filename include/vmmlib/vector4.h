@@ -24,11 +24,12 @@
 #include <algorithm>
 #include <cassert>
 
+#include <vmmlib/vector3.h>
+
 // - declaration -
+
 namespace vmml
 {
-
-#include <vmmlib/vector3.h>
 
 template< typename T > 
 class Vector4
@@ -101,7 +102,7 @@ public:
 
     T normalize();
     // deprecated
-    T normalise();
+    inline T normalise();
     
     Vector4 getNormalized() const;
     
@@ -417,13 +418,13 @@ const T& Vector4< T >::operator[]( size_t index ) const
 template < typename T > 
 T  Vector4< T >::length() const 
 { 
-    return sqrt( lengthSquared( )); 
+    return sqrt( lengthSquared() ); 
 } 
 
 template <> 
 inline float Vector4< float >::length() const 
 { 
-    return sqrtf( lengthSquared( )); 
+    return sqrtf( lengthSquared() ); 
 } 
 
 
@@ -439,15 +440,7 @@ T  Vector4< T >::lengthSquared() const
 template < typename T > 
 T Vector4< T >::normalise()
 { 
-    const T l = length(); 
-    if ( l == 0 ) 
-        return 0; 
-
-    x /= l; 
-    y /= l; 
-    z /= l; 
-    w /= l;
-    return l; 
+	return normalize();
 } 
 
 
@@ -459,10 +452,11 @@ T Vector4< T >::normalize()
     if ( l == 0 ) 
         return 0; 
 
-    x /= l; 
-    y /= l; 
-    z /= l; 
-    w /= l;
+	const T ll = 1.0 / l;
+    x *= ll; 
+    y *= ll; 
+    z *= ll; 
+    w *= ll;
     return l; 
 } 
 
@@ -482,28 +476,33 @@ template < typename T >
 void Vector4< T >::normalizePlane()
 { 
     const T l = sqrt( x * x + y * y + z * z );
-    x /= l;
-    y /= l;
-    z /= l;
-    w /= l;
+    const T il = 1.0 / l;
+    x *= il;
+    y *= il;
+    z *= il;
+    w *= il;
 } 
+
 
 template <> 
 inline void Vector4< float >::normalizePlane()
 { 
     const float l = sqrtf( x * x + y * y + z * z );
-    x /= l;
-    y /= l;
-    z /= l;
-    w /= l;
+    const float il = 1.0f / l;
+    x *= il;
+    y *= il;
+    z *= il;
+    w *= il;
 } 
+
 
 template < typename T > 
 Vector3< T > 
 Vector4< T >::getNormalizedVector3() const
 {
-    T len = sqrt( x * x + y * y + z * z );
-	return Vector3<T>( x/len, y/len, z/len );
+    const T len = sqrt( x * x + y * y + z * z );
+	const T ilen = 1.0 / len;
+    return Vector3<T>( x * ilen, y * ilen, z * ilen );
 }
 
 

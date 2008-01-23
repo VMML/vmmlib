@@ -130,8 +130,8 @@ public:
     T normalize();
     static T normalize( float* source );
     // deprecated
-    T normalise();
-    static T normalise( float* source );
+    inline T normalise();
+    inline static T normalise( float* source );
     
     // returns a normalized copy of *this
     Vector3 getNormalized() const;
@@ -416,13 +416,7 @@ Vector3< T >::distanceSquared( const Vector3& other ) const
 template < typename T > 
 T  Vector3< T >::normalise()
 { 
-    const T l = length(); 
-    if ( l == 0 ) 
-        return 0; 
-    x /= l; 
-    y /= l; 
-    z /= l; 
-    return l; 
+    return normalize(); 
 } 
 
 
@@ -431,15 +425,7 @@ T  Vector3< T >::normalise()
 template < typename T > 
 T  Vector3< T >::normalise( float* source )
 {
-    Vector3< float >* a = ( Vector3< float >* ) source;
-    const T l = a->length();
-    if ( l == 0 ) 
-        return 0;
-
-    source[0] /= l;
-    source[1] /= l;
-    source[2] /= l;
-    return l;
+	return normalize( source );
 }
 
 
@@ -450,9 +436,11 @@ T  Vector3< T >::normalize()
     const T l = length();
     if ( l == 0 ) 
         return 0; 
-    x /= l; 
-    y /= l; 
-    z /= l; 
+
+	const T ll = 1.0 / l;
+    x *= ll; 
+    y *= ll; 
+    z *= ll; 
     return l; 
 } 
 
@@ -467,9 +455,10 @@ T  Vector3< T >::normalize( float* source )
     if ( l == 0 ) 
         return 0;
     
-    source[0] /= l;
-    source[1] /= l;
-    source[2] /= l;
+	const T ll = 1.0 / l;
+    source[0] *= ll;
+    source[1] *= ll;
+    source[2] *= ll;
     return l;
 }
 

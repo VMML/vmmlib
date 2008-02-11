@@ -116,10 +116,17 @@ public:
     void set( const double* other );
     void set( T v00, T v01, T v02, T v03, T v10, T v11, T v12, T v13, 
               T v20, T v21, T v22, T v23, T v30, T v31, T v32, T v33 );
+              
+    // sets a 3x3 submatrix
+    template< typename U >
+    void set( const Matrix3< U >& m3x3, size_t columnOffset = 0, 
+        size_t rowOffset = 0 ); 
+
+    const T& getElement( const size_t row, const size_t col ) const;
+    void setElement( const size_t row, const size_t col, const T& value ) const;
 
     Vector4< T > getColumn( const size_t column ) const;
-    Vector4< T > getRow( const size_t row ) const; 
-    const T& getElement( const size_t row, const size_t col ) const;
+    Vector4< T > getRow( const size_t row ) const;
     
     // vec3
     void setColumn( const size_t column, const Vector3< T >& columnvec );
@@ -127,9 +134,9 @@ public:
     // vec4
     void setColumn( const size_t column, const Vector4< T >& columnvec );
     void setRow( const size_t row, const Vector4< T >& rowvec );
-
-    void setElement( const size_t row, const size_t col, 
-                         const T& value ) const;
+    
+    void get3x3SubMatrix( Matrix3< T >& result, size_t rowOffset = 0, 
+        size_t colOffset = 0 ) const;
 
     // arithmetic operations
     Matrix4 operator+ ( const Matrix4& other ) const;
@@ -482,6 +489,22 @@ void Matrix4< T >::set( T v00, T v01, T v02, T v03, T v10, T v11, T v12, T v13,
 
 }
 
+
+template< typename T >
+// sets a 3x3 submatrix
+template< typename U >
+void
+Matrix4< T >::set( const Matrix3< U >& sourceMatrix, size_t columnOffset, 
+    size_t rowOffset )
+{
+    assert( rowOffset < 2 && columnOffset < 2 );
+    
+    for( size_t row = rowOffset, i = 0; i < 3; ++i, ++row )
+        for( size_t col = columnOffset, j = 0; j < 3; ++j, ++col )
+        {
+            m[ row ][ col ] = sourceMatrix.m[ i ][ j ];
+        }
+}
 
 
 template< typename T > 
@@ -1403,6 +1426,20 @@ Matrix4< T > Matrix4< T >::negate() const
     Matrix4< T > result( *this );
     result *= -1.0;
     return result;
+}
+
+
+
+template< typename T >
+void
+Matrix4< T >::get3x3SubMatrix( Matrix3< T >& result, size_t rowOffset, 
+    size_t columnOffset ) const
+{
+    for( size_t row = rowOffset, i = 0; i < 3; ++i, ++row )
+        for( size_t col = columnOffset, j = 0; j < 3; ++j, ++col )
+        {
+            result.m[ i ][ j ] = m[ row ][ col ];
+        }
 }
 
 

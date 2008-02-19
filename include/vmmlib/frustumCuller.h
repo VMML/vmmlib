@@ -95,7 +95,7 @@ Visibility FrustumCuller< T >::testSphere( const Vector4<T>& sphere )
     // distance = plane.normal . sphere.center + plane.distance
     // Test all planes:
     // - if sphere behind plane: not visible
-    // - if sphere intersect one plane: partially visible
+    // - if sphere intersects one plane: partially visible
     // - else: fully visible
 
     T distance = _leftPlane.normal.x * sphere.center.x +

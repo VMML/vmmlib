@@ -475,24 +475,22 @@ Vector4< T > Vector4< T >::getNormalized() const
 template < typename T > 
 void Vector4< T >::normalizePlane()
 { 
-    const T l = sqrt( x * x + y * y + z * z );
-    const T il = 1.0 / l;
-    x *= il;
-    y *= il;
-    z *= il;
-    w *= il;
+    const T lInv = 1.0 / sqrt( x * x + y * y + z * z );
+    x *= lInv;
+    y *= lInv;
+    z *= lInv;
+    w *= lInv;
 } 
 
 
 template <> 
 inline void Vector4< float >::normalizePlane()
 { 
-    const float l = sqrtf( x * x + y * y + z * z );
-    const float il = 1.0f / l;
-    x *= il;
-    y *= il;
-    z *= il;
-    w *= il;
+    const float lInv = 1.0f / sqrtf( x * x + y * y + z * z );
+    x *= lInv;
+    y *= lInv;
+    z *= lInv;
+    w *= lInv;
 } 
 
 

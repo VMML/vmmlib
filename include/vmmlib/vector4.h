@@ -31,6 +31,8 @@
 namespace vmml
 {
 
+template< typename T > class Vector3;
+
 template< typename T > 
 class Vector4
 {
@@ -90,6 +92,7 @@ public:
 	void set( const Vector3< T >& xyz_, const T& w_ );
 
     const Vector4& operator=( T aa ); 
+    const Vector4& operator=( const Vector3<T>& aa ); 
     const Vector4& operator=( const Vector4& aa ); 
     template< typename U >
     const Vector4& operator=( const Vector4< U >& aa ); 
@@ -229,6 +232,7 @@ typedef Vector4< unsigned char >    vec4ub;
 // - implementation - //
 
 #include <vmmlib/matrix4.h>
+#include <vmmlib/vector3.h>
 
 namespace vmml
 {
@@ -371,6 +375,16 @@ const Vector4< T >& Vector4< T >::operator=( T aa )
 } 
 
 
+
+template < typename T > 
+const Vector4< T >& Vector4< T >::operator=( const Vector3<T>& aa ) 
+{ 
+    x = aa.x; 
+    y = aa.y; 
+    z = aa.z; 
+    w = 1.0;
+    return *this;
+} 
 
 template < typename T > 
 const Vector4< T >& Vector4< T >::operator=( const Vector4& aa ) 

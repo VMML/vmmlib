@@ -251,8 +251,8 @@ void svdecompose( T **a, int m, size_t n, T  w[], T **v)
 		
     }
     free(rv1);
-	for ( size_t i = 0; i < 3; ++i )
-		for ( size_t j = 0; j < 3; ++j )
+	for ( i = 0; i < 3; ++i )
+		for ( j = 0; j < 3; ++j )
 			if ( i < j && w[i] < w[j] )
 			{	
 				double t = w[i];
@@ -260,7 +260,7 @@ void svdecompose( T **a, int m, size_t n, T  w[], T **v)
 				w[i] = u;
 				w[j] = t;
 				
-				for ( size_t k = 0; k < 3; ++k )
+				for ( k = 0; k < 3; ++k )
 				{
 					t = v[i][k];
 					u = v[j][k];
@@ -273,7 +273,7 @@ void svdecompose( T **a, int m, size_t n, T  w[], T **v)
 				}
 			}
 	
-}
+    }
 			
 }
 

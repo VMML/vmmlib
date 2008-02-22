@@ -117,11 +117,6 @@ public:
     void set( T v00, T v01, T v02, T v03, T v10, T v11, T v12, T v13, 
               T v20, T v21, T v22, T v23, T v30, T v31, T v32, T v33 );
               
-    // sets a 3x3 submatrix
-    template< typename U >
-    void set( const Matrix3< U >& m3x3, size_t columnOffset = 0, 
-        size_t rowOffset = 0 ); 
-
     const T& getElement( const size_t row, const size_t col ) const;
     void setElement( const size_t row, const size_t col, const T& value ) const;
 
@@ -135,6 +130,10 @@ public:
     void setColumn( const size_t column, const Vector4< T >& columnvec );
     void setRow( const size_t row, const Vector4< T >& rowvec );
     
+    // sets a 3x3 submatrix
+    template< typename U >
+    void set3x3SubMatrix( const Matrix3< U >& m3x3, size_t columnOffset = 0, 
+        size_t rowOffset = 0 ); 
     void get3x3SubMatrix( Matrix3< T >& result, size_t rowOffset = 0, 
         size_t colOffset = 0 ) const;
 
@@ -487,23 +486,6 @@ void Matrix4< T >::set( T v00, T v01, T v02, T v03, T v10, T v11, T v12, T v13,
     m23 = v23;
     m33 = v33;
 
-}
-
-
-template< typename T >
-// sets a 3x3 submatrix
-template< typename U >
-void
-Matrix4< T >::set( const Matrix3< U >& sourceMatrix, size_t columnOffset, 
-    size_t rowOffset )
-{
-    assert( rowOffset < 2 && columnOffset < 2 );
-    
-    for( size_t row = rowOffset, i = 0; i < 3; ++i, ++row )
-        for( size_t col = columnOffset, j = 0; j < 3; ++j, ++col )
-        {
-            m[ row ][ col ] = sourceMatrix.m[ i ][ j ];
-        }
 }
 
 
@@ -1426,6 +1408,23 @@ Matrix4< T > Matrix4< T >::negate() const
     Matrix4< T > result( *this );
     result *= -1.0;
     return result;
+}
+
+
+
+template< typename T >
+template< typename U >
+void
+Matrix4< T >::set3x3SubMatrix( const Matrix3< U >& sourceMatrix, size_t columnOffset, 
+    size_t rowOffset )
+{
+    assert( rowOffset < 2 && columnOffset < 2 );
+    
+    for( size_t row = rowOffset, i = 0; i < 3; ++i, ++row )
+        for( size_t col = columnOffset, j = 0; j < 3; ++j, ++col )
+        {
+            m[ row ][ col ] = sourceMatrix.m[ i ][ j ];
+        }
 }
 
 

@@ -16,7 +16,9 @@
 #include <iostream>
 #include <algorithm>
 #include <cassert>
+#include <string>
 
+#include <vmmlib/stringUtils.h>
 // - declaration -
 
 namespace vmml
@@ -57,6 +59,14 @@ public:
     //the pointer 'values' must be a valid 2 component c array of the resp. type
     void set( const float* values );
     void set( const double* values );
+
+	// create vector from a string containing a whitespace (or parameter 
+	// 'delimiter' ) delimited list of values.
+	// returns false if failed, true if it (seems to have) succeeded.
+	// PRE: string must contain at least 2 values, delimited by char delimiter.
+	bool set( const std::string& values, char delimiter = ' ' );
+	// PRE: vector must contain at least 2 strings with one value each
+	bool set( const std::vector< std::string >& values );
 
     const Vector2& operator=( T a ); 
     const Vector2& operator=( const Vector2& a );
@@ -253,6 +263,46 @@ void Vector2< T >::set( const double* values )
     assert( values && "Vector2: Nullpointer argument as source for initialisation!" );
     x = static_cast< T > ( values[0] );
     y = static_cast< T > ( values[1] );
+}
+
+
+
+// create vector from a string containing a whitespace (or parameter 
+// 'delimiter' ) delimited list of values.
+// returns false if failed, true if it (seems to have) succeeded.
+// PRE: string must contain at least 2 values, delimited by char delimiter.
+template< typename T > 
+bool
+Vector2< T >::set( const std::string& values, char delimiter )
+{
+	std::vector< std::string > tokens;
+	stringUtils::split_string( values, tokens, delimiter );
+	return set( tokens );
+}
+
+
+
+// create vector from a string containing a whitespace (or parameter 
+// 'delimiter' ) delimited list of values.
+// returns false if failed, true if it (seems to have) succeeded.
+// PRE: vector must contain at least 2 strings with one value each
+template< typename T > 
+bool
+Vector2< T >::set( const std::vector< std::string >& values )
+{
+	bool ok = true;
+	
+	if ( values.size() < 2 )
+		return false;
+
+	std::vector< std::string >::const_iterator it 		= values.begin();
+	
+	for( size_t component = 0; ok && component < 2; ++component, ++it )
+	{
+			ok = stringUtils::from_string< T >( *it, xy[ component ] );
+	}
+	
+	return ok;
 }
 
 

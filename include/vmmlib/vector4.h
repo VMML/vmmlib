@@ -23,7 +23,9 @@
 #include <iostream>
 #include <algorithm>
 #include <cassert>
+#include <string>
 
+#include <vmmlib/stringUtils.h>
 #include <vmmlib/vector3.h>
 
 // - declaration -
@@ -90,6 +92,14 @@ public:
     void set( const double* aa );
 
 	void set( const Vector3< T >& xyz_, const T& w_ );
+
+	// create vector from a string containing a whitespace (or parameter 
+	// 'delimiter' ) delimited list of values.
+	// returns false if failed, true if it (seems to have) succeeded.
+	// PRE: string must contain at least 4 values, delimited by char delimiter.
+	bool set( const std::string& values, char delimiter = ' ' );
+	// PRE: vector must contain at least 4 strings with one value each
+	bool set( const std::vector< std::string >& values );
 
     const Vector4& operator=( T aa ); 
     const Vector4& operator=( const Vector3<T>& aa ); 
@@ -363,6 +373,46 @@ Vector4< T >::set( const Vector3< T >& xyz_, const T& w_ )
 	y = xyz_.y;
 	z = xyz_.z;
 	w = w_;
+}
+
+
+
+// create vector from a string containing a whitespace (or parameter 
+// 'delimiter' ) delimited list of values.
+// returns false if failed, true if it (seems to have) succeeded.
+// PRE: string must contain at least 4 values, delimited by char delimiter.
+template< typename T > 
+bool
+Vector4< T >::set( const std::string& values, char delimiter )
+{
+	std::vector< std::string > tokens;
+	stringUtils::split_string( values, tokens, delimiter );
+	return set( tokens );
+}
+
+
+
+// create vector from a string containing a whitespace (or parameter 
+// 'delimiter' ) delimited list of values.
+// returns false if failed, true if it (seems to have) succeeded.
+// PRE: vector must contain at least 4 strings with one value each
+template< typename T > 
+bool
+Vector4< T >::set( const std::vector< std::string >& values )
+{
+	bool ok = true;
+	
+	if ( values.size() < 4 )
+		return false;
+
+	std::vector< std::string >::const_iterator it 		= values.begin();
+	
+	for( size_t component = 0; ok && component < 4; ++component, ++it )
+	{
+			ok = stringUtils::from_string< T >( *it, xyzw[ component ] );
+	}
+	
+	return ok;
 }
 
 

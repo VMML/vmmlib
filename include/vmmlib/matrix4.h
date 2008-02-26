@@ -28,6 +28,9 @@
 #include <iostream>
 #include <algorithm>
 #include <cassert>
+#include <string>
+
+#include <vmmlib/stringUtils.h>
 
 // * * * * * * * * * *
 //
@@ -116,6 +119,14 @@ public:
     void set( const double* other );
     void set( T v00, T v01, T v02, T v03, T v10, T v11, T v12, T v13, 
               T v20, T v21, T v22, T v23, T v30, T v31, T v32, T v33 );
+
+	// create matrix from a string containing a whitespace (or parameter 
+	// 'delimiter' ) delimited list of values.
+	// returns false if failed, true if it (seems to have) succeeded.
+	// PRE: string must contain at least 16 values, delimited by char delimiter.
+	bool set( const std::string& values, char delimiter = ' ' );
+	// PRE: vector must contain at least 16 strings with one value each
+	bool set( const std::vector< std::string >& values );
               
     const T& getElement( const size_t row, const size_t col ) const;
     void setElement( const size_t row, const size_t col, const T& value ) const;
@@ -486,6 +497,50 @@ void Matrix4< T >::set( T v00, T v01, T v02, T v03, T v10, T v11, T v12, T v13,
     m23 = v23;
     m33 = v33;
 
+}
+
+
+
+// create matrix from a string containing a whitespace (or parameter 
+// 'delimiter' ) delimited list of values.
+// returns false if failed, true if it (seems to have) succeeded.
+// PRE: string must contain at least 16 values, delimited by char delimiter.
+template< typename T > 
+bool
+Matrix4< T >::set( const std::string& values, char delimiter )
+{
+	std::vector< std::string > tokens;
+	stringUtils::split_string( values, tokens, delimiter );
+	return set( tokens );
+}
+
+
+
+// create matrix from a string containing a whitespace (or parameter 
+// 'delimiter' ) delimited list of values.
+// returns false if failed, true if it (seems to have) succeeded.
+// PRE: vector must contain  at least 16 strings with one value each
+template< typename T > 
+bool
+Matrix4< T >::set( const std::vector< std::string >& values )
+{
+	bool ok = true;
+	
+	if ( values.size() < 16 )
+		return false;
+
+	std::vector< std::string >::const_iterator it 		= values.begin();
+	
+	for( size_t row = 0; row < 4; ++row )
+	{
+		for( size_t col = 0; ok && col < 4; ++col, ++it )
+		{
+			//m[ col ][ row ] = from_string< T >( *it );
+			ok = stringUtils::from_string< T >( *it, m[ col ][ row ] );
+		}
+	}
+	
+	return ok;
 }
 
 

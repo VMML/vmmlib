@@ -214,6 +214,9 @@ public:
     // specify the indices of the rows/columns to be removed ( slower ) 
     T getMinor( const size_t removeRow, const size_t removeCol ) const;
                    
+	// writes the values into param result, delimited by param 'delimiter'.
+	// returns false if it failed, true if it (seems to have) succeeded.
+	bool getString( std::string& result, const std::string& delimiter = " " ) const;
 
     friend std::ostream& operator << ( std::ostream& os, const Matrix4& m )
     {
@@ -1495,6 +1498,30 @@ Matrix4< T >::get3x3SubMatrix( Matrix3< T >& result, size_t rowOffset,
             result.m[ i ][ j ] = m[ row ][ col ];
         }
 }
+
+
+// writes the values into param result, delimited by param 'delimiter'.
+// returns false if it failed, true if it (seems to have) succeeded.
+template< typename T >
+bool
+Matrix4< T >::getString( std::string& result, const std::string& delimiter ) const
+{
+	std::string tmp;
+	bool ok = true;
+	for( size_t row = 0; row < 4; ++row )
+	{
+		for( size_t col = 0; ok && col < 4; ++col )
+		{
+			ok = stringUtils::to_string< T >( m[ col ][ row ], tmp );
+			result += tmp;
+			result += delimiter;
+		}
+	}
+	return ok;
+}
+
+
+
 
 
 } // namespace vmml

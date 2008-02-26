@@ -139,6 +139,10 @@ public:
     Matrix3 operator-() const;
     Matrix3 negate() const;
 
+	// writes the values into param result, delimited by param 'delimiter'.
+	// returns false if it failed, true if it (seems to have) succeeded.
+	bool getString( std::string& result, const std::string& delimiter = " " ) const;
+
     friend std::ostream& operator << ( std::ostream& os, const Matrix3& m )
     {
         const std::ios::fmtflags flags = os.flags();
@@ -757,6 +761,28 @@ Matrix3< T > Matrix3< T >::negate() const
     Matrix3< T > result( *this );
     result *= -1.0;
     return result;
+}
+
+
+
+// writes the values into param result, delimited by param 'delimiter'.
+// returns false if it failed, true if it (seems to have) succeeded.
+template< typename T >
+bool
+Matrix3< T >::getString( std::string& result, const std::string& delimiter ) const
+{
+	std::string tmp;
+	bool ok = true;
+	for( size_t row = 0; row < 3; ++row )
+	{
+		for( size_t col = 0; ok && col < 3; ++col )
+		{
+			ok = stringUtils::to_string< T >( m[ col ][ row ], tmp );
+			result += tmp;
+			result += delimiter;
+		}
+	}
+	return ok;
 }
 
 

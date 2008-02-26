@@ -50,6 +50,7 @@ static inline bool
 to_string( T source, std::string& target )
 {
     std::stringstream ss;
+    ss.precision( 8 * sizeof( void* ) - 1 );
     ss << source;
 	target = ss.str();
 	return ( ss.rdstate() & std::stringstream::failbit ) == 0;
@@ -63,10 +64,8 @@ to_string( T source, std::string& target )
 * @param target reference to result/value
 * 
 * returns true conversion was successful, false otherwise
-*
-* note: every string in the container will be trimmed.
-*
 */
+
 template < typename T >
 static inline bool 
 from_string( const std::string& source, T& target )

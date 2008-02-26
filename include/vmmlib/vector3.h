@@ -173,6 +173,10 @@ public:
 	// user. all random numbers are normalized to [0,1].
 	void randomize();
 
+	// writes the values into param result, delimited by param 'delimiter'.
+	// returns false if it failed, true if it (seems to have) succeeded.
+	bool getString( std::string& result, const std::string& delimiter = " " ) const;
+
     friend std::ostream& operator << ( std::ostream& os, const Vector3& v )
     {
         const std::ios::fmtflags flags = os.flags();
@@ -947,6 +951,24 @@ Vector3< T >::randomize()
 	z = (double) rand() / RAND_MAX;
 }
 
+
+
+// writes the values into param result, delimited by param 'delimiter'.
+// returns false if it failed, true if it (seems to have) succeeded.
+template< typename T >
+bool
+Vector3< T >::getString( std::string& result, const std::string& delimiter ) const
+{
+	std::string tmp;
+	bool ok = true;
+	for( size_t component = 0; component < 3; ++component )
+	{
+		ok = stringUtils::to_string< T >( xyz[ component ], tmp );
+		result += tmp;
+		result += delimiter;
+	}
+	return ok;
+}
 
 
 

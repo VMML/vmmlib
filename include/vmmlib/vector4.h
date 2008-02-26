@@ -144,16 +144,7 @@ public:
     const Vector4& operator-=( const Vector4 &aa ); 
     const Vector4& operator*=( const Vector4 &aa ); 
     const Vector4& operator/=( const Vector4 &aa ); 
-
-    // vector'/matrix operations
-    //
-    // this was actually implimentation of Matrix*vector so 
-    // you should use function "Vector4< T > Matrix4< T >::operator*"
-    // which is now work correctly
-    // 
-    // Vector4 operator* (const Matrix4<T>& m ) const; 
-    //
-    
+   
     T dot( const Vector4 &aa ) const;
 
     // other
@@ -189,6 +180,9 @@ public:
     void normalizePlane();
     
 
+	// writes the values into param result, delimited by param 'delimiter'.
+	// returns false if it failed, true if it (seems to have) succeeded.
+	bool getString( std::string& result, const std::string& delimiter = " " ) const;
 
     friend std::ostream& operator << ( std::ostream& os, const Vector4& v )
     {
@@ -939,6 +933,26 @@ Vector4< T >::randomize()
 	z = (double) rand() / RAND_MAX;
 	w = (double) rand() / RAND_MAX;
 }
+
+
+
+// writes the values into param result, delimited by param 'delimiter'.
+// returns false if it failed, true if it (seems to have) succeeded.
+template< typename T >
+bool
+Vector4< T >::getString( std::string& result, const std::string& delimiter ) const
+{
+	std::string tmp;
+	bool ok = true;
+	for( size_t component = 0; component < 4; ++component )
+	{
+		ok = stringUtils::to_string< T >( xyzw[ component ], tmp );
+		result += tmp;
+		result += delimiter;
+	}
+	return ok;
+}
+
 
 
 

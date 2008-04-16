@@ -201,7 +201,7 @@ public:
     void setTranslation( const T x, const T y, const T z );
     void setTranslation( const T trans[3] );
     void setTranslation( const Vector3< T >& trans );
-    Vector3< T > getTranslation();
+    Vector3< T > getTranslation() const;
 
     void tensor( const Vector3< T >& u, const Vector3< T >& v );
     void tensor( const Vector4< T >& u, const Vector4< T >& v );
@@ -1377,7 +1377,7 @@ void Matrix4<T>::setTranslation( const Vector3<T>& trans )
 
 template< typename T >
 Vector3< T > 
-Matrix4< T >::getTranslation()
+Matrix4< T >::getTranslation() const
 {
     return Vector3< T > ( ml[12], ml[13], ml[14] );
 }

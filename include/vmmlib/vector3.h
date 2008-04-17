@@ -26,8 +26,6 @@
 #include <limits>
 #include <string>
 
-#include <vmmlib/stringUtils.h>
-
 // - declaration -
 
 namespace vmml
@@ -218,6 +216,7 @@ typedef Vector3< unsigned char >    vec3ub;
 } // namespace vmml
 
 // - implementation - //
+#include <vmmlib/stringUtils.h>
 #include <vmmlib/vector2.h>
 #include <vmmlib/vector4.h>
  

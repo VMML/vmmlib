@@ -25,9 +25,6 @@
 #include <cassert>
 #include <string>
 
-#include <vmmlib/stringUtils.h>
-#include <vmmlib/vector3.h>
-
 // - declaration -
 
 namespace vmml
@@ -236,6 +233,7 @@ typedef Vector4< unsigned char >    vec4ub;
 // - implementation - //
 
 #include <vmmlib/matrix4.h>
+#include <vmmlib/stringUtils.h>
 #include <vmmlib/vector3.h>
 
 namespace vmml

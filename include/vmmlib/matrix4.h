@@ -29,8 +29,7 @@
 #include <algorithm>
 #include <cassert>
 #include <string>
-
-#include <vmmlib/stringUtils.h>
+#include <vector>
 
 // * * * * * * * * * *
 //
@@ -272,6 +271,7 @@ typedef Matrix4< double > mat4d;
 #include <vmmlib/matrix3.h>
 #include <vmmlib/vector3.h>
 #include <vmmlib/vector4.h>
+#include <vmmlib/stringUtils.h>
 
 namespace vmml
 {

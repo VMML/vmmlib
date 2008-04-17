@@ -17,8 +17,9 @@
 #include <algorithm>
 #include <cassert>
 #include <string>
+#include <vector>
+#include <sstream>
 
-#include <vmmlib/stringUtils.h>
 // - declaration -
 
 namespace vmml
@@ -180,6 +181,7 @@ typedef Vector2< float >            vec2f;
 typedef Vector2< double >           vec2d;
 
 // - implementation - //
+#include <vmmlib/stringUtils.h>
        
 template< typename T > 
 const Vector2< T > Vector2< T >::ZERO( 0, 0 );

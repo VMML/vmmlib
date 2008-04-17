@@ -344,7 +344,7 @@ bool
 Vector3< T >::set( const std::string& values, char delimiter )
 {
 	std::vector< std::string > tokens;
-	stringUtils::split_string( values, tokens, delimiter );
+	stringUtils::split( values, tokens, delimiter );
 	return set( tokens );
 }
 
@@ -367,7 +367,7 @@ Vector3< T >::set( const std::vector< std::string >& values )
 	
 	for( size_t component = 0; ok && component < 3; ++component, ++it )
 	{
-			ok = stringUtils::from_string< T >( *it, xyz[ component ] );
+			ok = stringUtils::fromString< T >( *it, xyz[ component ] );
 	}
 	
 	return ok;
@@ -962,7 +962,7 @@ Vector3< T >::getString( std::string& result, const std::string& delimiter ) con
 	bool ok = true;
 	for( size_t component = 0; component < 3; ++component )
 	{
-		ok = stringUtils::to_string< T >( xyz[ component ], tmp );
+		ok = stringUtils::toString< T >( xyz[ component ], tmp );
 		result += tmp;
 		result += delimiter;
 	}

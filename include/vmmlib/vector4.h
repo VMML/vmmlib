@@ -378,7 +378,7 @@ bool
 Vector4< T >::set( const std::string& values, char delimiter )
 {
 	std::vector< std::string > tokens;
-	stringUtils::split_string( values, tokens, delimiter );
+	stringUtils::split( values, tokens, delimiter );
 	return set( tokens );
 }
 
@@ -401,7 +401,7 @@ Vector4< T >::set( const std::vector< std::string >& values )
 	
 	for( size_t component = 0; ok && component < 4; ++component, ++it )
 	{
-			ok = stringUtils::from_string< T >( *it, xyzw[ component ] );
+			ok = stringUtils::fromString< T >( *it, xyzw[ component ] );
 	}
 	
 	return ok;
@@ -944,7 +944,7 @@ Vector4< T >::getString( std::string& result, const std::string& delimiter ) con
 	bool ok = true;
 	for( size_t component = 0; component < 4; ++component )
 	{
-		ok = stringUtils::to_string< T >( xyzw[ component ], tmp );
+		ok = stringUtils::toString< T >( xyzw[ component ], tmp );
 		result += tmp;
 		result += delimiter;
 	}

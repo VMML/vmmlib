@@ -16,20 +16,16 @@ namespace vmml
 */
 
 
-class stringUtils
+namespace stringUtils
 {
-public:
-    
-static inline ssize_t 
-to_int( const std::string& source )
+inline ssize_t toInt( const std::string& source )
 {
     return atol( source.c_str() );
 };
 
 
 
-static inline double 
-to_double( const std::string& source )
+inline double toDouble( const std::string& source )
 {
     return atof( source.c_str() );
 };
@@ -46,8 +42,7 @@ to_double( const std::string& source )
 *
 */
 template < typename T >
-static inline bool 
-to_string( T source, std::string& target )
+inline bool toString( T source, std::string& target )
 {
     std::stringstream ss;
     ss.precision( 8 * sizeof( void* ) - 1 );
@@ -67,8 +62,7 @@ to_string( T source, std::string& target )
 */
 
 template < typename T >
-static inline bool 
-from_string( const std::string& source, T& target )
+inline bool fromString( const std::string& source, T& target )
 {
     std::stringstream ss;
     ss << source;
@@ -78,8 +72,7 @@ from_string( const std::string& source, T& target )
 
 
 
-static void 
-to_lower_case( std::string& string_ )
+inline void toLower( std::string& string_ )
 {
 	size_t len = string_.size();
 	if ( len == 0 )
@@ -92,8 +85,7 @@ to_lower_case( std::string& string_ )
 
 
 
-static std::string& 
-trim( std::string& string_ )
+inline std::string& trim( std::string& string_ )
 {
 	//left
 	std::string::iterator it = string_.begin();
@@ -130,8 +122,7 @@ trim( std::string& string_ )
 */
 
 template< typename T >
-static void 
-split_string( const std::string& source, T& targets, char splitter = ' ' )
+void split( const std::string& source, T& targets, char splitter = ' ' )
 {
     size_t pos = 0;
     size_t startpos;
@@ -159,10 +150,7 @@ split_string( const std::string& source, T& targets, char splitter = ' ' )
     }
 }
 
-
-}; // class string_utils
-
-
+} // namespace stringUtils
 } // namespace vmml
 
 #endif

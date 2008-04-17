@@ -180,8 +180,13 @@ typedef Vector2< int >              vec2i;
 typedef Vector2< float >            vec2f;
 typedef Vector2< double >           vec2d;
 
+}
+
 // - implementation - //
 #include <vmmlib/stringUtils.h>
+
+namespace vmml
+{
        
 template< typename T > 
 const Vector2< T > Vector2< T >::ZERO( 0, 0 );
@@ -282,7 +287,7 @@ bool
 Vector2< T >::set( const std::string& values, char delimiter )
 {
 	std::vector< std::string > tokens;
-	stringUtils::split_string( values, tokens, delimiter );
+	stringUtils::split( values, tokens, delimiter );
 	return set( tokens );
 }
 
@@ -305,7 +310,7 @@ Vector2< T >::set( const std::vector< std::string >& values )
 	
 	for( size_t component = 0; ok && component < 2; ++component, ++it )
 	{
-			ok = stringUtils::from_string< T >( *it, xy[ component ] );
+			ok = stringUtils::fromString< T >( *it, xy[ component ] );
 	}
 	
 	return ok;
@@ -728,7 +733,7 @@ Vector2< T >::getString( std::string& result, const std::string& delimiter ) con
 	bool ok = true;
 	for( size_t component = 0; component < 2; ++component )
 	{
-		ok = stringUtils::to_string< T >( xy[ component ], tmp );
+		ok = stringUtils::toString< T >( xy[ component ], tmp );
 		result += tmp;
 		result += delimiter;
 	}

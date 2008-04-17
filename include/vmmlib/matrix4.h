@@ -513,7 +513,7 @@ bool
 Matrix4< T >::set( const std::string& values, char delimiter )
 {
 	std::vector< std::string > tokens;
-	stringUtils::split_string( values, tokens, delimiter );
+	stringUtils::split( values, tokens, delimiter );
 	return set( tokens );
 }
 
@@ -539,7 +539,7 @@ Matrix4< T >::set( const std::vector< std::string >& values )
 		for( size_t col = 0; ok && col < 4; ++col, ++it )
 		{
 			//m[ col ][ row ] = from_string< T >( *it );
-			ok = stringUtils::from_string< T >( *it, m[ col ][ row ] );
+			ok = stringUtils::fromString< T >( *it, m[ col ][ row ] );
 		}
 	}
 	
@@ -1512,7 +1512,7 @@ Matrix4< T >::getString( std::string& result, const std::string& delimiter ) con
 	{
 		for( size_t col = 0; ok && col < 4; ++col )
 		{
-			ok = stringUtils::to_string< T >( m[ col ][ row ], tmp );
+			ok = stringUtils::toString< T >( m[ col ][ row ], tmp );
 			result += tmp;
 			result += delimiter;
 		}

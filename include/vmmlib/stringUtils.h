@@ -18,7 +18,7 @@ namespace vmml
 
 namespace stringUtils
 {
-inline ssize_t toInt( const std::string& source )
+inline long toInt( const std::string& source )
 {
     return atol( source.c_str() );
 };

@@ -133,6 +133,8 @@ public:
     T getMinComponent() const;
     T getMaxComponent() const;
     T getArea() const;
+    
+    void clamp( T min, T max );
 
 	// uses the very bad cstdlib (rand()) rng. do NOT use for anything that needs
 	// real random numbers. also, srand() is not called, this is the duty of the 
@@ -709,6 +711,21 @@ template < typename T >
 T Vector2< T >::getArea() const
 { 
     return x * y; 
+}
+
+
+template< typename T >
+void
+Vector2< T >::clamp( T min, T max )
+{
+    if ( x < min )
+        x = min;
+    if ( x > max )
+        x = max;
+    if ( y < min )
+        y = min;
+    if ( y > max )
+        y = max;
 }
 
 

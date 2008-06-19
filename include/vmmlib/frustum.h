@@ -221,13 +221,13 @@ Frustum< T >::computeOrthoMatrix() const
         0.0f, 
         2.0 / ( top-bottom ),
         0.0f,
-
         -( top + bottom ) / ( top - bottom ), 
-        0.0f, 
-        0.0f, 
-        2.0 / ( nearPlane-farPlane ), 
 
+        0.0f, 
+        0.0f, 
+        -2.0 / ( farPlane-nearPlane ), 
         -( farPlane + nearPlane ) / ( farPlane - nearPlane ),
+
         0.0f, 
         0.0f, 
         0.0f, 

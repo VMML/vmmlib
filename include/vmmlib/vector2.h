@@ -716,16 +716,16 @@ T Vector2< T >::getArea() const
 
 template< typename T >
 void
-Vector2< T >::clamp( T min, T max )
+Vector2< T >::clamp( T lower, T upper )
 {
-    if ( x < min )
-        x = min;
-    if ( x > max )
-        x = max;
-    if ( y < min )
-        y = min;
-    if ( y > max )
-        y = max;
+    if ( x < lower )
+        x = lower;
+    if ( x > upper )
+        x = upper;
+    if ( y < lower )
+        y = lower;
+    if ( y > upper )
+        y = upper;
 }
 
 

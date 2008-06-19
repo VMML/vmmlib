@@ -49,6 +49,7 @@ public:
         };
         T xyz[3];
         T rgb[3];
+        T array[3];
     };
 
     // contructors
@@ -118,6 +119,9 @@ public:
     bool operator!=(const Vector3& rhs ) const;
     bool isAkin(  const Vector3& rhs, 
                   const T& delta = std::numeric_limits<T>::epsilon() );
+
+
+    void clamp( T lower, T upper );
 
     // component-component compare
     // returns a size_t with a bitmask of the component comparison results
@@ -796,7 +800,8 @@ bool Vector3< T >::operator==( const Vector3& rhs ) const
 
 
 template < typename T > 
-bool Vector3< T >::operator!=(const Vector3& rhs ) const 
+bool
+Vector3< T >::operator!=(const Vector3& rhs ) const 
 { 
     return ( x != rhs.x || y != rhs.y || z != rhs.z ); 
 }
@@ -804,7 +809,8 @@ bool Vector3< T >::operator!=(const Vector3& rhs ) const
 
 
 template < typename T > 
-bool Vector3< T >::isAkin( const Vector3& rhs, const T& delta )
+bool
+Vector3< T >::isAkin( const Vector3& rhs, const T& delta )
 {
     if( fabs( x-rhs.x ) > delta || fabs( y-rhs.y ) > delta || 
         fabs( z-rhs.z ) > delta )
@@ -816,13 +822,36 @@ bool Vector3< T >::isAkin( const Vector3& rhs, const T& delta )
 
 
 template< > 
-inline bool Vector3< float >::isAkin( const Vector3& rhs, const float& delta )
+inline bool
+Vector3< float >::isAkin( const Vector3& rhs, const float& delta )
 {
     if( fabsf( x-rhs.x ) > delta || fabsf( y-rhs.y ) > delta || 
         fabsf( z-rhs.z ) > delta )
 
         return false;
     return true;
+}
+
+
+template < typename T > 
+void
+Vector3< T >::clamp( T lower, T upper )
+{
+    assert( lower <= upper );
+
+    if ( x < lower )
+        x = lower;
+    else if ( x > upper )
+        x = upper;
+    if ( y < lower )
+        y = lower;
+    else if ( y > upper )
+        y = upper;
+    if ( z < lower )
+        z = lower;
+    else if ( z > upper )
+        z = upper;
+
 }
 
 

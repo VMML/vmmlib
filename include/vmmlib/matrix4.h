@@ -74,6 +74,7 @@ public:
         *   usage with the OpenGL API. E.g.: glLoadMatrix( mymat.ml );
         */
         T ml[16]; 
+        T array[16];
         
         /**
         *   The following representation is for internal purposes. 

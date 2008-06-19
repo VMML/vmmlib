@@ -46,9 +46,15 @@ public:
 
     void set( const T _left, const T _right, const T _bottom, 
         const T _top, const T _near, const T _far );
+        
+    // set the frustum using the same parameters as gluPerspective. 
+    void setPerspective( T fieldOfViewY, T aspectRatio, T nearPlane_, T farPlane );
              
     Matrix4< T > computeMatrix() const;
     Matrix4< T > computeOrthoMatrix() const;
+
+    // 'move' the frustum. this function changes the nearPlane, and adjusts the
+    // other parameters in a way that the 'perspective pyramid' stays the same.
     void       adjustNear( const T nearPlane );
 
     friend std::ostream& operator << ( std::ostream& os, const Frustum& frustum)
@@ -161,9 +167,11 @@ Frustum< T >::set( const T _left, const T _right, const T _bottom,
 }
 
 
-
+// 'move' the frustum. this function changes the nearPlane, and adjusts the
+// other parameters in a way that the 'perspective pyramid' stays the same.
 template < class T > 
-void Frustum<T>::adjustNear( const T newNear )
+void
+Frustum<T>::adjustNear( const T newNear )
 {
 	if( newNear == nearPlane )
 		return;
@@ -175,6 +183,24 @@ void Frustum<T>::adjustNear( const T newNear )
 	bottom *= ratio;
 	nearPlane = newNear;
 }
+
+
+
+// set the frustum using the same parameters as gluPerspective. 
+template < class T > 
+void
+Frustum<T>::setPerspective( T fieldOfViewY, T aspectRatio, T nearPlane_, T farPlane_ )
+{
+    nearPlane   = nearPlane_;
+    farPlane    = farPlane_;
+    
+    top         = tan( 0.5 * fieldOfViewY * M_PI / 180.0 ) * 0.5;
+    bottom      = - top;
+    
+    left        = bottom * aspectRatio;
+    right       = top * aspectRatio;    
+}
+
 
 
 template < class T > 

@@ -56,6 +56,7 @@ public:
         };
         T m[3][3]; // columns
         T ml[9]; // linear
+        T array[9];
     };
         
     Matrix3();

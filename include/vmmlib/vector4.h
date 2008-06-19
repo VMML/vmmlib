@@ -68,6 +68,7 @@ public:
         };
         T xyzw[4];
         T rgba[4];
+        T array[4];
     };
 
     // contructors
@@ -149,6 +150,8 @@ public:
     bool operator!=(const Vector4 &aa ) const;
     bool isAkin( const Vector4& a, 
                  const T& delta = std::numeric_limits<T>::epsilon() );
+   
+    void clamp( T lower, T upper );
    
     void invert(); 
 
@@ -764,6 +767,35 @@ bool Vector4< T >::isAkin( const Vector4& rhs, const T& delta )
         return false;
     return true;
 }
+
+
+
+template < typename T > 
+void
+Vector4< T >::clamp( T lower, T upper )
+{
+    assert( lower <= upper );
+
+    if ( x < lower )
+        x = lower;
+    else if ( x > upper )
+        x = upper;
+    if ( y < lower )
+        y = lower;
+    else if ( y > upper )
+        y = upper;
+    if ( z < lower )
+        z = lower;
+    else if ( z > upper )
+        z = upper;
+    if ( w < lower )
+        w = lower;
+    else if ( w > upper )
+        w = upper;
+
+}
+
+
 
 
 

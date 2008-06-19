@@ -40,6 +40,7 @@ public:
             T min, max;
         };
         T xy[2];
+        T array[2];
     };
 
     // contructors
@@ -134,7 +135,7 @@ public:
     T getMaxComponent() const;
     T getArea() const;
     
-    void clamp( T min, T max );
+    void clamp( T lower, T upper);
 
 	// uses the very bad cstdlib (rand()) rng. do NOT use for anything that needs
 	// real random numbers. also, srand() is not called, this is the duty of the 
@@ -718,13 +719,15 @@ template< typename T >
 void
 Vector2< T >::clamp( T lower, T upper )
 {
+    assert( lower <= upper );
+    
     if ( x < lower )
         x = lower;
-    if ( x > upper )
+    else if ( x > upper )
         x = upper;
     if ( y < lower )
         y = lower;
-    if ( y > upper )
+    else if ( y > upper )
         y = upper;
 }
 

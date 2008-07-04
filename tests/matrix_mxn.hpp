@@ -1,7 +1,7 @@
 #ifndef __VMML__MATRIX_MXN__HPP__
 #define __VMML__MATRIX_MXN__HPP__
 
-#include "array.hpp"
+#include <vmmlib/array.hpp>
 
 #include <iostream>
 #include <iomanip>

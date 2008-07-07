@@ -5,19 +5,21 @@
 #include "matrix_mxm.hpp"
 #include "matrix_mxn_functors.hpp"
 
+#include "unit_test.hpp"
+
 #include <string>
 
 namespace vmml
 {
 
-class matrix_mxn_tests
+class matrix_mxn_tests : public unit_test
 {
 public:
+	matrix_mxn_tests() : unit_test( "matrix_mxn" ) {}
     bool run();
 
-    std::string error_string;
 protected:
-    void _passed( const std::string& testname );
+
 }; // class matrix_mxn_tests
 
 } // namespace vmml

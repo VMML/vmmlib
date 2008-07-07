@@ -17,18 +17,26 @@ class matrix_mxn
 {
 public:
 
-    // (this) matrix mxn = mxp * pxn
+    // (this) matrix_mxn = left matrix_mxp * right matrix_pxn
     template< size_t P >
     void mul( 
         const matrix_mxn< M, P, float_t >& left,
         const matrix_mxn< P, N, float_t >& right 
         );
-
-    // (new) matrix_mxp = mxn (this) * nxp;
+		
+    // returned matrix_mxp = (this) matrix_mxn * other matrix_nxp;
     // use mul for performance reasons, it avoids a copy of the result matrix
     template< size_t P >
     matrix_mxn< M, P, float_t > operator*( matrix_mxn< N, P, float_t >& other ); 
-    
+
+	matrix_mxn< M, N, float_t > operator+( const matrix_mxn< M, N, float_t >& other ) const;
+	void operator+=( const matrix_mxn< M, N, float_t >& other );
+
+	template< size_t P, size_t Q >
+	void direct_sum( const matrix_mxn< P, Q, float_t >& other, matrix_mxn< M + P, N + Q, float_t >& result );
+	
+	template< size_t P, size_t Q >
+	matrix_mxn< M + P, N + Q, float_t > direct_sum( const matrix_mxn< P, Q, float_t >& other );
 
     // WARNING: data_array[] must be at least of size M * N - otherwise CRASH!
     // WARNING: assumes row_by_row layout - if this is not the case, 
@@ -77,7 +85,7 @@ public:
     void getRow( size_t rowNumber, array< float_t, M >& column ) const;
     void setRow( size_t rowNumber,  const array< float_t, M >& column );
     
-    float_t& element( size_t row, size_t column );
+    float_t& at( size_t row, size_t column );
     
     array< float_t, N >& operator[]( size_t rowIndex );
     const array< float_t, N >& operator[]( size_t rowIndex ) const;
@@ -364,7 +372,7 @@ setRow( size_t rowNumber,  const array< float_t, M >& row )
 template< size_t M, size_t N, typename float_t >
 float_t&
 matrix_mxn< M, N, float_t >::
-element( size_t row, size_t column )
+at( size_t row, size_t column )
 {
     assert( row < M );
     assert( column < N );
@@ -444,10 +452,81 @@ fill( float_t fillValue )
     {
         for( size_t colIndex = 0; colIndex < N; ++colIndex )
         {
-           _rows[ rowIndex ][ colIndex ] = fillValue;
-        }
+			_rows[ rowIndex ][ colIndex ] = fillValue;
+		}
     }
 }
+
+
+
+template< size_t M, size_t N, typename float_t >
+matrix_mxn< M, N, float_t > 
+matrix_mxn< M, N, float_t >::
+operator+( const matrix_mxn< M, N, float_t >& other ) const
+{
+	matrix_mxn< M, N, float_t > result( *this );
+	result += other;
+	return result;
+}
+
+
+
+template< size_t M, size_t N, typename float_t >
+void
+matrix_mxn< M, N, float_t >::
+operator+=( const matrix_mxn< M, N, float_t >& other )
+{
+	for( size_t rowIndex = 0; rowIndex < M; ++rowIndex )
+	{
+		for( size_t colIndex = 0; colIndex < N; ++colIndex )
+		{
+			_rows[ rowIndex ][ colIndex ] += other._rows[ rowIndex ][ colIndex ];
+		}		
+	}
+}
+
+
+
+template< size_t M, size_t N, typename float_t >
+template< size_t P, size_t Q >
+void
+matrix_mxn< M, N, float_t >::
+direct_sum( const matrix_mxn< P, Q, float_t >& other, matrix_mxn< M + P, N + Q, float_t >& result )
+{
+	result.fill( 0.0 );
+	
+	// copy this into result, upper-left part
+	for( size_t rowIndex = 0; rowIndex < M; ++rowIndex )
+	{
+		for( size_t colIndex = 0; colIndex < N; ++colIndex )
+		{
+			result._rows[ rowIndex ][ colIndex ] = _rows[ rowIndex ][ colIndex ];
+		}
+	}
+	// copy other into result, lower-right part
+	for( size_t rowIndex = 0; rowIndex < P; ++rowIndex )
+	{
+		for( size_t colIndex = 0; colIndex < Q; ++colIndex )
+		{
+			result._rows[ M + rowIndex ][ N + colIndex ] = other._rows[ rowIndex ][ colIndex ];
+		}
+	
+	}
+
+}
+
+
+template< size_t M, size_t N, typename float_t >
+template< size_t P, size_t Q >
+matrix_mxn< M + P, N + Q, float_t > 
+matrix_mxn< M, N, float_t >::
+direct_sum( const matrix_mxn< P, Q, float_t >& other )
+{
+	matrix_mxn< M + P, N + Q, float_t > result;
+	direct_sum( other, result );
+	return result;
+}
+
 
 
 } // namespace vmml

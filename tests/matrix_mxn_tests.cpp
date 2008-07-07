@@ -142,7 +142,8 @@ matrix_mxn_tests::run()
 		matrix_mxn< 2, 3 > MplusM = m0 + m0;
 	
 	}
-    
+
+    #if 0
     // matrix inversion for 2x2 using functor
     
     if ( ok )
@@ -176,7 +177,8 @@ matrix_mxn_tests::run()
 			log_error( error.str() );
         }
     }
-
+    #endif
+    
     // matrix inversion for 2x2 using matrix_mxm
 
     if ( ok )

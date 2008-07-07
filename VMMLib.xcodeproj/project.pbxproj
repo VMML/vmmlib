@@ -16,6 +16,10 @@
 		988F58850C22C1F10005AC92 /* QuaternionTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 988F583B0C22C09C0005AC92 /* QuaternionTest.cpp */; };
 		988F58860C22C1F10005AC92 /* JacobiSolverTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 988F58340C22C09C0005AC92 /* JacobiSolverTest.cpp */; };
 		988F58870C22C1F10005AC92 /* SVDTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 988F583D0C22C09C0005AC92 /* SVDTest.cpp */; };
+		98FE7DCF0E224EC400B1E17F /* unit_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98FE7DCD0E224EC400B1E17F /* unit_test.cpp */; };
+		98FE7DD20E224EE200B1E17F /* matrix_mxn_tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98FE7DD00E224EE200B1E17F /* matrix_mxn_tests.cpp */; };
+		98FE7DFC0E224F9400B1E17F /* unit_tests_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98FE7DF90E224F9400B1E17F /* unit_tests_main.cpp */; };
+		98FE7DFD0E224F9400B1E17F /* all_unit_tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98FE7DFA0E224F9400B1E17F /* all_unit_tests.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -56,10 +60,28 @@
 		988F58780C22C1B90005AC92 /* VMMLibTest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = VMMLibTest; sourceTree = BUILT_PRODUCTS_DIR; };
 		988F59AC0C22C9A90005AC92 /* VMMLib-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "VMMLib-Info.plist"; sourceTree = "<group>"; };
 		988F5A100C22CAFE0005AC92 /* README */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
+		98FE7DBF0E224E5D00B1E17F /* array.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = array.hpp; path = include/vmmlib/array.hpp; sourceTree = "<group>"; };
+		98FE7DC50E224E8700B1E17F /* vmmlib_unit_tests */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = vmmlib_unit_tests; sourceTree = BUILT_PRODUCTS_DIR; };
+		98FE7DCD0E224EC400B1E17F /* unit_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = unit_test.cpp; path = tests/unit_test.cpp; sourceTree = "<group>"; };
+		98FE7DCE0E224EC400B1E17F /* unit_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = unit_test.hpp; path = tests/unit_test.hpp; sourceTree = "<group>"; };
+		98FE7DD00E224EE200B1E17F /* matrix_mxn_tests.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = matrix_mxn_tests.cpp; path = tests/matrix_mxn_tests.cpp; sourceTree = "<group>"; };
+		98FE7DD10E224EE200B1E17F /* matrix_mxn_tests.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = matrix_mxn_tests.hpp; path = tests/matrix_mxn_tests.hpp; sourceTree = "<group>"; };
+		98FE7DD30E224EFE00B1E17F /* matrix_mxm.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = matrix_mxm.hpp; path = tests/matrix_mxm.hpp; sourceTree = "<group>"; };
+		98FE7DD40E224EFE00B1E17F /* matrix_mxn.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = matrix_mxn.hpp; path = tests/matrix_mxn.hpp; sourceTree = "<group>"; };
+		98FE7DF90E224F9400B1E17F /* unit_tests_main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = unit_tests_main.cpp; path = tests/unit_tests_main.cpp; sourceTree = "<group>"; };
+		98FE7DFA0E224F9400B1E17F /* all_unit_tests.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = all_unit_tests.cpp; path = tests/all_unit_tests.cpp; sourceTree = "<group>"; };
+		98FE7DFB0E224F9400B1E17F /* all_unit_tests.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = all_unit_tests.hpp; path = tests/all_unit_tests.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		988F58760C22C1B90005AC92 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		98FE7DC30E224E8700B1E17F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -73,6 +95,7 @@
 			isa = PBXGroup;
 			children = (
 				988F58780C22C1B90005AC92 /* VMMLibTest */,
+				98FE7DC50E224E8700B1E17F /* vmmlib_unit_tests */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -116,6 +139,7 @@
 			children = (
 				985F6FC40C6B7C67002B05C5 /* vmmlib.h */,
 				988F58300C22C0160005AC92 /* Basics */,
+				98FE7DBC0E224E3D00B1E17F /* matrix mxn */,
 				988F58320C22C0570005AC92 /* Frustum */,
 				988F58310C22C01D0005AC92 /* Advanced */,
 			);
@@ -179,6 +203,35 @@
 		988F58330C22C0720005AC92 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				98FE7DCC0E224EA800B1E17F /* new */,
+				98FE7DCB0E224EA200B1E17F /* old */,
+			);
+			name = Tests;
+			sourceTree = "<group>";
+		};
+		98FE7DBC0E224E3D00B1E17F /* matrix mxn */ = {
+			isa = PBXGroup;
+			children = (
+				98FE7DD40E224EFE00B1E17F /* matrix_mxn.hpp */,
+				98FE7DD30E224EFE00B1E17F /* matrix_mxm.hpp */,
+				98FE7DBF0E224E5D00B1E17F /* array.hpp */,
+				98FE7DC90E224E9800B1E17F /* unit_tests */,
+			);
+			name = "matrix mxn";
+			sourceTree = "<group>";
+		};
+		98FE7DC90E224E9800B1E17F /* unit_tests */ = {
+			isa = PBXGroup;
+			children = (
+				98FE7DD10E224EE200B1E17F /* matrix_mxn_tests.hpp */,
+				98FE7DD00E224EE200B1E17F /* matrix_mxn_tests.cpp */,
+			);
+			name = unit_tests;
+			sourceTree = "<group>";
+		};
+		98FE7DCB0E224EA200B1E17F /* old */ = {
+			isa = PBXGroup;
+			children = (
 				988F58360C22C09C0005AC92 /* main_test.cpp */,
 				988F583F0C22C09C0005AC92 /* Test.h */,
 				988F58400C22C09C0005AC92 /* Vector2Test.cpp */,
@@ -198,7 +251,19 @@
 				988F583D0C22C09C0005AC92 /* SVDTest.cpp */,
 				988F583E0C22C09C0005AC92 /* SVDTest.h */,
 			);
-			name = Tests;
+			name = old;
+			sourceTree = "<group>";
+		};
+		98FE7DCC0E224EA800B1E17F /* new */ = {
+			isa = PBXGroup;
+			children = (
+				98FE7DF90E224F9400B1E17F /* unit_tests_main.cpp */,
+				98FE7DFB0E224F9400B1E17F /* all_unit_tests.hpp */,
+				98FE7DFA0E224F9400B1E17F /* all_unit_tests.cpp */,
+				98FE7DCE0E224EC400B1E17F /* unit_test.hpp */,
+				98FE7DCD0E224EC400B1E17F /* unit_test.cpp */,
+			);
+			name = new;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -220,18 +285,37 @@
 			productReference = 988F58780C22C1B90005AC92 /* VMMLibTest */;
 			productType = "com.apple.product-type.tool";
 		};
+		98FE7DC40E224E8700B1E17F /* vmmlib_unit_tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 98FE7DCA0E224E9800B1E17F /* Build configuration list for PBXNativeTarget "vmmlib_unit_tests" */;
+			buildPhases = (
+				98FE7DC20E224E8700B1E17F /* Sources */,
+				98FE7DC30E224E8700B1E17F /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = vmmlib_unit_tests;
+			productName = vmmlib_unit_tests;
+			productReference = 98FE7DC50E224E8700B1E17F /* vmmlib_unit_tests */;
+			productType = "com.apple.product-type.tool";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		0867D690FE84028FC02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 1DEB91B108733DA50010E9CD /* Build configuration list for PBXProject "VMMLib" */;
+			compatibilityVersion = "Xcode 2.4";
 			hasScannedForEncodings = 1;
 			mainGroup = 0867D691FE84028FC02AAC07 /* VMMLib */;
 			productRefGroup = 034768DFFF38A50411DB9C8B /* Products */;
 			projectDirPath = "";
+			projectRoot = "";
 			targets = (
 				988F58770C22C1B90005AC92 /* VMMLibTest */,
+				98FE7DC40E224E8700B1E17F /* vmmlib_unit_tests */,
 			);
 		};
 /* End PBXProject section */
@@ -250,6 +334,17 @@
 				988F58850C22C1F10005AC92 /* QuaternionTest.cpp in Sources */,
 				988F58860C22C1F10005AC92 /* JacobiSolverTest.cpp in Sources */,
 				988F58870C22C1F10005AC92 /* SVDTest.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		98FE7DC20E224E8700B1E17F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				98FE7DCF0E224EC400B1E17F /* unit_test.cpp in Sources */,
+				98FE7DD20E224EE200B1E17F /* matrix_mxn_tests.cpp in Sources */,
+				98FE7DFC0E224F9400B1E17F /* unit_tests_main.cpp in Sources */,
+				98FE7DFD0E224F9400B1E17F /* all_unit_tests.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -331,6 +426,35 @@
 			};
 			name = Release;
 		};
+		98FE7DC70E224E8800B1E17F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = /usr/local/bin;
+				PREBINDING = NO;
+				PRODUCT_NAME = vmmlib_unit_tests;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		98FE7DC80E224E8800B1E17F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				PREBINDING = NO;
+				PRODUCT_NAME = vmmlib_unit_tests;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -348,6 +472,15 @@
 			buildConfigurations = (
 				988F587B0C22C1D70005AC92 /* Debug */,
 				988F587C0C22C1D70005AC92 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		98FE7DCA0E224E9800B1E17F /* Build configuration list for PBXNativeTarget "vmmlib_unit_tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				98FE7DC70E224E8800B1E17F /* Debug */,
+				98FE7DC80E224E8800B1E17F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

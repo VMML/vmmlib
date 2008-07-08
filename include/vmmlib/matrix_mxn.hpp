@@ -82,9 +82,9 @@ public:
     void getColumn( size_t columnNumber, array< float_t, N >& column ) const;
     void setColumn( size_t columnNumber, const array< float_t, N >& column );
 
-    void getRow( size_t rowNumber, array< float_t, M >& column ) const;
-    void setRow( size_t rowNumber,  const array< float_t, M >& column );
-    
+    void getRow( size_t rowNumber, array< float_t, M >& row ) const;
+    void setRow( size_t rowNumber,  const array< float_t, M >& row );
+       
     float_t& at( size_t row, size_t column );
     
     array< float_t, N >& operator[]( size_t rowIndex );
@@ -194,7 +194,8 @@ template< size_t M, size_t N, typename float_t >
 void
 matrix_mxn< M, N, float_t >::operator=( const std::vector< float_t >& data )
 {
-    assert( data.size() >= M * N );
+    //assert( data.size() >= M * N );
+    if ( data.size() >= M * N ) throw "FIXME.";
     copyFrom1DimCArray( &data[ 0 ], true );
 }
 
@@ -386,6 +387,7 @@ array< float_t, N >&
 matrix_mxn< M, N, float_t >::
 operator[]( size_t rowIndex )
 {
+    if ( rowIndex >= M ) throw "FIXME.";
     assert( rowIndex < M );
     return _rows[ rowIndex ];
 }
@@ -397,6 +399,7 @@ const array< float_t, N >&
 matrix_mxn< M, N, float_t >::
 operator[]( size_t rowIndex ) const
 {
+    if ( rowIndex >= M ) throw "FIXME.";
     assert( rowIndex < M );
     return _rows[ rowIndex ];
 }

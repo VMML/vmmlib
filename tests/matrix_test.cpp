@@ -223,17 +223,74 @@ matrix_test::run()
         }
     }
 
-	// matrix addition
-	
-	if ( ok )
+
+	#ifdef VMMLIB_SAFE_ACCESSORS
+	ok = true;
 	{
+		matrix< 3, 2 > m;
+		try
+		{
+			m.at( 3, 2 );
+			ok = false;
+		}
+		catch(...)
+		{}
+		try
+		{
+			if ( ok ) m.at( 1, 1 );
+		}
+		catch(...)
+		{
+			ok = false;
+		}
+		try
+		{
+			if ( ok ) 
+			{
+				m[ 3 ][ 2 ];
+				ok = false;
+			}
+		}
+		catch(...)
+		{}
+		log( "safe accessors (debug option)", ok );
+	}
+	#endif
+
+	// matrix addition
+	ok = true;
+	{
+		// FIXME
 		matrix< 2, 3 > MplusM = m0 + m0;
 	
 	}
 
-    // matrix inversion for 2x2
+	// getSubMatrix
+	ok = true;
+	{
+		matrix< 1, 2 > m;
+		m = m0.getSubMatrix< 1, 2 >( 1, 1 );
+		ok = m.at( 0, 0 ) == m0.at( 1, 1 );
+		if ( ok ) ok = m.at( 0, 1 ) == m0.at( 1, 2 );
+		log( "getSubMatrix()", ok );
+        if ( ! ok )
+        {
+			std::stringstream error;
+			error
+                << "m0 " << m0 
+                << "m " << m 
+				<< "m0.at( 1, 1 ): " << m0.at( 1, 1 ) << "\n"
+                << "m.at( 0, 0 ): " << m.at( 0, 0 ) << "\n"
+				<< "m0.at( 1, 2 ): " << m0.at( 1, 2 )<< "\n"
+                << "m.at( 0, 1 ): " << m.at( 0, 1 )<< "\n"
+                << std::endl;
+			log_error( error.str() );
+        }
+	}
 
-    if ( ok )
+
+    // matrix inversion for 2x2
+	ok = true;
     {
         matrix< 2, 2 > M, M_inverse, M_inverse_correct;
         double Mdata[] = { 1, 3, 4, 2 };

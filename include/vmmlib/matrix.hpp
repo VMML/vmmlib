@@ -5,6 +5,8 @@
 #include <iomanip>
 #include <vector>
 
+#define VMMLIB_SAFE_ACCESSORS
+
 namespace vmml
 {
 
@@ -13,16 +15,27 @@ template< size_t M, size_t N, typename float_t = double >
 class matrix
 {
 public:
+	static const bool is_square = M == N;
 	struct row_accessor
 	{
 		row_accessor( float_t* array_ ) : array( array_ ) {}
 		float_t&
 		operator[]( size_t colIndex )
-		{ return array[ colIndex * M ]; }
+		{ 
+			#ifdef VMMLIB_SAFE_ACCESSORS
+			if ( colIndex >= N ) throw "FIXME";
+			#endif
+			return array[ colIndex * M ]; 
+		}
 
 		const float_t&
 		operator[]( size_t colIndex ) const
-		{ return array[ colIndex * M ]; }
+		{ 
+			#ifdef VMMLIB_SAFE_ACCESSORS
+			if ( colIndex >= N ) throw "FIXME";
+			#endif
+			return array[ colIndex * M ]; 
+		}
 		
 		float_t* array;
 		private: row_accessor() {} // disallow std ctor
@@ -36,9 +49,19 @@ public:
 	// usage: matrix< 2, 2, float > m; m[ 1 ][ 0 ] = 37.0f;
 	inline row_accessor operator[]( size_t rowIndex )
 	{ 
+		#ifdef VMMLIB_SAFE_ACCESSORS
+		if ( rowIndex > M ) throw "FIXME";
+		#endif
 		return row_accessor( array + rowIndex );
 	}
 
+	template< size_t Mret, size_t Nret >
+	matrix< Mret, Nret, float_t > getSubMatrix( size_t rowOffset, 
+		size_t colOffset ) const;
+
+	template< size_t Mret, size_t Nret >
+	void getSubMatrix( matrix< Mret, Nret, float_t >& result, 
+		size_t rowOffset, size_t colOffset ) const;
 
     // (this) matrix = left matrix_mxp * right matrix_pxn
     template< size_t P >
@@ -48,7 +71,8 @@ public:
         );
 		
     // returned matrix_mxp = (this) matrix * other matrix_nxp;
-    // use mul for performance reasons, it avoids a copy of the result matrix
+    // use multiply(...) for performance reasons, it avoids a copy of the 
+	// resulting matrix
     template< size_t P >
     matrix< M, P, float_t > operator*( matrix< N, P, float_t >& other ); 
 
@@ -169,6 +193,9 @@ template< size_t M, size_t N, typename float_t >
 inline float_t&
 matrix< M, N, float_t >::at( size_t rowIndex, size_t colIndex )
 {
+	#ifdef VMMLIB_SAFE_ACCESSORS
+	if ( rowIndex >= M || colIndex >= N ) throw "FIXME";
+	#endif
     return array[ colIndex * M + rowIndex ];
 }
 
@@ -178,6 +205,9 @@ template< size_t M, size_t N, typename float_t >
 const inline float_t&
 matrix< M, N, float_t >::at( size_t rowIndex, size_t colIndex ) const
 {
+	#ifdef VMMLIB_SAFE_ACCESSORS
+	if ( rowIndex >= M || colIndex >= N ) throw "FIXME";
+	#endif
     return array[ colIndex * M + rowIndex ];
 }
 
@@ -633,6 +663,37 @@ direct_sum( const matrix< P, Q, float_t >& other )
 
 
 template< size_t M, size_t N, typename float_t >
+template< size_t Mret, size_t Nret >
+matrix< Mret, Nret, float_t >
+matrix< M, N, float_t >::getSubMatrix( size_t rowOffset, 
+	size_t colOffset ) const
+{
+	matrix< Mret, Nret, float_t > result;
+	getSubMatrix( result, rowOffset, colOffset );
+	return result;
+}
+
+
+
+template< size_t M, size_t N, typename float_t >
+template< size_t Mret, size_t Nret >
+void
+matrix< M, N, float_t >::getSubMatrix( matrix< Mret, Nret, float_t >& result, 
+	size_t rowOffset, size_t colOffset ) const
+{
+	for( size_t rowIndex = 0; rowIndex < Mret; ++rowIndex )
+	{
+		for( size_t colIndex = 0; colIndex < Nret; ++colIndex )
+		{
+			result.at( rowIndex, colIndex ) 
+				= at( rowOffset + rowIndex, colOffset + colIndex );
+		}
+	}
+}
+
+
+
+template< size_t M, size_t N, typename float_t >
 inline float_t
 matrix< M, N, float_t >::computeDeterminant() const
 {
@@ -888,6 +949,9 @@ matrix< 4, 4, double >::computeInverse( matrix< 4, 4, double >& result, double t
    for( unsigned i = 0; i != 16; ++i )
        result.array[i] *= detinv;
 }
+
+
+
 
 } // namespace vmml
 

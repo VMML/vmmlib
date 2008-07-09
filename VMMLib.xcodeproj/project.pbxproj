@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		986834C10E24FFD400618F55 /* vector_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 986834BF0E24FFD400618F55 /* vector_test.cpp */; };
+		986834C20E24FFD400618F55 /* vector_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 986834BF0E24FFD400618F55 /* vector_test.cpp */; };
 		988F587F0C22C1F10005AC92 /* main_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 988F58360C22C09C0005AC92 /* main_test.cpp */; };
 		988F58800C22C1F10005AC92 /* Vector2Test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 988F58400C22C09C0005AC92 /* Vector2Test.cpp */; };
 		988F58810C22C1F10005AC92 /* Vector3Test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 988F58420C22C09C0005AC92 /* Vector3Test.cpp */; };
@@ -43,6 +45,10 @@
 		985F6FCF0C6B7C67002B05C5 /* frustumCuller.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = frustumCuller.h; path = include/vmmlib/frustumCuller.h; sourceTree = "<group>"; };
 		985F6FD00C6B7C67002B05C5 /* frustum.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = frustum.h; path = include/vmmlib/frustum.h; sourceTree = "<group>"; };
 		985F6FD10C6B7C67002B05C5 /* axisAlignedBoundingBox.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = axisAlignedBoundingBox.h; path = include/vmmlib/axisAlignedBoundingBox.h; sourceTree = "<group>"; };
+		9868345B0E24F8F300618F55 /* vector.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = vector.hpp; path = include/vmmlib/vector.hpp; sourceTree = "<group>"; };
+		9868345D0E24F97D00618F55 /* vmmlib_config.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = vmmlib_config.hpp; path = include/vmmlib/vmmlib_config.hpp; sourceTree = "<group>"; };
+		986834BF0E24FFD400618F55 /* vector_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = vector_test.cpp; path = tests/vector_test.cpp; sourceTree = "<group>"; };
+		986834C00E24FFD400618F55 /* vector_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = vector_test.hpp; path = tests/vector_test.hpp; sourceTree = "<group>"; };
 		988F58340C22C09C0005AC92 /* JacobiSolverTest.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = JacobiSolverTest.cpp; path = tests/JacobiSolverTest.cpp; sourceTree = "<group>"; };
 		988F58350C22C09C0005AC92 /* JacobiSolverTest.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = JacobiSolverTest.h; path = tests/JacobiSolverTest.h; sourceTree = "<group>"; };
 		988F58360C22C09C0005AC92 /* main_test.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = main_test.cpp; path = tests/main_test.cpp; sourceTree = "<group>"; };
@@ -227,7 +233,7 @@
 			isa = PBXGroup;
 			children = (
 				98B7A24D0E24C8750064264E /* unit testing */,
-				98B7A24F0E24C87E0064264E /* performance tests */,
+				98B7A24F0E24C87E0064264E /* performance testing */,
 				98FE7DCB0E224EA200B1E17F /* old tests */,
 			);
 			name = Tests;
@@ -252,7 +258,7 @@
 			name = "unit testing";
 			sourceTree = "<group>";
 		};
-		98B7A24F0E24C87E0064264E /* performance tests */ = {
+		98B7A24F0E24C87E0064264E /* performance testing */ = {
 			isa = PBXGroup;
 			children = (
 				98B7A2510E24C8E70064264E /* vmmlib_performance_tests_main.cpp */,
@@ -262,7 +268,7 @@
 				98B7A2560E24C9540064264E /* timer.cpp */,
 				98B7A2A20E24DF7A0064264E /* perf tests */,
 			);
-			name = "performance tests";
+			name = "performance testing";
 			sourceTree = "<group>";
 		};
 		98B7A2620E24CA760064264E /* unit tests */ = {
@@ -270,6 +276,8 @@
 			children = (
 				98F556360E24377F0044BA3E /* matrix_test.hpp */,
 				98F556350E24377F0044BA3E /* matrix_test.cpp */,
+				986834C00E24FFD400618F55 /* vector_test.hpp */,
+				986834BF0E24FFD400618F55 /* vector_test.cpp */,
 				98F556380E24377F0044BA3E /* qr_decomposition_test.hpp */,
 				98F556370E24377F0044BA3E /* qr_decomposition_test.cpp */,
 			);
@@ -289,7 +297,9 @@
 			isa = PBXGroup;
 			children = (
 				98F556320E2437540044BA3E /* matrix.hpp */,
+				9868345B0E24F8F300618F55 /* vector.hpp */,
 				98B7A3F00E24EAA30064264E /* matrix_functors.hpp */,
+				9868345D0E24F97D00618F55 /* vmmlib_config.hpp */,
 			);
 			name = "matrix mxn";
 			sourceTree = "<group>";
@@ -415,6 +425,7 @@
 				98B7A2570E24C9540064264E /* timer.cpp in Sources */,
 				98B7A26A0E24CB140064264E /* performance_test.cpp in Sources */,
 				98B7A2A50E24DF910064264E /* matrix_compare_perf_test.cpp in Sources */,
+				986834C20E24FFD400618F55 /* vector_test.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -426,6 +437,7 @@
 				98F5563A0E24377F0044BA3E /* matrix_test.cpp in Sources */,
 				98F5563B0E24377F0044BA3E /* qr_decomposition_test.cpp in Sources */,
 				98B7A2520E24C8E70064264E /* vmmlib_unit_tests_main.cpp in Sources */,
+				986834C10E24FFD400618F55 /* vector_test.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

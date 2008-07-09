@@ -5,10 +5,10 @@
 #include <iomanip>
 #include <vector>
 
-#include <vmmlib/matrix_functors.hpp>
+#include <vmmlib/vmmlib_config.hpp>
 
-#define VMMLIB_SAFE_ACCESSORS
-//#define VMMLIB_THROW_EXCEPTIONS
+#include <vmmlib/vector.hpp>
+#include <vmmlib/matrix_functors.hpp>
 
 namespace vmml
 {
@@ -23,6 +23,11 @@ public:
     matrix();
     matrix( const matrix_functor< matrix< M, N, float_t > >& functor );
     
+    // accessor for matrix elements
+    inline float_t& at( size_t rowIndex, size_t colIndex );
+    inline const float_t& at( size_t rowIndex, size_t colIndex ) const;
+
+	// legacy/compatibility accessor
 	struct row_accessor
 	{
 		row_accessor( float_t* array_ ) : array( array_ ) {}
@@ -47,11 +52,6 @@ public:
 		float_t* array;
 		private: row_accessor() {} // disallow std ctor
 	};
-
-    // accessor for matrix elements
-    inline float_t& at( size_t rowIndex, size_t colIndex );
-    inline const float_t& at( size_t rowIndex, size_t colIndex ) const;
-	// legacy/compatibility accessor
 	// this is a hack to allow array-style access to matrix elements
 	// usage: matrix< 2, 2, float > m; m[ 1 ][ 0 ] = 37.0f;
 	inline row_accessor operator[]( size_t rowIndex )
@@ -62,14 +62,6 @@ public:
 		return row_accessor( array + rowIndex );
 	}
 
-	template< size_t Mret, size_t Nret >
-	matrix< Mret, Nret, float_t > getSubMatrix( size_t rowOffset, 
-		size_t colOffset ) const;
-
-	template< size_t Mret, size_t Nret >
-	void getSubMatrix( matrix< Mret, Nret, float_t >& result, 
-		size_t rowOffset, size_t colOffset ) const;
-
     // (this) matrix = left matrix_mxp * right matrix_pxn
     template< size_t P >
     void multiply( 
@@ -77,21 +69,6 @@ public:
         const matrix< P, N, float_t >& right 
         );
 		
-    // returned matrix_mxp = (this) matrix * other matrix_nxp;
-    // use multiply(...) for performance reasons, it avoids a copy of the 
-	// resulting matrix
-    template< size_t P >
-    matrix< M, P, float_t > operator*( matrix< N, P, float_t >& other ); 
-
-	matrix< M, N, float_t > operator+( const matrix< M, N, float_t >& other ) const;
-	void operator+=( const matrix< M, N, float_t >& other );
-
-	template< size_t P, size_t Q >
-	void direct_sum( const matrix< P, Q, float_t >& other, matrix< M + P, N + Q, float_t >& result );
-	
-	template< size_t P, size_t Q >
-	matrix< M + P, N + Q, float_t > direct_sum( const matrix< P, Q, float_t >& other );
-
     // WARNING: data_array[] must be at least of size M * N - otherwise CRASH!
     // WARNING: assumes row_by_row layout - if this is not the case, 
     // use copyFrom1DimCArray( data_array, false )
@@ -108,6 +85,29 @@ public:
     
     matrix< M, N, float_t > operator*( float_t scalar );
     void operator*=( float_t scalar );
+
+    // returned matrix_mxp = (this) matrix * other matrix_nxp;
+    // use multiply(...) for performance reasons, it avoids a copy of the 
+	// resulting matrix
+    template< size_t P >
+    matrix< M, P, float_t > operator*( matrix< N, P, float_t >& other ); 
+
+	matrix< M, N, float_t > operator+( const matrix< M, N, float_t >& other ) const;
+	void operator+=( const matrix< M, N, float_t >& other );
+
+	template< size_t P, size_t Q >
+	void direct_sum( const matrix< P, Q, float_t >& other, matrix< M + P, N + Q, float_t >& result );
+	
+	template< size_t P, size_t Q >
+	matrix< M + P, N + Q, float_t > direct_sum( const matrix< P, Q, float_t >& other );
+
+	template< size_t Mret, size_t Nret >
+	matrix< Mret, Nret, float_t > getSubMatrix( size_t rowOffset, 
+		size_t colOffset ) const;
+
+	template< size_t Mret, size_t Nret >
+	void getSubMatrix( matrix< Mret, Nret, float_t >& result, 
+		size_t rowOffset, size_t colOffset ) const;
 
     // copies a transposed version of *this into transposedMatrix
     void transposeTo( matrix<N, M, float_t >& transposedMatrix ) const;
@@ -135,11 +135,22 @@ public:
     void copyFrom1DimCArray( const float_t* c_array, 
         bool row_by_row_layout = true );
 
-    matrix< M, 1, float_t > getColumn( size_t columnNumber ) const;
+    template< typename different_float_t >
+    void copyFrom1DimCArray( const different_float_t* c_array, 
+        bool row_by_row_layout = true );
+
+
+    vector< M, float_t > getColumn( size_t columnNumber ) const;
+    void getColumn( size_t columnNumber, vector< M, float_t >& column ) const;
+    void setColumn( size_t columnNumber, const vector< M, float_t >& column );
+
     void getColumn( size_t columnNumber, matrix< M, 1, float_t >& column ) const;
     void setColumn( size_t columnNumber, const matrix< M, 1, float_t >& column );
 
-    matrix< 1, N, float_t > getRow( size_t rowNumber ) const;
+    vector< N, float_t > getRow( size_t rowNumber ) const;
+    void getRow( size_t rowNumber, vector< N, float_t >& row ) const;
+    void setRow( size_t rowNumber,  const vector< N, float_t >& row );
+
     void getRow( size_t rowNumber, matrix< 1, N, float_t >& row ) const;
     void setRow( size_t rowNumber,  const matrix< 1, N, float_t >& row );
        
@@ -465,13 +476,63 @@ copyFrom1DimCArray( const float_t* c_array, bool row_by_row_layout )
 
 
 template< size_t M, size_t N, typename float_t >
-matrix< M, 1, float_t > 
+template< typename different_float_t >
+void
+matrix< M, N, float_t >::
+copyFrom1DimCArray( const different_float_t* c_array, bool row_by_row_layout )
+{
+    if ( row_by_row_layout )
+    {
+        for( size_t index = 0, rowIndex = 0; rowIndex < M; ++rowIndex )
+        {
+            for( size_t colIndex = 0; colIndex < N; ++colIndex, ++index )
+            {
+                at( rowIndex, colIndex ) = static_cast< float_t >( c_array[ index ] );
+            }
+        }
+    }
+    else
+    {
+        for( size_t index = 0, colIndex = 0; colIndex < N; ++colIndex )
+        {
+            for( size_t rowIndex = 0; rowIndex < M; ++rowIndex, ++index  )
+            {
+                at( rowIndex, colIndex ) = static_cast< float_t >( c_array[ index ] );
+            }
+        }
+    }
+}
+
+
+
+template< size_t M, size_t N, typename float_t >
+vector< M, float_t > 
 matrix< M, N, float_t >::
 getColumn( size_t columnNumber ) const
 {
-	matrix< M, 1, float_t > column;
+	vector< M, float_t > column;
 	getColumn( columnNumber, column );
 	return column;
+}
+
+
+
+template< size_t M, size_t N, typename float_t >
+void
+matrix< M, N, float_t >::
+getColumn( size_t columnNumber, vector< M, float_t >& column ) const
+{
+    memcpy( &column.array[0], &array[ M * columnNumber ], M * sizeof( float_t ) );
+}
+
+
+
+template< size_t M, size_t N, typename float_t >
+void
+matrix< M, N, float_t >::
+setColumn( size_t columnNumber, const vector< M, float_t >& column )
+{
+    memcpy( &array[ M * columnNumber ], &column.array[0], M * sizeof( float_t ) );
 }
 
 
@@ -488,7 +549,7 @@ getColumn( size_t columnNumber, matrix< M, 1, float_t >& column ) const
         column.at( rowIndex, 1 ) = at( rowIndex, columnNumber );
     }
     #endif
-    memcpy( &column.array[0], &array[ M * columnNumber ], N * sizeof( float_t ) );
+    memcpy( &column.array[0], &array[ M * columnNumber ], M * sizeof( float_t ) );
 }
 
 
@@ -497,25 +558,50 @@ void
 matrix< M, N, float_t >::
 setColumn( size_t columnNumber, const matrix< M, 1, float_t >& column )
 {
-    #if 1
+    #if 0
     for( size_t rowIndex = 0; rowIndex < M; ++rowIndex )
     {
         at( rowIndex, columnNumber ) = column.at( rowIndex, 0 );
     }
     #else
-    memcpy( &array[ M * columnNumber ], &column.array[0], N * sizeof( float_t ) );
+    memcpy( &array[ M * columnNumber ], &column.array[0], M * sizeof( float_t ) );
     #endif
 }
 
 
 template< size_t M, size_t N, typename float_t >
-matrix< 1, N, float_t > 
+vector< N, float_t > 
 matrix< M, N, float_t >::
 getRow( size_t rowNumber ) const
 {
-	matrix< 1, N, float_t > row;
+	vector< N, float_t > row;
 	getRow( rowNumber, row );
 	return row;
+}
+
+
+template< size_t M, size_t N, typename float_t >
+void
+matrix< M, N, float_t >::
+getRow( size_t rowNumber, vector< N, float_t >& row ) const
+{
+    for( size_t colIndex = 0; colIndex < N; ++colIndex )
+    {
+        row.at( colIndex ) = at( rowNumber, colIndex );
+    }
+}
+
+
+
+template< size_t M, size_t N, typename float_t >
+void
+matrix< M, N, float_t >::
+setRow( size_t rowNumber,  const vector< N, float_t >& row )
+{
+    for( size_t colIndex = 0; colIndex < N; ++colIndex )
+    {
+        at( rowNumber, colIndex ) = row.at( colIndex );
+    }
 }
 
 

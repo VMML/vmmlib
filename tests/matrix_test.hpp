@@ -1,8 +1,6 @@
 #ifndef __VMML__MATRIX_TEST__HPP__
 #define __VMML__MATRIX_TEST__HPP__
 
-#include <vmmlib/matrix.hpp>
-
 #include "unit_test.hpp"
 
 #include <string>

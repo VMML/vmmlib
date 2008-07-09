@@ -1,0 +1,9 @@
+#ifndef __VMML__VMMLIB_CONFIG__HPP__
+#define __VMML__VMMLIB_CONFIG__HPP__
+
+#define VMMLIB_SAFE_ACCESSORS
+#define VMMLIB_THROW_EXCEPTIONS
+
+
+#endif
+

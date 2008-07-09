@@ -1,5 +1,7 @@
 #include "matrix_test.hpp"
 
+#include <vmmlib/matrix.hpp>
+
 #include <sstream>
 
 namespace vmml
@@ -26,6 +28,17 @@ matrix_test::run()
 				ok = m0.at( rowIndex, colIndex ) == tmp;
 			}
 		}
+
+        float dataf[] = { 6, 5, 4, 3, 2, 1 };
+        m0.copyFrom1DimCArray( dataf );
+        tmp = 6;
+		for( size_t rowIndex = 0; ok && rowIndex < 2; ++rowIndex )
+		{
+			for( size_t colIndex = 0; ok && colIndex < 3; ++colIndex, --tmp )
+			{
+				ok = m0.at( rowIndex, colIndex ) == tmp;
+			}
+		}
 		log( "copyFrom1DimCArray( .. , row_by_row )", ok  );
 		if ( ! ok )
 		{
@@ -42,9 +55,21 @@ matrix_test::run()
     // tests copyFrom1DimCArray function with col_by_col data
 	ok = true;
 	{
-		for( size_t tmp = 1, colIndex = 0; ok && colIndex < 2; ++colIndex )
+        size_t tmp = 1;
+		for( size_t colIndex = 0; ok && colIndex < 2; ++colIndex )
 		{
 			for( size_t rowIndex = 0; ok && rowIndex < 3; ++rowIndex, ++tmp )
+			{
+				ok = m1.at( rowIndex, colIndex ) == tmp;
+			}
+		}
+        
+        tmp = 6;
+        float dataf[] = { 6, 3, 5, 2, 4, 1 };
+        m1.copyFrom1DimCArray( dataf );
+		for( size_t colIndex = 0; ok && colIndex < 2; ++colIndex )
+		{
+			for( size_t rowIndex = 0; ok && rowIndex < 3; ++rowIndex, --tmp )
 			{
 				ok = m1.at( rowIndex, colIndex ) == tmp;
 			}
@@ -57,6 +82,55 @@ matrix_test::run()
 			log_error( error.str() );
 		}
 	}
+
+    // test copy ctor
+	ok = true;
+	{
+		matrix< 2, 3 > m0_copy( m0 );
+		ok = m0 == m0_copy;
+		if ( ok )
+		{
+			ok = ! ( m0 != m0_copy );
+		}
+		log( "copy ctor", ok );
+		if ( ! ok )
+		{
+			std::stringstream error;
+			error << m0 << m0_copy << std::endl;
+			log_error( error.str() );
+		}
+	}
+
+
+    // test ::IDENTITY / ::ZERO
+	ok = true;
+	{
+		matrix< 5, 5 > identity( matrix< 5, 5 >::IDENTITY );
+		matrix< 5, 2 > zero( matrix< 5, 2 >::ZERO );
+        
+        double id_data[] = { 1,0,0,0,0, 0,1,0,0,0,  0,0,1,0,0, 0,0,0,1,0, 0,0,0,0,1 };
+		matrix< 5, 5 > id_correct;
+        id_correct = id_data;
+        
+        double zero_data[] = { 0,0,0,0,0, 0,0,0,0,0 };
+		matrix< 5, 2 > zero_correct;
+        zero_correct = zero_data;
+        
+		ok = identity == id_correct;
+        if ( ok ) ok = zero == zero_correct;
+
+		log( "static IDENTITY / ZERO members", ok );
+		if ( ! ok )
+		{
+			std::stringstream error;
+			error 
+                << "identity "  << identity 
+                << "zero "      << zero
+                << std::endl;
+			log_error( error.str() );
+		}
+	}
+
 
     // test operator== / operator !=
 	ok = true;
@@ -110,8 +184,11 @@ matrix_test::run()
 		matrix< 2, 3 > M;
 		double Mdata[] = { 1, 2, 3, 4, 5, 6 };
 		M = Mdata;
-		matrix< 1, 3 > M_row = M.getRow( 1 );
-		matrix< 2, 1 > M_column = M.getColumn( 2 );
+		matrix< 1, 3 > M_row;
+        M.getRow( 1, M_row );
+        
+		matrix< 2, 1 > M_column;
+        M.getColumn( 2, M_column );
 		
 		for( size_t column = 0; ok && column < 3; ++column )
 		{

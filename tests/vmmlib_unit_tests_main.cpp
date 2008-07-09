@@ -1,4 +1,5 @@
 
+#include "vector_test.hpp"
 #include "matrix_test.hpp"
 #include "qr_decomposition_test.hpp"
 
@@ -15,6 +16,9 @@ run_and_log( vmml::unit_test& test )
 int
 main( int argc, const char* argv[] )
 {
+    vmml::vector_test vector_test_;
+    run_and_log( vector_test_ );
+
     vmml::matrix_test matrix_test_;
     run_and_log( matrix_test_ );
 

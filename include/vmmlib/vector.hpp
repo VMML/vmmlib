@@ -29,6 +29,18 @@ public:
     inline const float_t& z() const;
     inline const float_t& w() const;
     
+    const vector< M, float_t >& operator=( const float_t* c_array );
+    
+    vector< M, float_t > operator*( const vector< M, float_t >& other ) const;
+    vector< M, float_t > operator/( const vector< M, float_t >& other ) const;    
+    vector< M, float_t > operator+( const vector< M, float_t >& other ) const; 
+    vector< M, float_t > operator-( const vector< M, float_t >& other ) const;
+
+    void operator*=( const vector< M, float_t >& other );
+    void operator/=( const vector< M, float_t >& other );    
+    void operator+=( const vector< M, float_t >& other ); 
+    void operator-=( const vector< M, float_t >& other );
+    
     void copyFrom1DimCArray( const float_t* c_array );
 
     template< typename different_float_t >
@@ -108,6 +120,112 @@ vector< M, float_t >::operator[]( size_t index ) const
 }
 
 
+
+template< size_t M, typename float_t >
+vector< M, float_t >
+vector< M, float_t >::operator*( const vector< M, float_t >& other ) const
+{
+    vector< M, float_t > result;
+    for( size_t index = 0; index < M; ++index )
+    {
+        result.at( index ) = at( index ) * other.at( index );
+    }
+    return result;
+}
+
+
+
+template< size_t M, typename float_t >
+vector< M, float_t >
+vector< M, float_t >::operator/( const vector< M, float_t >& other ) const
+{
+    vector< M, float_t > result;
+    for( size_t index = 0; index < M; ++index )
+    {
+        result.at( index ) = at( index ) / other.at( index );
+    }
+    return result;
+}
+
+
+
+template< size_t M, typename float_t >
+vector< M, float_t >
+vector< M, float_t >::operator+( const vector< M, float_t >& other ) const
+{
+    vector< M, float_t > result;
+    for( size_t index = 0; index < M; ++index )
+    {
+        result.at( index ) = at( index ) + other.at( index );
+    }
+    return result;
+}
+
+
+
+template< size_t M, typename float_t >
+vector< M, float_t >
+vector< M, float_t >::operator-( const vector< M, float_t >& other ) const
+{
+    vector< M, float_t > result;
+    for( size_t index = 0; index < M; ++index )
+    {
+        result.at( index ) = at( index ) - other.at( index );
+    }
+    return result;
+}
+
+
+
+
+template< size_t M, typename float_t >
+void
+vector< M, float_t >::operator*=( const vector< M, float_t >& other )
+{
+    for( size_t index = 0; index < M; ++index )
+    {
+        at( index ) *= other.at( index );
+    }
+}
+
+
+
+template< size_t M, typename float_t >
+void
+vector< M, float_t >::operator/=( const vector< M, float_t >& other )
+{
+    for( size_t index = 0; index < M; ++index )
+    {
+        at( index ) /= other.at( index );
+    }
+}
+
+
+
+template< size_t M, typename float_t >
+void
+vector< M, float_t >::operator+=( const vector< M, float_t >& other )
+{
+    for( size_t index = 0; index < M; ++index )
+    {
+        at( index ) += other.at( index );
+    }
+}
+
+
+
+template< size_t M, typename float_t >
+void
+vector< M, float_t >::operator-=( const vector< M, float_t >& other )
+{
+    for( size_t index = 0; index < M; ++index )
+    {
+        at( index ) -= other.at( index );
+    }
+}
+
+
+
 template< size_t M, typename float_t >
 inline float_t&
 vector< M, float_t >::x()
@@ -171,6 +289,14 @@ vector< M, float_t >::w() const
     return at( 3 );
 }
 
+
+template< size_t M, typename float_t >
+const vector< M, float_t >&
+vector< M, float_t >::operator=( const float_t* c_array )
+{
+    copyFrom1DimCArray( c_array );
+    return *this;
+}
 
 
 template< size_t M, typename float_t >

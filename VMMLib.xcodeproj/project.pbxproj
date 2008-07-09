@@ -266,7 +266,7 @@
 				98B7A2680E24CB140064264E /* performance_test.cpp */,
 				98B7A2550E24C9540064264E /* timer.hpp */,
 				98B7A2560E24C9540064264E /* timer.cpp */,
-				98B7A2A20E24DF7A0064264E /* perf tests */,
+				98B7A2A20E24DF7A0064264E /* performance tests */,
 			);
 			name = "performance testing";
 			sourceTree = "<group>";
@@ -284,13 +284,13 @@
 			name = "unit tests";
 			sourceTree = "<group>";
 		};
-		98B7A2A20E24DF7A0064264E /* perf tests */ = {
+		98B7A2A20E24DF7A0064264E /* performance tests */ = {
 			isa = PBXGroup;
 			children = (
 				98B7A2A40E24DF910064264E /* matrix_compare_perf_test.hpp */,
 				98B7A2A30E24DF910064264E /* matrix_compare_perf_test.cpp */,
 			);
-			name = "perf tests";
+			name = "performance tests";
 			sourceTree = "<group>";
 		};
 		98FE7DBC0E224E3D00B1E17F /* matrix mxn */ = {

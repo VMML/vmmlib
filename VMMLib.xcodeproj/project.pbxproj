@@ -16,9 +16,13 @@
 		988F58850C22C1F10005AC92 /* QuaternionTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 988F583B0C22C09C0005AC92 /* QuaternionTest.cpp */; };
 		988F58860C22C1F10005AC92 /* JacobiSolverTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 988F58340C22C09C0005AC92 /* JacobiSolverTest.cpp */; };
 		988F58870C22C1F10005AC92 /* SVDTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 988F583D0C22C09C0005AC92 /* SVDTest.cpp */; };
+		98B7A2520E24C8E70064264E /* vmmlib_unit_tests_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98B7A2500E24C8E70064264E /* vmmlib_unit_tests_main.cpp */; };
+		98B7A2540E24C8F40064264E /* vmmlib_performance_tests_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98B7A2510E24C8E70064264E /* vmmlib_performance_tests_main.cpp */; };
+		98B7A2570E24C9540064264E /* timer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98B7A2560E24C9540064264E /* timer.cpp */; };
+		98B7A26A0E24CB140064264E /* performance_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98B7A2680E24CB140064264E /* performance_test.cpp */; };
+		98B7A2A50E24DF910064264E /* matrix_compare_perf_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98B7A2A30E24DF910064264E /* matrix_compare_perf_test.cpp */; };
 		98F5563A0E24377F0044BA3E /* matrix_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98F556350E24377F0044BA3E /* matrix_test.cpp */; };
 		98F5563B0E24377F0044BA3E /* qr_decomposition_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98F556370E24377F0044BA3E /* qr_decomposition_test.cpp */; };
-		98F5563E0E24384E0044BA3E /* test_vmmlib_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98F5563D0E24384E0044BA3E /* test_vmmlib_main.cpp */; };
 		98FE7DCF0E224EC400B1E17F /* unit_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98FE7DCD0E224EC400B1E17F /* unit_test.cpp */; };
 /* End PBXBuildFile section */
 
@@ -60,6 +64,16 @@
 		988F58780C22C1B90005AC92 /* VMMLibTest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = VMMLibTest; sourceTree = BUILT_PRODUCTS_DIR; };
 		988F59AC0C22C9A90005AC92 /* VMMLib-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "VMMLib-Info.plist"; sourceTree = "<group>"; };
 		988F5A100C22CAFE0005AC92 /* README */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
+		98B7A2490E24C85C0064264E /* vmmlib_performance_tests */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = vmmlib_performance_tests; sourceTree = BUILT_PRODUCTS_DIR; };
+		98B7A2500E24C8E70064264E /* vmmlib_unit_tests_main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = vmmlib_unit_tests_main.cpp; path = tests/vmmlib_unit_tests_main.cpp; sourceTree = "<group>"; };
+		98B7A2510E24C8E70064264E /* vmmlib_performance_tests_main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = vmmlib_performance_tests_main.cpp; path = tests/vmmlib_performance_tests_main.cpp; sourceTree = "<group>"; };
+		98B7A2550E24C9540064264E /* timer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = timer.hpp; path = tests/timer.hpp; sourceTree = "<group>"; };
+		98B7A2560E24C9540064264E /* timer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = timer.cpp; path = tests/timer.cpp; sourceTree = "<group>"; };
+		98B7A2680E24CB140064264E /* performance_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = performance_test.cpp; path = tests/performance_test.cpp; sourceTree = "<group>"; };
+		98B7A2690E24CB140064264E /* performance_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = performance_test.hpp; path = tests/performance_test.hpp; sourceTree = "<group>"; };
+		98B7A2A30E24DF910064264E /* matrix_compare_perf_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = matrix_compare_perf_test.cpp; path = tests/matrix_compare_perf_test.cpp; sourceTree = "<group>"; };
+		98B7A2A40E24DF910064264E /* matrix_compare_perf_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = matrix_compare_perf_test.hpp; path = tests/matrix_compare_perf_test.hpp; sourceTree = "<group>"; };
+		98B7A3F00E24EAA30064264E /* matrix_functors.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = matrix_functors.hpp; path = include/vmmlib/matrix_functors.hpp; sourceTree = "<group>"; };
 		98F556320E2437540044BA3E /* matrix.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = matrix.hpp; path = include/vmmlib/matrix.hpp; sourceTree = "<group>"; };
 		98F556330E2437540044BA3E /* qr_decomposition.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = qr_decomposition.hpp; path = include/vmmlib/qr_decomposition.hpp; sourceTree = "<group>"; };
 		98F556340E2437540044BA3E /* stringUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = stringUtils.h; path = include/vmmlib/stringUtils.h; sourceTree = "<group>"; };
@@ -67,7 +81,6 @@
 		98F556360E24377F0044BA3E /* matrix_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = matrix_test.hpp; path = tests/matrix_test.hpp; sourceTree = "<group>"; };
 		98F556370E24377F0044BA3E /* qr_decomposition_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qr_decomposition_test.cpp; path = tests/qr_decomposition_test.cpp; sourceTree = "<group>"; };
 		98F556380E24377F0044BA3E /* qr_decomposition_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = qr_decomposition_test.hpp; path = tests/qr_decomposition_test.hpp; sourceTree = "<group>"; };
-		98F5563D0E24384E0044BA3E /* test_vmmlib_main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = test_vmmlib_main.cpp; path = tests/test_vmmlib_main.cpp; sourceTree = "<group>"; };
 		98FE7DC50E224E8700B1E17F /* vmmlib_unit_tests */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = vmmlib_unit_tests; sourceTree = BUILT_PRODUCTS_DIR; };
 		98FE7DCD0E224EC400B1E17F /* unit_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = unit_test.cpp; path = tests/unit_test.cpp; sourceTree = "<group>"; };
 		98FE7DCE0E224EC400B1E17F /* unit_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = unit_test.hpp; path = tests/unit_test.hpp; sourceTree = "<group>"; };
@@ -75,6 +88,13 @@
 
 /* Begin PBXFrameworksBuildPhase section */
 		988F58760C22C1B90005AC92 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		98B7A2470E24C85C0064264E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -96,6 +116,7 @@
 			children = (
 				988F58780C22C1B90005AC92 /* VMMLibTest */,
 				98FE7DC50E224E8700B1E17F /* vmmlib_unit_tests */,
+				98B7A2490E24C85C0064264E /* vmmlib_performance_tests */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -142,6 +163,7 @@
 				98FE7DBC0E224E3D00B1E17F /* matrix mxn */,
 				988F58320C22C0570005AC92 /* Frustum */,
 				988F58310C22C01D0005AC92 /* Advanced */,
+				98B7A2400E24C7CF0064264E /* Misc */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -185,6 +207,7 @@
 			isa = PBXGroup;
 			children = (
 				985F6FCE0C6B7C67002B05C5 /* helperFunctions.h */,
+				98F556330E2437540044BA3E /* qr_decomposition.hpp */,
 				985F6FC80C6B7C67002B05C5 /* svd.h */,
 				985F6FCD0C6B7C67002B05C5 /* jacobiSolver.h */,
 			);
@@ -203,24 +226,46 @@
 		988F58330C22C0720005AC92 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				98FE7DCC0E224EA800B1E17F /* new */,
-				98FE7DCB0E224EA200B1E17F /* old */,
+				98B7A24D0E24C8750064264E /* unit testing */,
+				98B7A24F0E24C87E0064264E /* performance tests */,
+				98FE7DCB0E224EA200B1E17F /* old tests */,
 			);
 			name = Tests;
 			sourceTree = "<group>";
 		};
-		98FE7DBC0E224E3D00B1E17F /* matrix mxn */ = {
+		98B7A2400E24C7CF0064264E /* Misc */ = {
 			isa = PBXGroup;
 			children = (
-				98F556320E2437540044BA3E /* matrix.hpp */,
-				98FE7DC90E224E9800B1E17F /* unit_tests */,
-				98F556330E2437540044BA3E /* qr_decomposition.hpp */,
 				98F556340E2437540044BA3E /* stringUtils.h */,
 			);
-			name = "matrix mxn";
+			name = Misc;
 			sourceTree = "<group>";
 		};
-		98FE7DC90E224E9800B1E17F /* unit_tests */ = {
+		98B7A24D0E24C8750064264E /* unit testing */ = {
+			isa = PBXGroup;
+			children = (
+				98B7A2500E24C8E70064264E /* vmmlib_unit_tests_main.cpp */,
+				98FE7DCE0E224EC400B1E17F /* unit_test.hpp */,
+				98FE7DCD0E224EC400B1E17F /* unit_test.cpp */,
+				98B7A2620E24CA760064264E /* unit tests */,
+			);
+			name = "unit testing";
+			sourceTree = "<group>";
+		};
+		98B7A24F0E24C87E0064264E /* performance tests */ = {
+			isa = PBXGroup;
+			children = (
+				98B7A2510E24C8E70064264E /* vmmlib_performance_tests_main.cpp */,
+				98B7A2690E24CB140064264E /* performance_test.hpp */,
+				98B7A2680E24CB140064264E /* performance_test.cpp */,
+				98B7A2550E24C9540064264E /* timer.hpp */,
+				98B7A2560E24C9540064264E /* timer.cpp */,
+				98B7A2A20E24DF7A0064264E /* perf tests */,
+			);
+			name = "performance tests";
+			sourceTree = "<group>";
+		};
+		98B7A2620E24CA760064264E /* unit tests */ = {
 			isa = PBXGroup;
 			children = (
 				98F556360E24377F0044BA3E /* matrix_test.hpp */,
@@ -228,10 +273,28 @@
 				98F556380E24377F0044BA3E /* qr_decomposition_test.hpp */,
 				98F556370E24377F0044BA3E /* qr_decomposition_test.cpp */,
 			);
-			name = unit_tests;
+			name = "unit tests";
 			sourceTree = "<group>";
 		};
-		98FE7DCB0E224EA200B1E17F /* old */ = {
+		98B7A2A20E24DF7A0064264E /* perf tests */ = {
+			isa = PBXGroup;
+			children = (
+				98B7A2A40E24DF910064264E /* matrix_compare_perf_test.hpp */,
+				98B7A2A30E24DF910064264E /* matrix_compare_perf_test.cpp */,
+			);
+			name = "perf tests";
+			sourceTree = "<group>";
+		};
+		98FE7DBC0E224E3D00B1E17F /* matrix mxn */ = {
+			isa = PBXGroup;
+			children = (
+				98F556320E2437540044BA3E /* matrix.hpp */,
+				98B7A3F00E24EAA30064264E /* matrix_functors.hpp */,
+			);
+			name = "matrix mxn";
+			sourceTree = "<group>";
+		};
+		98FE7DCB0E224EA200B1E17F /* old tests */ = {
 			isa = PBXGroup;
 			children = (
 				988F58360C22C09C0005AC92 /* main_test.cpp */,
@@ -253,17 +316,7 @@
 				988F583D0C22C09C0005AC92 /* SVDTest.cpp */,
 				988F583E0C22C09C0005AC92 /* SVDTest.h */,
 			);
-			name = old;
-			sourceTree = "<group>";
-		};
-		98FE7DCC0E224EA800B1E17F /* new */ = {
-			isa = PBXGroup;
-			children = (
-				98F5563D0E24384E0044BA3E /* test_vmmlib_main.cpp */,
-				98FE7DCE0E224EC400B1E17F /* unit_test.hpp */,
-				98FE7DCD0E224EC400B1E17F /* unit_test.cpp */,
-			);
-			name = new;
+			name = "old tests";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -283,6 +336,22 @@
 			name = VMMLibTest;
 			productName = VMMLibTest;
 			productReference = 988F58780C22C1B90005AC92 /* VMMLibTest */;
+			productType = "com.apple.product-type.tool";
+		};
+		98B7A2480E24C85C0064264E /* vmmlib_performance_tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 98B7A24E0E24C8750064264E /* Build configuration list for PBXNativeTarget "vmmlib_performance_tests" */;
+			buildPhases = (
+				98B7A2460E24C85C0064264E /* Sources */,
+				98B7A2470E24C85C0064264E /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = vmmlib_performance_tests;
+			productName = vmmlib_performance_tests;
+			productReference = 98B7A2490E24C85C0064264E /* vmmlib_performance_tests */;
 			productType = "com.apple.product-type.tool";
 		};
 		98FE7DC40E224E8700B1E17F /* vmmlib_unit_tests */ = {
@@ -316,6 +385,7 @@
 			targets = (
 				988F58770C22C1B90005AC92 /* VMMLibTest */,
 				98FE7DC40E224E8700B1E17F /* vmmlib_unit_tests */,
+				98B7A2480E24C85C0064264E /* vmmlib_performance_tests */,
 			);
 		};
 /* End PBXProject section */
@@ -337,6 +407,17 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		98B7A2460E24C85C0064264E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				98B7A2540E24C8F40064264E /* vmmlib_performance_tests_main.cpp in Sources */,
+				98B7A2570E24C9540064264E /* timer.cpp in Sources */,
+				98B7A26A0E24CB140064264E /* performance_test.cpp in Sources */,
+				98B7A2A50E24DF910064264E /* matrix_compare_perf_test.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		98FE7DC20E224E8700B1E17F /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -344,7 +425,7 @@
 				98FE7DCF0E224EC400B1E17F /* unit_test.cpp in Sources */,
 				98F5563A0E24377F0044BA3E /* matrix_test.cpp in Sources */,
 				98F5563B0E24377F0044BA3E /* qr_decomposition_test.cpp in Sources */,
-				98F5563E0E24384E0044BA3E /* test_vmmlib_main.cpp in Sources */,
+				98B7A2520E24C8E70064264E /* vmmlib_unit_tests_main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -388,6 +469,7 @@
 					i386,
 					x86_64,
 				);
+				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
@@ -422,6 +504,35 @@
 				INSTALL_PATH = "$(HOME)/bin";
 				PREBINDING = NO;
 				PRODUCT_NAME = VMMLibTest;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		98B7A24B0E24C85C0064264E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = /usr/local/bin;
+				PREBINDING = NO;
+				PRODUCT_NAME = vmmlib_performance_tests;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		98B7A24C0E24C85C0064264E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				PREBINDING = NO;
+				PRODUCT_NAME = vmmlib_performance_tests;
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -472,6 +583,15 @@
 			buildConfigurations = (
 				988F587B0C22C1D70005AC92 /* Debug */,
 				988F587C0C22C1D70005AC92 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		98B7A24E0E24C8750064264E /* Build configuration list for PBXNativeTarget "vmmlib_performance_tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				98B7A24B0E24C85C0064264E /* Debug */,
+				98B7A24C0E24C85C0064264E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

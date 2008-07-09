@@ -5,7 +5,10 @@
 #include <iomanip>
 #include <vector>
 
+#include <vmmlib/matrix_functors.hpp>
+
 #define VMMLIB_SAFE_ACCESSORS
+//#define VMMLIB_THROW_EXCEPTIONS
 
 namespace vmml
 {
@@ -16,6 +19,10 @@ class matrix
 {
 public:
 	static const bool is_square = M == N;
+    
+    matrix();
+    matrix( const matrix_functor< matrix< M, N, float_t > >& functor );
+    
 	struct row_accessor
 	{
 		row_accessor( float_t* array_ ) : array( array_ ) {}
@@ -149,6 +156,7 @@ public:
     
     void fill( float_t fillValue );
 
+    // square matrices only
     float_t computeDeterminant() const;
     void getAdjugate( matrix< M, M, float_t >& adjugate ) const;
 	// we need a tolerance term since the determinant is often != 0 
@@ -185,8 +193,53 @@ public:
     //array< array< float_t, N >, M >    _rows;
     // column_by_column
     float_t array[ M * N ];
+    
+
+    // static members
+    static const matrix< M, N, float_t > IDENTITY;
+    static const matrix< M, N, float_t > ZERO;
+    static const set_to_identity< matrix< M, N, float_t > > IDENTITY_FUNCTOR;
+    static const set_to_zero< matrix< M, N, float_t > > ZERO_FUNCTOR;
 
 }; // class matrix
+
+/*
+template< size_t M, size_t N, typename float_t >
+const matrix< M, N, float_t > 
+matrix< M, N, float_t >::ZERO( set_to_zero< matrix< M, N, float_t > > );
+*/
+
+template< size_t M, size_t N, typename float_t >
+const set_to_identity< matrix< M, N, float_t > >
+matrix< M, N, float_t >::IDENTITY_FUNCTOR;
+
+template< size_t M, size_t N, typename float_t >
+const set_to_zero< matrix< M, N, float_t > >
+matrix< M, N, float_t >::ZERO_FUNCTOR;
+
+template< size_t M, size_t N, typename float_t >
+const matrix< M, N, float_t > 
+matrix< M, N, float_t >::IDENTITY( IDENTITY_FUNCTOR );
+
+template< size_t M, size_t N, typename float_t >
+const matrix< M, N, float_t > 
+matrix< M, N, float_t >::ZERO( ZERO_FUNCTOR );
+
+
+template< size_t M, size_t N, typename float_t >
+matrix< M, N, float_t >::matrix()
+{
+    // no initialization for performance reasons.
+}
+
+
+
+template< size_t M, size_t N, typename float_t >
+matrix< M, N, float_t >::matrix( const matrix_functor< matrix< M, N, float_t > >& functor )
+{
+    functor( *this );
+}
+
 
 
 template< size_t M, size_t N, typename float_t >
@@ -234,13 +287,9 @@ matrix< M, N, float_t >::
 operator==( const matrix< M, N, float_t >& other )
 {
     bool ok = true;
-    for( size_t rowIndex = 0; ok && rowIndex < M; rowIndex++)
+    for( size_t i = 0; ok && i < M * N; ++i )
     {
-        for( size_t colIndex = 0; ok && colIndex < N; colIndex++) 
-        {
-            //ok = _rows[ rowIndex ][ colIndex ] == other._rows[ rowIndex ][ colIndex ];
-            ok = at( rowIndex, colIndex ) == other.at( rowIndex, colIndex );
-        }
+        ok = array[ i ] == other.array[ i ];
     }
     return ok;
 }

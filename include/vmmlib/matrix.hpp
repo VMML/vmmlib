@@ -13,13 +13,36 @@ template< size_t M, size_t N, typename float_t = double >
 class matrix
 {
 public:
-    // main accessor for matrix elements
+	struct row_accessor
+	{
+		row_accessor( float_t* array_ ) : array( array_ ) {}
+		float_t&
+		operator[]( size_t colIndex )
+		{ return array[ colIndex * M ]; }
+
+		const float_t&
+		operator[]( size_t colIndex ) const
+		{ return array[ colIndex * M ]; }
+		
+		float_t* array;
+		private: row_accessor() {} // disallow std ctor
+	};
+
+    // accessor for matrix elements
     inline float_t& at( size_t rowIndex, size_t colIndex );
     inline const float_t& at( size_t rowIndex, size_t colIndex ) const;
+	// legacy/compatibility accessor
+	// this is a hack to allow array-style access to matrix elements
+	// usage: matrix< 2, 2, float > m; m[ 1 ][ 0 ] = 37.0f;
+	inline row_accessor operator[]( size_t rowIndex )
+	{ 
+		return row_accessor( array + rowIndex );
+	}
+
 
     // (this) matrix = left matrix_mxp * right matrix_pxn
     template< size_t P >
-    void mul( 
+    void multiply( 
         const matrix< M, P, float_t >& left,
         const matrix< P, N, float_t >& right 
         );
@@ -81,9 +104,11 @@ public:
     void copyFrom1DimCArray( const float_t* c_array, 
         bool row_by_row_layout = true );
 
+    matrix< M, 1, float_t > getColumn( size_t columnNumber ) const;
     void getColumn( size_t columnNumber, matrix< M, 1, float_t >& column ) const;
     void setColumn( size_t columnNumber, const matrix< M, 1, float_t >& column );
 
+    matrix< 1, N, float_t > getRow( size_t rowNumber ) const;
     void getRow( size_t rowNumber, matrix< 1, N, float_t >& row ) const;
     void setRow( size_t rowNumber,  const matrix< 1, N, float_t >& row );
        
@@ -245,7 +270,7 @@ matrix< M, N, float_t >::operator=( const std::vector< float_t >& data )
 template< size_t M, size_t N, typename float_t >
 template< size_t P >
 void
-matrix< M, N, float_t >::mul( 
+matrix< M, N, float_t >::multiply( 
     const matrix< M, P, float_t >& left,
     const matrix< P, N, float_t >& right 
     )
@@ -273,7 +298,7 @@ matrix< M, P, float_t >
 matrix< M, N, float_t >::operator*( matrix< N, P, float_t >& other )
 {
     matrix< M, P, float_t > result;
-    result.mul( *this, other );
+    result.multiply( *this, other );
     return result;
 }
 
@@ -361,6 +386,18 @@ copyFrom1DimCArray( const float_t* c_array, bool row_by_row_layout )
 
 
 template< size_t M, size_t N, typename float_t >
+matrix< M, 1, float_t > 
+matrix< M, N, float_t >::
+getColumn( size_t columnNumber ) const
+{
+	matrix< M, 1, float_t > column;
+	getColumn( columnNumber, column );
+	return column;
+}
+
+
+
+template< size_t M, size_t N, typename float_t >
 void
 matrix< M, N, float_t >::
 getColumn( size_t columnNumber, matrix< M, 1, float_t >& column ) const
@@ -381,13 +418,25 @@ void
 matrix< M, N, float_t >::
 setColumn( size_t columnNumber, const matrix< M, 1, float_t >& column )
 {
-    #if 0
+    #if 1
     for( size_t rowIndex = 0; rowIndex < M; ++rowIndex )
     {
-        //_rows[ rowIndex ][ columnNumber ] = column[ rowIndex ];
+        at( rowIndex, columnNumber ) = column.at( rowIndex, 0 );
     }
-    #endif
+    #else
     memcpy( &array[ M * columnNumber ], &column.array[0], N * sizeof( float_t ) );
+    #endif
+}
+
+
+template< size_t M, size_t N, typename float_t >
+matrix< 1, N, float_t > 
+matrix< M, N, float_t >::
+getRow( size_t rowNumber ) const
+{
+	matrix< 1, N, float_t > row;
+	getRow( rowNumber, row );
+	return row;
 }
 
 
@@ -399,7 +448,7 @@ getRow( size_t rowNumber, matrix< 1, N, float_t >& row ) const
 {
     for( size_t colIndex = 0; colIndex < N; ++colIndex )
     {
-        at( rowNumber, colIndex ) = row.at( 0, colIndex );
+        row.at( 0, colIndex ) = at( rowNumber, colIndex );
     }
 }
 
@@ -412,7 +461,7 @@ setRow( size_t rowNumber,  const matrix< 1, N, float_t >& row )
 {
     for( size_t colIndex = 0; colIndex < N; ++colIndex )
     {
-        row.at( 0, colIndex ) = at( rowNumber, colIndex );
+        at( rowNumber, colIndex ) = row.at( 0, colIndex );
     }
 }
 

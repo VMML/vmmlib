@@ -34,7 +34,7 @@ qr_decomposition_test::run()
             Q_correct.copyFrom1DimCArray( correct_solution_Q, false );
 
             ok = ( R == R_correct && Q == Q_correct );
-            log( "qr_decomposition of a 3x3 matrix using stabilized Gram-Schmidt (maximum precision)", ok  );
+            log( "qr_decomposition of a 3x3 matrix using stabilized Gram-Schmidt (maximum precision)", ok, true  );
 
             if ( ! ok )
             {

@@ -24,6 +24,7 @@
 #include <algorithm>
 #include <cassert>
 #include <string>
+#include <vector>
 
 // - declaration -
 
@@ -976,7 +977,7 @@ Vector4< T >::getString( std::string& result, const std::string& delimiter ) con
 	bool ok = true;
 	for( size_t component = 0; component < 4; ++component )
 	{
-		ok = stringUtils::toString< T >( xyzw[ component ], tmp );
+		ok = stringUtils::to_string< T >( xyzw[ component ], tmp );
 		result += tmp;
 		result += delimiter;
 	}

@@ -753,7 +753,7 @@ Vector2< T >::getString( std::string& result, const std::string& delimiter ) con
 	bool ok = true;
 	for( size_t component = 0; component < 2; ++component )
 	{
-		ok = stringUtils::toString< T >( xy[ component ], tmp );
+		ok = stringUtils::to_string< T >( xy[ component ], tmp );
 		result += tmp;
 		result += delimiter;
 	}

@@ -16,10 +16,10 @@
 		988F58850C22C1F10005AC92 /* QuaternionTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 988F583B0C22C09C0005AC92 /* QuaternionTest.cpp */; };
 		988F58860C22C1F10005AC92 /* JacobiSolverTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 988F58340C22C09C0005AC92 /* JacobiSolverTest.cpp */; };
 		988F58870C22C1F10005AC92 /* SVDTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 988F583D0C22C09C0005AC92 /* SVDTest.cpp */; };
+		98F5563A0E24377F0044BA3E /* matrix_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98F556350E24377F0044BA3E /* matrix_test.cpp */; };
+		98F5563B0E24377F0044BA3E /* qr_decomposition_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98F556370E24377F0044BA3E /* qr_decomposition_test.cpp */; };
+		98F5563E0E24384E0044BA3E /* test_vmmlib_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98F5563D0E24384E0044BA3E /* test_vmmlib_main.cpp */; };
 		98FE7DCF0E224EC400B1E17F /* unit_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98FE7DCD0E224EC400B1E17F /* unit_test.cpp */; };
-		98FE7DD20E224EE200B1E17F /* matrix_mxn_tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98FE7DD00E224EE200B1E17F /* matrix_mxn_tests.cpp */; };
-		98FE7DFC0E224F9400B1E17F /* unit_tests_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98FE7DF90E224F9400B1E17F /* unit_tests_main.cpp */; };
-		98FE7DFD0E224F9400B1E17F /* all_unit_tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98FE7DFA0E224F9400B1E17F /* all_unit_tests.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -60,17 +60,17 @@
 		988F58780C22C1B90005AC92 /* VMMLibTest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = VMMLibTest; sourceTree = BUILT_PRODUCTS_DIR; };
 		988F59AC0C22C9A90005AC92 /* VMMLib-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "VMMLib-Info.plist"; sourceTree = "<group>"; };
 		988F5A100C22CAFE0005AC92 /* README */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
-		98FE7DBF0E224E5D00B1E17F /* array.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = array.hpp; path = include/vmmlib/array.hpp; sourceTree = "<group>"; };
+		98F556320E2437540044BA3E /* matrix.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = matrix.hpp; path = include/vmmlib/matrix.hpp; sourceTree = "<group>"; };
+		98F556330E2437540044BA3E /* qr_decomposition.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = qr_decomposition.hpp; path = include/vmmlib/qr_decomposition.hpp; sourceTree = "<group>"; };
+		98F556340E2437540044BA3E /* stringUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = stringUtils.h; path = include/vmmlib/stringUtils.h; sourceTree = "<group>"; };
+		98F556350E24377F0044BA3E /* matrix_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = matrix_test.cpp; path = tests/matrix_test.cpp; sourceTree = "<group>"; };
+		98F556360E24377F0044BA3E /* matrix_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = matrix_test.hpp; path = tests/matrix_test.hpp; sourceTree = "<group>"; };
+		98F556370E24377F0044BA3E /* qr_decomposition_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qr_decomposition_test.cpp; path = tests/qr_decomposition_test.cpp; sourceTree = "<group>"; };
+		98F556380E24377F0044BA3E /* qr_decomposition_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = qr_decomposition_test.hpp; path = tests/qr_decomposition_test.hpp; sourceTree = "<group>"; };
+		98F5563D0E24384E0044BA3E /* test_vmmlib_main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = test_vmmlib_main.cpp; path = tests/test_vmmlib_main.cpp; sourceTree = "<group>"; };
 		98FE7DC50E224E8700B1E17F /* vmmlib_unit_tests */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = vmmlib_unit_tests; sourceTree = BUILT_PRODUCTS_DIR; };
 		98FE7DCD0E224EC400B1E17F /* unit_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = unit_test.cpp; path = tests/unit_test.cpp; sourceTree = "<group>"; };
 		98FE7DCE0E224EC400B1E17F /* unit_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = unit_test.hpp; path = tests/unit_test.hpp; sourceTree = "<group>"; };
-		98FE7DD00E224EE200B1E17F /* matrix_mxn_tests.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = matrix_mxn_tests.cpp; path = tests/matrix_mxn_tests.cpp; sourceTree = "<group>"; };
-		98FE7DD10E224EE200B1E17F /* matrix_mxn_tests.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = matrix_mxn_tests.hpp; path = tests/matrix_mxn_tests.hpp; sourceTree = "<group>"; };
-		98FE7DD30E224EFE00B1E17F /* matrix_mxm.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = matrix_mxm.hpp; path = tests/matrix_mxm.hpp; sourceTree = "<group>"; };
-		98FE7DD40E224EFE00B1E17F /* matrix_mxn.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = matrix_mxn.hpp; path = tests/matrix_mxn.hpp; sourceTree = "<group>"; };
-		98FE7DF90E224F9400B1E17F /* unit_tests_main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = unit_tests_main.cpp; path = tests/unit_tests_main.cpp; sourceTree = "<group>"; };
-		98FE7DFA0E224F9400B1E17F /* all_unit_tests.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = all_unit_tests.cpp; path = tests/all_unit_tests.cpp; sourceTree = "<group>"; };
-		98FE7DFB0E224F9400B1E17F /* all_unit_tests.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = all_unit_tests.hpp; path = tests/all_unit_tests.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -212,10 +212,10 @@
 		98FE7DBC0E224E3D00B1E17F /* matrix mxn */ = {
 			isa = PBXGroup;
 			children = (
-				98FE7DD40E224EFE00B1E17F /* matrix_mxn.hpp */,
-				98FE7DD30E224EFE00B1E17F /* matrix_mxm.hpp */,
-				98FE7DBF0E224E5D00B1E17F /* array.hpp */,
+				98F556320E2437540044BA3E /* matrix.hpp */,
 				98FE7DC90E224E9800B1E17F /* unit_tests */,
+				98F556330E2437540044BA3E /* qr_decomposition.hpp */,
+				98F556340E2437540044BA3E /* stringUtils.h */,
 			);
 			name = "matrix mxn";
 			sourceTree = "<group>";
@@ -223,8 +223,10 @@
 		98FE7DC90E224E9800B1E17F /* unit_tests */ = {
 			isa = PBXGroup;
 			children = (
-				98FE7DD10E224EE200B1E17F /* matrix_mxn_tests.hpp */,
-				98FE7DD00E224EE200B1E17F /* matrix_mxn_tests.cpp */,
+				98F556360E24377F0044BA3E /* matrix_test.hpp */,
+				98F556350E24377F0044BA3E /* matrix_test.cpp */,
+				98F556380E24377F0044BA3E /* qr_decomposition_test.hpp */,
+				98F556370E24377F0044BA3E /* qr_decomposition_test.cpp */,
 			);
 			name = unit_tests;
 			sourceTree = "<group>";
@@ -257,9 +259,7 @@
 		98FE7DCC0E224EA800B1E17F /* new */ = {
 			isa = PBXGroup;
 			children = (
-				98FE7DF90E224F9400B1E17F /* unit_tests_main.cpp */,
-				98FE7DFB0E224F9400B1E17F /* all_unit_tests.hpp */,
-				98FE7DFA0E224F9400B1E17F /* all_unit_tests.cpp */,
+				98F5563D0E24384E0044BA3E /* test_vmmlib_main.cpp */,
 				98FE7DCE0E224EC400B1E17F /* unit_test.hpp */,
 				98FE7DCD0E224EC400B1E17F /* unit_test.cpp */,
 			);
@@ -342,9 +342,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				98FE7DCF0E224EC400B1E17F /* unit_test.cpp in Sources */,
-				98FE7DD20E224EE200B1E17F /* matrix_mxn_tests.cpp in Sources */,
-				98FE7DFC0E224F9400B1E17F /* unit_tests_main.cpp in Sources */,
-				98FE7DFD0E224F9400B1E17F /* all_unit_tests.cpp in Sources */,
+				98F5563A0E24377F0044BA3E /* matrix_test.cpp in Sources */,
+				98F5563B0E24377F0044BA3E /* qr_decomposition_test.cpp in Sources */,
+				98F5563E0E24384E0044BA3E /* test_vmmlib_main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

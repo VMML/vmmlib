@@ -1513,7 +1513,7 @@ Matrix4< T >::getString( std::string& result, const std::string& delimiter ) con
 	{
 		for( size_t col = 0; ok && col < 4; ++col )
 		{
-			ok = stringUtils::toString< T >( m[ col ][ row ], tmp );
+			ok = stringUtils::to_string< T >( m[ col ][ row ], tmp );
 			result += tmp;
 			result += delimiter;
 		}

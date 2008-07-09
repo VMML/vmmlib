@@ -13,13 +13,15 @@ unit_test::unit_test( const std::string& test_name )
 
 
 void
-unit_test::log( const std::string& event, bool status_ok )
+unit_test::log( const std::string& event, bool status_ok, bool warning_only )
 {
 	if ( status_ok )
 		_log += "[  ok  ] ";
-	else
+	else if ( ! warning_only )
 		_log += "[ FAIL ] ";
-		
+	else
+		_log += "[ WARN ] ";	
+	
 	_log += event;
 	_log += "\n";
 }

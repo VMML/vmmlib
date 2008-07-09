@@ -992,7 +992,7 @@ Vector3< T >::getString( std::string& result, const std::string& delimiter ) con
 	bool ok = true;
 	for( size_t component = 0; component < 3; ++component )
 	{
-		ok = stringUtils::toString< T >( xyz[ component ], tmp );
+		ok = stringUtils::to_string< T >( xyz[ component ], tmp );
 		result += tmp;
 		result += delimiter;
 	}

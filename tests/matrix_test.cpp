@@ -77,10 +77,98 @@ matrix_test::run()
 			log_error( error.str() );
 		}
 	}
+
+    // test operator[]
+	ok = true;
+	{
+		m0 = data;
+		ok = m0[ 1 ][ 1 ] == 5;
+		if ( ok )
+			ok = m0[ 1 ][ 1 ] == m0.at( 1, 1 );
+		if ( ok ) 
+		{
+			m0[ 1 ][ 2 ] = 23;
+			ok = m0.at( 1, 2 ) == 23;
+		}
+		
+		log( "operator[]", ok );
+		if ( ! ok )
+		{
+			std::stringstream error;
+			error 
+				<< " m0 " << m0 
+				<< " m0[ 1 ][ 1 ] " << m0[ 1 ][ 1 ] 
+				<< " m0.at( 1, 1 ) " << m0.at( 1, 1 )
+				<< std::endl;
+			log_error( error.str() );
+		}
+	}
+
+    // test getRow/setRow/getColumn/setColumn
+	ok = true;
+	{
+		matrix< 2, 3 > M;
+		double Mdata[] = { 1, 2, 3, 4, 5, 6 };
+		M = Mdata;
+		matrix< 1, 3 > M_row = M.getRow( 1 );
+		matrix< 2, 1 > M_column = M.getColumn( 2 );
+		
+		for( size_t column = 0; ok && column < 3; ++column )
+		{
+			ok = M.at( 1, column ) == M_row.at( 0, column );
+		}
+
+		for( size_t row = 0; ok && row < 2; ++row )
+		{
+			ok = M.at( row, 2 ) == M_column.at( row, 0 );
+		}
+		
+		double Mdata_row[] = { 3, 2, 5, 4, 5, 6 };
+		matrix< 2, 3 > Mr;
+		Mr = Mdata_row;
+		
+		M = Mdata;
+		M_row.at( 0, 0 ) = 3;
+		M_row.at( 0, 1 ) = 2;
+		M_row.at( 0, 2 ) = 5;
+		M.setRow( 0, M_row );
+		for( size_t column = 0; ok && column < 3; ++column )
+		{
+			ok = M == Mr;
+		}
+		
+		double Mdata_column[] = { 1, 5, 3, 4, 2, 6 };
+		matrix< 2, 3 > Mc;
+		Mc = Mdata_column;
+		M = Mdata;
+		M_column.at( 0, 0 ) = 5;
+		M_column.at( 1, 0 ) = 2;
+		M.setColumn( 1, M_column );
+		for( size_t row = 0; ok && row < 2; ++row )
+		{
+			ok = M == Mc;
+		}
+
+		log( "getRow/setRow/getColumn/setColumn", ok );
+		if ( ! ok )
+		{
+			std::stringstream error;
+			error 
+				<< "M " << M 
+				<< "M_row " << M_row 
+				<< "Mr " << Mr 
+				<< "M_column " << M_column 
+				<< "Mc " << Mc 
+				<< std::endl;
+			log_error( error.str() );
+		}
+	}
+
 	
     // test transpose functionality 
 	ok = true;
     {
+		m0 = data;
         matrix< 3, 2 > m0t = m0.getTransposed();
         m1.copyFrom1DimCArray( data, false );
         
@@ -107,7 +195,7 @@ matrix_test::run()
         mul1 = mul1data;
         
         matrix< 2, 2 > result;
-        result.mul( mul0, mul1 );
+        result.multiply( mul0, mul1 );
         
         matrix< 2, 2 > correct_result;
         double correct_result_data[] = { 5, 1, 4, 2 };
@@ -143,42 +231,6 @@ matrix_test::run()
 	
 	}
 
-    #if 0
-    // matrix inversion for 2x2 using functor
-    
-    if ( ok )
-    {
-        matrix< 2, 2 > M, M_inverse, M_inverse_correct;
-        double Mdata[] = { 1, 3, 4, 2 };
-        M = Mdata;
-
-        double M_inverse_correct_data[] = { -0.2, 0.3, 0.4, -0.1 };
-        M_inverse_correct = M_inverse_correct_data;
-            
-        invert_2x2_matrix_functor<> computeInverse;
-        computeInverse( M, M_inverse );
-        
-        ok = M_inverse == M_inverse_correct;
-        if ( ! ok )
-        {
-            log_error( "matrix inverse computation failed, possibly due to precision errors.", true );
-            ok = M_inverse.isEqualTo( M_inverse_correct, 1e-15 );
-			log( "matrix inversion with reduced precision (tolerance: 1e-15).", ok );
-        }
-		log( "matrix inversion for 2x2 matrices (functor)", ok );
-        if ( ! ok )
-        {  
-			std::stringstream error;
-			error
-                << "matrix M " << M 
-                << "inverse (computed)" << M_inverse 
-                << "inverse (correct)" << M_inverse_correct 
-                << std::endl;
-			log_error( error.str() );
-        }
-    }
-    #endif
-    
     // matrix inversion for 2x2
 
     if ( ok )
@@ -193,7 +245,7 @@ matrix_test::run()
         M.computeInverse( M_inverse );
         
         ok = M_inverse == M_inverse_correct;
-		log( "matrix inversion for 2x2 matrices, maximum precision", ok );
+		log( "matrix inversion for 2x2 matrices, maximum precision", ok, true );
         if ( ! ok )
         {
             ok = M_inverse.isEqualTo( M_inverse_correct, 1e-15 );
@@ -227,7 +279,7 @@ matrix_test::run()
         M.computeInverse( M_inverse );
         
         ok = M_inverse == M_inverse_correct;
-		log( "matrix inversion for 3x3 matrices, maximum precision", ok );
+		log( "matrix inversion for 3x3 matrices, maximum precision", ok, true );
         if ( ! ok )
         {
             ok = M_inverse.isEqualTo( M_inverse_correct, 1e-15 );
@@ -264,7 +316,7 @@ matrix_test::run()
         M.computeInverse( M_inverse );
         
         ok = M_inverse == M_inverse_correct;
-		log( "matrix inversion for 4x4 matrices, maximum precision", ok );
+		log( "matrix inversion for 4x4 matrices, maximum precision", ok, true );
         if ( ! ok )
         {
             ok = M_inverse.isEqualTo( M_inverse_correct, 1e-15 );

@@ -80,6 +80,7 @@
 		98B7A2A30E24DF910064264E /* matrix_compare_perf_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = matrix_compare_perf_test.cpp; path = tests/matrix_compare_perf_test.cpp; sourceTree = "<group>"; };
 		98B7A2A40E24DF910064264E /* matrix_compare_perf_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = matrix_compare_perf_test.hpp; path = tests/matrix_compare_perf_test.hpp; sourceTree = "<group>"; };
 		98B7A3F00E24EAA30064264E /* matrix_functors.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = matrix_functors.hpp; path = include/vmmlib/matrix_functors.hpp; sourceTree = "<group>"; };
+		98D4102C0E2658FE00BEFA71 /* exception.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = exception.hpp; path = include/vmmlib/exception.hpp; sourceTree = "<group>"; };
 		98F556320E2437540044BA3E /* matrix.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = matrix.hpp; path = include/vmmlib/matrix.hpp; sourceTree = "<group>"; };
 		98F556330E2437540044BA3E /* qr_decomposition.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = qr_decomposition.hpp; path = include/vmmlib/qr_decomposition.hpp; sourceTree = "<group>"; };
 		98F556340E2437540044BA3E /* stringUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = stringUtils.h; path = include/vmmlib/stringUtils.h; sourceTree = "<group>"; };
@@ -300,6 +301,7 @@
 				9868345B0E24F8F300618F55 /* vector.hpp */,
 				98B7A3F00E24EAA30064264E /* matrix_functors.hpp */,
 				9868345D0E24F97D00618F55 /* vmmlib_config.hpp */,
+				98D4102C0E2658FE00BEFA71 /* exception.hpp */,
 			);
 			name = "matrix mxn";
 			sourceTree = "<group>";

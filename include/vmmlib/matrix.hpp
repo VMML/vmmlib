@@ -7,6 +7,7 @@
 
 #include <vmmlib/vmmlib_config.hpp>
 
+#include <vmmlib/exception.hpp>
 #include <vmmlib/vector.hpp>
 #include <vmmlib/matrix_functors.hpp>
 
@@ -35,7 +36,8 @@ public:
 		operator[]( size_t colIndex )
 		{ 
 			#ifdef VMMLIB_SAFE_ACCESSORS
-			if ( colIndex >= N ) throw "FIXME";
+			if ( colIndex >= N ) 
+                VMMLIB_ERROR( "column index out of bounds", VMMLIB_HERE );
 			#endif
 			return array[ colIndex * M ]; 
 		}
@@ -44,7 +46,8 @@ public:
 		operator[]( size_t colIndex ) const
 		{ 
 			#ifdef VMMLIB_SAFE_ACCESSORS
-			if ( colIndex >= N ) throw "FIXME";
+			if ( colIndex >= N ) 
+                VMMLIB_ERROR( "column index out of bounds", VMMLIB_HERE );
 			#endif
 			return array[ colIndex * M ]; 
 		}
@@ -57,7 +60,8 @@ public:
 	inline row_accessor operator[]( size_t rowIndex )
 	{ 
 		#ifdef VMMLIB_SAFE_ACCESSORS
-		if ( rowIndex > M ) throw "FIXME";
+		if ( rowIndex > M ) 
+            VMMLIB_ERROR( "row index out of bounds", VMMLIB_HERE );
 		#endif
 		return row_accessor( array + rowIndex );
 	}
@@ -154,11 +158,6 @@ public:
     void getRow( size_t rowNumber, matrix< 1, N, float_t >& row ) const;
     void setRow( size_t rowNumber,  const matrix< 1, N, float_t >& row );
        
-    /*
-    matrix< 1, N, float_t >& operator[]( size_t rowIndex );
-    const matrix< 1, N, float_t >& operator[]( size_t rowIndex ) const;
-    */
-    
     size_t getM() const;
     size_t getNumberOfRows() const;
     
@@ -170,9 +169,11 @@ public:
     // square matrices only
     float_t computeDeterminant() const;
     void getAdjugate( matrix< M, M, float_t >& adjugate ) const;
-	// we need a tolerance term since the determinant is often != 0 
-	// with real numbers because of precision errors.
-	void computeInverse( matrix< M, M, float_t >& inverse, float_t tolerance = 1e-9 ) const;
+	
+    // the return value indicates if the matrix is invertible.
+    // we need a tolerance term since the determinant is subject
+	// to precision errors.
+	bool computeInverse( matrix< M, M, float_t >& inverse, float_t tolerance = 1e-9 ) const;
 
     friend std::ostream& operator << ( std::ostream& os, 
         const matrix< M, N, float_t >& matrix )
@@ -258,7 +259,8 @@ inline float_t&
 matrix< M, N, float_t >::at( size_t rowIndex, size_t colIndex )
 {
 	#ifdef VMMLIB_SAFE_ACCESSORS
-	if ( rowIndex >= M || colIndex >= N ) throw "FIXME";
+	if ( rowIndex >= M || colIndex >= N )
+        VMMLIB_ERROR( "at( row, col ) - index out of bounds", VMMLIB_HERE );
 	#endif
     return array[ colIndex * M + rowIndex ];
 }
@@ -270,7 +272,8 @@ const inline float_t&
 matrix< M, N, float_t >::at( size_t rowIndex, size_t colIndex ) const
 {
 	#ifdef VMMLIB_SAFE_ACCESSORS
-	if ( rowIndex >= M || colIndex >= N ) throw "FIXME";
+	if ( rowIndex >= M || colIndex >= N )
+        VMMLIB_ERROR( "at( row, col ) - index out of bounds", VMMLIB_HERE );
 	#endif
     return array[ colIndex * M + rowIndex ];
 }
@@ -351,7 +354,8 @@ void
 matrix< M, N, float_t >::operator=( const std::vector< float_t >& data )
 {
     //assert( data.size() >= M * N );
-    if ( data.size() >= M * N ) throw "FIXME.";
+    if ( data.size() >= M * N )
+        VMMLIB_ERROR( "input data vector too small", VMMLIB_HERE );
     copyFrom1DimCArray( &data[ 0 ], true );
 }
 
@@ -832,8 +836,11 @@ template< size_t M, size_t N, typename float_t >
 inline float_t
 matrix< M, N, float_t >::computeDeterminant() const
 {
-    // if ( ! M == N ) throw;
-    throw "FIXME";
+    if ( ! is_square )
+        VMMLIB_ERROR( "determinant is not defined for non-square matrices.", VMMLIB_HERE );
+    else
+        VMMLIB_ERROR( "not implemented yet.", VMMLIB_HERE );
+
 }
 
 
@@ -867,7 +874,10 @@ template< size_t M, size_t N, typename float_t >
 inline void
 matrix< M, N, float_t >::getAdjugate( matrix< M, M, float_t >& adjugate ) const
 {
-    throw "FIXME";
+    if ( ! is_square )
+        VMMLIB_ERROR( "adjugate matrix is not defined for non-square matrices.", VMMLIB_HERE );
+    else
+        VMMLIB_ERROR( "not implemented yet.", VMMLIB_HERE );
 }
 
 
@@ -907,26 +917,27 @@ matrix< 2, 2, double >::getAdjugate( matrix< 2, 2, double >& adjugate ) const
 
 
 template< size_t M, size_t N, typename float_t >
-inline void
+inline bool
 matrix< M, N, float_t >::computeInverse( matrix< M, M, float_t >& Minverse, float_t tolerance ) const
 {
-    throw "FIXME";
+    if ( ! is_square )
+        VMMLIB_ERROR( "inverse of a matrix is not defined for non-square matrices.", VMMLIB_HERE );
+    else
+        VMMLIB_ERROR( "not implemented yet.", VMMLIB_HERE );
+        
+    return false;
 }
 
 
 
 template<>
-inline void
+inline bool
 matrix< 2, 2, float >::computeInverse( matrix< 2, 2, float >& Minverse, float tolerance ) const
 {
     float det = computeDeterminant();
     if ( det > tolerance )
     {
-        std::cerr 
-            << "error: matrix is not invertible - "
-            << "determinant is " << det << "!"
-            << std::endl;
-        throw "matrix is not invertible.";
+        return false;
     }
     float reciprocal_of_determinant = 1.0 / det;
     
@@ -934,21 +945,19 @@ matrix< 2, 2, float >::computeInverse( matrix< 2, 2, float >& Minverse, float to
     getAdjugate( Minverse );
     
     Minverse *= reciprocal_of_determinant;
+    
+    return true;
 }
 
 
 template<>
-inline void
+inline bool
 matrix< 2, 2, double >::computeInverse( matrix< 2, 2, double >& Minverse, double tolerance ) const
 {
     float det = computeDeterminant();
     if ( det > tolerance )
     {
-        std::cerr 
-            << "error: matrix is not invertible - "
-            << "determinant is " << det << "!"
-            << std::endl;
-        throw "matrix is not invertible.";
+        return false;
     }
     float reciprocal_of_determinant = 1.0 / det;
     
@@ -956,12 +965,14 @@ matrix< 2, 2, double >::computeInverse( matrix< 2, 2, double >& Minverse, double
     getAdjugate( Minverse );
     
     Minverse *= reciprocal_of_determinant;
+    
+    return true;
 }
 
 
 
 template<>
-inline void
+inline bool
 matrix< 3, 3, double >::computeInverse( matrix< 3, 3, double >& result, double tolerance ) const
 {
     // Invert a 3x3 using cofactors.  This is about 8 times faster than
@@ -982,7 +993,7 @@ matrix< 3, 3, double >::computeInverse( matrix< 3, 3, double >& result, double t
         + at( 0, 2 ) * result.at( 2, 0 );
     
     if ( abs( determinant ) <= tolerance )
-        throw "FIXME"; // matrix is not invertible
+        return false; // matrix is not invertible
 
     const double detinv = 1.0 / determinant;
     
@@ -996,46 +1007,15 @@ matrix< 3, 3, double >::computeInverse( matrix< 3, 3, double >& result, double t
     result.at( 2, 1 ) *= detinv;
     result.at( 2, 2 ) *= detinv;
 
-    /*
-    result.m00 = m11 * m22 - m12 * m21;
-    result.m01 = m02 * m21 - m01 * m22;
-    result.m02 = m01 * m12 - m02 * m11;
-    result.m10 = m12 * m20 - m10 * m22;
-    result.m11 = m00 * m22 - m02 * m20;
-    result.m12 = m02 * m10 - m00 * m12;
-    result.m20 = m10 * m21 - m11 * m20;
-    result.m21 = m01 * m20 - m00 * m21;
-    result.m22 = m00 * m11 - m01 * m10;
-
-    const T determinant = m00 * result.m00 + m01 * result.m10 +
-                          m02 * result.m20;
-
-    if ( fabs( determinant ) <= limit )
-        return false; // matrix is not invertible
-
-    const T detinv = 1.0 / determinant;
-    result.m00 *= detinv;
-    result.m01 *= detinv;
-    result.m02 *= detinv;
-    result.m10 *= detinv;
-    result.m11 *= detinv;
-    result.m12 *= detinv;
-    result.m20 *= detinv;
-    result.m21 *= detinv;
-    result.m22 *= detinv;
     return true;
-
-    */
-    
 }
 
 
 template<>
-inline void
+inline bool
 matrix< 4, 4, double >::computeInverse( matrix< 4, 4, double >& result, double tolerance ) const
 {
-    
- // tuned version from Claude Knaus
+    // tuned version from Claude Knaus
     /* first set of 2x2 determinants: 12 multiplications, 6 additions */
     const double t1[6] = { array[ 2] * array[ 7] - array[ 6] * array[ 3],
                       array[ 2] * array[11] - array[10] * array[ 3],
@@ -1077,12 +1057,14 @@ matrix< 4, 4, double >::computeInverse( matrix< 4, 4, double >& result, double t
                          array[8] * result.array[2] + array[12] * result.array[3];
 
    if( abs( determinant ) <= tolerance )
-       throw "FIXME";
+        return false; // matrix is not invertible
 
    /* division: 16 multiplications, 1 division */
    const double detinv = 1.0 / determinant;
    for( unsigned i = 0; i != 16; ++i )
        result.array[i] *= detinv;
+       
+    return true;
 }
 
 

@@ -1,6 +1,7 @@
 #include "matrix_test.hpp"
 
 #include <vmmlib/matrix.hpp>
+#include <vmmlib/vector.hpp>
 
 #include <sstream>
 
@@ -299,6 +300,48 @@ matrix_test::run()
 			log_error( error.str() );
         }
     }
+
+    #if 0 // FIXME 
+    // test matrix * column vector multiplication
+    ok = true;
+    {
+        matrix< 4, 4 > transform;
+        double transformData[] = 
+        {
+            0.6555, 0.2769, 0.6948, 0.4387, 
+            0.1712, 0.0462, 0.3171, 0.3816, 
+            0.7060, 0.0971, 0.9502, 0.7655, 
+            0, 0, 0, 1
+        };
+        transform = transformData;
+        vector< 4 > v;
+        double vData[] = { 0.1869, 0.4898, 0.4456, 0.6463 };
+        v = vData;
+        
+        vector< 4 > v_result;
+        v_result = transform * v;
+        
+        vector< 4 > v_correct_result;
+        double vResultData[] = { 0.8513, 0.4425, 1.0977, 0.6463 };
+        v_correct_result = vResultData;
+        
+        ok = v_result == v_correct_result;
+        
+        log( "matrix * vector multiplication", ok );
+        if ( ! ok )
+        {
+            std::stringstream ss;
+            ss 
+                << "A " << transform 
+                << "v              " << v << "\n"
+                << "v_result       " << v_result << "\n"
+                << "correct result " << v_correct_result << "\n"
+                << std::endl;
+            log_error( ss.str() );
+        }
+        
+    }
+    #endif
 
 
 	#ifdef VMMLIB_SAFE_ACCESSORS

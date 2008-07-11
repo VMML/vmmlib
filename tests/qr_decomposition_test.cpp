@@ -18,14 +18,14 @@ qr_decomposition_test::run()
             matrix< 4, 3, double > A;
             matrix< 4, 4, double > Q;
             matrix< 4, 4, double > Q_correct;
-            matrix< 4, 3, double > R;
-            matrix< 4, 3, double > R_correct;
+            matrix< 3, 3, double > R;
+            matrix< 3, 3, double > R_correct;
 
             double data[ 4 * 3 ] = { 0.8147, 0.6324, 0.9575, 0.9058, 0.0975, 
                 0.9649, 0.1270, 0.2785, 0.1576, 0.9134, 0.5469, 0.9706 };
             A = data;
                       
-            qr_gram_schmidt( A, Q, R );
+            qr_decompose_gram_schmidt( A, Q, R );
 
             double correct_solution_Q[ 4 * 4 ] = 
                 {   -0.5332, 0.4892, 0.6519, 0.2267, 

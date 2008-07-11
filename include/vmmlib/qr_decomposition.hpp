@@ -2,6 +2,7 @@
 #define __VMML__QR_DECOMPOSITION__HPP__
 
 #include <vmmlib/matrix.hpp>
+#include <vmmlib/vector.hpp>
 #include <vmmlib/exception.hpp>
 
 #include <cmath>
@@ -18,10 +19,10 @@ namespace vmml
 {
 
 template< size_t M, size_t N, typename float_t >
-void qr_gram_schmidt( 
+void qr_decompose_gram_schmidt( 
     const matrix< M, N, float_t >& A_, 
     matrix< M, M, float_t >& Q, 
-    matrix< M, N, float_t >& R 
+    matrix< N, N, float_t >& R 
     )
 {
     Q   = 0.0; 

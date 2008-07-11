@@ -98,6 +98,9 @@ public:
 
 	matrix< M, N, float_t > operator+( const matrix< M, N, float_t >& other ) const;
 	void operator+=( const matrix< M, N, float_t >& other );
+    
+    vector< M, float_t > operator*( const vector< M, float_t >& other ) const;
+    
 
 	template< size_t P, size_t Q >
 	void direct_sum( const matrix< P, Q, float_t >& other, matrix< M + P, N + Q, float_t >& result );
@@ -165,6 +168,8 @@ public:
     size_t getNumberOfColumns() const;
     
     void fill( float_t fillValue );
+    void identity();
+    void zero();
 
     // square matrices only
     float_t computeDeterminant() const;
@@ -397,6 +402,7 @@ matrix< M, N, float_t >::operator*( matrix< N, P, float_t >& other )
 }
 
 
+
 template< size_t M, size_t N, typename float_t >
 matrix< M, N, float_t >
 matrix< M, N, float_t >::operator*( float_t scalar )
@@ -427,6 +433,30 @@ matrix< M, N, float_t >::operator*=( float_t scalar )
         }
     }
 }
+
+
+
+template< size_t M, size_t N, typename float_t >
+vector< M, float_t >
+matrix< M, N, float_t >::
+operator*( const vector< M, float_t >& other ) const
+{
+    vector< M, float_t > result;
+
+    // this < M, 1 > = < M, P > * < P, 1 >
+    float_t tmp;
+    for( size_t rowIndex = 0; rowIndex < M; rowIndex++)
+    {
+        tmp = static_cast< float_t >( 0.0 );
+        for( size_t p = 0; p < N; p++)
+        {
+            tmp += at( rowIndex, p ) * other.at( p );
+        }
+        result.at( rowIndex ) = tmp;
+    }
+    return result;
+}
+
 
 
 
@@ -756,6 +786,24 @@ fill( float_t fillValue )
 			at( rowIndex, colIndex ) = fillValue;
 		}
     }
+}
+
+
+template< size_t M, size_t N, typename float_t >
+void
+matrix< M, N, float_t >::
+identity()
+{
+    (*this) = matrix< M, N, float_t >::IDENTITY;
+}
+
+
+template< size_t M, size_t N, typename float_t >
+void
+matrix< M, N, float_t >::
+zero()
+{
+    (*this) = matrix< M, N, float_t >::ZERO;
 }
 
 

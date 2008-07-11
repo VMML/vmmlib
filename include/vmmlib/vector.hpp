@@ -30,7 +30,10 @@ public:
     inline const float_t& y() const;
     inline const float_t& z() const;
     inline const float_t& w() const;
-    
+
+    bool operator==( const vector< M, float_t >& other ) const;
+    bool operator!=( const vector< M, float_t >& other ) const;
+   
     const vector< M, float_t >& operator=( const float_t* c_array );
     
     vector< M, float_t > operator*( const vector< M, float_t >& other ) const;
@@ -472,6 +475,28 @@ vector< M, float_t >::normSquared() const
         tmp += at( index ) * at( index );
     }
     return tmp;
+}
+
+
+
+template< size_t M, typename float_t >
+bool
+vector< M, float_t >::operator==( const vector< M, float_t >& other ) const
+{
+    bool ok = true;
+    for( size_t index = 0; ok && index < M; ++index )
+    {
+        ok = at( index ) == other.at( index );
+    }
+    return ok;
+}
+
+
+template< size_t M, typename float_t >
+bool
+vector< M, float_t >::operator!=( const vector< M, float_t >& other ) const
+{
+    return ! this->operator==( other );
 }
 
 

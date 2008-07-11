@@ -4,6 +4,8 @@
 #include <iostream>
 #include <iomanip>
 #include <vector>
+
+#include <vmmlib/exception.hpp>
 #include <vmmlib/vmmlib_config.hpp>
 
 namespace vmml
@@ -40,6 +42,25 @@ public:
     void operator/=( const vector< M, float_t >& other );    
     void operator+=( const vector< M, float_t >& other ); 
     void operator-=( const vector< M, float_t >& other );
+
+    vector< M, float_t > operator*( const float_t other ) const;
+    vector< M, float_t > operator/( const float_t other ) const;    
+    vector< M, float_t > operator+( const float_t other ) const; 
+    vector< M, float_t > operator-( const float_t other ) const;
+
+    void operator*=( const float_t other );
+    void operator/=( const float_t other );    
+    void operator+=( const float_t other ); 
+    void operator-=( const float_t other );
+    
+    inline float_t dot( const vector< M, float_t >& other ) const;
+    static inline float_t dot( const vector< M, float_t >& v0, 
+        const vector< M, float_t >& v1 );
+
+    inline void normalize();
+    
+    inline float_t norm() const;
+    inline float_t normSquared() const;
     
     void copyFrom1DimCArray( const float_t* c_array );
 
@@ -72,7 +93,6 @@ public:
 }; // class vector
 
 
-
 template< size_t M, typename float_t >
 inline float_t&
 vector< M, float_t >::at( size_t index )
@@ -80,7 +100,7 @@ vector< M, float_t >::at( size_t index )
     #ifdef VMMLIB_SAFE_ACCESSORS
     if ( index >= M )
     {
-        throw "FIXME.";
+        VMMLIB_ERROR( "at() - index out of bounds", VMMLIB_HERE );
     }
     #endif
     return array[ index ];
@@ -95,7 +115,7 @@ vector< M, float_t >::at( size_t index ) const
     #ifdef VMMLIB_SAFE_ACCESSORS
     if ( index >= M )
     {
-        throw "FIXME.";
+        VMMLIB_ERROR( "at() - index out of bounds", VMMLIB_HERE );
     }
     #endif
     return array[ index ];
@@ -227,6 +247,111 @@ vector< M, float_t >::operator-=( const vector< M, float_t >& other )
 
 
 template< size_t M, typename float_t >
+vector< M, float_t >
+vector< M, float_t >::operator*( const float_t other ) const
+{
+    vector< M, float_t > result;
+    for( size_t index = 0; index < M; ++index )
+    {
+        result.at( index ) = at( index ) * other;
+    }
+    return result;
+}
+
+
+
+template< size_t M, typename float_t >
+vector< M, float_t >
+vector< M, float_t >::operator/( const float_t other ) const
+{
+    vector< M, float_t > result;
+    for( size_t index = 0; index < M; ++index )
+    {
+        result.at( index ) = at( index ) / other;
+    }
+    return result;
+}
+
+
+
+template< size_t M, typename float_t >
+vector< M, float_t >
+vector< M, float_t >::operator+( const float_t other ) const
+{
+    vector< M, float_t > result;
+    for( size_t index = 0; index < M; ++index )
+    {
+        result.at( index ) = at( index ) + other;
+    }
+    return result;
+}
+
+
+
+template< size_t M, typename float_t >
+vector< M, float_t >
+vector< M, float_t >::operator-( const float_t other ) const
+{
+    vector< M, float_t > result;
+    for( size_t index = 0; index < M; ++index )
+    {
+        result.at( index ) = at( index ) - other;
+    }
+    return result;
+}
+
+
+
+
+template< size_t M, typename float_t >
+void
+vector< M, float_t >::operator*=( const float_t other )
+{
+    for( size_t index = 0; index < M; ++index )
+    {
+        at( index ) *= other;
+    }
+}
+
+
+
+template< size_t M, typename float_t >
+void
+vector< M, float_t >::operator/=( const float_t other )
+{
+    for( size_t index = 0; index < M; ++index )
+    {
+        at( index ) /= other;
+    }
+}
+
+
+
+template< size_t M, typename float_t >
+void
+vector< M, float_t >::operator+=( const float_t other )
+{
+    for( size_t index = 0; index < M; ++index )
+    {
+        at( index ) += other;
+    }
+}
+
+
+
+template< size_t M, typename float_t >
+void
+vector< M, float_t >::operator-=( const float_t other )
+{
+    for( size_t index = 0; index < M; ++index )
+    {
+        at( index ) -= other;
+    }
+}
+
+
+
+template< size_t M, typename float_t >
 inline float_t&
 vector< M, float_t >::x()
 {
@@ -288,6 +413,67 @@ vector< M, float_t >::w() const
 {
     return at( 3 );
 }
+
+
+template< size_t M, typename float_t >
+inline float_t
+vector< M, float_t >::dot( const vector< M, float_t >& other ) const
+{
+    float_t tmp = 0.0;
+    for( size_t index = 0; index < M; ++index )
+    {
+        tmp += at( index ) * other.at( index );
+    }
+    return tmp;
+}
+
+
+
+template< size_t M, typename float_t >
+inline float_t
+vector< M, float_t >::dot( 
+    const vector< M, float_t >& first, 
+    const vector< M, float_t >& second ) 
+{
+    float_t tmp = 0.0;
+    for( size_t index = 0; index < M; ++index )
+    {
+        tmp += first.at( index ) * second.at( index );
+    }
+    return tmp;
+}
+
+
+template< size_t M, typename float_t >
+inline void
+vector< M, float_t >::normalize()
+{
+    float_t norm_reciprocal = 1.0 / norm();
+    this->operator*=( norm_reciprocal );
+}
+
+
+template< size_t M, typename float_t >
+inline float_t
+vector< M, float_t >::norm() const
+{
+    return sqrt( normSquared() );
+}
+
+
+
+template< size_t M, typename float_t >
+inline float_t
+vector< M, float_t >::normSquared() const
+{
+    float_t tmp = 0.0;
+    for( size_t index = 0; index < M; ++index )
+    {
+        tmp += at( index ) * at( index );
+    }
+    return tmp;
+}
+
 
 
 template< size_t M, typename float_t >

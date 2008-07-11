@@ -2,6 +2,7 @@
 
 #include <vmmlib/vector.hpp>
 #include <sstream>
+#include <cmath>
 
 namespace vmml
 {
@@ -12,6 +13,8 @@ vector_test::run()
     
     vector< 4 > v;
     double data[] = { 1, 2, 3, 4 };
+    
+    double tolerance = 1e-15;
     
     v.copyFrom1DimCArray( data );
     
@@ -54,7 +57,6 @@ vector_test::run()
         v_other = datad;
 
         v_result = v + v_other;
-
 		for( size_t index = 0; ok && index < 4; ++index )
 		{
             ok = v_result.at( index ) == 5;
@@ -65,6 +67,20 @@ vector_test::run()
 		for( size_t index = 0; ok && index < 4; ++index )
 		{
             ok = v_result.at( index ) == 5;
+		}
+
+        v = data;
+        v_result = v + 2;
+		for( size_t index = 0; ok && index < 4; ++index )
+		{
+            ok = v_result.at( index ) == index + 3;
+		}
+        
+        v_result = v;
+        v_result += 2;
+		for( size_t index = 0; ok && index < 4; ++index )
+		{
+            ok = v_result.at( index ) == index + 3;
 		}
 
 		log( "operator+ / operator+=", ok  );
@@ -94,7 +110,6 @@ vector_test::run()
         v_other = datad;
 
         v_result = v - v_other;
-
 		for( size_t index = 0; ok && index < 4; ++index )
 		{
             ok = v_result.at( index ) == 0;
@@ -105,6 +120,20 @@ vector_test::run()
 		for( size_t index = 0; ok && index < 4; ++index )
 		{
             ok = v_result.at( index ) == 0;
+		}
+
+
+        v_result = v - 1.0;
+		for( size_t index = 0; ok && index < 4; ++index )
+		{
+            ok = v_result.at( index ) == index;
+		}
+
+        v_result = v;
+        v_result -= 1.0;
+		for( size_t index = 0; ok && index < 4; ++index )
+		{
+            ok = v_result.at( index ) == index;
 		}
 
 		log( "operator- / operator-=", ok  );
@@ -134,7 +163,6 @@ vector_test::run()
         v_other = datad;
 
         v_result = v * v_other;
-
 		for( size_t index = 0; ok && index < 4; ++index )
 		{
             ok = v_result.at( index ) == 24;
@@ -145,6 +173,19 @@ vector_test::run()
 		for( size_t index = 0; ok && index < 4; ++index )
 		{
             ok = v_result.at( index ) == 24;
+		}
+
+        v_result = v * 2.0;
+		for( size_t index = 0; ok && index < 4; ++index )
+		{
+            ok = v_result.at( index ) == v.at( index ) * 2.0;
+		}
+
+        v_result = v;
+        v_result *= 2.0;
+		for( size_t index = 0; ok && index < 4; ++index )
+		{
+            ok = v_result.at( index ) == v.at( index ) * 2.0;
 		}
 
 		log( "operator* / operator*=", ok  );
@@ -174,7 +215,6 @@ vector_test::run()
         v_other = datad;
 
         v_result = v / v_other;
-
 		for( size_t index = 0; ok && index < 4; ++index )
 		{
             ok = v_result.at( index ) == 0.5;
@@ -182,10 +222,23 @@ vector_test::run()
 
         v_result = v;
         v_result /= v_other;
-        
 		for( size_t index = 0; ok && index < 4; ++index )
 		{
             ok = v_result.at( index ) == 0.5;
+		}
+
+
+        v_result = v / 1.5;
+		for( size_t index = 0; ok && index < 4; ++index )
+		{
+            ok = v_result.at( index ) == v.at( index ) / 1.5;
+		}
+
+        v_result = v;
+        v_result /= 1.5;
+		for( size_t index = 0; ok && index < 4; ++index )
+		{
+            ok = v_result.at( index ) == v.at( index ) / 1.5;
 		}
 
 		log( "operator/ / operator/=", ok  );
@@ -201,6 +254,55 @@ vector_test::run()
 			log_error( error.str() );
 		}
 	}
+
+    // tests norm / normSquared (length/lengthSquared) computation
+	ok = true;
+	{
+        vector< 4 > vec;
+        vec = data;
+        
+        double normSquared = vec.normSquared();
+        ok = normSquared == 1 * 1 + 2 * 2 + 3 * 3 + 4 * 4;
+
+        double norm = vec.norm();
+        if ( ok ) 
+            ok = sqrt( normSquared ) == norm;
+
+		log( "norm / normSquared", ok  );
+
+    }
+
+
+    // tests normalize
+	ok = true;
+	{
+        vector< 4 > vec;
+        vec = data;
+        vec.normalize();
+        ok = vec.norm() == 1.0;
+
+		log( "normalize() maximum precision", ok  );
+        if ( ! ok )
+        {
+            ok = vec.norm() - 1.0 < 1e-15;
+            log( "normalize() with tolerance 1e-15", ok  );
+        }
+        if ( ! ok )
+        {
+            std::stringstream ss;
+            ss << "norm after normalize() " << vec.norm() << std::endl;
+            log_error( ss.str() );
+        }
+
+    }
+
+
+    // tests 
+	ok = true;
+	{
+        vector< 4 > vec;
+
+    }
 
 
     return ok;

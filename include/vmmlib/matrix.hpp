@@ -526,6 +526,11 @@ void
 matrix< M, N, float_t >::
 getColumn( size_t columnNumber, vector< M, float_t >& column ) const
 {
+    #ifdef VMMLIB_SAFE_ACCESSORS
+    if ( columnNumber >= N )
+        VMMLIB_ERROR( "getColumn() - index out of bounds.", VMMLIB_HERE );
+    #endif
+
     memcpy( &column.array[0], &array[ M * columnNumber ], M * sizeof( float_t ) );
 }
 
@@ -536,6 +541,11 @@ void
 matrix< M, N, float_t >::
 setColumn( size_t columnNumber, const vector< M, float_t >& column )
 {
+    #ifdef VMMLIB_SAFE_ACCESSORS
+    if ( columnNumber >= N )
+        VMMLIB_ERROR( "setColumn() - index out of bounds.", VMMLIB_HERE );
+    #endif
+
     memcpy( &array[ M * columnNumber ], &column.array[0], M * sizeof( float_t ) );
 }
 
@@ -553,6 +563,12 @@ getColumn( size_t columnNumber, matrix< M, 1, float_t >& column ) const
         column.at( rowIndex, 1 ) = at( rowIndex, columnNumber );
     }
     #endif
+
+    #ifdef VMMLIB_SAFE_ACCESSORS
+    if ( columnNumber >= N )
+        VMMLIB_ERROR( "getColumn() - index out of bounds.", VMMLIB_HERE );
+    #endif
+
     memcpy( &column.array[0], &array[ M * columnNumber ], M * sizeof( float_t ) );
 }
 
@@ -568,7 +584,14 @@ setColumn( size_t columnNumber, const matrix< M, 1, float_t >& column )
         at( rowIndex, columnNumber ) = column.at( rowIndex, 0 );
     }
     #else
+
+    #ifdef VMMLIB_SAFE_ACCESSORS
+    if ( columnNumber >= N )
+        VMMLIB_ERROR( "setColumn() - index out of bounds.", VMMLIB_HERE );
+    #endif
+
     memcpy( &array[ M * columnNumber ], &column.array[0], M * sizeof( float_t ) );
+
     #endif
 }
 
@@ -576,10 +599,10 @@ setColumn( size_t columnNumber, const matrix< M, 1, float_t >& column )
 template< size_t M, size_t N, typename float_t >
 vector< N, float_t > 
 matrix< M, N, float_t >::
-getRow( size_t rowNumber ) const
+getRow( size_t rowIndex ) const
 {
 	vector< N, float_t > row;
-	getRow( rowNumber, row );
+	getRow( rowIndex, row );
 	return row;
 }
 
@@ -587,11 +610,16 @@ getRow( size_t rowNumber ) const
 template< size_t M, size_t N, typename float_t >
 void
 matrix< M, N, float_t >::
-getRow( size_t rowNumber, vector< N, float_t >& row ) const
+getRow( size_t rowIndex, vector< N, float_t >& row ) const
 {
+    #ifdef VMMLIB_SAFE_ACCESSORS
+    if ( rowIndex >= M )
+        VMMLIB_ERROR( "getRow() - index out of bounds.", VMMLIB_HERE );
+    #endif
+
     for( size_t colIndex = 0; colIndex < N; ++colIndex )
     {
-        row.at( colIndex ) = at( rowNumber, colIndex );
+        row.at( colIndex ) = at( rowIndex, colIndex );
     }
 }
 
@@ -600,11 +628,16 @@ getRow( size_t rowNumber, vector< N, float_t >& row ) const
 template< size_t M, size_t N, typename float_t >
 void
 matrix< M, N, float_t >::
-setRow( size_t rowNumber,  const vector< N, float_t >& row )
+setRow( size_t rowIndex,  const vector< N, float_t >& row )
 {
+    #ifdef VMMLIB_SAFE_ACCESSORS
+    if ( rowIndex >= M )
+        VMMLIB_ERROR( "setRow() - index out of bounds.", VMMLIB_HERE );
+    #endif
+
     for( size_t colIndex = 0; colIndex < N; ++colIndex )
     {
-        at( rowNumber, colIndex ) = row.at( colIndex );
+        at( rowIndex, colIndex ) = row.at( colIndex );
     }
 }
 
@@ -613,11 +646,16 @@ setRow( size_t rowNumber,  const vector< N, float_t >& row )
 template< size_t M, size_t N, typename float_t >
 void
 matrix< M, N, float_t >::
-getRow( size_t rowNumber, matrix< 1, N, float_t >& row ) const
+getRow( size_t rowIndex, matrix< 1, N, float_t >& row ) const
 {
+    #ifdef VMMLIB_SAFE_ACCESSORS
+    if ( rowIndex >= M )
+        VMMLIB_ERROR( "getRow() - index out of bounds.", VMMLIB_HERE );
+    #endif
+
     for( size_t colIndex = 0; colIndex < N; ++colIndex )
     {
-        row.at( 0, colIndex ) = at( rowNumber, colIndex );
+        row.at( 0, colIndex ) = at( rowIndex, colIndex );
     }
 }
 
@@ -626,11 +664,16 @@ getRow( size_t rowNumber, matrix< 1, N, float_t >& row ) const
 template< size_t M, size_t N, typename float_t >
 void
 matrix< M, N, float_t >::
-setRow( size_t rowNumber,  const matrix< 1, N, float_t >& row )
+setRow( size_t rowIndex,  const matrix< 1, N, float_t >& row )
 {
+    #ifdef VMMLIB_SAFE_ACCESSORS
+    if ( rowIndex >= M )
+        VMMLIB_ERROR( "getRow() - index out of bounds.", VMMLIB_HERE );
+    #endif
+
     for( size_t colIndex = 0; colIndex < N; ++colIndex )
     {
-        at( rowNumber, colIndex ) = row.at( 0, colIndex );
+        at( rowIndex, colIndex ) = row.at( 0, colIndex );
     }
 }
 

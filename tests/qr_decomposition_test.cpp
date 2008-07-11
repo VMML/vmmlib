@@ -15,23 +15,33 @@ qr_decomposition_test::run()
     // tests copyFrom1DimCArray function with row_by_row data
 	ok = true;
 	{
-            matrix< 3, 3, double > A;
-            matrix< 3, 3, double > Q;
-            matrix< 3, 3, double > Q_correct;
-            matrix< 3, 3, double > R;
-            matrix< 3, 3, double > R_correct;
+            matrix< 4, 3, double > A;
+            matrix< 4, 4, double > Q;
+            matrix< 4, 4, double > Q_correct;
+            matrix< 4, 3, double > R;
+            matrix< 4, 3, double > R_correct;
 
-            double data[ 3 * 3 ] = { 12, -51, 4, 6, 167, -68, -4, 24, -41 };///, 2, 5, -23 };
+            double data[ 4 * 3 ] = { 0.8147, 0.6324, 0.9575, 0.9058, 0.0975, 
+                0.9649, 0.1270, 0.2785, 0.1576, 0.9134, 0.5469, 0.9706 };
             A = data;
                       
-            qr_decompose( A, Q, R );
+            qr_gram_schmidt( A, Q, R );
 
-            double correct_solution_R[ 3 * 3 ] = { 14, 21, -14, 0, 175, -70, 0, 0, 35 };
-            R_correct.copyFrom1DimCArray( correct_solution_R );
+            double correct_solution_Q[ 4 * 4 ] = 
+                {   -0.5332, 0.4892, 0.6519, 0.2267, 
+                    -0.5928, -0.7162, 0.1668, -0.3284,
+                    -0.0831, 0.4507, -0.0991, -0.8833, 
+                    -0.5978, 0.2112, -0.7331, 0.2462 };
+            Q_correct = correct_solution_Q;
 
-            double correct_solution_Q[ 3 * 3 ] = 
-                { 0.857143, 0.428571, -0.285714, -0.394286, 0.902857, 0.171429, -0.331429, 0.034286, -0.942857 };
-            Q_correct.copyFrom1DimCArray( correct_solution_Q, false );
+            double correct_solution_R[ 4 * 3 ] = {
+                -1.5279, -0.7451, -1.6759, 
+                0,       0.4805,  0.0534, 
+                0,       0,       0.0580,
+                0,       0,       0
+                };
+            R_correct = correct_solution_R;
+
 
             ok = ( R == R_correct && Q == Q_correct );
             log( "qr_decomposition of a 3x3 matrix using stabilized Gram-Schmidt (maximum precision)", ok, true  );

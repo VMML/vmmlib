@@ -24,6 +24,8 @@
 
 #define QUATERNION_DEBUG 1
 
+#define QUATERNION_TRACE_EPSILON 1e-5
+
 namespace vmml
 {
 
@@ -160,6 +162,8 @@ public:
 	
 	T getMinComponent();
 	T getMaxComponent();
+  
+  Matrix3< T > getRotationMatrix() const;
 	
 	friend std::ostream& operator << ( std::ostream& os, const Quaternion& q )
 	{
@@ -245,28 +249,45 @@ Quaternion< T >::Quaternion( const Vector3< T >& v3 )
 template < typename T >
 Quaternion< T >::Quaternion( const Matrix3< T >& matrix )
 {
-	T trace = matrix.m00 + matrix.m11 + matrix.m22;
-	T root;
-	T aux;
-	if( trace > 0.0 )
-	{
-		root = sqrt( trace + 1.0 );
-		w = root / 2.;
-		root = 1. / ( 2. * root ); 
-		x = root * ( matrix.m21 - matrix.m12 );
-		y = root * ( matrix.m02 - matrix.m20 );
-		z = root * ( matrix.m10 - matrix.m01 );
-	}
-	else
-	{
-		aux = 2 * ( matrix.m11 + matrix.m22 );
-		root = sqrt( trace - aux + 1.0 );
-		x = root / 2;
-		root = 1 / ( 2 * root );
-		y = root * ( matrix.m01 + matrix.m10 );
-		z = root * ( matrix.m02 + matrix.m20 );
-		w = root * ( matrix.m12 - matrix.m21 );
-	}
+  T trace = matrix.m00 + matrix.m11 + matrix.m22 + 1.;
+  // very small traces may introduce a big numerical error
+  if( trace > QUATERNION_TRACE_EPSILON )
+  {
+    T s = 0.5 / sqrt(trace);
+    w = 0.25 / s;
+    x = ( matrix.m21 - matrix.m12 ) * s;
+    y = ( matrix.m02 - matrix.m20 ) * s;
+    z = ( matrix.m10 - matrix.m01 ) * s;
+  } 
+  else 
+    // 0, 0 is largest
+    if ( matrix.m00 > matrix.m11 && matrix.m00 > matrix.m22 )
+    {
+      T s = 0.5 / sqrt( 1. + matrix.m00 - matrix.m11 - matrix.m22);
+      w = ( matrix.m12 - matrix.m21 ) * s;
+      x = 0.25 / s;
+      y = ( matrix.m01 + matrix.m10 ) * s;
+      z = ( matrix.m02 + matrix.m20 ) * s;
+    }
+    else 
+      // 1, 1 is largest
+      if (matrix.m11 > matrix.m22)
+      {
+        T s = 0.5 / sqrt( 1. + matrix.m11 - matrix.m00 - matrix.m22);
+        w = ( matrix.m02 - matrix.m20 ) * s;
+        x = ( matrix.m01 + matrix.m10 ) * s;
+        y = 0.25 / s;
+        z = ( matrix.m12 + matrix.m21 ) * s;
+      }
+      // 2, 2 is largest
+      else 
+      {
+        T s = 0.5 / sqrt( 1. + matrix.m22 - matrix.m00 - matrix.m11 );
+        w = ( matrix.m01 - matrix.m10 ) * s;
+        x = ( matrix.m02 + matrix.m20 ) * s;
+        y = ( matrix.m12 + matrix.m21 ) * s;
+        z = 0.25 / s;
+      }
 }
 
 
@@ -795,6 +816,27 @@ T Quaternion< T >::getMaxComponent()
 	m = std::max( m, y );
 	m = std::max( m, z );
 	return m;
+}
+
+template < typename T >
+Matrix3< T > Quaternion< T >::getRotationMatrix() const
+{
+  T w2 = w * w;
+  T x2 = x * x;
+  T y2 = y * y;
+  T z2 = z * z;
+  T wx = w * x;
+  T wy = w * y;
+  T wz = w * z;
+  T xy = x * y;
+  T xz = x * z;
+  T yz = y * z;
+  
+  Matrix3< T > m( w2 + x2 - y2 - z2, 2. * (xy - wz), 2. * (xz + wy),
+                  2. * (xy + wz), w2 - x2 + y2 - z2, 2. * (yz - wx),
+                  2. * (xz - wy), 2. * (yz + wx), w2 - x2 - y2 + z2);
+                  
+  return m;
 }
 
 template < typename T >

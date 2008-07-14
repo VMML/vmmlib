@@ -96,9 +96,13 @@ public:
     template< size_t P >
     matrix< M, P, float_t > operator*( matrix< N, P, float_t >& other ); 
 
-	matrix< M, N, float_t > operator+( const matrix< M, N, float_t >& other ) const;
+	inline matrix< M, N, float_t > operator+( const matrix< M, N, float_t >& other ) const;
 	void operator+=( const matrix< M, N, float_t >& other );
     
+	inline matrix< M, N, float_t > operator-( const matrix< M, N, float_t >& other ) const;
+	void operator-=( const matrix< M, N, float_t >& other );
+    
+    // transform vector by matrix ( vec = matrix * vec )
     vector< M, float_t > operator*( const vector< M, float_t >& other ) const;
     
 
@@ -335,7 +339,10 @@ isEqualTo( const matrix< M, N, float_t >& other, float_t tolerance )
     {
         for( size_t colIndex = 0; ok && colIndex < N; colIndex++) 
         {
-            ok = abs( at( rowIndex, colIndex ) - other.at( rowIndex, colIndex ) ) < tolerance;
+            if ( at( rowIndex, colIndex ) > other.at( rowIndex, colIndex ) )
+                ok = abs( at( rowIndex, colIndex ) - other.at( rowIndex, colIndex ) ) < tolerance;
+            else
+                ok = abs( other.at( rowIndex, colIndex ) - at( rowIndex, colIndex ) ) < tolerance;
         }
     }
     return ok;
@@ -824,7 +831,7 @@ operator=( float_t fillValue )
 
 
 template< size_t M, size_t N, typename float_t >
-matrix< M, N, float_t > 
+inline matrix< M, N, float_t > 
 matrix< M, N, float_t >::
 operator+( const matrix< M, N, float_t >& other ) const
 {
@@ -845,6 +852,34 @@ operator+=( const matrix< M, N, float_t >& other )
 		for( size_t colIndex = 0; colIndex < N; ++colIndex )
 		{
 			at( rowIndex, colIndex ) += other.at( rowIndex, colIndex );
+		}		
+	}
+}
+
+
+
+template< size_t M, size_t N, typename float_t >
+inline matrix< M, N, float_t > 
+matrix< M, N, float_t >::
+operator-( const matrix< M, N, float_t >& other ) const
+{
+	matrix< M, N, float_t > result( *this );
+	result += other;
+	return result;
+}
+
+
+
+template< size_t M, size_t N, typename float_t >
+void
+matrix< M, N, float_t >::
+operator-=( const matrix< M, N, float_t >& other )
+{
+	for( size_t rowIndex = 0; rowIndex < M; ++rowIndex )
+	{
+		for( size_t colIndex = 0; colIndex < N; ++colIndex )
+		{
+			at( rowIndex, colIndex ) -= other.at( rowIndex, colIndex );
 		}		
 	}
 }

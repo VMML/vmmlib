@@ -25,6 +25,8 @@ protected:
 	virtual void log_error( const std::string& error_msg, bool warning_only = false );
 	
 	std::string _log;
+    
+    double  _tolerance;
 
 }; // class unit_test
 

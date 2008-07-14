@@ -12,7 +12,7 @@ qr_decomposition_test::run()
 {
     bool ok = true;
     
-    // tests copyFrom1DimCArray function with row_by_row data
+    // tests qr decomposition using gram-schmidt
 	ok = true;
 	{
             matrix< 4, 3, double > A;
@@ -25,8 +25,6 @@ qr_decomposition_test::run()
                 0.9649, 0.1270, 0.2785, 0.1576, 0.9134, 0.5469, 0.9706 };
             A = data;
                       
-            qr_decompose_gram_schmidt( A, Q, R );
-
             double correct_solution_Q[ 4 * 4 ] = 
                 {   -0.5332, 0.4892, 0.6519, 0.2267, 
                     -0.5928, -0.7162, 0.1668, -0.3284,
@@ -41,6 +39,8 @@ qr_decomposition_test::run()
                 0,       0,       0
                 };
             R_correct = correct_solution_R;
+
+            qr_decompose_gram_schmidt( A, Q, R );
 
 
             ok = ( R == R_correct && Q == Q_correct );
@@ -65,7 +65,6 @@ qr_decomposition_test::run()
 		}
 	
 	}
-    
     return ok;
 }
 

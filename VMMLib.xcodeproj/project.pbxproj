@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9839FA240E2B5BBB00A16721 /* svd_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9839FA220E2B5BBB00A16721 /* svd_test.cpp */; };
+		9839FA250E2B5BBB00A16721 /* svd_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9839FA220E2B5BBB00A16721 /* svd_test.cpp */; };
 		986834C10E24FFD400618F55 /* vector_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 986834BF0E24FFD400618F55 /* vector_test.cpp */; };
 		986834C20E24FFD400618F55 /* vector_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 986834BF0E24FFD400618F55 /* vector_test.cpp */; };
 		988F587F0C22C1F10005AC92 /* main_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 988F58360C22C09C0005AC92 /* main_test.cpp */; };
@@ -31,6 +33,9 @@
 /* Begin PBXFileReference section */
 		089C1667FE841158C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		8DC2EF5A0486A6940098B216 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		9839FA1D0E2B5A6C00A16721 /* svd.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = svd.hpp; path = include/vmmlib/svd.hpp; sourceTree = "<group>"; };
+		9839FA220E2B5BBB00A16721 /* svd_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = svd_test.cpp; path = tests/svd_test.cpp; sourceTree = "<group>"; };
+		9839FA230E2B5BBB00A16721 /* svd_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = svd_test.hpp; path = tests/svd_test.hpp; sourceTree = "<group>"; };
 		985F6FC40C6B7C67002B05C5 /* vmmlib.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = vmmlib.h; path = include/vmmlib/vmmlib.h; sourceTree = "<group>"; };
 		985F6FC50C6B7C67002B05C5 /* vector4.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = vector4.h; path = include/vmmlib/vector4.h; sourceTree = "<group>"; };
 		985F6FC60C6B7C67002B05C5 /* vector3.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = vector3.h; path = include/vmmlib/vector3.h; sourceTree = "<group>"; };
@@ -168,7 +173,7 @@
 			children = (
 				985F6FC40C6B7C67002B05C5 /* vmmlib.h */,
 				988F58300C22C0160005AC92 /* Basics */,
-				98FE7DBC0E224E3D00B1E17F /* matrix mxn */,
+				98FE7DBC0E224E3D00B1E17F /* matrix<M, N, float_t > */,
 				988F58320C22C0570005AC92 /* Frustum */,
 				988F58310C22C01D0005AC92 /* Advanced */,
 				98B7A2400E24C7CF0064264E /* Misc */,
@@ -291,6 +296,8 @@
 				986834BF0E24FFD400618F55 /* vector_test.cpp */,
 				98F556380E24377F0044BA3E /* qr_decomposition_test.hpp */,
 				98F556370E24377F0044BA3E /* qr_decomposition_test.cpp */,
+				9839FA230E2B5BBB00A16721 /* svd_test.hpp */,
+				9839FA220E2B5BBB00A16721 /* svd_test.cpp */,
 			);
 			name = "unit tests";
 			sourceTree = "<group>";
@@ -304,16 +311,17 @@
 			name = "performance tests";
 			sourceTree = "<group>";
 		};
-		98FE7DBC0E224E3D00B1E17F /* matrix mxn */ = {
+		98FE7DBC0E224E3D00B1E17F /* matrix<M, N, float_t > */ = {
 			isa = PBXGroup;
 			children = (
 				98F556320E2437540044BA3E /* matrix.hpp */,
 				9868345B0E24F8F300618F55 /* vector.hpp */,
 				98B7A3F00E24EAA30064264E /* matrix_functors.hpp */,
 				98F556330E2437540044BA3E /* qr_decomposition.hpp */,
+				9839FA1D0E2B5A6C00A16721 /* svd.hpp */,
 				9816661D0E27891000AA6A4D /* details */,
 			);
-			name = "matrix mxn";
+			name = "matrix<M, N, float_t >";
 			sourceTree = "<group>";
 		};
 		98FE7DCB0E224EA200B1E17F /* old tests */ = {
@@ -438,6 +446,7 @@
 				98B7A26A0E24CB140064264E /* performance_test.cpp in Sources */,
 				98B7A2A50E24DF910064264E /* matrix_compare_perf_test.cpp in Sources */,
 				986834C20E24FFD400618F55 /* vector_test.cpp in Sources */,
+				9839FA250E2B5BBB00A16721 /* svd_test.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -450,6 +459,7 @@
 				98F5563B0E24377F0044BA3E /* qr_decomposition_test.cpp in Sources */,
 				98B7A2520E24C8E70064264E /* vmmlib_unit_tests_main.cpp in Sources */,
 				986834C10E24FFD400618F55 /* vector_test.cpp in Sources */,
+				9839FA240E2B5BBB00A16721 /* svd_test.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

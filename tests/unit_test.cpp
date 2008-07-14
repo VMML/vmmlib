@@ -4,6 +4,7 @@ namespace vmml
 {
 
 unit_test::unit_test( const std::string& test_name )
+    : _tolerance( 1e-15 )
 {
 	_log = "UNIT TEST: ";
 	_log += test_name;

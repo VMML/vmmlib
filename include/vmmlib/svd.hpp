@@ -1,8 +1,12 @@
-#ifndef __VMML__SINGULAR_VALUE_DECOMPOSITION__H__
-#define __VMML__SINGULAR_VALUE_DECOMPOSITION__H__
+#ifndef __VMML__SINGULAR_VALUE_DECOMPOSITION__HPP__
+#define __VMML__SINGULAR_VALUE_DECOMPOSITION__HPP__
 
-#include <vmmlib/vmmlib.h>
+#include <vmmlib/matrix.hpp>
+#include <vmmlib/vector.hpp>
+
+// fixme?
 #include <vmmlib/helperFunctions.h>
+#include <cmath>
 
 namespace vmml
 {
@@ -15,26 +19,32 @@ namespace vmml
  */ 
 //static double rv1[16]; 
 
-template < class T >
-void svdecompose( T **a, int m, size_t n, T  w[], T **v)
+template < size_t M, size_t N, typename T >
+void svdecompose( 
+    matrix< M, N, T >&    a, 
+    vector< N, T >&       w, 
+    matrix< N, N, T >&    v 
+    )
 {
     int flag, i, its, j, jj, k, l, nm;
     T anorm, c, f, g, h, s, scale, x, y, z;
 
-    T* rv1 = (T*)calloc(n, sizeof(T));   // vector(1,n);
+    //T* rv1 = (T*)calloc( N, sizeof(T));   // vector(1,n);
+    vector< N, T > rv1;
+
     g = scale = anorm = 0.0;					// Householder reduction to bidiagonal form.
-    for ( i = 0; i < n; ++i ) 
+    for ( i = 0; i < N; ++i ) 
     {
         l = i + 1;
         rv1[i] = scale * g;
         g = s = scale = 0.0;
-        if ( i < m ) 
+        if ( i < M ) 
         {
-            for ( k = i; k < m; ++k )
+            for ( k = i; k < M; ++k )
                 scale += fabs(a[k][i]);
             if ( scale ) 
             {
-                for ( k = i; k < m; ++k ) 
+                for ( k = i; k < M; ++k ) 
                 {
                     a[k][i] /= scale;
                     s += a[k][i] * a[k][i];
@@ -43,27 +53,27 @@ void svdecompose( T **a, int m, size_t n, T  w[], T **v)
                 g = -sign(sqrt(s), f);
                 h = f * g - s;
                 a[i][i] = f - g;
-                for ( j = l; j < n; ++j ) 
+                for ( j = l; j < N; ++j ) 
                 {
-                    for ( s = 0.0, k = i; k < m; ++k )
+                    for ( s = 0.0, k = i; k < M; ++k )
                         s += a[k][i] * a[k][j];
                     f = s / h;
-                    for ( k = i; k < m; ++k )
+                    for ( k = i; k < M; ++k )
                         a[k][j] += f * a[k][i];
                 }
-                for ( k = i; k < m; ++k )
+                for ( k = i; k < M; ++k )
                     a[k][i] *= scale;
             }
         }
         w[i] = scale * g;
         g = s = scale = 0.0;
-        if ( i < m && i != n-1 ) 
+        if ( i < M && i != N-1 ) 
         {
-            for ( k = l; k < n; ++k )
+            for ( k = l; k < N; ++k )
                 scale += fabs(a[i][k]);
             if ( scale ) 
             {
-                for ( k = l; k < n; ++k ) 
+                for ( k = l; k < N; ++k ) 
                 {
                     a[i][k] /= scale;
                     s += a[i][k] * a[i][k];
@@ -72,71 +82,71 @@ void svdecompose( T **a, int m, size_t n, T  w[], T **v)
                 g = -sign(sqrt(s), f);
                 h = f * g - s;
                 a[i][l] = f - g;
-                for ( k = l; k < n; ++k )
+                for ( k = l; k < N; ++k )
                     rv1[k] = a[i][k] / h;
-                for ( j = l; j < m; ++j ) 
+                for ( j = l; j < M; ++j ) 
                 {
-                    for ( s = 0.0, k = l; k < n; ++k )
+                    for ( s = 0.0, k = l; k < N; ++k )
                         s += a[j][k] * a[i][k];
-                    for ( k = l; k < n; ++k )
+                    for ( k = l; k < N; ++k )
                         a[j][k] += s * rv1[k];
                 }
-                for ( k = l; k < n; ++k )
+                for ( k = l; k < N; ++k )
                     a[i][k] *= scale;
             }
         }
         anorm = max( anorm, ( fabs( w[i] ) + fabs( rv1[i] ) ) );
     }
-    for ( i = n-1; i >= 0; --i ) 
+    for ( i = N-1; i >= 0; --i ) 
     { // Accumulation of right-hand transformations.
-        if ( i < n ) 
+        if ( i < N ) 
         {
             if ( g ) 
             {
-                for ( j = l; j < n; ++j )			// Double division to avoid possible underflow.
+                for ( j = l; j < N; ++j )			// Double division to avoid possible underflow.
                     v[j][i] = (a[i][j] / a[i][l]) / g;
-                for ( j = l; j < n; ++j ) 
+                for ( j = l; j < N; ++j ) 
                 {
-                    for ( s = 0.0, k = l; k < n; ++k )
+                    for ( s = 0.0, k = l; k < N; ++k )
                         s += a[i][k] * v[k][j];
-                    for ( k = l; k < n; ++k )
+                    for ( k = l; k < N; ++k )
                         v[k][j] += s * v[k][i];
                 }
             }
-            for ( j = l; j < n; ++j )
+            for ( j = l; j < N; ++j )
                 v[i][j] = v[j][i] = 0.0;
         }
         v[i][i] = 1.0;
         g = rv1[i];
         l = i;
     }
-    i = ( m < n ) ? m - 1 : n - 1; 
+    i = ( M < N ) ? M - 1 : N - 1; 
     for ( ; i >= 0; --i ) // IMIN 
     { // Accumulation of left-hand transformations.
         l = i + 1;
         g = w[i];
-        for ( j = l; j < n; ++j )
+        for ( j = l; j < N; ++j )
             a[i][j] = 0.0;
         if ( g ) 
         {
             g = 1.0 / g;
-            for ( j = l; j < n; ++j ) 
+            for ( j = l; j < N; ++j ) 
             {
-                for ( s = 0.0, k = l; k < m; ++k )
+                for ( s = 0.0, k = l; k < M; ++k )
                     s += a[k][i] * a[k][j];
                 f = (s / a[i][i]) * g;
-                for ( k = i; k < m; ++k )
+                for ( k = i; k < M; ++k )
                     a[k][j] += f * a[k][i];
             }
-            for ( j = i; j < m; ++j )
+            for ( j = i; j < M; ++j )
                 a[j][i] *= g;
         } 
         else
-            for ( j = i; j < m; ++j )
+            for ( j = i; j < M; ++j )
                 a[j][i] = 0.0;
         ++a[i][i];
     }
-    for ( k = n-1; k >= 0; --k ) 
+    for ( k = N-1; k >= 0; --k ) 
     { // Diagonalization of the bidiagonal form: Loop over singular values,
       // and over allowed iterations.
         for ( its = 0; its < 30; ++its ) 
@@ -169,7 +179,7 @@ void svdecompose( T **a, int m, size_t n, T  w[], T **v)
                     h = 1.0 / h;
                     c = g * h;
                     s = -f * h;
-                    for ( j = 0; j < m; ++j ) 
+                    for ( j = 0; j < M; ++j ) 
                     {
                         y = a[j][nm];
                         z = a[j][i];
@@ -184,7 +194,7 @@ void svdecompose( T **a, int m, size_t n, T  w[], T **v)
                 if ( z < 0.0 ) 
                 { // Singular value is made nonnegative.
                     w[k] = -z;
-                    for ( j = 0; j < n; ++j )
+                    for ( j = 0; j < N; ++j )
                         v[j][k] = -v[j][k];
                 }
                 break;
@@ -219,7 +229,7 @@ void svdecompose( T **a, int m, size_t n, T  w[], T **v)
                 g = g * c - x * s;
                 h = y * s;
                 y *= c;
-                for ( jj = 0; jj < n; ++jj ) 
+                for ( jj = 0; jj < N; ++jj ) 
                 {
                     x = v[jj][j];
                     z = v[jj][i];
@@ -236,7 +246,7 @@ void svdecompose( T **a, int m, size_t n, T  w[], T **v)
                 }
                 f = c * g + s * y;
                 x = c * y - s * g;
-                for ( jj = 0; jj < m; ++jj ) 
+                for ( jj = 0; jj < M; ++jj ) 
                 {
                     y = a[jj][j];
                     z = a[jj][i];
@@ -250,7 +260,7 @@ void svdecompose( T **a, int m, size_t n, T  w[], T **v)
         }
 		
     }
-    free(rv1);
+    //free(rv1);
 	for ( i = 0; i < 3; ++i )
 		for ( j = 0; j < 3; ++j )
 			if ( i < j && w[i] < w[j] )

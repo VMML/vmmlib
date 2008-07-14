@@ -33,6 +33,7 @@ public:
 
     bool operator==( const vector< M, float_t >& other ) const;
     bool operator!=( const vector< M, float_t >& other ) const;
+    bool isEqualTo( const vector< M, float_t >& other, float_t tolerance = 1e-15 ) const;
    
     const vector< M, float_t >& operator=( const float_t* c_array );
     
@@ -499,6 +500,23 @@ vector< M, float_t >::operator!=( const vector< M, float_t >& other ) const
     return ! this->operator==( other );
 }
 
+
+template< size_t M, typename float_t >
+bool
+vector< M, float_t >::
+isEqualTo( const vector< M, float_t >& other, float_t tolerance ) const
+{
+    bool ok = true;
+    for( size_t index = 0; ok && index < M; ++index )
+    {
+        if ( at( index ) > other.at( index ) )
+            ok = abs( at( index ) - other.at( index ) ) < tolerance;
+        else
+            ok = abs( other.at( index ) - at( index ) ) < tolerance;
+    }
+    return ok;
+
+}
 
 
 template< size_t M, typename float_t >

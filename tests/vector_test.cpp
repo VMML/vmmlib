@@ -13,9 +13,7 @@ vector_test::run()
     
     vector< 4 > v;
     double data[] = { 1, 2, 3, 4 };
-    
-    double tolerance = 1e-15;
-    
+       
     v.copyFrom1DimCArray( data );
     
     // tests copyFrom1DimCArray function

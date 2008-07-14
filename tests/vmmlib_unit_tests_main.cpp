@@ -2,6 +2,7 @@
 #include "vector_test.hpp"
 #include "matrix_test.hpp"
 #include "qr_decomposition_test.hpp"
+#include "svd_test.hpp"
 
 
 #include <iostream>
@@ -24,5 +25,9 @@ main( int argc, const char* argv[] )
 
 	vmml::qr_decomposition_test qr_test_;
 	run_and_log( qr_test_ );
+
+	vmml::svd_test svd_test_;
+	run_and_log( svd_test_ );
+
 
 }

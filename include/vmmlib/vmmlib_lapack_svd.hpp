@@ -132,6 +132,10 @@ svd_call( svd_params< double >& p )
 template< size_t M, size_t N, typename float_t >
 struct lapack_svd
 {
+    lapack_svd();
+    ~lapack_svd();
+
+    // slow version, use if U and Vt are needed
     void compute(
         const matrix< M, N, float_t >& A,
         matrix< M, N, float_t >& U,
@@ -139,49 +143,52 @@ struct lapack_svd
         matrix< N, N, float_t >& Vt
         );
 
-    
+    // fast version, use if only sigma is needed.
     void compute( 
         const matrix< M, N, float_t >& A,
         vector< N, float_t >& sigma
         );
     
-
-    lapack_svd()
-    {
-        p.jobu      = 'N';
-        p.jobvt     = 'N';
-        p.m         = M;
-        p.n         = N;
-        p.a         = 0;
-        p.lda       = M;
-        p.s         = 0;
-        p.u         = 0;
-        p.ldu       = M;
-        p.vt        = 0;
-        p.ldvt      = 1;
-        p.work      = new float_t;
-        p.lwork     = -1;
-
-        // workspace query
-        lapack::svd_call( p );
-
-        p.lwork = p.work[0];
-        delete p.work;
-
-        p.work = new float_t[ p.lwork ];
-    
-    }
-    
-    ~lapack_svd()
-    {
-        delete[] p.work;
-    }
-
     lapack::svd_params< float_t > p;
+
+    const lapack::svd_params< float_t >& get_params(){ return p; };
     
 }; // struct lapack_svd
 
 
+template< size_t M, size_t N, typename float_t >
+lapack_svd< M, N, float_t >::lapack_svd()
+{
+    p.jobu      = 'N';
+    p.jobvt     = 'N';
+    p.m         = M;
+    p.n         = N;
+    p.a         = 0;
+    p.lda       = M;
+    p.s         = 0;
+    p.u         = 0;
+    p.ldu       = M;
+    p.vt        = 0;
+    p.ldvt      = 1;
+    p.work      = new float_t;
+    p.lwork     = -1;
+
+    // workspace query
+    lapack::svd_call( p );
+
+    p.lwork = p.work[0];
+    delete p.work;
+
+    p.work = new float_t[ p.lwork ];
+
+}
+
+
+template< size_t M, size_t N, typename float_t >
+lapack_svd< M, N, float_t >::~lapack_svd()
+{
+    delete[] p.work; 
+}
 
 template< size_t M, size_t N, typename float_t >
 void

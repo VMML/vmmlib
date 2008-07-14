@@ -107,44 +107,67 @@ llsq_call( llsq_params< double >& p )
 template< size_t M, size_t N, typename float_t >
 struct lapack_linear_least_squares
 {
+    // computes x ( Ax = b ). x replaces b on output.
     void compute(
         matrix< N, N, float_t >& A, 
         matrix< N, M, float_t >& b 
-        )
-    {
-        p.a = A.array;
-        p.b = b.array;
-        
-        lapack::llsq_call( p );
+        );
 
-        if ( p.info != 0 )
-        {
-            if ( p.info < 0 )
-                VMMLIB_ERROR( "invalid value in input matrix", VMMLIB_HERE );
-            else
-                VMMLIB_ERROR( "factor U is exactly singular, solution could not be computed.", VMMLIB_HERE );
-        }
-    }
+    lapack_linear_least_squares();
+    ~lapack_linear_least_squares();
 
-
-    lapack_linear_least_squares()
-    {
-        p.n     = N;
-        p.nrhs  = M;
-        p.lda   = N;
-        p.ldb   = N;
-        p.ipiv = new __CLPK_integer[ N ];
-    
-    }
-    
-    ~lapack_linear_least_squares()
-    {
-        delete[] p.ipiv;
-    }
+    const lapack::llsq_params< float_t >& get_params() { return p; }
 
     lapack::llsq_params< float_t > p;
     
 }; // struct lapack_linear_least_squares
+
+
+
+template< size_t M, size_t N, typename float_t >
+void
+lapack_linear_least_squares< M, N, float_t >::
+compute(
+        matrix< N, N, float_t >& A, 
+        matrix< N, M, float_t >& b 
+        )
+{
+    p.a = A.array;
+    p.b = b.array;
+    
+    lapack::llsq_call( p );
+
+    if ( p.info != 0 )
+    {
+        if ( p.info < 0 )
+            VMMLIB_ERROR( "invalid value in input matrix", VMMLIB_HERE );
+        else
+            VMMLIB_ERROR( "factor U is exactly singular, solution could not be computed.", VMMLIB_HERE );
+    }
+}
+
+
+
+template< size_t M, size_t N, typename float_t >
+lapack_linear_least_squares< M, N, float_t >::
+lapack_linear_least_squares()
+{
+    p.n     = N;
+    p.nrhs  = M;
+    p.lda   = N;
+    p.ldb   = N;
+    p.ipiv = new __CLPK_integer[ N ];
+
+}
+
+
+
+template< size_t M, size_t N, typename float_t >
+lapack_linear_least_squares< M, N, float_t >::
+~lapack_linear_least_squares()
+{
+    delete[] p.ipiv;
+}
 
 
 

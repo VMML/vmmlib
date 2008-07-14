@@ -9,6 +9,11 @@
 /* Begin PBXBuildFile section */
 		9839FA240E2B5BBB00A16721 /* svd_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9839FA220E2B5BBB00A16721 /* svd_test.cpp */; };
 		9839FA250E2B5BBB00A16721 /* svd_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9839FA220E2B5BBB00A16721 /* svd_test.cpp */; };
+		9839FE440E2BB25200A16721 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9839FE0E0E2BB16D00A16721 /* Accelerate.framework */; };
+		9839FE5E0E2BB5B300A16721 /* vmmlib_lapack_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9839FE5D0E2BB5B300A16721 /* vmmlib_lapack_main.cpp */; };
+		9839FEF80E2BC67400A16721 /* svd_lapack_vs_old.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9839FEF60E2BC67400A16721 /* svd_lapack_vs_old.cpp */; };
+		9839FF000E2BC75D00A16721 /* performance_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98B7A2680E24CB140064264E /* performance_test.cpp */; };
+		9839FF020E2BC76600A16721 /* timer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98B7A2560E24C9540064264E /* timer.cpp */; };
 		986834C10E24FFD400618F55 /* vector_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 986834BF0E24FFD400618F55 /* vector_test.cpp */; };
 		986834C20E24FFD400618F55 /* vector_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 986834BF0E24FFD400618F55 /* vector_test.cpp */; };
 		988F587F0C22C1F10005AC92 /* main_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 988F58360C22C09C0005AC92 /* main_test.cpp */; };
@@ -33,9 +38,17 @@
 /* Begin PBXFileReference section */
 		089C1667FE841158C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		8DC2EF5A0486A6940098B216 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		9839005E0E2BD4DE00A16721 /* vmmlib_lapack_linear_least_squares.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = vmmlib_lapack_linear_least_squares.hpp; path = include/vmmlib/vmmlib_lapack_linear_least_squares.hpp; sourceTree = "<group>"; };
 		9839FA1D0E2B5A6C00A16721 /* svd.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = svd.hpp; path = include/vmmlib/svd.hpp; sourceTree = "<group>"; };
 		9839FA220E2B5BBB00A16721 /* svd_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = svd_test.cpp; path = tests/svd_test.cpp; sourceTree = "<group>"; };
 		9839FA230E2B5BBB00A16721 /* svd_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = svd_test.hpp; path = tests/svd_test.hpp; sourceTree = "<group>"; };
+		9839FE050E2BB10F00A16721 /* vmmlib_lapack.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = vmmlib_lapack.hpp; path = include/vmmlib/vmmlib_lapack.hpp; sourceTree = "<group>"; };
+		9839FE0E0E2BB16D00A16721 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = /System/Library/Frameworks/Accelerate.framework; sourceTree = "<absolute>"; };
+		9839FE1F0E2BB24700A16721 /* vmmlib_lapack_test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = vmmlib_lapack_test; sourceTree = BUILT_PRODUCTS_DIR; };
+		9839FE5D0E2BB5B300A16721 /* vmmlib_lapack_main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = vmmlib_lapack_main.cpp; path = tests/vmmlib_lapack_main.cpp; sourceTree = "<group>"; };
+		9839FEEF0E2BC59D00A16721 /* vmmlib_lapack_svd.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = vmmlib_lapack_svd.hpp; path = include/vmmlib/vmmlib_lapack_svd.hpp; sourceTree = "<group>"; };
+		9839FEF60E2BC67400A16721 /* svd_lapack_vs_old.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = svd_lapack_vs_old.cpp; path = tests/svd_lapack_vs_old.cpp; sourceTree = "<group>"; };
+		9839FEF70E2BC67400A16721 /* svd_lapack_vs_old.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = svd_lapack_vs_old.hpp; path = tests/svd_lapack_vs_old.hpp; sourceTree = "<group>"; };
 		985F6FC40C6B7C67002B05C5 /* vmmlib.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = vmmlib.h; path = include/vmmlib/vmmlib.h; sourceTree = "<group>"; };
 		985F6FC50C6B7C67002B05C5 /* vector4.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = vector4.h; path = include/vmmlib/vector4.h; sourceTree = "<group>"; };
 		985F6FC60C6B7C67002B05C5 /* vector3.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = vector3.h; path = include/vmmlib/vector3.h; sourceTree = "<group>"; };
@@ -100,6 +113,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		9839FE1D0E2BB24700A16721 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9839FE440E2BB25200A16721 /* Accelerate.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		988F58760C22C1B90005AC92 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -130,6 +151,7 @@
 				988F58780C22C1B90005AC92 /* VMMLibTest */,
 				98FE7DC50E224E8700B1E17F /* vmmlib_unit_tests */,
 				98B7A2490E24C85C0064264E /* vmmlib_performance_tests */,
+				9839FE1F0E2BB24700A16721 /* vmmlib_lapack_test */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -174,6 +196,7 @@
 				985F6FC40C6B7C67002B05C5 /* vmmlib.h */,
 				988F58300C22C0160005AC92 /* Basics */,
 				98FE7DBC0E224E3D00B1E17F /* matrix<M, N, float_t > */,
+				9839FE5C0E2BB59800A16721 /* lapack */,
 				988F58320C22C0570005AC92 /* Frustum */,
 				988F58310C22C01D0005AC92 /* Advanced */,
 				98B7A2400E24C7CF0064264E /* Misc */,
@@ -184,6 +207,7 @@
 		1058C7B0FEA5585E11CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				9839FE0E0E2BB16D00A16721 /* Accelerate.framework */,
 			);
 			name = "Linked Frameworks";
 			sourceTree = "<group>";
@@ -210,6 +234,17 @@
 				98D4102C0E2658FE00BEFA71 /* exception.hpp */,
 			);
 			name = details;
+			sourceTree = "<group>";
+		};
+		9839FE5C0E2BB59800A16721 /* lapack */ = {
+			isa = PBXGroup;
+			children = (
+				9839FE5D0E2BB5B300A16721 /* vmmlib_lapack_main.cpp */,
+				9839FE050E2BB10F00A16721 /* vmmlib_lapack.hpp */,
+				9839FEEF0E2BC59D00A16721 /* vmmlib_lapack_svd.hpp */,
+				9839005E0E2BD4DE00A16721 /* vmmlib_lapack_linear_least_squares.hpp */,
+			);
+			name = lapack;
 			sourceTree = "<group>";
 		};
 		988F58300C22C0160005AC92 /* Basics */ = {
@@ -307,6 +342,8 @@
 			children = (
 				98B7A2A40E24DF910064264E /* matrix_compare_perf_test.hpp */,
 				98B7A2A30E24DF910064264E /* matrix_compare_perf_test.cpp */,
+				9839FEF70E2BC67400A16721 /* svd_lapack_vs_old.hpp */,
+				9839FEF60E2BC67400A16721 /* svd_lapack_vs_old.cpp */,
 			);
 			name = "performance tests";
 			sourceTree = "<group>";
@@ -352,6 +389,22 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		9839FE1E0E2BB24700A16721 /* vmmlib_lapack_test */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9839FE470E2BB26400A16721 /* Build configuration list for PBXNativeTarget "vmmlib_lapack_test" */;
+			buildPhases = (
+				9839FE1C0E2BB24700A16721 /* Sources */,
+				9839FE1D0E2BB24700A16721 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = vmmlib_lapack_test;
+			productName = vmmlib_lapack_test;
+			productReference = 9839FE1F0E2BB24700A16721 /* vmmlib_lapack_test */;
+			productType = "com.apple.product-type.tool";
+		};
 		988F58770C22C1B90005AC92 /* VMMLibTest */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 988F587A0C22C1D70005AC92 /* Build configuration list for PBXNativeTarget "VMMLibTest" */;
@@ -416,11 +469,23 @@
 				988F58770C22C1B90005AC92 /* VMMLibTest */,
 				98FE7DC40E224E8700B1E17F /* vmmlib_unit_tests */,
 				98B7A2480E24C85C0064264E /* vmmlib_performance_tests */,
+				9839FE1E0E2BB24700A16721 /* vmmlib_lapack_test */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
+		9839FE1C0E2BB24700A16721 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9839FE5E0E2BB5B300A16721 /* vmmlib_lapack_main.cpp in Sources */,
+				9839FEF80E2BC67400A16721 /* svd_lapack_vs_old.cpp in Sources */,
+				9839FF000E2BC75D00A16721 /* performance_test.cpp in Sources */,
+				9839FF020E2BC76600A16721 /* timer.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		988F58750C22C1B90005AC92 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -509,6 +574,37 @@
 				PREBINDING = NO;
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/include";
+			};
+			name = Release;
+		};
+		9839FE210E2BB24800A16721 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = /usr/local/bin;
+				PREBINDING = NO;
+				PRODUCT_NAME = vmmlib_lapack_test;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		9839FE220E2BB24800A16721 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_CFLAGS = "-msse3";
+				PREBINDING = NO;
+				PRODUCT_NAME = vmmlib_lapack_test;
+				ZERO_LINK = NO;
 			};
 			name = Release;
 		};
@@ -608,6 +704,15 @@
 			buildConfigurations = (
 				1DEB91B208733DA50010E9CD /* Debug */,
 				1DEB91B308733DA50010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9839FE470E2BB26400A16721 /* Build configuration list for PBXNativeTarget "vmmlib_lapack_test" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9839FE210E2BB24800A16721 /* Debug */,
+				9839FE220E2BB24800A16721 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

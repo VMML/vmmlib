@@ -36,6 +36,7 @@ public:
     bool isEqualTo( const vector< M, float_t >& other, float_t tolerance = 1e-15 ) const;
    
     const vector< M, float_t >& operator=( const float_t* c_array );
+    float_t operator=( float_t filler );
     
     vector< M, float_t > operator*( const vector< M, float_t >& other ) const;
     vector< M, float_t > operator/( const vector< M, float_t >& other ) const;    
@@ -525,6 +526,17 @@ vector< M, float_t >::operator=( const float_t* c_array )
 {
     copyFrom1DimCArray( c_array );
     return *this;
+}
+
+template< size_t M, typename float_t >
+float_t
+vector< M, float_t >::operator=( float_t filler_value )
+{
+    for( size_t index = 0; index < M; ++index )
+    {
+        at( index ) = filler_value;
+    }
+    return filler_value;
 }
 
 

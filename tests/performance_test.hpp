@@ -28,8 +28,8 @@ public:
 	}
 
 protected:
-    std::stringstream   _log;
-    timer               _timer;
+    std::stringstream       _log;
+    timer                   _timer;
     std::vector< double >   _last_times;
 
 }; // class performance_test

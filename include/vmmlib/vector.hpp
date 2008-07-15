@@ -16,6 +16,8 @@ class vector
 {
 public:
 
+    inline float_t& operator()( size_t index );
+    inline const float_t& operator()( size_t index ) const;
     inline float_t& at( size_t index );
     inline const float_t& at( size_t index ) const;
 
@@ -96,6 +98,24 @@ public:
     };  
 
 }; // class vector
+
+
+template< size_t M, typename float_t >
+inline float_t&
+vector< M, float_t >::operator()( size_t index )
+{
+	return at( index );
+}
+
+
+
+template< size_t M, typename float_t >
+inline const float_t&
+vector< M, float_t >::operator()( size_t index ) const
+{
+	return at( index );
+}
+
 
 
 template< size_t M, typename float_t >

@@ -20,51 +20,27 @@ class matrix
 {
 public:
 	static const bool is_square = M == N;
+	typedef matrix< M, N, float_t > mat;
     
     matrix();
     matrix( const matrix_functor< matrix< M, N, float_t > >& functor );
-    
+
+	// sets all matrix elements to 0
+    void zero();
+	// sets the matrix to identity (if square)
+    void identity();
+
     // accessor for matrix elements
-    inline float_t& at( size_t rowIndex, size_t colIndex );
+    inline float_t&		  operator()( size_t rowIndex, size_t colIndex );
+    inline const float_t& operator()( size_t rowIndex, size_t colIndex ) const;
+    inline float_t&		  at( size_t rowIndex, size_t colIndex );
     inline const float_t& at( size_t rowIndex, size_t colIndex ) const;
 
-	// legacy/compatibility accessor
-	struct row_accessor
-	{
-		row_accessor( float_t* array_ ) : array( array_ ) {}
-		float_t&
-		operator[]( size_t colIndex )
-		{ 
-			#ifdef VMMLIB_SAFE_ACCESSORS
-			if ( colIndex >= N ) 
-                VMMLIB_ERROR( "column index out of bounds", VMMLIB_HERE );
-			#endif
-			return array[ colIndex * M ]; 
-		}
-
-		const float_t&
-		operator[]( size_t colIndex ) const
-		{ 
-			#ifdef VMMLIB_SAFE_ACCESSORS
-			if ( colIndex >= N ) 
-                VMMLIB_ERROR( "column index out of bounds", VMMLIB_HERE );
-			#endif
-			return array[ colIndex * M ]; 
-		}
-		
-		float_t* array;
-		private: row_accessor() {} // disallow std ctor
-	};
-	// this is a hack to allow array-style access to matrix elements
-	// usage: matrix< 2, 2, float > m; m[ 1 ][ 0 ] = 37.0f;
-	inline row_accessor operator[]( size_t rowIndex )
-	{ 
-		#ifdef VMMLIB_SAFE_ACCESSORS
-		if ( rowIndex > M ) 
-            VMMLIB_ERROR( "row index out of bounds", VMMLIB_HERE );
-		#endif
-		return row_accessor( array + rowIndex );
-	}
+    bool operator==( const matrix< M, N, float_t >& other );
+    bool operator!=( const matrix< M, N, float_t >& other );
+    // due to limited precision, two 'idential' matrices might seem different.
+    // this function allows to specify a tolerance when comparing matrices.
+    bool isEqualTo( const matrix< M, N, float_t >& other, float_t tolerance );
 
     // (this) matrix = left matrix_mxp * right matrix_pxn
     template< size_t P >
@@ -72,23 +48,6 @@ public:
         const matrix< M, P, float_t >& left,
         const matrix< P, N, float_t >& right 
         );
-		
-    // WARNING: data_array[] must be at least of size M * N - otherwise CRASH!
-    // WARNING: assumes row_by_row layout - if this is not the case, 
-    // use copyFrom1DimCArray( data_array, false )
-    void operator=( const float_t* data_array );
-    void operator=( const std::vector< float_t >& data );
-
-    void operator=( float_t fill_value );
-    
-    bool operator==( const matrix< M, N, float_t >& other );
-    bool operator!=( const matrix< M, N, float_t >& other );
-    // due to limited precision, two 'idential' matrices might seem different.
-    // this function allows to specify a tolerance when comparing matrices.
-    bool isEqualTo( const matrix< M, N, float_t >& other, float_t tolerance );
-    
-    matrix< M, N, float_t > operator*( float_t scalar );
-    void operator*=( float_t scalar );
 
     // returned matrix_mxp = (this) matrix * other matrix_nxp;
     // use multiply(...) for performance reasons, it avoids a copy of the 
@@ -96,25 +55,49 @@ public:
     template< size_t P >
     matrix< M, P, float_t > operator*( matrix< N, P, float_t >& other ); 
 
-	inline matrix< M, N, float_t > operator+( const matrix< M, N, float_t >& other ) const;
-	void operator+=( const matrix< M, N, float_t >& other );
-    
-	inline matrix< M, N, float_t > operator-( const matrix< M, N, float_t >& other ) const;
-	void operator-=( const matrix< M, N, float_t >& other );
-    
-    // transform vector by matrix ( vec = matrix * vec )
-    vector< M, float_t > operator*( const vector< M, float_t >& other ) const;
-    
+	// this matrix ( M == N ) = this * right matrix mxm
+	void operator*=( const matrix< M, M, float_t >& right ); 
 
+	inline matrix< M, N, float_t > 
+		operator+( const matrix< M, N, float_t >& other ) const;
+	
+	inline matrix< M, N, float_t > 
+		operator-( const matrix< M, N, float_t >& other ) const;
+
+	void operator+=( const matrix< M, N, float_t >& other );
+	void operator-=( const matrix< M, N, float_t >& other );
+    		
 	template< size_t P, size_t Q >
-	void direct_sum( const matrix< P, Q, float_t >& other, matrix< M + P, N + Q, float_t >& result );
+	void direct_sum( 
+		const matrix< P, Q, float_t >& other, 
+		matrix< M + P, N + Q, float_t >& result 
+		);
 	
 	template< size_t P, size_t Q >
-	matrix< M + P, N + Q, float_t > direct_sum( const matrix< P, Q, float_t >& other );
+	matrix< M + P, N + Q, float_t >
+		direct_sum( const matrix< P, Q, float_t >& other );
 
+	// 
+	// matrix-scalar operations / scaling 
+	// 
+    matrix< M, N, float_t > operator*( float_t scalar );
+    void operator*=( float_t scalar );
+
+	//
+	// matrix-vector operations
+    //
+	// transform vector by matrix ( vec = matrix * vec )
+    vector< M, float_t > operator*( const vector< M, float_t >& other ) const;
+
+	// transform vector by matrix ( vec = matrix * vec )
+	// assume homogenous coords( for vec3 = mat4 * vec3 )
+    vector< M-1, float_t > operator*( const vector< M-1, float_t >& other ) const;
+    
+	void tensor( const vector< M, float_t >& u, const vector< N, float_t >& v );
+	
 	template< size_t Mret, size_t Nret >
-	matrix< Mret, Nret, float_t > getSubMatrix( size_t rowOffset, 
-		size_t colOffset ) const;
+	matrix< Mret, Nret, float_t >
+		getSubMatrix( size_t rowOffset, size_t colOffset ) const;
 
 	template< size_t Mret, size_t Nret >
 	void getSubMatrix( matrix< Mret, Nret, float_t >& result, 
@@ -124,7 +107,18 @@ public:
     void transposeTo( matrix<N, M, float_t >& transposedMatrix ) const;
     // slower ( one additional copy )
     matrix< N, M, float_t > getTransposed() const;
+	
 
+    // WARNING: data_array[] must be at least of size M * N - otherwise CRASH!
+    // WARNING: assumes row_by_row layout - if this is not the case, 
+    // use copyFrom1DimCArray( data_array, false )
+    void operator=( const float_t* data_array );
+    void operator=( const std::vector< float_t >& data );
+	
+	// sets all elements to fill_value
+    void operator=( float_t fill_value );
+    void fill( float_t fill_value );
+    
     /*
     *
     * WARNING: data_array[] must be at least of size M * N - otherwise CRASH!
@@ -171,18 +165,61 @@ public:
     size_t getN() const;
     size_t getNumberOfColumns() const;
     
-    void fill( float_t fillValue );
-    void identity();
-    void zero();
-
     // square matrices only
-    float_t computeDeterminant() const;
+    float_t getDeterminant() const;
     void getAdjugate( matrix< M, M, float_t >& adjugate ) const;
+	void getCofactors( matrix< M, N, float_t >& cofactors ) const;
 	
     // the return value indicates if the matrix is invertible.
     // we need a tolerance term since the determinant is subject
 	// to precision errors.
-	bool computeInverse( matrix< M, M, float_t >& inverse, float_t tolerance = 1e-9 ) const;
+	bool getInverse( matrix< M, M, float_t >& inverse, float_t tolerance = 1e-9 ) const;
+
+	// returns the determinant of a square matrix M-1, N-1
+	float_t getMinor( 
+		matrix< M-1, N-1 >& other, 
+		size_t row_to_cut, 
+		size_t col_to_cut 
+		);
+		
+
+	// legacy/compatibility accessor
+	struct row_accessor
+	{
+		row_accessor( float_t* array_ ) : array( array_ ) {}
+		float_t&
+		operator[]( size_t colIndex )
+		{ 
+			#ifdef VMMLIB_SAFE_ACCESSORS
+			if ( colIndex >= N ) 
+                VMMLIB_ERROR( "column index out of bounds", VMMLIB_HERE );
+			#endif
+			return array[ colIndex * M ]; 
+		}
+
+		const float_t&
+		operator[]( size_t colIndex ) const
+		{ 
+			#ifdef VMMLIB_SAFE_ACCESSORS
+			if ( colIndex >= N ) 
+                VMMLIB_ERROR( "column index out of bounds", VMMLIB_HERE );
+			#endif
+			return array[ colIndex * M ]; 
+		}
+		
+		float_t* array;
+		private: row_accessor() {} // disallow std ctor
+	};
+	// this is a hack to allow array-style access to matrix elements
+	// usage: matrix< 2, 2, float > m; m[ 1 ][ 0 ] = 37.0f;
+	inline row_accessor operator[]( size_t rowIndex )
+	{ 
+		#ifdef VMMLIB_SAFE_ACCESSORS
+		if ( rowIndex > M ) 
+            VMMLIB_ERROR( "row index out of bounds", VMMLIB_HERE );
+		#endif
+		return row_accessor( array + rowIndex );
+	}
 
     friend std::ostream& operator << ( std::ostream& os, 
         const matrix< M, N, float_t >& matrix )
@@ -285,6 +322,23 @@ matrix< M, N, float_t >::at( size_t rowIndex, size_t colIndex ) const
         VMMLIB_ERROR( "at( row, col ) - index out of bounds", VMMLIB_HERE );
 	#endif
     return array[ colIndex * M + rowIndex ];
+}
+
+
+template< size_t M, size_t N, typename float_t >
+inline float_t&
+matrix< M, N, float_t >::operator()( size_t rowIndex, size_t colIndex )
+{
+	return at( rowIndex, colIndex );
+}
+
+
+
+template< size_t M, size_t N, typename float_t >
+const inline float_t&
+matrix< M, N, float_t >::operator()( size_t rowIndex, size_t colIndex ) const
+{
+	return at( rowIndex, colIndex );
 }
 
 
@@ -410,6 +464,18 @@ matrix< M, N, float_t >::operator*( matrix< N, P, float_t >& other )
 
 
 
+// this matrix ( M == N ) = this * right matrix mxm
+template< size_t M, size_t N, typename float_t >
+void
+matrix< M, N, float_t >::operator*=( const matrix< M, M, float_t >& right )
+{
+	matrix< M, M, float_t > copy( *this );
+	multiply( copy, right );
+}
+
+
+
+
 template< size_t M, size_t N, typename float_t >
 matrix< M, N, float_t >
 matrix< M, N, float_t >::operator*( float_t scalar )
@@ -462,6 +528,32 @@ operator*( const vector< M, float_t >& other ) const
         result.at( rowIndex ) = tmp;
     }
     return result;
+}
+
+
+// transform vector by matrix ( vec = matrix * vec )
+// assume homogenous coords( for vec3 = mat4 * vec3 )
+template< size_t M, size_t N, typename float_t >
+vector< M-1, float_t >
+matrix< M, N, float_t >::
+operator*( const vector< M-1, float_t >& other ) const
+{
+	VMMLIB_ERROR( "not implemented yet.", VMMLIB_HERE );
+}
+
+
+
+template< size_t M, size_t N, typename float_t >
+void 
+matrix< M, N, float_t >::tensor( 
+	const vector< M, float_t >& u,
+	const vector< N, float_t >& v 
+	)
+{
+	for ( size_t colIndex = 0; colIndex < N; colIndex++)
+		for ( size_t rowIndex = 0; rowIndex < M; rowIndex++)
+            at( rowIndex, colIndex ) = u( colIndex ) * v( rowIndex );
+
 }
 
 
@@ -960,7 +1052,7 @@ matrix< M, N, float_t >::getSubMatrix( matrix< Mret, Nret, float_t >& result,
 
 template< size_t M, size_t N, typename float_t >
 inline float_t
-matrix< M, N, float_t >::computeDeterminant() const
+matrix< M, N, float_t >::getDeterminant() const
 {
     if ( ! is_square )
         VMMLIB_ERROR( "determinant is not defined for non-square matrices.", VMMLIB_HERE );
@@ -973,7 +1065,7 @@ matrix< M, N, float_t >::computeDeterminant() const
 // specializations ... 
 template<>
 inline float
-matrix< 2, 2, float >::computeDeterminant() const
+matrix< 2, 2, float >::getDeterminant() const
 {
         const float& a = at( 0, 0 );
         const float& b = at( 0, 1 );
@@ -985,7 +1077,7 @@ matrix< 2, 2, float >::computeDeterminant() const
 
 template<>
 inline double
-matrix< 2, 2, double >::computeDeterminant() const
+matrix< 2, 2, double >::getDeterminant() const
 {
         const double& a = at( 0, 0 );
         const double& b = at( 0, 1 );
@@ -1002,8 +1094,8 @@ matrix< M, N, float_t >::getAdjugate( matrix< M, M, float_t >& adjugate ) const
 {
     if ( ! is_square )
         VMMLIB_ERROR( "adjugate matrix is not defined for non-square matrices.", VMMLIB_HERE );
-    else
-        VMMLIB_ERROR( "not implemented yet.", VMMLIB_HERE );
+	getCofactors( adjugate );
+	adjugate = adjugate.getTransposed();
 }
 
 
@@ -1043,8 +1135,29 @@ matrix< 2, 2, double >::getAdjugate( matrix< 2, 2, double >& adjugate ) const
 
 
 template< size_t M, size_t N, typename float_t >
+inline void
+matrix< M, N, float_t >::
+getCofactors( matrix< M, N, float_t >& cofactors ) const
+{
+	size_t negate = 1u;
+	for( size_t rowIndex = 0; rowIndex < M; ++rowIndex )
+	{
+		for( size_t colIndex = 0; colIndex < N; ++colIndex )
+		{
+			if ( ( rowIndex + colIndex ) & negate )
+				cofactors( rowIndex, colIndex ) = -getMinor( rowIndex, colIndex );
+			else
+				cofactors( rowIndex, colIndex ) = getMinor( rowIndex, colIndex );
+		}
+	}
+}
+
+
+
+
+template< size_t M, size_t N, typename float_t >
 inline bool
-matrix< M, N, float_t >::computeInverse( matrix< M, M, float_t >& Minverse, float_t tolerance ) const
+matrix< M, N, float_t >::getInverse( matrix< M, M, float_t >& Minverse, float_t tolerance ) const
 {
     if ( ! is_square )
         VMMLIB_ERROR( "inverse of a matrix is not defined for non-square matrices.", VMMLIB_HERE );
@@ -1058,9 +1171,9 @@ matrix< M, N, float_t >::computeInverse( matrix< M, M, float_t >& Minverse, floa
 
 template<>
 inline bool
-matrix< 2, 2, float >::computeInverse( matrix< 2, 2, float >& Minverse, float tolerance ) const
+matrix< 2, 2, float >::getInverse( matrix< 2, 2, float >& Minverse, float tolerance ) const
 {
-    float det = computeDeterminant();
+    float det = getDeterminant();
     if ( det > tolerance )
     {
         return false;
@@ -1078,9 +1191,9 @@ matrix< 2, 2, float >::computeInverse( matrix< 2, 2, float >& Minverse, float to
 
 template<>
 inline bool
-matrix< 2, 2, double >::computeInverse( matrix< 2, 2, double >& Minverse, double tolerance ) const
+matrix< 2, 2, double >::getInverse( matrix< 2, 2, double >& Minverse, double tolerance ) const
 {
-    float det = computeDeterminant();
+    float det = getDeterminant();
     if ( det > tolerance )
     {
         return false;
@@ -1099,7 +1212,7 @@ matrix< 2, 2, double >::computeInverse( matrix< 2, 2, double >& Minverse, double
 
 template<>
 inline bool
-matrix< 3, 3, double >::computeInverse( matrix< 3, 3, double >& result, double tolerance ) const
+matrix< 3, 3, double >::getInverse( matrix< 3, 3, double >& result, double tolerance ) const
 {
     // Invert a 3x3 using cofactors.  This is about 8 times faster than
     // the Numerical Recipes code which uses Gaussian elimination.
@@ -1139,7 +1252,7 @@ matrix< 3, 3, double >::computeInverse( matrix< 3, 3, double >& result, double t
 
 template<>
 inline bool
-matrix< 4, 4, double >::computeInverse( matrix< 4, 4, double >& result, double tolerance ) const
+matrix< 4, 4, double >::getInverse( matrix< 4, 4, double >& result, double tolerance ) const
 {
     // tuned version from Claude Knaus
     /* first set of 2x2 determinants: 12 multiplications, 6 additions */
@@ -1192,6 +1305,42 @@ matrix< 4, 4, double >::computeInverse( matrix< 4, 4, double >& result, double t
        
     return true;
 }
+
+
+// returns the determinant of a square matrix M-1, N-1
+template< size_t M, size_t N, typename float_t >
+inline float_t
+matrix< M, N, float_t >::
+getMinor( 
+	matrix< M-1, N-1 >& other, 
+	size_t row_to_cut, 
+	size_t col_to_cut 
+	)
+{
+	matrix< M-1, N-1, float_t > minor_;
+	ssize_t rowOffset = 0;
+	ssize_t colOffset = 0;
+	for( ssize_t rowIndex = 0; rowIndex < M; ++rowIndex )
+	{
+		if ( rowIndex == row_to_cut )
+			rowOffset = -1;
+		else
+		{
+			for( ssize_t colIndex = 0; colIndex < M; ++colIndex )
+			{
+				if ( colIndex == col_to_cut )
+					colOffset = -1;
+				else
+					minor_.at( rowIndex + rowOffset, colIndex + colOffset ) 
+						= at( rowIndex, colIndex );
+			}
+			colOffset = 0;
+		}
+	}
+	
+	return minor_.getDeterminant();
+}
+
 
 
 

@@ -419,7 +419,7 @@ matrix_test::run()
         double M_inverse_correct_data[] = { -0.2, 0.3, 0.4, -0.1 };
         M_inverse_correct.copyFrom1DimCArray( M_inverse_correct_data );
 
-        M.computeInverse( M_inverse );
+        M.getInverse( M_inverse );
         
         ok = M_inverse == M_inverse_correct;
 		log( "matrix inversion for 2x2 matrices, maximum precision", ok, true );
@@ -453,7 +453,7 @@ matrix_test::run()
 
         M_inverse_correct.copyFrom1DimCArray( M_inverse_correct_data );
 
-        M.computeInverse( M_inverse );
+        M.getInverse( M_inverse );
         
         ok = M_inverse == M_inverse_correct;
 		log( "matrix inversion for 3x3 matrices, maximum precision", ok, true );
@@ -490,7 +490,7 @@ matrix_test::run()
 
         M_inverse_correct.copyFrom1DimCArray( M_inverse_correct_data );
 
-        M.computeInverse( M_inverse );
+        M.getInverse( M_inverse );
         
         ok = M_inverse == M_inverse_correct;
 		log( "matrix inversion for 4x4 matrices, maximum precision", ok, true );

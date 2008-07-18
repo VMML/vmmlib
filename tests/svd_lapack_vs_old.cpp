@@ -15,7 +15,7 @@ void
 svd_lapack_vs_old::run()
 {
 
-    const size_t iterations = 1000;
+    const size_t iterations = 100000;
 
     new_test( "svd old vs lapack (double precision)" );
     {

@@ -3,11 +3,11 @@
 
 #ifndef VMMLIB_CUSTOM_CONFIG
 
-#ifndef NDEBUG
-    #define VMMLIB_SAFE_ACCESSORS
-#endif
+    #ifndef NDEBUG
+        #define VMMLIB_SAFE_ACCESSORS
+    #endif
 
-#define VMMLIB_THROW_EXCEPTIONS
+    #define VMMLIB_THROW_EXCEPTIONS
 
 #endif
 

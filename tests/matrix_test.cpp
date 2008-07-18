@@ -301,7 +301,6 @@ matrix_test::run()
         }
     }
 
-    #if 0 // FIXME 
     // test matrix * column vector multiplication
     ok = true;
     {
@@ -315,14 +314,17 @@ matrix_test::run()
         };
         transform = transformData;
         vector< 4 > v;
-        double vData[] = { 0.1869, 0.4898, 0.4456, 0.6463 };
+        double vData[] = { 0.1869, 0.4898, 0.4456, 1 };
         v = vData;
         
         vector< 4 > v_result;
         v_result = transform * v;
         
         vector< 4 > v_correct_result;
-        double vResultData[] = { 0.8513, 0.4425, 1.0977, 0.6463 };
+        double vResultData[] = { 1.0064414500000000707302660885034, 
+            .57752579999999997806270357614267, 
+            1.3684200999999998060729922144674, 
+            1. };
         v_correct_result = vResultData;
         
         ok = v_result == v_correct_result;
@@ -341,7 +343,52 @@ matrix_test::run()
         }
         
     }
-    #endif
+
+
+
+    // test matrix4x4 * vector3 multiplication
+    ok = true;
+    {
+        matrix< 4, 4 > transform;
+        double transformData[] = 
+        {
+            0.6555, 0.2769, 0.6948, 0.4387, 
+            0.1712, 0.0462, 0.3171, 0.3816, 
+            0.7060, 0.0971, 0.9502, 0.7655, 
+            0, 0, 0, 1
+        };
+        transform = transformData;
+        vector< 3 > v;
+        double vData[] = { 0.1869, 0.4898, 0.4456 };
+        v = vData;
+        
+        vector< 3 > v_result;
+        v_result = transform * v;
+        
+        vector< 3 > v_correct_result;
+        double vResultData[] = { 1.0064414500000000707302660885034, 
+            .57752579999999997806270357614267, 
+            1.3684200999999998060729922144674, 
+            1. };
+        v_correct_result = vResultData;
+        
+        ok = v_result.isEqualTo( v_correct_result, _tolerance );
+        
+        log( "matrix4x4 * vector3 ( m4x4 * v4( v3.xyz, 1.0 ) ) multiplication", ok );
+        if ( ! ok )
+        {
+            std::stringstream ss;
+            ss 
+                << "A " << transform 
+                << "v              " << v << "\n"
+                << "v_result       " << v_result << "\n"
+                << "correct result " << v_correct_result << "\n"
+                << std::endl;
+            log_error( ss.str() );
+        }
+        
+    }
+
 
 
 	#ifdef VMMLIB_SAFE_ACCESSORS

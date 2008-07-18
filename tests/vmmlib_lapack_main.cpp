@@ -9,7 +9,7 @@ using namespace vmml;
 int
 main( int argc, const char* argv[] )
 {
-#if 0
+#if 1
     svd_lapack_vs_old vs;
     vs.run();
     std::cout << vs << std::endl;

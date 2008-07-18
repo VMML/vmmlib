@@ -32,6 +32,7 @@
 		98B7A2A50E24DF910064264E /* matrix_compare_perf_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98B7A2A30E24DF910064264E /* matrix_compare_perf_test.cpp */; };
 		98F5563A0E24377F0044BA3E /* matrix_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98F556350E24377F0044BA3E /* matrix_test.cpp */; };
 		98F5563B0E24377F0044BA3E /* qr_decomposition_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98F556370E24377F0044BA3E /* qr_decomposition_test.cpp */; };
+		98FAB2960E30CDF400C1A8FC /* unit_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98FE7DCD0E224EC400B1E17F /* unit_test.cpp */; };
 		98FE7DCF0E224EC400B1E17F /* unit_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98FE7DCD0E224EC400B1E17F /* unit_test.cpp */; };
 /* End PBXBuildFile section */
 
@@ -512,6 +513,7 @@
 				98B7A2A50E24DF910064264E /* matrix_compare_perf_test.cpp in Sources */,
 				986834C20E24FFD400618F55 /* vector_test.cpp in Sources */,
 				9839FA250E2B5BBB00A16721 /* svd_test.cpp in Sources */,
+				98FAB2960E30CDF400C1A8FC /* unit_test.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -601,7 +603,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 3;
 				INSTALL_PATH = /usr/local/bin;
-				OTHER_CFLAGS = "-msse3";
+				OTHER_CFLAGS = "";
 				PREBINDING = NO;
 				PRODUCT_NAME = vmmlib_lapack_test;
 				ZERO_LINK = NO;
@@ -661,6 +663,7 @@
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
 				INSTALL_PATH = /usr/local/bin;
+				OTHER_CFLAGS = "-DNDEBUG";
 				PREBINDING = NO;
 				PRODUCT_NAME = vmmlib_performance_tests;
 				ZERO_LINK = NO;

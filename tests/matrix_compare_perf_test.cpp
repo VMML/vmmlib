@@ -11,6 +11,8 @@ namespace vmml
 void
 matrix_compare_perf_test::run()
 {
+    const size_t iterations = 1e7;
+
     double Mdata4x4[] = { 17., 24., 1., 8., 23., 5., 7., 14.,
      4., 6., 13., 20., 10., 12., 19., 21. };
     
@@ -23,16 +25,16 @@ matrix_compare_perf_test::run()
     
     new_test( "matrix 4x4 inversion comparison" );
     start( "old" );
-    for( size_t i = 0; i < 1e6; ++i )
+    for( size_t i = 0; i < iterations; ++i )
     {
         m_old.getInverse( m_old_inverse );
     }
     stop();
 
     start( "new" );
-    for( size_t i = 0; i < 1e6; ++i )
+    for( size_t i = 0; i < iterations; ++i )
     {
-        m.computeInverse( m_inverse );
+        m.getInverse( m_inverse );
     }
     stop();
     compare();
@@ -42,14 +44,14 @@ matrix_compare_perf_test::run()
 
     new_test( "operator[]" );
     start( "old 1d[]" );
-    for( size_t i = 0; i < 1e6; ++i )
+    for( size_t i = 0; i < iterations; ++i )
     {
         d = m_old.array[ i % 16 ];
     }
     stop();
 
     start( "new 1d[]()" );
-    for( size_t i = 0; i < 1e6; ++i )
+    for( size_t i = 0; i < iterations; ++i )
     {
         d = m.array[ i % 16 ];
     }
@@ -59,14 +61,14 @@ matrix_compare_perf_test::run()
     new_test( "operator[] 2d" );
     {
         start( "old 2d[]" );
-        for( size_t i = 0; i < 1e6; ++i )
+        for( size_t i = 0; i < iterations; ++i )
         {
             d = m_old.m[ i % 4 ][ i % 4 ];
         }
         stop();
 
         start( "new 2d[]()" );
-        for( size_t i = 0; i < 1e6; ++i )
+        for( size_t i = 0; i < iterations; ++i )
         {
             d = m[ i % 4 ][ i % 4 ];
         }
@@ -78,14 +80,14 @@ matrix_compare_perf_test::run()
 
     new_test( "operator[]" );
     start( "new []" );
-    for( size_t i = 0; i < 1e6; ++i )
+    for( size_t i = 0; i < iterations; ++i )
     {
         d = m[ i % 3 ][ i % 3 ];
     }
     stop();
 
     start( "new at()" );
-    for( size_t i = 0; i < 1e6; ++i )
+    for( size_t i = 0; i < iterations; ++i )
     {
         d = m.at( i % 3, i % 3 );
     }
@@ -96,14 +98,14 @@ matrix_compare_perf_test::run()
 
     new_test( "copy ctor" );
     start( "old" );
-    for( size_t i = 0; i < 1e6; ++i )
+    for( size_t i = 0; i < iterations; ++i )
     {
         Matrix4< double > mm( m_old );
     }
     stop();
 
     start( "new" );
-    for( size_t i = 0; i < 1e6; ++i )
+    for( size_t i = 0; i < iterations; ++i )
     {
         matrix< 4, 4, double > mm( m );
     }
@@ -118,14 +120,14 @@ matrix_compare_perf_test::run()
         matrix< 4, 4, double > mm( m );
         bool equal;
         start( "old" );
-            for( size_t i = 0; i < 1e6; ++i )
+            for( size_t i = 0; i < iterations; ++i )
             {
                 equal = mm_old != m_old;
             }
         stop();
 
         start( "new" );
-            for( size_t i = 0; i < 1e6; ++i )
+            for( size_t i = 0; i < iterations; ++i )
             {
                 equal = mm != m;
             }
@@ -140,17 +142,17 @@ matrix_compare_perf_test::run()
         matrix< 4, 4, double > mm;
 
         start( "old" );
-        for( size_t i = 0; i < 1e6; ++i )
+        for( size_t i = 0; i < iterations; ++i )
         {
             mm_old = Matrix4< double >::IDENTITY;
         }
         stop();
 
         start( "new" );
-        for( size_t i = 0; i < 1e6; ++i )
+        for( size_t i = 0; i < iterations; ++i )
         {
-            //mm.identity();
-            mm = matrix< 4, 4, double >::IDENTITY;
+            mm.identity();
+            //mm = matrix< 4, 4, double >::IDENTITY;
         }
         stop();
         
@@ -164,17 +166,53 @@ matrix_compare_perf_test::run()
         matrix< 4, 4, double > mm;
 
         start( "old" );
-        for( size_t i = 0; i < 1e6; ++i )
+        for( size_t i = 0; i < iterations; ++i )
         {
             mm_old = Matrix4< double >::ZERO;
         }
         stop();
 
         start( "new" );
-        for( size_t i = 0; i < 1e6; ++i )
+        for( size_t i = 0; i < iterations; ++i )
         {
-            //mm.identity();
-            mm = matrix< 4, 4, double >::ZERO;
+            mm.zero();
+            //mm = matrix< 4, 4, double >::ZERO;
+        }
+        stop();
+        
+    }
+    compare();
+
+
+    new_test( "build rotation matrix for rotation around arbitrary axis" );
+    {
+        Matrix4< double > mm_old;
+        matrix< 4, 4, double > mm;
+        
+        Vector3< double > axis_old;
+        vector< 3, double > axis;
+        
+        double axisData[] = { 1.4, 2.4, -3 };
+
+        axis_old = axisData;
+        axis_old.normalize();
+
+        axis = axisData;
+        axis.normalize();
+        
+        double angle = 1.3333333333333333333333;
+
+        start( "old" );
+        for( size_t i = 0; i < iterations; ++i )
+        {
+            mm_old.rotate( angle, axis_old );
+        }
+        stop();
+
+        start( "new" );
+        for( size_t i = 0; i < iterations; ++i )
+        {
+            mm.rotate( angle, axis );
         }
         stop();
         

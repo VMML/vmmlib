@@ -10,6 +10,7 @@
 #include <vmmlib/exception.hpp>
 #include <vmmlib/vector.hpp>
 #include <vmmlib/matrix_functors.hpp>
+#include <vmmlib/details.hpp>
 
 namespace vmml
 {
@@ -19,16 +20,13 @@ template< size_t M, size_t N, typename float_t = double >
 class matrix
 {
 public:
-	static const bool is_square = M == N;
 	typedef matrix< M, N, float_t > mat;
     
     matrix();
     matrix( const matrix_functor< matrix< M, N, float_t > >& functor );
 
-	// sets all matrix elements to 0
-    void zero();
-	// sets the matrix to identity (if square)
-    void identity();
+    void zero(); 	// sets all matrix elements to 0
+    void identity(); // if M == N, this function sets the matrix to identity
 
     // accessor for matrix elements
     inline float_t&		  operator()( size_t rowIndex, size_t colIndex );
@@ -86,14 +84,21 @@ public:
 	//
 	// matrix-vector operations
     //
-	// transform vector by matrix ( vec = matrix * vec )
-    vector< M, float_t > operator*( const vector< M, float_t >& other ) const;
+	// transform column vector by matrix ( vec = matrix * vec )
+    vector< M, float_t > operator*( const vector< N, float_t >& other ) const;
 
-	// transform vector by matrix ( vec = matrix * vec )
-	// assume homogenous coords( for vec3 = mat4 * vec3 )
-    vector< M-1, float_t > operator*( const vector< M-1, float_t >& other ) const;
+	// transform column vector by matrix ( vec = matrix * vec )
+	// assume homogenous coords, e.g. vec3 = mat4 * vec3, with w = 1.0
+    vector< M-1, float_t > operator*( const vector< N-1, float_t >& other ) const;
     
+    inline matrix< M, N, float_t > operator-() const;
+    matrix< M, N, float_t > negate() const;
+    
+    // compute tensor product: (this) = vector (X) vector
 	void tensor( const vector< M, float_t >& u, const vector< N, float_t >& v );
+    // tensor, for api compatibility with old vmmlib version. 
+    // WARNING: for M = N = 4 only.
+	void tensor( const vector< M-1, float_t >& u, const vector< N-1, float_t >& v );
 	
 	template< size_t Mret, size_t Nret >
 	matrix< Mret, Nret, float_t >
@@ -182,6 +187,31 @@ public:
 		size_t col_to_cut 
 		);
 		
+    //
+    // 4*4 matrices only
+    //
+    /** create rotation matrix from parameters.
+    * @param angle - angle in radians
+    * @param rotation axis - must be normalized!
+    */
+    void rotate( const float_t angle, const vector< M-1, float_t >& axis );
+
+    void rotateX( const float_t angle );
+    void rotateY( const float_t angle );
+    void rotateZ( const float_t angle );
+    void preRotateX( const float_t angle );
+    void preRotateY( const float_t angle );
+    void preRotateZ( const float_t angle );
+    void scale( const float_t scale[3] );
+    void scale( const float_t x, const float_t y, const float_t z );
+    inline void scale( const vector< 3, float_t >& scale_ );
+    void scaleTranslation( const float_t scale_[3] );
+    inline void scaleTranslation( const vector< 3, float_t >& scale_ );
+    void setTranslation( const float_t x, const float_t y, const float_t z );
+    void setTranslation( const float_t trans[3] );
+    inline void setTranslation( const vector< 3, float_t >& trans );
+    vector< 3, float_t > getTranslation() const;
+        
 
 	// legacy/compatibility accessor
 	struct row_accessor
@@ -512,7 +542,7 @@ matrix< M, N, float_t >::operator*=( float_t scalar )
 template< size_t M, size_t N, typename float_t >
 vector< M, float_t >
 matrix< M, N, float_t >::
-operator*( const vector< M, float_t >& other ) const
+operator*( const vector< N, float_t >& other ) const
 {
     vector< M, float_t > result;
 
@@ -531,14 +561,59 @@ operator*( const vector< M, float_t >& other ) const
 }
 
 
+
 // transform vector by matrix ( vec = matrix * vec )
-// assume homogenous coords( for vec3 = mat4 * vec3 )
+// assume homogenous coords( for vec3 = mat4 * vec3 ), e.g. vec[3] = 1.0
 template< size_t M, size_t N, typename float_t >
 vector< M-1, float_t >
 matrix< M, N, float_t >::
-operator*( const vector< M-1, float_t >& other ) const
+operator*( const vector< N-1, float_t >& other ) const
 {
-	VMMLIB_ERROR( "not implemented yet.", VMMLIB_HERE );
+    // this is a sfinae helper function that will make the compiler 
+    // throw an compile-time error if the matrix is not square
+    details::matrix_is_square< M, N, matrix< M, N, float_t > >();
+
+    vector< M-1, float_t > result;
+    float tmp;
+    for( size_t rowIndex = 0; rowIndex < M; ++rowIndex )
+    {
+        tmp = 0.0;
+        for( size_t colIndex = 0; colIndex < N-1; ++colIndex )
+        {
+            tmp += other( colIndex ) * at( rowIndex, colIndex );
+        }
+        if ( rowIndex < N - 1 )
+            result( rowIndex ) = tmp + at( rowIndex, N-1 ); // * 1.0 -> homogeneous vec4
+        else
+        {
+            tmp += at( rowIndex, N - 1  );
+            for( size_t colIndex = 0; colIndex < N - 1; ++colIndex )
+            {
+                result( colIndex ) /= tmp;
+            }
+        }
+    }
+    return result;
+}
+
+
+
+template< size_t M, size_t N, typename float_t >
+inline matrix< M, N, float_t >
+matrix< M, N, float_t >::operator-() const
+{
+    return negate();
+}
+
+
+
+template< size_t M, size_t N, typename float_t >
+matrix< M, N, float_t >
+matrix< M, N, float_t >::negate() const
+{
+    matrix< M, N, float_t > result;
+    result *= -1.0;
+    return result;
 }
 
 
@@ -550,12 +625,40 @@ matrix< M, N, float_t >::tensor(
 	const vector< N, float_t >& v 
 	)
 {
-	for ( size_t colIndex = 0; colIndex < N; colIndex++)
-		for ( size_t rowIndex = 0; rowIndex < M; rowIndex++)
-            at( rowIndex, colIndex ) = u( colIndex ) * v( rowIndex );
+	for ( size_t colIndex = 0; colIndex < N; ++colIndex )
+		for ( size_t rowIndex = 0; rowIndex < M; ++rowIndex )
+            at( rowIndex, colIndex ) = u.array[ colIndex ] * v.array[ rowIndex ];
 
 }
 
+
+
+template< size_t M, size_t N, typename float_t >
+void 
+matrix< M, N, float_t >::tensor( 
+	const vector< M-1, float_t >& u,
+	const vector< N-1, float_t >& v 
+	)
+{
+    // this is a sfinae helper function that will make the compiler 
+    // throw an compile-time error if the matrix is not 4x4
+    details::matrix_is_4x4< M, N, matrix< M, N, float_t > >();
+
+    int i, j;
+    for ( size_t colIndex = 0; colIndex < 3; ++colIndex ) 
+    {
+        for ( size_t rowIndex = 0; rowIndex < 3; ++rowIndex )
+            at( rowIndex, colIndex ) = u.array[ colIndex ] * v.array[ rowIndex ];
+
+        at( 3, colIndex ) = u.array[ colIndex ];
+    }
+
+    for ( size_t rowIndex = 0; rowIndex < 3; ++rowIndex )
+        at( rowIndex, 3 ) = v.array[ rowIndex ];
+
+    at( 3, 3 ) = 1.0;
+
+}
 
 
 
@@ -1054,11 +1157,11 @@ template< size_t M, size_t N, typename float_t >
 inline float_t
 matrix< M, N, float_t >::getDeterminant() const
 {
-    if ( ! is_square )
-        VMMLIB_ERROR( "determinant is not defined for non-square matrices.", VMMLIB_HERE );
-    else
-        VMMLIB_ERROR( "not implemented yet.", VMMLIB_HERE );
+    // this is a sfinae helper function that will make the compiler 
+    // throw an compile-time error if the matrix is not square
+    details::matrix_is_square< M, N, matrix< M, N, float_t > >();
 
+    throw VMMLIB_ERROR( "not implemented yet.", VMMLIB_HERE );
 }
 
 
@@ -1092,8 +1195,10 @@ template< size_t M, size_t N, typename float_t >
 inline void
 matrix< M, N, float_t >::getAdjugate( matrix< M, M, float_t >& adjugate ) const
 {
-    if ( ! is_square )
-        VMMLIB_ERROR( "adjugate matrix is not defined for non-square matrices.", VMMLIB_HERE );
+    // this is a sfinae helper function that will make the compiler 
+    // throw an compile-time error if the matrix is not square
+    details::matrix_is_square< M, N, matrix< M, N, float_t > >();
+
 	getCofactors( adjugate );
 	adjugate = adjugate.getTransposed();
 }
@@ -1159,10 +1264,11 @@ template< size_t M, size_t N, typename float_t >
 inline bool
 matrix< M, N, float_t >::getInverse( matrix< M, M, float_t >& Minverse, float_t tolerance ) const
 {
-    if ( ! is_square )
-        VMMLIB_ERROR( "inverse of a matrix is not defined for non-square matrices.", VMMLIB_HERE );
-    else
-        VMMLIB_ERROR( "not implemented yet.", VMMLIB_HERE );
+    // this is a sfinae helper function that will make the compiler 
+    // throw an compile-time error if the matrix is not square
+    details::matrix_is_square< M, N, matrix< M, N, float_t > >();
+
+    VMMLIB_ERROR( "not implemented yet.", VMMLIB_HERE );
         
     return false;
 }
@@ -1317,6 +1423,10 @@ getMinor(
 	size_t col_to_cut 
 	)
 {
+    // this is a sfinae helper function that will make the compiler 
+    // throw an compile-time error if the matrix is not square
+    details::matrix_is_square< M, N, matrix< M, N, float_t > >();
+
 	matrix< M-1, N-1, float_t > minor_;
 	ssize_t rowOffset = 0;
 	ssize_t colOffset = 0;
@@ -1342,6 +1452,450 @@ getMinor(
 }
 
 
+
+template< size_t M, size_t N, typename float_t >
+void
+matrix< M, N, float_t >::
+rotate( const float_t angle, const vector< M-1, float_t >& axis )
+{
+    // this is a sfinae helper function that will make the compiler 
+    // throw an compile-time error if the matrix is not 4x4
+    details::matrix_is_4x4< M, N, matrix< M, N, float_t > >();
+
+    // using details:: functions to avoid template specialization for the whole
+    // function just for sinf/cosf optimizations
+    const float_t sine      = details::getSine( angle );
+    const float_t cosine    = details::getCosine( angle );
+    
+    // this is necessary since Visual Studio cannot resolve the
+    // pow()-call correctly if we just use 2.0 directly.
+    // this way, the '2.0' is converted to the same format 
+    // as the axis components
+
+    float_t two = 2.0;
+
+    array[0]  = cosine + ( 1.0 - cosine ) * axis.array[0];
+    array[1]  = (1.0 - cosine ) * axis.array[0] * axis.array[1] + sine * axis.array[2];
+    array[2]  = (1.0 - cosine ) * axis.array[0] * axis.array[2] - sine * axis.array[1];
+    array[3]  = 0.0;
+    
+    array[4]  = ( 1.0 - cosine ) * axis.array[0] * axis.array[1] - sine * axis.array[2];
+    array[5]  = cosine + ( 1.0 - cosine ) * pow( axis.array[1], two );
+    array[6]  = ( 1.0 - cosine ) * axis.array[1] *  axis.array[2] + sine * axis.array[0];
+    array[7]  = 0.0;
+    
+    array[8]  = ( 1.0 - cosine ) * axis.array[0] * axis.array[2] + sine * axis.array[1];
+    array[9]  = ( 1.0 - cosine ) * axis.array[1] * axis.array[2] - sine * axis.array[0];
+    array[10] = cosine + ( 1.0 - cosine ) * pow( axis.array[2], two );
+    array[11] = 0.0;
+
+    array[12] = 0.0;
+    array[13] = 0.0;
+    array[14] = 0.0;
+    array[15] = 1.0;
+
+}
+
+
+template< size_t M, size_t N, typename float_t >
+void
+matrix< M, N, float_t >::
+rotateX( const float_t angle )
+{
+    // this is a sfinae helper function that will make the compiler 
+    // throw an compile-time error if the matrix is not 4x4
+    details::matrix_is_4x4< M, N, matrix< M, N, float_t > >();
+
+    // using details:: functions to avoid template specialization for the whole
+    // function just for sinf/cosf optimizations
+    const float_t sine      = details::getSine( angle );
+    const float_t cosine    = details::getCosine( angle );
+
+    float_t tmp;
+
+    #if 0
+
+    for( size_t rowIndex = 0; rowIndex < M; ++rowIndex )
+    {
+        tmp = at( rowIndex, 1 ) * cosine + at( rowIndex, 2 ) * sine;
+        at( rowIndex, 2 ) = - at( rowIndex, 1 ) * sine + at( rowIndex, 2 ) * cosine;
+        at( rowIndex, 1 ) = tmp;
+    }
+
+    #else
+
+    tmp         = array[ 4 ] * cosine + array[ 8 ] * sine;
+    array[ 8 ]  = - array[ 4 ] * sine + array[ 8 ] * cosine;
+    array[ 4 ]  = tmp;
+
+    tmp         = array[ 5 ] * cosine + array[ 9 ] * sine;
+    array[ 9 ]  = - array[ 5 ] * sine + array[ 9 ] * cosine;
+    array[ 5 ]  = tmp;
+
+    tmp         = array[ 6 ] * cosine + array[ 10 ] * sine;
+    array[ 10 ] = - array[ 6 ] * sine + array[ 10 ] * cosine;
+    array[ 6 ]  = tmp;
+
+    tmp         = array[ 7 ] * cosine + array[ 11 ] * sine;
+    array[ 11 ] = - array[ 7 ] * sine + array[ 11 ] * cosine;
+    array[ 7 ]  = tmp;
+    
+
+    #endif
+}
+
+
+template< size_t M, size_t N, typename float_t >
+void
+matrix< M, N, float_t >::
+rotateY( const float_t angle )
+{
+    // this is a sfinae helper function that will make the compiler 
+    // throw an compile-time error if the matrix is not 4x4
+    details::matrix_is_4x4< M, N, matrix< M, N, float_t > >();
+
+    // using details:: functions to avoid template specialization for the whole
+    // function just for sinf/cosf optimizations
+    const float_t sine      = details::getSine( angle );
+    const float_t cosine    = details::getCosine( angle );
+
+    float_t tmp;
+    
+    #if 0 
+    
+    for( size_t rowIndex = 0; rowIndex < M; ++rowIndex )
+    {
+        tmp = at( rowIndex, 0 ) * cosine - at( rowIndex, 2 ) * sine;
+        at( rowIndex, 2 ) = at( rowIndex, 0 ) * sine + at( rowIndex, 2 ) * cosine;
+        at( rowIndex, 0 ) = tmp;
+    }
+    
+    #else
+    
+    tmp         = array[ 0 ] * cosine   - array[ 8 ] * sine;
+    array[ 8 ]  = array[ 0 ] * sine     + array[ 8 ] * cosine;
+    array[ 0 ]  = tmp;
+
+    tmp         = array[ 1 ] * cosine   - array[ 9 ] * sine;
+    array[ 9 ]  = array[ 1 ] * sine     + array[ 9 ] * cosine;
+    array[ 1 ]  = tmp;
+
+    tmp         = array[ 2 ] * cosine   - array[ 10 ] * sine;
+    array[ 10 ] = array[ 2 ] * sine     + array[ 10 ] * cosine;
+    array[ 2 ]  = tmp;
+
+    tmp         = array[ 3 ] * cosine   - array[ 11 ] * sine;
+    array[ 11 ] = array[ 3 ] * sine     + array[ 11 ] * cosine;
+    array[ 3 ]  = tmp;
+    
+    #endif
+}
+
+
+template< size_t M, size_t N, typename float_t >
+void
+matrix< M, N, float_t >::
+rotateZ( const float_t angle )
+{
+    // this is a sfinae helper function that will make the compiler 
+    // throw an compile-time error if the matrix is not 4x4
+    details::matrix_is_4x4< M, N, matrix< M, N, float_t > >();
+
+    // using details:: functions to avoid template specialization for the whole
+    // function just for sinf/cosf optimizations
+    const float_t sine      = details::getSine( angle );
+    const float_t cosine    = details::getCosine( angle );
+
+    float_t tmp;
+    
+    #if 0 
+    
+    for( size_t rowIndex = 0; rowIndex < M; ++rowIndex )
+    {
+        tmp = at( rowIndex, 0 ) * cosine + at( rowIndex, 1 ) * sine;
+        at( rowIndex, 1 ) = - at( rowIndex, 0 ) * sine + at( rowIndex, 1 ) * cosine;
+        at( rowIndex, 0 ) = tmp;
+    }
+    
+    #else
+    
+    tmp         = array[ 0 ] * cosine + array[ 4 ] * sine;
+    array[ 4 ]  = - array[ 0 ] * sine + array[ 4 ] * cosine;
+    array[ 0 ]  = tmp;
+    
+    tmp         = array[ 1 ] * cosine + array[ 5 ] * sine;
+    array[ 5 ]  = - array[ 1 ] * sine + array[ 5 ] * cosine;
+    array[ 1 ]  = tmp;
+
+    tmp         = array[ 2 ] * cosine + array[ 6 ] * sine;
+    array[ 6 ]  = - array[ 2 ] * sine + array[ 6 ] * cosine;
+    array[ 2 ]  = tmp;
+
+    tmp         = array[ 3 ] * cosine + array[ 7 ] * sine;
+    array[ 7 ]  = - array[ 3 ] * sine + array[ 7 ] * cosine;
+    array[ 3 ]  = tmp;
+
+    #endif
+}
+
+
+
+template< size_t M, size_t N, typename float_t >
+void
+matrix< M, N, float_t >::
+preRotateX( const float_t angle )
+{
+    // this is a sfinae helper function that will make the compiler 
+    // throw an compile-time error if the matrix is not 4x4
+    details::matrix_is_4x4< M, N, matrix< M, N, float_t > >();
+
+    // using details:: functions to avoid template specialization for the whole
+    // function just for sinf/cosf optimizations
+    const float_t sine      = details::getSine( angle );
+    const float_t cosine    = details::getCosine( angle );
+
+    float_t tmp;
+    
+    tmp         = array[ 0 ];
+    array[ 0 ]  = array[ 0 ] * cosine - array[ 2 ] * sine;
+    array[ 2 ]  = tmp * sine + array[ 2 ] * cosine;
+
+    tmp         = array[ 4 ];
+    array[ 4 ]  = array[ 4 ] * cosine - array[ 6 ] * sine;
+    array[ 6 ]  = tmp * sine + array[ 6 ] * cosine;
+
+    tmp         = array[ 8 ];
+    array[ 8 ]  = array[ 8 ] * cosine - array[ 10 ] * sine;
+    array[ 10 ] = tmp * sine + array[ 10 ] * cosine;
+
+    tmp         = array[ 12 ];
+    array[ 12 ] = array[ 12 ] * cosine - array[ 14 ] * sine;
+    array[ 14 ] = tmp * sine + array[ 14 ] * cosine;
+    
+}
+
+
+
+template< size_t M, size_t N, typename float_t >
+void
+matrix< M, N, float_t >::
+preRotateY( const float_t angle )
+{
+    // this is a sfinae helper function that will make the compiler 
+    // throw an compile-time error if the matrix is not 4x4
+    details::matrix_is_4x4< M, N, matrix< M, N, float_t > >();
+
+    // using details:: functions to avoid template specialization for the whole
+    // function just for sinf/cosf optimizations
+    const float_t sine      = details::getSine( angle );
+    const float_t cosine    = details::getCosine( angle );
+
+    float_t tmp;
+    
+    tmp         = array[ 1 ];
+    array[ 1 ]  = array[ 1 ] * cosine + array[ 2 ] * sine;
+    array[ 2 ]  = tmp * -sine + array[ 2 ] * cosine;
+
+    tmp         = array[ 5 ];
+    array[ 5 ]  = array[ 5 ] * cosine + array[ 6 ] * sine;
+    array[ 6 ]  = tmp * -sine + array[ 6 ] * cosine;
+
+    tmp         = array[ 9 ];
+    array[ 9 ]  = array[ 9 ] * cosine + array[ 10 ] * sine;
+    array[ 10 ] = tmp * -sine + array[ 10 ] * cosine;
+
+    tmp         = array[ 13 ];
+    array[ 13 ] = array[ 13 ] * cosine + array[ 14 ] * sine;
+    array[ 14 ] = tmp * -sine + array[ 14 ] * cosine;
+    
+}
+
+
+
+template< size_t M, size_t N, typename float_t >
+void
+matrix< M, N, float_t >::
+preRotateZ( const float_t angle )
+{
+    // this is a sfinae helper function that will make the compiler 
+    // throw an compile-time error if the matrix is not 4x4
+    details::matrix_is_4x4< M, N, matrix< M, N, float_t > >();
+
+    // using details:: functions to avoid template specialization for the whole
+    // function just for sinf/cosf optimizations
+    const float_t sine      = details::getSine( angle );
+    const float_t cosine    = details::getCosine( angle );
+
+    float_t tmp;
+    
+    tmp         = array[ 0 ];
+    array[ 0 ]  = array[ 0 ] * cosine + array[ 1 ] * sine;
+    array[ 1 ]  = tmp * -sine + array[ 1 ] * cosine;
+
+    tmp         = array[ 4 ];
+    array[ 4 ]  = array[ 4 ] * cosine + array[ 5 ] * sine;
+    array[ 5 ]  = tmp * -sine + array[ 5 ] * cosine;
+
+    tmp         = array[ 8 ];
+    array[ 8 ]  = array[ 8 ] * cosine + array[ 9 ] * sine;
+    array[ 9 ]  = tmp * -sine + array[ 9 ] * cosine;
+
+    tmp         = array[ 12 ];
+    array[ 12 ] = array[ 12 ] * cosine + array[ 13 ] * sine;
+    array[ 13 ] = tmp * -sine + array[ 13 ] * cosine;
+
+}
+
+
+
+template< size_t M, size_t N, typename float_t >
+void
+matrix< M, N, float_t >::
+scale( const float_t scale[3] )
+{
+    // this is a sfinae helper function that will make the compiler 
+    // throw an compile-time error if the matrix is not 4x4
+    details::matrix_is_4x4< M, N, matrix< M, N, float_t > >();
+
+    array[0]  *= scale[0];
+    array[1]  *= scale[0];
+    array[2]  *= scale[0];
+    array[3]  *= scale[0];
+    array[4]  *= scale[1];
+    array[5]  *= scale[1];
+    array[6]  *= scale[1];
+    array[7]  *= scale[1];
+    array[8]  *= scale[2];
+    array[9]  *= scale[2];
+    array[10] *= scale[2];
+    array[11] *= scale[2];
+
+}
+
+
+
+template< size_t M, size_t N, typename float_t >
+void
+matrix< M, N, float_t >::
+scale( const float_t x, const float_t y, const float_t z )
+{
+    // this is a sfinae helper function that will make the compiler 
+    // throw an compile-time error if the matrix is not 4x4
+    details::matrix_is_4x4< M, N, matrix< M, N, float_t > >();
+
+    array[0]  *= x;
+    array[1]  *= x;
+    array[2]  *= x;
+    array[3]  *= x;
+    array[4]  *= y;
+    array[5]  *= y;
+    array[6]  *= y;
+    array[7]  *= y;
+    array[8]  *= z;
+    array[9]  *= z;
+    array[10] *= z;
+    array[11] *= z;
+
+}
+
+
+
+template< size_t M, size_t N, typename float_t >
+inline void
+matrix< M, N, float_t >::
+scale( const vector< 3, float_t >& scale_ )
+{
+    scale( scale_.array );
+}
+
+
+
+template< size_t M, size_t N, typename float_t >
+void
+matrix< M, N, float_t >::
+scaleTranslation( const float_t scale_[3] )
+{
+    // this is a sfinae helper function that will make the compiler 
+    // throw an compile-time error if the matrix is not 4x4
+    details::matrix_is_4x4< M, N, matrix< M, N, float_t > >();
+
+    array[12] *= scale_[0];
+    array[13] *= scale_[1];
+    array[14] *= scale_[2];
+
+}
+
+
+
+template< size_t M, size_t N, typename float_t >
+inline void
+matrix< M, N, float_t >::
+scaleTranslation( const vector< 3, float_t >& scale_ )
+{
+    scaleTranslation( scale_.array );
+}
+
+
+
+template< size_t M, size_t N, typename float_t >
+void
+matrix< M, N, float_t >::
+setTranslation( const float_t x, const float_t y, const float_t z )
+{
+    // this is a sfinae helper function that will make the compiler 
+    // throw an compile-time error if the matrix is not 4x4
+    details::matrix_is_4x4< M, N, matrix< M, N, float_t > >();
+
+    array[12] = x;
+    array[13] = y;
+    array[14] = z;
+
+}
+
+
+
+template< size_t M, size_t N, typename float_t >
+void
+matrix< M, N, float_t >::
+setTranslation( const float_t trans[3] )
+{
+    // this is a sfinae helper function that will make the compiler 
+    // throw an compile-time error if the matrix is not 4x4
+    details::matrix_is_4x4< M, N, matrix< M, N, float_t > >();
+
+    array[12] = trans[0];
+    array[13] = trans[1];
+    array[14] = trans[2];
+
+}
+
+
+
+template< size_t M, size_t N, typename float_t >
+inline void
+matrix< M, N, float_t >::
+setTranslation( const vector< 3, float_t >& trans )
+{
+    setTranslation( trans.array );
+}
+
+
+
+template< size_t M, size_t N, typename float_t >
+vector< 3, float_t >
+matrix< M, N, float_t >::
+getTranslation() const
+{
+    // this is a sfinae helper function that will make the compiler 
+    // throw an compile-time error if the matrix is not 4x4
+    details::matrix_is_4x4< M, N, matrix< M, N, float_t > >();
+
+    vector< 3, float_t > translation;
+    
+    translation.array[ 0 ] = array[ 12 ];
+    translation.array[ 1 ] = array[ 13 ];
+    translation.array[ 2 ] = array[ 14 ];
+}
 
 
 

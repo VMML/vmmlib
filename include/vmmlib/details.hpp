@@ -54,6 +54,7 @@ matrix_is_4x4( typename enable_if< is_4x4< M, N >, T >::type* dummy = 0 )
 
 
 // helpers for certain cmath functions
+
 template< typename float_t >
 inline float_t
 getSine( const float_t& angleInRadians )
@@ -81,6 +82,23 @@ inline float
 getCosine( const float& angleInRadians )
 {
     return cosf( angleInRadians );
+}
+
+
+template< typename float_t >
+inline float_t
+getSquareRoot( const float_t& number )
+{
+    return sqrt( number );
+}
+
+
+
+template<>
+inline float
+getSquareRoot( const float& number )
+{
+    return sqrtf( number );
 }
 
 

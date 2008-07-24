@@ -18,6 +18,26 @@ matrix_test::run()
     
     m0.copyFrom1DimCArray( data );
     
+    // test operator== / operator !=
+	ok = true;
+	{
+		matrix< 2, 3 > m0_copy;
+		m0.copyFrom1DimCArray( data );
+		m0_copy.copyFrom1DimCArray( data );
+		ok = m0 == m0_copy;
+		if ( ok )
+		{
+			ok = ! ( m0 != m0_copy );
+		}
+		log( "operator==, operator!=", ok );
+		if ( ! ok )
+		{
+			std::stringstream error;
+			error << m0 << m0_copy << std::endl;
+			log_error( error.str() );
+		}
+	}
+
     // tests copyFrom1DimCArray function with row_by_row data
 	ok = true;
 	{
@@ -40,7 +60,7 @@ matrix_test::run()
 				ok = m0.at( rowIndex, colIndex ) == tmp;
 			}
 		}
-		log( "copyFrom1DimCArray( .. , row_by_row )", ok  );
+		log( "copyFrom1DimCArray( ..., row_by_row )", ok  );
 		if ( ! ok )
 		{
 			std::stringstream error;
@@ -75,7 +95,7 @@ matrix_test::run()
 				ok = m1.at( rowIndex, colIndex ) == tmp;
 			}
 		}
-		log( "copyFrom1DimCArray( .. , col_by_col )", ok );
+		log( "copyFrom1DimCArray( ..., col_by_col )", ok );
 		if ( ! ok )
 		{
 			std::stringstream error;
@@ -93,7 +113,7 @@ matrix_test::run()
 		{
 			ok = ! ( m0 != m0_copy );
 		}
-		log( "copy ctor", ok );
+		log( "copy constructor", ok );
 		if ( ! ok )
 		{
 			std::stringstream error;
@@ -120,7 +140,7 @@ matrix_test::run()
 		ok = identity == id_correct;
         if ( ok ) ok = zero == zero_correct;
 
-		log( "static IDENTITY / ZERO members", ok );
+		log( "static IDENTITY, ZERO members", ok );
 		if ( ! ok )
 		{
 			std::stringstream error;
@@ -132,26 +152,6 @@ matrix_test::run()
 		}
 	}
 
-
-    // test operator== / operator !=
-	ok = true;
-	{
-		matrix< 2, 3 > m0_copy;
-		m0.copyFrom1DimCArray( data );
-		m0_copy.copyFrom1DimCArray( data );
-		ok = m0 == m0_copy;
-		if ( ok )
-		{
-			ok = ! ( m0 != m0_copy );
-		}
-		log( "operator== / operator!=", ok );
-		if ( ! ok )
-		{
-			std::stringstream error;
-			error << m0 << m1 << std::endl;
-			log_error( error.str() );
-		}
-	}
 
     // test operator[]
 	ok = true;
@@ -227,7 +227,7 @@ matrix_test::run()
 			ok = M == Mc;
 		}
 
-		log( "getRow/setRow/getColumn/setColumn", ok );
+		log( "getRow(),setRow(),getColumn(),setColumn()", ok );
 		if ( ! ok )
 		{
 			std::stringstream error;
@@ -251,7 +251,7 @@ matrix_test::run()
         m1.copyFrom1DimCArray( data, false );
         
         ok = m1 == m0t;
-		log( "getTransposed() / transposeTo()", ok );
+		log( "getTransposed(), transposeTo()", ok );
         if ( !ok )
         {
 			std::stringstream error;
@@ -286,7 +286,7 @@ matrix_test::run()
             ok = result == correct_result;
         }
 
-		log( "matrix multiplication ( mul(), operator* )", ok );
+		log( "matrix multiplication ( multiply(), operator* )", ok );
 
         if ( ! ok )
         {

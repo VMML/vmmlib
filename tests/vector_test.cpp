@@ -33,7 +33,7 @@ vector_test::run()
             ok = v.at( index ) == tmp;
 		}
 
-		log( "copyFrom1DimCArray( ..  )", ok  );
+		log( "copyFrom1DimCArray(...)", ok  );
 		if ( ! ok )
 		{
 			std::stringstream error;
@@ -81,7 +81,7 @@ vector_test::run()
             ok = v_result.at( index ) == index + 3;
 		}
 
-		log( "operator+ / operator+=", ok  );
+		log( "operator+, operator+=", ok  );
 		if ( ! ok )
 		{
 			std::stringstream error;
@@ -134,7 +134,7 @@ vector_test::run()
             ok = v_result.at( index ) == index;
 		}
 
-		log( "operator- / operator-=", ok  );
+		log( "operator-, operator-=", ok  );
 		if ( ! ok )
 		{
 			std::stringstream error;
@@ -186,7 +186,7 @@ vector_test::run()
             ok = v_result.at( index ) == v.at( index ) * 2.0;
 		}
 
-		log( "operator* / operator*=", ok  );
+		log( "operator*, operator*=", ok  );
 		if ( ! ok )
 		{
 			std::stringstream error;
@@ -239,7 +239,7 @@ vector_test::run()
             ok = v_result.at( index ) == v.at( index ) / 1.5;
 		}
 
-		log( "operator/ / operator/=", ok  );
+		log( "operator/, operator/=", ok  );
 		if ( ! ok )
 		{
 			std::stringstream error;
@@ -264,9 +264,9 @@ vector_test::run()
 
         double norm = vec.norm();
         if ( ok ) 
-            ok = sqrt( normSquared ) == norm;
+            ok = details::getSquareRoot( normSquared ) == norm;
 
-		log( "norm / normSquared", ok  );
+		log( "norm(), normSquared()", ok  );
 
     }
 
@@ -279,11 +279,11 @@ vector_test::run()
         vec.normalize();
         ok = vec.norm() == 1.0;
 
-		log( "normalize() maximum precision", ok  );
+		log( "normalize(), maximum precision", ok, true  );
         if ( ! ok )
         {
             ok = vec.norm() - 1.0 < 1e-15;
-            log( "normalize() with tolerance 1e-15", ok  );
+            log( "normalize(), tolerance 1e-15", ok  );
         }
         if ( ! ok )
         {

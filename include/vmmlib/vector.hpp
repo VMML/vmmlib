@@ -7,6 +7,7 @@
 
 #include <vmmlib/exception.hpp>
 #include <vmmlib/vmmlib_config.hpp>
+#include <vmmlib/details.hpp>
 
 namespace vmml
 {
@@ -74,8 +75,6 @@ public:
     template< typename different_float_t >
     void copyFrom1DimCArray( const different_float_t* c_array );
     
-    float_t array[ M ];
-
     friend std::ostream& operator << ( std::ostream& os, 
         const vector< M, float_t >& vector_ )
     {
@@ -97,7 +96,22 @@ public:
         return os;
     };  
 
+
+    // storage
+    float_t array[ M ];
+
 }; // class vector
+
+
+
+#if 0
+typedef vector< 2, float >  vec2f;
+typedef vector< 2, double > vec2d;
+typedef vector< 3, float >  vec3f;
+typedef vector< 3, double > vec3d;
+typedef vector< 4, float >  vec4d;
+typedef vector< 4, double > vec4d;
+#endif 
 
 
 template< size_t M, typename float_t >
@@ -482,7 +496,7 @@ template< size_t M, typename float_t >
 inline float_t
 vector< M, float_t >::norm() const
 {
-    return sqrt( normSquared() );
+    return details::getSquareRoot( normSquared() );
 }
 
 

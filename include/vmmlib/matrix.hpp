@@ -291,6 +291,15 @@ public:
 
 }; // class matrix
 
+
+#if 0
+typedef matrix< 3, 3, float >   mat3f;
+typedef matrix< 3, 3, double >  mat3d;
+typedef matrix< 4, 4, float >   mat4f;
+typedef matrix< 4, 4, double >  mat4d;
+#endif
+
+
 /*
 template< size_t M, size_t N, typename float_t >
 const matrix< M, N, float_t > 

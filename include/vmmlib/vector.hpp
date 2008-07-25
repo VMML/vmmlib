@@ -9,6 +9,8 @@
 #include <vmmlib/vmmlib_config.hpp>
 #include <vmmlib/details.hpp>
 
+#include <cstdarg>
+
 namespace vmml
 {
 
@@ -16,7 +18,7 @@ template< size_t M, typename float_t = double >
 class vector
 {
 public:
-
+    // accessors 
     inline float_t& operator()( size_t index );
     inline const float_t& operator()( size_t index ) const;
     inline float_t& at( size_t index );
@@ -25,6 +27,7 @@ public:
     inline float_t& operator[]( size_t index );
     inline const float_t& operator[]( size_t index ) const;
 
+    // element accessors for M <= 4;
     inline float_t& x();
     inline float_t& y();
     inline float_t& z();
@@ -60,7 +63,33 @@ public:
     void operator/=( const float_t other );    
     void operator+=( const float_t other ); 
     void operator-=( const float_t other );
+
+    // constructors 
+    vector() {}; // std ctor - WARNING: NO INITIALIZATION
+    vector( float_t a ); // sets all components to a;
+
+    // WARNING: the following constructors will not work for vectors where
+    // M != number of arguments. Instead, the compiler will throw an error such as
+    // 'no matching function for call to 'number_of_parameters_must_be_M()'.
+    vector( float_t x, float_t y );
+    vector( float_t x, float_t y, float_t z );
+    vector( float_t x, float_t y, float_t z, float_t w );
     
+    void set( float_t a ); // sets all components to a;
+
+    // WARNING: the following set functions will not work for vectors where
+    // M != number of arguments. Instead, the compiler will throw an error such as
+    // 'no matching function for call to 'number_of_parameters_must_be_M()'.
+    void set( float_t x, float_t y );
+    void set( float_t x, float_t y, float_t z ); 
+    void set( float_t x, float_t y, float_t z, float_t w );
+    
+    // result = vec1.cross( vec2 ) => retval result = vec1 x vec2
+    inline vector< M, float_t > cross( const vector< M, float_t >& rhs ) const;
+
+    // result.cross( vec1, vec2 ) => (this) = vec1 x vec2
+    void cross( const vector< M, float_t >& a, const vector< M, float_t >& b );
+
     inline float_t dot( const vector< M, float_t >& other ) const;
     static inline float_t dot( const vector< M, float_t >& v0, 
         const vector< M, float_t >& v1 );
@@ -69,6 +98,8 @@ public:
     
     inline float_t norm() const;
     inline float_t normSquared() const;
+    inline float_t length() const;
+    inline float_t lengthSquared() const;
     
     void copyFrom1DimCArray( const float_t* c_array );
 
@@ -112,6 +143,104 @@ typedef vector< 3, double > vec3d;
 typedef vector< 4, float >  vec4d;
 typedef vector< 4, double > vec4d;
 #endif 
+
+
+template< size_t M, typename float_t >
+vector< M, float_t >::vector( float_t a )
+{
+    for( size_t index = 0; index < M; ++index )
+    {
+        at( index ) = a;
+    }
+
+}
+
+
+
+template< size_t M, typename float_t >
+vector< M, float_t >::vector( float_t x, float_t y )
+{
+    details::number_of_parameters_must_be_M< 2, M, vector< M, float_t > >();
+
+    array[ 0 ] = x;
+    array[ 1 ] = y;
+}
+
+
+template< size_t M, typename float_t >
+vector< M, float_t >::vector( float_t x, float_t y, float_t z )
+{
+    details::number_of_parameters_must_be_M< 3, M, vector< M, float_t > >();
+
+    array[ 0 ] = x;
+    array[ 1 ] = y;
+    array[ 2 ] = z;
+}
+
+
+
+template< size_t M, typename float_t >
+vector< M, float_t >::vector( float_t x, float_t y, float_t z, float_t w )
+{
+    details::number_of_parameters_must_be_M< 4, M, vector< M, float_t > >();
+    
+    array[ 0 ] = x;
+    array[ 1 ] = y;
+    array[ 2 ] = z;
+    array[ 3 ] = w;
+
+}
+
+
+template< size_t M, typename float_t >
+void
+vector< M, float_t >::set( float_t a )
+{
+    for( size_t index = 0; index < M; ++index )
+    {
+        at( index ) = a;
+    }
+
+}
+
+
+
+template< size_t M, typename float_t >
+void
+vector< M, float_t >::set( float_t x, float_t y )
+{
+    details::number_of_parameters_must_be_M< 2, M, vector< M, float_t > >();
+
+    array[ 0 ] = x;
+    array[ 1 ] = y;
+}
+
+
+template< size_t M, typename float_t >
+void
+vector< M, float_t >::set( float_t x, float_t y, float_t z )
+{
+    details::number_of_parameters_must_be_M< 3, M, vector< M, float_t > >();
+
+    array[ 0 ] = x;
+    array[ 1 ] = y;
+    array[ 2 ] = z;
+}
+
+
+
+template< size_t M, typename float_t >
+void
+vector< M, float_t >::set( float_t x, float_t y, float_t z, float_t w )
+{
+    details::number_of_parameters_must_be_M< 4, M, vector< M, float_t > >();
+    
+    array[ 0 ] = x;
+    array[ 1 ] = y;
+    array[ 2 ] = z;
+    array[ 3 ] = w;
+
+}
 
 
 template< size_t M, typename float_t >
@@ -394,64 +523,107 @@ template< size_t M, typename float_t >
 inline float_t&
 vector< M, float_t >::x()
 {
-    return at( 0 );
+    details::number_of_parameters_must_be_at_least_M< 1, M, vector< M, float_t > >();
+    return array[ 0 ];
 }
+
 
 
 template< size_t M, typename float_t >
 inline float_t&
 vector< M, float_t >::y()
 {
-    return at( 1 );
+    details::number_of_parameters_must_be_at_least_M< 2, M, vector< M, float_t > >();
+    return array[ 1 ];
 }
+
 
 
 template< size_t M, typename float_t >
 inline float_t&
 vector< M, float_t >::z()
 {
-    return at( 2 );
+    details::number_of_parameters_must_be_at_least_M< 3, M, vector< M, float_t > >();
+    return array[ 2 ];
 }
+
 
 
 template< size_t M, typename float_t >
 inline float_t&
 vector< M, float_t >::w()
 {
-    return at( 3 );
+    details::number_of_parameters_must_be_at_least_M< 4, M, vector< M, float_t > >();
+    return array[ 3 ];
 }
+
 
 
 template< size_t M, typename float_t >
 inline const float_t&
 vector< M, float_t >::x() const
 {
-    return at( 0 );
+    details::number_of_parameters_must_be_at_least_M< 1, M, vector< M, float_t > >();
+    return array[ 0 ];
 }
+
 
 
 template< size_t M, typename float_t >
 inline const float_t&
 vector< M, float_t >::y() const
 {
-    return at( 1 );
+    details::number_of_parameters_must_be_at_least_M< 2, M, vector< M, float_t > >();
+    return array[ 1 ];
 }
+
 
 
 template< size_t M, typename float_t >
 inline const float_t&
 vector< M, float_t >::z() const
 {
-    return at( 2 );
+    details::number_of_parameters_must_be_at_least_M< 3, M, vector< M, float_t > >();
+    return array[ 2 ];
 }
+
 
 
 template< size_t M, typename float_t >
 inline const float_t&
 vector< M, float_t >::w() const
 {
-    return at( 3 );
+    details::number_of_parameters_must_be_at_least_M< 4, M, vector< M, float_t > >();
+    return array[ 3 ];
 }
+
+
+
+// result = vec1.cross( vec2 ) => result = vec1 x vec2
+template< size_t M, typename float_t >
+inline vector< M, float_t >
+vector< M, float_t >::cross( const vector< M, float_t >& rhs ) const
+{
+    vector< M, float_t > result;
+    result.cross( *this, rhs );
+    return result;
+}
+
+
+
+// result.cross( vec1, vec2 ) => (this) = vec1 x vec2
+template< size_t M, typename float_t >
+void
+vector< M, float_t >::
+cross( const vector< M, float_t >& aa, const vector< M, float_t >& bb )
+{ 
+    details::number_of_parameters_must_be_M< 3, M, vector< M, float_t > >();
+
+    array[ 0 ] = aa.y() * bb.z() - aa.z() * bb.y(); 
+    array[ 1 ] = aa.z() * bb.x() - aa.x() * bb.z(); 
+    array[ 2 ] = aa.x() * bb.y() - aa.y() * bb.x(); 
+}
+
 
 
 template< size_t M, typename float_t >
@@ -511,6 +683,24 @@ vector< M, float_t >::normSquared() const
         tmp += at( index ) * at( index );
     }
     return tmp;
+}
+
+
+
+template< size_t M, typename float_t >
+inline float_t
+vector< M, float_t >::length() const
+{
+    return norm();
+}
+
+
+
+template< size_t M, typename float_t >
+inline float_t
+vector< M, float_t >::lengthSquared() const
+{
+    return normSquared();
 }
 
 

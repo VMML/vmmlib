@@ -138,13 +138,11 @@ public:
     // vec3 = this x b
 	vector< 3, float_t > cross( const quaternion< float_t >& b ) const;
 
-	quaternion cross( const quaternion< float_t >& a, const quaternion< float_t >& b ) const;
-	void cross( const quaternion< float_t >& a, const quaternion< float_t >& b );
 	float_t dot( const quaternion< float_t >& a ) const;
 	static float_t dot( const quaternion< float_t >& a, const quaternion< float_t >& b );
 	
 	// returns multiplicative inverse
-	quaternion invert();
+	quaternion getInverse();
 	
 	void normal( const quaternion& aa, const quaternion& bb, const quaternion& cc,  const quaternion& dd );
 	quaternion normal( const quaternion& aa, const quaternion& bb, const quaternion& cc );
@@ -169,16 +167,20 @@ public:
 
     template< size_t DIM >
     void getRotationMatrix( matrix< DIM, DIM, float_t >& result ) const;
-	
+    	
 	friend std::ostream& operator << ( std::ostream& os, const quaternion& q )
 	{
-		const std::ios::fmtflags flags = os.flags();
-		const int				 prec  =os.precision();
+		const std::ios::fmtflags flags =    os.flags();
+		const int				 prec  =    os.precision();
 		
 		os. setf( std::ios::right, std::ios::adjustfield );
 		os.precision( 5 );
-		os << "[" << std::setw(10) << q.w << " " << std::setw(10) << q.x
-		   << " " << std::setw(10) << q.y << " " << std::setw(10) << q.z << " ]";
+		os << "[" 
+            << std::setw(10) << "w: " << q.w() << " " 
+            << std::setw(10) << "xyz: " << q.x() << " " 
+            << std::setw(10) << q.y() << " " 
+            << std::setw(10) << q.z() 
+            << " ]";
 		os.precision( prec );
 		os.setf( flags );
 		return os;
@@ -641,7 +643,7 @@ float_t quaternion< float_t >::absSquared() const
 
 
 template < typename float_t >
-quaternion< float_t > quaternion< float_t >::invert()
+quaternion< float_t > quaternion< float_t >::getInverse()
 {
 	quaternion< float_t > q( *this );
     q.conjugate();
@@ -714,15 +716,45 @@ quaternion< float_t >::operator*( const quaternion< float_t >& a ) const
 // Grassmann product
 template < typename float_t >
 void
-quaternion< float_t >::operator*=( const quaternion< float_t >& a )
+quaternion< float_t >::operator*=( const quaternion< float_t >& q )
 {
-    
-
+    #if 0
     quaternion< float_t > orig( *this );
 	x() = orig.w() * a.x() + orig.x() * a.w() + orig.y() * a.z() - orig.z() * a.y();
 	y() = orig.w() * a.y() + orig.y() * a.w() + orig.z() * a.x() - orig.x() * a.z();
 	z() = orig.w() * a.z() + orig.z() * a.w() + orig.x() * a.y() - orig.y() * a.x();
-	w() = orig.w() * a.w() + orig.x() * a.x() + orig.y() * a.y() + orig.z() * a.z();
+	w() = orig.w() * a.w() - orig.x() * a.x() - orig.y() * a.y() - orig.z() * a.z();
+    #else
+
+    // optimized version, 7 less mul, but 15 more add/subs
+    // after Henrik Engstrom, from a gamedev.net article.
+
+    const float_t& a = array[ 3 ];
+    const float_t& b = array[ 0 ];
+    const float_t& c = array[ 1 ];
+    const float_t& d = array[ 2 ];
+    const float_t& x = q.array[ 3 ];
+    const float_t& y = q.array[ 0 ];
+    const float_t& z = q.array[ 1 ];
+    const float_t& w = q.array[ 2 ];
+
+    const float_t tmp_00 = (d - c) * (z - w);
+    const float_t tmp_01 = (a + b) * (x + y);
+    const float_t tmp_02 = (a - b) * (z + w);
+    const float_t tmp_03 = (c + d) * (x - y);
+    const float_t tmp_04 = (d - b) * (y - z);
+    const float_t tmp_05 = (d + b) * (y + z);
+    const float_t tmp_06 = (a + c) * (x - w);
+    const float_t tmp_07 = (a - c) * (x + w);
+    const float_t tmp_08 = tmp_05 + tmp_06 + tmp_07;
+    const float_t tmp_09 = 0.5 * (tmp_04 + tmp_08);
+    
+    array[ 3 ] = tmp_00 + tmp_09 - tmp_05;
+    array[ 0 ] = tmp_01 + tmp_09 - tmp_08;
+    array[ 1 ] = tmp_02 + tmp_09 - tmp_07;
+    array[ 2 ] = tmp_03 + tmp_09 - tmp_06;   
+    
+    #endif
 }
 
 
@@ -886,39 +918,20 @@ quaternion< float_t >::operator*=(const vector< 3, float_t >& a )
 	
 
 
-// returns commutator ( deviance from commutativity )
-template < typename float_t >
-vector< 3, float_t > quaternion< float_t >::cross( const quaternion< float_t >& a ) const
-{
-	return vector< 3, float_t >( 2 * ( y * a.z - z * a.y ), 2 * ( z * a.x - x * a.z ), 2 * ( x * a.y - y * a.x ) );
 
+template < typename float_t >
+vector< 3, float_t > quaternion< float_t >::cross( const quaternion< float_t >& bb ) const
+{
+	vector< 3, float_t > result;
+
+    result.array[ 0 ] = y() * bb.z() - z() * bb.y(); 
+    result.array[ 1 ] = z() * bb.x() - x() * bb.z(); 
+    result.array[ 2 ] = x() * bb.y() - y() * bb.x(); 
+
+    return result;
 }
 
 
-
-// result = quaternion1.cross( quaternion2, quaternion3 ) => quaternion1 x (quaternion2, quaternion3)
-template < typename float_t >
-quaternion< float_t > quaternion< float_t >::cross( const quaternion< float_t >& a, const quaternion< float_t >& b ) const
-{
-	return quaternion( x * a.y * b.z + y * a.z * b.x + z * a.x * b.y - z * a.y * b.x - y * a.x * b.z - x * a.z * b.y,
-	 				   w * a.y * b.z + y * a.z * b.w + z * a.w * b.y - z * a.y * b.w - y * a.w * b.z - w * a.z * b.y,
-	 				   w * a.x * b.z + x * a.z * b.w + z * a.w * b.x - z * a.x * b.w - x * a.w * b.z - w * a.z * b.x,
-	 				   w * a.x * b.y + x * a.y * b.w + y * a.w * b.x - y * a.x * b.w - x * a.w * b.y - w * a.y * b.x );
-}
-
-// result.cross( quaternion1, quaternion2, quaternion3 ) => quaternion1 x (quaternion2, quaternion3)
-template < typename float_t >
-void quaternion< float_t >:: cross( const quaternion< float_t >& a, const quaternion< float_t >& b )
-{
-	float_t ww = x * a.y * b.z + y * a.z * b.x + z * a.x * b.y - z * a.y * b.x - y * a.x * b.z - x * a.z * b.y;
-	float_t xx = w * a.y * b.z + y * a.z * b.w + z * a.w * b.y - z * a.y * b.w - y * a.w * b.z - w * a.z * b.y;
-	float_t yy = w * a.x * b.z + x * a.z * b.w + z * a.w * b.x - z * a.x * b.w - x * a.w * b.z - w * a.z * b.x;
-	float_t zz = w * a.x * b.y + x * a.y * b.w + y * a.w * b.x - y * a.x * b.w - x * a.w * b.y - w * a.y * b.x;
-	w = ww;
-	x = xx;
-	y = yy;
-	z = zz;
-}
 
 template < typename float_t >
 float_t quaternion< float_t >::dot( const quaternion< float_t >& a ) const

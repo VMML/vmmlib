@@ -294,12 +294,110 @@ vector_test::run()
 
     }
 
+    // constructor tests
+    {
+        bool ok = true;
+        double vData[] = { 1, 2, 3, 4 };
+        vector< 4, double > v4( 1, 2, 3, 4 );
+        
+        vector< 2, double > v2C;
+        v2C = vData;
+        vector< 2, double > v2( 1, 2 );
+        
+        if ( v2 != v2C )
+            ok = false;
 
-    // tests 
-	ok = true;
+        vector< 3, double > v3C;
+        v3C = vData;
+        vector< 3, double > v3( 1, 2, 3 );
+
+        if ( v3 != v3C )
+            ok = false;
+            
+        vector< 4, double > v4C;
+        v4C = vData;
+        
+        if ( v4 != v4C ) 
+            ok = false;
+            
+        double vData2[] = { 23, 23, 23, 23 };
+        v4C = vData2;
+        
+        vector< 4, double > v4_( 23 );
+        if ( v4_ != v4C )
+            ok = false;
+        
+        log( "initializing constructors ", ok );
+    
+    
+    
+    }
+
+
+
+    // set tests 
 	{
+        bool ok = true;
         vector< 4 > vec;
+        vec.set( 2, 3, 4, 5 );
+        vector< 4 > vecCorrect;
+        double vCData[] = { 2, 3, 4, 5 };
+        vecCorrect = vCData;
+        if ( vec != vecCorrect )
+            ok = false;
+            
+        vec.set( 2 );
+        
+        double vCData2[] = { 2, 2, 2, 2 };
+        vecCorrect = vCData2;
+        if ( vec != vecCorrect )
+            ok = false;
+        
+        vector< 3 > v;
+        // uncommenting the following line will throw a compiler error because the number 
+        // of arguments to set is != M
+        //v.set( 2, 3, 4, 5 );
 
+        std::cout << vec << std::endl;
+        log( "set() functions", ok );
+    }
+
+
+    // component accessors
+    {
+        bool ok = true;
+        vector< 4, double > vd( 1, 2, 3, 4 );
+        if ( vd.x() == 1 && vd.y() == 2 && vd.z() == 3 && vd.w() == 4 )
+        {}
+        else
+            ok = false;
+            
+        log( "component accessors ( x(), y(), z(), w() )", ok );
+    
+    }
+
+
+    // dot product
+    {
+        bool ok = true;
+        vector< 3, float > v0( 1, 2, 3 );
+        vector< 3, float > v1( -6, 5, -4 );
+        if ( v0.dot( v1 ) != -8 )
+            ok = false;
+        log( "dot product, dot()", ok );
+    }
+
+
+    // cross product
+    {
+        bool ok = true;
+        vector< 3, float > v0( 1, 2, 3 );
+        vector< 3, float > v1( -6, 5, -4 );
+        vector< 3, float > vcorrect( -23, -14, 17 );
+        if ( v0.cross( v1 ) != vcorrect )
+            ok = false;
+        log( "cross product, cross()", ok );
+    
     }
 
 

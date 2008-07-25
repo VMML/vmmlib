@@ -35,9 +35,21 @@ struct is_4x4
 };
 
 
+template< size_t Mreq, size_t M >
+struct has_M_components
+{
+    enum{ value = ( Mreq == M ) };
+};
+
+template< size_t Mreq, size_t M >
+struct has_M_or_more_components
+{
+    enum{ value = ( Mreq <= M ) };
+};
+
 
 template< size_t M, size_t N, typename T >
-void
+inline void
 matrix_is_square( typename enable_if< is_square< M, N >, T >::type* dummy = 0 )
 {
     // intentionally left empty.
@@ -46,8 +58,24 @@ matrix_is_square( typename enable_if< is_square< M, N >, T >::type* dummy = 0 )
 
 
 template< size_t M, size_t N, typename T >
-void
+inline void
 matrix_is_4x4( typename enable_if< is_4x4< M, N >, T >::type* dummy = 0 )
+{
+    // intentionally left empty.
+}
+
+
+template< size_t Mreq, size_t M, typename T >
+inline void
+number_of_parameters_must_be_M( typename enable_if< has_M_components< Mreq, M >, T >::type* dummy = 0 )
+{
+    // intentionally left empty.
+}
+
+
+template< size_t Mreq, size_t M, typename T >
+inline void
+number_of_parameters_must_be_at_least_M( typename enable_if< has_M_or_more_components< Mreq, M >, T >::type* dummy = 0 )
 {
     // intentionally left empty.
 }

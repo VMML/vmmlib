@@ -154,7 +154,7 @@ quaternion_test::run()
             ok = false;
         
             
-        log( "quaternion / scalar operations, operator*, /, *=, /=", ok );
+        log( "quaternion / scalar operations: operator*, /, *=, /=", ok );
     }
 
     {
@@ -184,33 +184,42 @@ quaternion_test::run()
             ok = false;
 
         // *, *=
-        // FIXME 
-        assert( 0 && "TODO" );
+        qq.set( 2, 3, 4, 1 );
+        quaterniond q2( 3, 2, 1, 4 );
+        quaterniond p = qq * q2;
+        quaterniond pCorrect( 6, 24, 12, -12 );
+        if ( p != pCorrect )
+            ok = false;
 
-        log( "quaternion / quaternion operations, operator+, -, *, +=, -=, *=", ok );
+        p = qq;
+        p *= q2;
+        if ( p != pCorrect )
+            ok = false;
+
+        log( "quaternion / quaternion operations: operator+, -, *, +=, -=, *=", ok );
 
         
     }
+    
+    {
+        bool ok = true;
+        
+        quaterniond qq( 1, 2, 3, 4 );
+        quaterniond q2( -6, 5, -4, 2 );
+        
+        vector< 3, double > v = qq.cross( q2 );
+
+        vector< 3, double > v0( 1, 2, 3 );
+        vector< 3, double > v1( -6, 5, -4 );
+        
+        if ( v != v0.cross( v1 ) )
+            ok = false;
+            
+        log( "cross product ( vec3 = quat x quat ).", ok );
+    }
+    
 
 #if 0
-	// quaternion/quaternion tests
-	tquaternion_test.set( 1., 2., 3., 4. );
-	if ( tquaternion_test + tquaternion_test + tquaternion_test -vquaternion_test != 0.0f  )
-	{
-        cout << "test: Quaternion::operator+-( quaternion ) failed!" << endl;
-        failed();
-        assert( 0 );
-    }  
-	
-	squaternion_test.set( -24., 2., 28., 44 ); 
-	
-	if ( squaternion_test != tquaternion_test * uquaternion_test )
-	{
-        cout << "test: Quaternion::operator*( quaternion ) failed!" << endl;
-        failed();
-        assert( 0 );
-    }  
-	
 	Quaterniond rquaternion_test( 8. / 110., -1. / 110., -6. / 110., -3. / 110. );
 	
 	if ( _quaternion.invert() != rquaternion_test )

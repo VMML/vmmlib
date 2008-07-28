@@ -96,10 +96,14 @@ public:
 
     inline void normalize();
     
+    // L2 norm
     inline float_t norm() const;
     inline float_t normSquared() const;
     inline float_t length() const;
     inline float_t lengthSquared() const;
+    
+    inline float_t distance( const vector< M, float_t >& other ) const;
+    inline float_t distanceSquared( const vector< M, float_t >& other ) const;
     
     void copyFrom1DimCArray( const float_t* c_array );
 
@@ -701,6 +705,26 @@ inline float_t
 vector< M, float_t >::lengthSquared() const
 {
     return normSquared();
+}
+
+
+
+template< size_t M, typename float_t >
+inline float_t
+vector< M, float_t >::distance( const vector< M, float_t >& other ) const
+{
+    return details::getSquareRoot( distanceSquared() );
+}
+
+
+
+template< size_t M, typename float_t >
+inline float_t
+vector< M, float_t >::distanceSquared( const vector< M, float_t >& other ) const
+{
+    vector< M, float_t > tmp( *this );
+    tmp -= other;
+    return tmp.lengthSquared();
 }
 
 

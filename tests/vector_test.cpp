@@ -399,6 +399,12 @@ vector_test::run()
         log( "cross product, cross()", ok );
     
     }
+    
+    {
+        vector< 3, float > v0( 1, 2, 3 );
+        vector< 3, float > v1( -6, 5, -4 );
+        v0.distanceSquared( v1 );
+    }
 
 
     return ok;

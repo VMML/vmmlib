@@ -43,6 +43,12 @@ public:
    
     const vector< M, float_t >& operator=( const float_t* c_array );
     float_t operator=( float_t filler );
+
+    const vector< M, float_t >& operator=( const vector< M, float_t >& other );
+    
+    // returns void to avoid 'silent' loss of precision when chaining
+    template< typename other_float_t >
+    void operator=( const vector< M, other_float_t >& other );
     
     vector< M, float_t > operator*( const vector< M, float_t >& other ) const;
     vector< M, float_t > operator/( const vector< M, float_t >& other ) const;    
@@ -813,6 +819,7 @@ isEqualTo( const vector< M, float_t >& other, float_t tolerance ) const
 }
 
 
+
 template< size_t M, typename float_t >
 const vector< M, float_t >&
 vector< M, float_t >::operator=( const float_t* c_array )
@@ -820,6 +827,8 @@ vector< M, float_t >::operator=( const float_t* c_array )
     copyFrom1DimCArray( c_array );
     return *this;
 }
+
+
 
 template< size_t M, typename float_t >
 float_t
@@ -831,6 +840,32 @@ vector< M, float_t >::operator=( float_t filler_value )
     }
     return filler_value;
 }
+
+
+
+
+template< size_t M, typename float_t >
+const vector< M, float_t >&
+vector< M, float_t >::operator=( const vector< M, float_t >& other )
+{
+    memcpy( array, other.array, M * sizeof( float_t ) );
+    return *this;
+}
+
+
+
+// returns void to avoid 'silent' loss of precision when chaining
+template< size_t M, typename float_t >
+template< typename other_float_t >
+void
+vector< M, float_t >::operator=( const vector< M, other_float_t >& other )
+{
+    for( size_t index = 0; index < M; ++index )
+    {
+        array[ index ] = static_cast< float_t >( other.array[ index ] );
+    }
+}
+
 
 
 template< size_t M, typename float_t >

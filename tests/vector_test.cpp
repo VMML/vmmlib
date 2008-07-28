@@ -401,6 +401,7 @@ vector_test::run()
     }
     
     {
+        // TODO 
         vector< 3, float > v0( 1, 2, 3 );
         vector< 3, float > v1( -6, 5, -4 );
         vector< 3, float > v2( -2, 2, -1 );
@@ -408,6 +409,9 @@ vector_test::run()
         
         vector< 3, float > n;
         n.computeNormal( v0, v1, v2 );
+        
+        vector< 3, double > vd( 3, 2, 1 );
+        v0 = vd;
         
     }
 

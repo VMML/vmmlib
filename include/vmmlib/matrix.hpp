@@ -454,9 +454,9 @@ isEqualTo( const matrix< M, N, float_t >& other, float_t tolerance )
         for( size_t colIndex = 0; ok && colIndex < N; colIndex++) 
         {
             if ( at( rowIndex, colIndex ) > other.at( rowIndex, colIndex ) )
-                ok = abs( at( rowIndex, colIndex ) - other.at( rowIndex, colIndex ) ) < tolerance;
+                ok = fabs( at( rowIndex, colIndex ) - other.at( rowIndex, colIndex ) ) < tolerance;
             else
-                ok = abs( other.at( rowIndex, colIndex ) - at( rowIndex, colIndex ) ) < tolerance;
+                ok = fabs( other.at( rowIndex, colIndex ) - at( rowIndex, colIndex ) ) < tolerance;
         }
     }
     return ok;
@@ -1478,7 +1478,7 @@ matrix< 3, 3, double >::getInverse( matrix< 3, 3, double >& result, double toler
         + at( 0, 1 ) * result.at( 1, 0 )
         + at( 0, 2 ) * result.at( 2, 0 );
     
-    if ( abs( determinant ) <= tolerance )
+    if ( fabs( determinant ) <= tolerance )
         return false; // matrix is not invertible
 
     const double detinv = 1.0 / determinant;
@@ -1542,7 +1542,7 @@ matrix< 4, 4, double >::getInverse( matrix< 4, 4, double >& result, double toler
    const double determinant = array[0] * result.array[0] + array[4] * result.array[1] +
                          array[8] * result.array[2] + array[12] * result.array[3];
 
-   if( abs( determinant ) <= tolerance )
+   if( fabs( determinant ) <= tolerance )
         return false; // matrix is not invertible
 
    /* division: 16 multiplications, 1 division */

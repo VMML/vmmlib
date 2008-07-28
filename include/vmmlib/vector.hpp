@@ -70,6 +70,8 @@ public:
     void operator+=( const float_t other ); 
     void operator-=( const float_t other );
 
+    vector< M, float_t > operator-() const;
+
     // constructors 
     vector() {}; // std ctor - WARNING: NO INITIALIZATION
     vector( float_t a ); // sets all components to a;
@@ -551,6 +553,19 @@ vector< M, float_t >::operator-=( const float_t other )
     {
         at( index ) -= other;
     }
+}
+
+
+template< size_t M, typename float_t >
+vector< M, float_t >
+vector< M, float_t >::operator-() const
+{
+    vector< M, float_t > v;
+    for( size_t index = 0; index < M; ++index )
+    {
+        v.array[ index ] = -array[ index ];
+    }
+    return v;
 }
 
 

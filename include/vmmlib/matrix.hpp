@@ -114,6 +114,10 @@ public:
 	void getSubMatrix( matrix< Mret, Nret, float_t >& result, 
 		size_t rowOffset = 0, size_t colOffset = 0 ) const;
 
+	template< size_t Mret, size_t Nret >
+	void setSubMatrix( const matrix< Mret, Nret, float_t >& subMatrix, 
+		size_t rowOffset = 0, size_t colOffset = 0 );
+
     // copies a transposed version of *this into transposedMatrix
     void transposeTo( matrix<N, M, float_t >& transposedMatrix ) const;
     // slower ( one additional copy )
@@ -1304,6 +1308,25 @@ matrix< M, N, float_t >::getSubMatrix( matrix< Mret, Nret, float_t >& result,
 		{
 			result.at( rowIndex, colIndex ) 
 				= at( rowOffset + rowIndex, colOffset + colIndex );
+		}
+	}
+}
+
+
+
+template< size_t M, size_t N, typename float_t >
+template< size_t Mret, size_t Nret >
+void
+matrix< M, N, float_t >::
+setSubMatrix( const matrix< Mret, Nret, float_t >& subMatrix, 
+    size_t rowOffset, size_t colOffset )
+{
+	for( size_t rowIndex = 0; rowIndex < Mret; ++rowIndex )
+	{
+		for( size_t colIndex = 0; colIndex < Nret; ++colIndex )
+		{
+            at( rowOffset + rowIndex, colOffset + colIndex ) 
+                = subMatrix.at( rowIndex, colIndex );
 		}
 	}
 }

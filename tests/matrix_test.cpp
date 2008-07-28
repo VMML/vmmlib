@@ -558,6 +558,32 @@ matrix_test::run()
         }
     }
     
+    // set( .... )
+    {
+        bool ok = true;
+        
+        double mData[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
+        
+        matrix< 3, 3, double > m3x3;
+        matrix< 3, 3, double > m3x3C;
+        m3x3.set( 0, 1, 2, 3, 4, 5, 6, 7, 8 );
+        
+        m3x3C = mData;
+        if ( m3x3 != m3x3C )
+            ok = false;
+
+        matrix< 4, 4, double > m4x4;
+        matrix< 4, 4, double > m4x4C;
+        m4x4.set( 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 );
+        
+        m4x4C = mData;
+        if ( m4x4 != m4x4C )
+            ok = false;
+        
+        log( "set(...) for 3x3 and 4x4 matrices ", ok );
+    
+    }
+    
     
     {
         bool ok = true;

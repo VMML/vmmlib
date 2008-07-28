@@ -124,6 +124,21 @@ public:
     void operator=( float_t fill_value );
     void fill( float_t fill_value );
     
+    // only for 3x3 matrices
+    void set( 
+        float_t v00, float_t v01, float_t v02, 
+        float_t v10, float_t v11, float_t v12,
+        float_t v20, float_t v21, float_t v22 
+        );
+
+    // only  for 4x4 matrices
+    void set(
+        float_t v00, float_t v01, float_t v02, float_t v03,
+        float_t v10, float_t v11, float_t v12, float_t v13, 
+        float_t v20, float_t v21, float_t v22, float_t v23,
+        float_t v30, float_t v31, float_t v32, float_t v33 
+        );
+    
     /*
     *
     * WARNING: data_array[] must be at least of size M * N - otherwise CRASH!
@@ -1000,6 +1015,68 @@ fill( float_t fillValue )
 		}
     }
 }
+
+
+// only for 3x3 matrices
+template< size_t M, size_t N, typename float_t >
+void
+matrix< M, N, float_t >::set( 
+        float_t v00, float_t v01, float_t v02, 
+        float_t v10, float_t v11, float_t v12,
+        float_t v20, float_t v21, float_t v22 
+        )
+{
+    // this is a sfinae helper function that will make the compiler 
+    // throw an compile-time error if the matrix is not 3x3
+    details::matrix_is_3x3< M, N, matrix< M, N, float_t > >();
+
+    array[ 0 ] = v00;
+    array[ 1 ] = v10;
+    array[ 2 ] = v20;
+    array[ 3 ] = v01;
+    array[ 4 ] = v11;
+    array[ 5 ] = v21;
+    array[ 6 ] = v02;
+    array[ 7 ] = v12;
+    array[ 8 ] = v22;
+}
+
+
+
+// only  for 4x4 matrices
+template< size_t M, size_t N, typename float_t >
+void
+matrix< M, N, float_t >::set(
+        float_t v00, float_t v01, float_t v02, float_t v03,
+        float_t v10, float_t v11, float_t v12, float_t v13, 
+        float_t v20, float_t v21, float_t v22, float_t v23,
+        float_t v30, float_t v31, float_t v32, float_t v33 
+        )
+{
+    // this is a sfinae helper function that will make the compiler 
+    // throw an compile-time error if the matrix is not 4x4
+    details::matrix_is_4x4< M, N, matrix< M, N, float_t > >();
+
+    array[ 0 ] = v00;
+    array[ 1 ] = v10;
+    array[ 2 ] = v20;
+    array[ 3 ] = v30;
+    array[ 4 ] = v01;
+    array[ 5 ] = v11;
+    array[ 6 ] = v21;
+    array[ 7 ] = v31;
+    array[ 8 ] = v02;
+    array[ 9 ] = v12;
+    array[ 10 ] = v22;
+    array[ 11 ] = v32;
+    array[ 12 ] = v03;
+    array[ 13 ] = v13;
+    array[ 14 ] = v23;
+    array[ 15 ] = v33;
+
+}
+    
+
 
 
 template< size_t M, size_t N, typename float_t >

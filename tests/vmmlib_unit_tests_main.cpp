@@ -5,6 +5,8 @@
 #include "qr_decomposition_test.hpp"
 #include "svd_test.hpp"
 
+#include "frustum.hpp"
+#include "frustumCuller.hpp"
 
 #include <iostream>
 

@@ -28,10 +28,10 @@ struct is_square
 };
 
 
-template< size_t M, size_t N >
-struct is_4x4
+template< size_t M, size_t N, size_t Mwanted, size_t Nwanted >
+struct is_of_size
 {
-	enum { value = ( M == 4 && N == 4 ) };
+	enum { value = ( M == Mwanted && N == Nwanted ) };
 };
 
 
@@ -59,7 +59,16 @@ matrix_is_square( typename enable_if< is_square< M, N >, T >::type* dummy = 0 )
 
 template< size_t M, size_t N, typename T >
 inline void
-matrix_is_4x4( typename enable_if< is_4x4< M, N >, T >::type* dummy = 0 )
+matrix_is_3x3( typename enable_if< is_of_size< M, N, 3, 3 >, T >::type* dummy = 0 )
+{
+    // intentionally left empty.
+}
+
+
+
+template< size_t M, size_t N, typename T >
+inline void
+matrix_is_4x4( typename enable_if< is_of_size< M, N, 4, 4 >, T >::type* dummy = 0 )
 {
     // intentionally left empty.
 }

@@ -353,12 +353,19 @@ vector_test::run()
         if ( vec != vecCorrect )
             ok = false;
         
-        vector< 3 > v;
+        vector< 3 > v( 2, 3, 4 );
         // uncommenting the following line will throw a compiler error because the number 
         // of arguments to set is != M
         //v.set( 2, 3, 4, 5 );
+        
+        vecCorrect = vCData;
+        vec.set( v, 5 );
+        if ( vec != vecCorrect )
+            ok = false;
+        
 
         std::cout << vec << std::endl;
+        std::cout << v << std::endl;
         log( "set() functions", ok );
     }
 

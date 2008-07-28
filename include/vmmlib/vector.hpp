@@ -105,6 +105,19 @@ public:
     inline float_t distance( const vector< M, float_t >& other ) const;
     inline float_t distanceSquared( const vector< M, float_t >& other ) const;
     
+    // (*this) = normal of v0,v1,v2
+    void computeNormal( 
+        const vector< M, float_t >& v0, 
+        const vector< M, float_t >& v1, 
+        const vector< M, float_t >& v2
+        );
+        
+    // retval = normal of (this), v1, v2
+    vector< M, float_t > computeNormal(
+        const vector< M, float_t >& v1, 
+        const vector< M, float_t >& v2
+        ) const;
+    
     void copyFrom1DimCArray( const float_t* c_array );
 
     template< typename different_float_t >
@@ -725,6 +738,38 @@ vector< M, float_t >::distanceSquared( const vector< M, float_t >& other ) const
     vector< M, float_t > tmp( *this );
     tmp -= other;
     return tmp.lengthSquared();
+}
+
+
+
+template< size_t M, typename float_t >
+void
+vector< M, float_t >::computeNormal(
+    const vector< M, float_t >& aa, 
+    const vector< M, float_t >& bb, 
+    const vector< M, float_t >& cc
+    )
+{
+    vector< M, float_t > u,v;
+    // right hand system, CCW triangle
+    u = bb - aa;
+    v = cc - aa;
+    cross( u, v );
+    normalize();
+}
+
+
+
+template< size_t M, typename float_t >
+vector< M, float_t >
+vector< M, float_t >::computeNormal(
+    const vector< M, float_t >& bb, 
+    const vector< M, float_t >& cc
+    ) const
+{
+    vector< M, float_t > tmp;
+    tmp.computeNormal( *this, bb, cc);
+    return tmp;
 }
 
 

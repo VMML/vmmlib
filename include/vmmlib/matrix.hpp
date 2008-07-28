@@ -2120,6 +2120,8 @@ getTranslation() const
     translation.array[ 0 ] = array[ 12 ];
     translation.array[ 1 ] = array[ 13 ];
     translation.array[ 2 ] = array[ 14 ];
+    
+    return translation;
 }
 
 

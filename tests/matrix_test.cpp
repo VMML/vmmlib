@@ -285,6 +285,17 @@ matrix_test::run()
             result = mul0 * mul1;
             ok = result == correct_result;
         }
+        
+        if ( ok )
+        {
+            matrix< 2, 2 > id2;
+            id2.identity();
+            
+            if ( result * id2 != result )
+            {
+                ok = false;
+            }
+        }
 
 		log( "matrix multiplication ( multiply(), operator* )", ok );
 

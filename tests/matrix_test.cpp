@@ -557,7 +557,20 @@ matrix_test::run()
 			log_error( error.str() );
         }
     }
+    
+    
+    {
+        bool ok = true;
+        matrix< 3, 3, double > m;
+        m.identity(); // FIXME 
+        
+        if ( m.isPositiveDefinite() )
+        {
+        
+        }
+        
 
+    }
     
     return ok;
 }

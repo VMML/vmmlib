@@ -186,6 +186,8 @@ public:
 		size_t row_to_cut, 
 		size_t col_to_cut 
 		);
+    
+    bool isPositiveDefinite( const float_t limit = -1e12 ) const;
 		
     //
     // 4*4 matrices only
@@ -1171,6 +1173,8 @@ matrix< M, N, float_t >::getDeterminant() const
     details::matrix_is_square< M, N, matrix< M, N, float_t > >();
 
     throw VMMLIB_ERROR( "not implemented yet.", VMMLIB_HERE );
+    
+    return 0.0;
 }
 
 
@@ -1197,6 +1201,38 @@ matrix< 2, 2, double >::getDeterminant() const
         const double& d = at( 1, 1 );
         return a * d - b * c;
 }
+
+
+
+
+template<>
+inline float
+matrix< 3, 3, float >::getDeterminant() const
+{
+    const vector< 3, float > cof( 
+        at( 1,1 ) * at( 2,2 ) - at( 1,2 ) * at( 2,1 ),
+        at( 1,2 ) * at( 2,0 ) - at( 1,0 ) * at( 2,2 ),
+        at( 1,0 ) * at( 2,1 ) - at( 1,1 ) * at( 2,0 )
+        );
+ 
+    return at( 0,0 ) * cof( 0 ) + at( 0, 1 ) * cof( 1 ) + at( 0, 2 ) * cof( 2 );
+}
+
+
+
+template<>
+inline double
+matrix< 3, 3, double >::getDeterminant() const
+{
+    const vector< 3, double > cof( 
+        at( 1,1 ) * at( 2,2 ) - at( 1,2 ) * at( 2,1 ),
+        at( 1,2 ) * at( 2,0 ) - at( 1,0 ) * at( 2,2 ),
+        at( 1,0 ) * at( 2,1 ) - at( 1,1 ) * at( 2,0 ) 
+        );
+ 
+    return at( 0,0 ) * cof( 0 ) + at( 0, 1 ) * cof( 1 ) + at( 0, 2 ) * cof( 2 );
+}
+
 
 
 
@@ -1458,6 +1494,40 @@ getMinor(
 	}
 	
 	return minor_.getDeterminant();
+}
+
+
+
+template< size_t M, size_t N, typename float_t >
+bool
+matrix< M, N, float_t >::
+isPositiveDefinite( const float_t limit ) const
+{
+    // this is a sfinae helper function that will make the compiler 
+    // throw an compile-time error if the matrix is not square
+    details::matrix_is_square< M, N, matrix< M, N, float_t > >();
+
+    bool isPositiveDef = at( 0, 0 ) >= limit;
+
+    // FIXME - atm only up to M = N = 3
+
+    // sylvester criterion
+    if ( isPositiveDef && M > 1 )
+    {
+        matrix< 2, 2, float_t > m;
+        getSubMatrix< 2, 2 >( m, 0, 0 );
+        isPositiveDef = m.getDeterminant() >= limit;
+    }
+
+    if ( isPositiveDef && M > 2 )
+    {
+        matrix< 3, 3, float_t > m;
+        getSubMatrix< 3, 3 >( m, 0, 0 );
+        isPositiveDef = m.getDeterminant() >= limit;
+    }
+    
+    return isPositiveDef;
+
 }
 
 

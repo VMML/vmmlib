@@ -134,6 +134,8 @@ public:
     template< typename different_float_t >
     void copyFrom1DimCArray( const different_float_t* c_array );
     
+    size_t getM() const;
+    
     friend std::ostream& operator << ( std::ostream& os, 
         const vector< M, float_t >& vector_ )
     {
@@ -930,6 +932,16 @@ vector< M, float_t >::copyFrom1DimCArray( const different_float_t* c_array )
         at( index ) = static_cast< float_t >( c_array[ index ] );
     }
 }
+
+
+
+template< size_t M, typename float_t >
+size_t
+vector< M, float_t >::getM() const
+{
+    return M;
+}
+
 
 } // namespace vmml
 

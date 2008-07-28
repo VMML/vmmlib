@@ -79,12 +79,15 @@ public:
     static const frustum DEFAULT;
 };
 
-    
+
+#if 0
 typedef frustum< float >  Frustumf;
 typedef frustum< double > Frustumd;
 
 typedef frustum< float >  frustumf;
 typedef frustum< double > frustumd;
+#endif
+
 
 } // namespace vmml
 

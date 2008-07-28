@@ -112,7 +112,7 @@ public:
 
 	template< size_t Mret, size_t Nret >
 	void getSubMatrix( matrix< Mret, Nret, float_t >& result, 
-		size_t rowOffset, size_t colOffset ) const;
+		size_t rowOffset = 0, size_t colOffset = 0 ) const;
 
     // copies a transposed version of *this into transposedMatrix
     void transposeTo( matrix<N, M, float_t >& transposedMatrix ) const;

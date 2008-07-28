@@ -42,8 +42,11 @@ private:
 
 }; // class frustumCuller
 
+#if 0
 typedef frustumCuller< float >  FrustumCullerf;
 typedef frustumCuller< double > FrustumCullerd;
+#endif
+
 
 } // namespace vmml
 

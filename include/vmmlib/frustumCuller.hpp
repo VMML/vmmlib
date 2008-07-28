@@ -11,19 +11,12 @@
 
 #include <vmmlib/vector.hpp>
 #include <vmmlib/matrix.hpp>
+#include <vmmlib/visibility.hpp>
 
 // - declaration -
 
 namespace vmml
 {
-
-enum Visibility
-{
-    VISIBILITY_NONE     = 0,
-    VISIBILITY_PARTIAL  = 1,
-    VISIBILITY_FULL     = 2
-};
-
 
 /** Helper class for OpenGL view frustum culling. */
 template< class T > 

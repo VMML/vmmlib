@@ -10,6 +10,7 @@
 #define __VMML__FRUSTUM_CULLER__H__
 
 #include <vmmlib/vector4.h>
+#include <vmmlib/visibility.h>
 
 // - declaration -
 
@@ -17,12 +18,6 @@ namespace vmml
 {
     template< typename T > class Matrix4;
 
-enum Visibility
-{
-    VISIBILITY_NONE     = 0,
-    VISIBILITY_PARTIAL  = 1,
-    VISIBILITY_FULL     = 2
-};
 
 /** Helper class for OpenGL view frustum culling. */
 template< class T > 

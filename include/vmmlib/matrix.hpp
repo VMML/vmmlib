@@ -1,16 +1,18 @@
 #ifndef __VMML__MATRIX__HPP__
 #define __VMML__MATRIX__HPP__
 
-#include <iostream>
-#include <iomanip>
-#include <vector>
-
 #include <vmmlib/vmmlib_config.hpp>
 
 #include <vmmlib/exception.hpp>
 #include <vmmlib/vector.hpp>
 #include <vmmlib/matrix_functors.hpp>
 #include <vmmlib/details.hpp>
+#include <vmmlib/stringUtils.h>
+
+#include <iostream>
+#include <iomanip>
+#include <vector>
+#include <string>
 
 namespace vmml
 {
@@ -127,6 +129,9 @@ public:
 	// sets all elements to fill_value
     void operator=( float_t fill_value );
     void fill( float_t fill_value );
+    
+    bool set( const std::vector< std::string >& values );
+    bool set( const std::string& values, char delimiter );
     
     // only for 3x3 matrices
     void set( 
@@ -1034,6 +1039,51 @@ fill( float_t fillValue )
 		}
     }
 }
+
+
+
+// create matrix from a string containing a whitespace (or parameter 
+// 'delimiter' ) delimited list of values.
+// returns false if failed, true if it (seems to have) succeeded.
+// PRE: string must contain at least 16 values, delimited by char delimiter.
+template< size_t M, size_t N, typename float_t >
+bool
+matrix< M, N, float_t >::set( const std::string& values, char delimiter )
+{
+	std::vector< std::string > tokens;
+	stringUtils::split( values, tokens, delimiter );
+	return set( tokens );
+}
+
+
+
+// create matrix from a string containing a whitespace (or parameter 
+// 'delimiter' ) delimited list of values.
+// returns false if failed, true if it (seems to have) succeeded.
+// PRE: vector must contain  at least M * N strings with one value each
+template< size_t M, size_t N, typename float_t >
+bool
+matrix< M, N, float_t >::set( const std::vector< std::string >& values )
+{
+	bool ok = true;
+	
+	if ( values.size() < M * N )
+		return false;
+
+	std::vector< std::string >::const_iterator it 		= values.begin();
+	
+	for( size_t row = 0; row < M; ++row )
+	{
+		for( size_t col = 0; ok && col < N; ++col, ++it )
+		{
+			//m[ col ][ row ] = from_string< T >( *it );
+			ok = stringUtils::fromString< float_t >( *it, at( row, col ) );
+		}
+	}
+	
+	return ok;
+}
+
 
 
 // only for 3x3 matrices

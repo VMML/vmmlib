@@ -90,7 +90,7 @@
 		988F58440C22C09C0005AC92 /* Vector4Test.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Vector4Test.cpp; path = tests/Vector4Test.cpp; sourceTree = "<group>"; };
 		988F58450C22C09C0005AC92 /* Vector4Test.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Vector4Test.h; path = tests/Vector4Test.h; sourceTree = "<group>"; };
 		988F58780C22C1B90005AC92 /* VMMLibTest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = VMMLibTest; sourceTree = BUILT_PRODUCTS_DIR; };
-		988F59AC0C22C9A90005AC92 /* VMMLib-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "VMMLib-Info.plist"; sourceTree = "<group>"; };
+		988F59AC0C22C9A90005AC92 /* VMMLib-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "VMMLib-Info.plist"; sourceTree = "<group>"; };
 		988F5A100C22CAFE0005AC92 /* README */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
 		98B7A2490E24C85C0064264E /* vmmlib_performance_tests */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = vmmlib_performance_tests; sourceTree = BUILT_PRODUCTS_DIR; };
 		98B7A2500E24C8E70064264E /* vmmlib_unit_tests_main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = vmmlib_unit_tests_main.cpp; path = tests/vmmlib_unit_tests_main.cpp; sourceTree = "<group>"; };

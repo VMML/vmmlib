@@ -1,6 +1,7 @@
 #ifndef __VMMLIB__EXCEPTION__HPP__
 #define __VMMLIB__EXCEPTION__HPP__
 
+#include <iostream>
 #include <stdexcept>
 #include <string>
 #include <sstream>

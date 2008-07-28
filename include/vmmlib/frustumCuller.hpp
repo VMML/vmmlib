@@ -27,12 +27,12 @@ enum Visibility
 
 /** Helper class for OpenGL view frustum culling. */
 template< class T > 
-class FrustumCuller
+class frustumCuller
 {
 public:
     // contructors
-    FrustumCuller() {}// warning: components NOT initialised ( for performance )
-    ~FrustumCuller(){}
+    frustumCuller() {}// warning: components NOT initialised ( for performance )
+    ~frustumCuller(){}
 
     void setup( const matrix< 4, 4, T >& projModelView );
     Visibility testSphere( const vector< 4, T >& sphere );
@@ -49,8 +49,8 @@ private:
 
 }; // class frustumCuller
 
-typedef FrustumCuller< float >  FrustumCullerf;
-typedef FrustumCuller< double > FrustumCullerd;
+typedef frustumCuller< float >  FrustumCullerf;
+typedef frustumCuller< double > FrustumCullerd;
 
 } // namespace vmml
 
@@ -65,7 +65,7 @@ namespace vmml
  * matrix. The projection matrix should contain the viewing transformation.
  */
 template < class T > 
-void FrustumCuller< T >::setup( const matrix< 4, 4, T >& projModelView )
+void frustumCuller< T >::setup( const matrix< 4, 4, T >& projModelView )
 {
     // See http://www2.ravensoft.com/users/ggribb/plane%20extraction.pdf pp.5
     
@@ -94,7 +94,7 @@ void FrustumCuller< T >::setup( const matrix< 4, 4, T >& projModelView )
 
 template < class T > 
 inline void
-FrustumCuller< T >::_normalizePlane( vector< 4, T >& plane ) const
+frustumCuller< T >::_normalizePlane( vector< 4, T >& plane ) const
 {
     const vector< 3, T >& v3 = reinterpret_cast< const vector< 3, T >& >( plane );
     const T lInv = 1.0 / v3.length();
@@ -107,7 +107,7 @@ FrustumCuller< T >::_normalizePlane( vector< 4, T >& plane ) const
 
 
 template < class T > 
-Visibility FrustumCuller< T >::testSphere( const vector< 4, T >& sphere )
+Visibility frustumCuller< T >::testSphere( const vector< 4, T >& sphere )
 {
     Visibility visibility = VISIBILITY_FULL;
 

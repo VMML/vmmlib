@@ -17,7 +17,7 @@ namespace vmml
 {
 
 template< class T > 
-class Frustum
+class frustum
 {
 public:
     union
@@ -35,15 +35,15 @@ public:
     };
             
     // contructors
-    Frustum(); // warning: components NOT initialised ( for performance )
-    Frustum( const T left, const T right, const T bottom, const T top,
+    frustum(); // warning: components NOT initialised ( for performance )
+    frustum( const T left, const T right, const T bottom, const T top,
              const T nearPlane, const T farPlane );
         
     //the pointer 'values' must be a valid 6 component c array of the resp. type
-    Frustum( const float* values );
-    Frustum( const double* values );
+    frustum( const float* values );
+    frustum( const double* values );
 
-    ~Frustum();
+    ~frustum();
 
     void set( const T _left, const T _right, const T _bottom, 
         const T _top, const T _near, const T _far );
@@ -58,33 +58,33 @@ public:
     // other parameters in a way that the 'perspective pyramid' stays the same.
     void       adjustNear( const T nearPlane );
 
-    friend std::ostream& operator << ( std::ostream& os, const Frustum& frustum)
+    friend std::ostream& operator << ( std::ostream& os, const frustum& frustum_ )
     {
         const std::ios::fmtflags flags = os.flags();
         const int                prec  = os.precision();
 
         os.setf( std::ios::right, std::ios::adjustfield );
         os.precision( 5 );
-        os << "[" << std::setw(10) << frustum.left << " " 
-           << std::setw(10) << frustum.right  << " " 
-           << std::setw(10) << frustum.bottom << " " 
-           << std::setw(10) << frustum.top    << " " 
-           << std::setw(10) << frustum.nearPlane   << " " 
-           << std::setw(10) << frustum.farPlane    << "]";
+        os << "[" << std::setw(10) << frustum_.left << " " 
+           << std::setw(10) << frustum_.right  << " " 
+           << std::setw(10) << frustum_.bottom << " " 
+           << std::setw(10) << frustum_.top    << " " 
+           << std::setw(10) << frustum_.nearPlane   << " " 
+           << std::setw(10) << frustum_.farPlane    << "]";
         os.precision( prec );
         os.setf( flags );
         return os;
     };  
 
-    static const Frustum DEFAULT;
+    static const frustum DEFAULT;
 };
 
     
-typedef Frustum< float >  Frustumf;
-typedef Frustum< double > Frustumd;
+typedef frustum< float >  Frustumf;
+typedef frustum< double > Frustumd;
 
-typedef Frustum< float >  frustumf;
-typedef Frustum< double > frustumd;
+typedef frustum< float >  frustumf;
+typedef frustum< double > frustumd;
 
 } // namespace vmml
 
@@ -94,18 +94,18 @@ namespace vmml
 {
 
 template< typename T > 
-const Frustum< T > Frustum< T >::DEFAULT( -1.0, 1.0, -1.0, 1.0, 0.1, 100.0 );
+const frustum< T > frustum< T >::DEFAULT( -1.0, 1.0, -1.0, 1.0, 0.1, 100.0 );
 
 
 
 template < class T > 
-Frustum< T >::Frustum() 
+frustum< T >::frustum() 
 {} 
 
 
 
 template < class T > 
-Frustum<T>::Frustum( const T _left, const T _right, const T _bottom, 
+frustum<T>::frustum( const T _left, const T _right, const T _bottom, 
                      const T _top, const T _near, const T _far )
     : left( _left ),
       right( _right ),
@@ -118,10 +118,10 @@ Frustum<T>::Frustum( const T _left, const T _right, const T _bottom,
 
 
 template < class T > 
-Frustum< T >::Frustum( const float* values )
+frustum< T >::frustum( const float* values )
 {
     assert( values && 
-            "Frustum: Nullpointer argument as source for initialisation!" );
+            "frustum: Nullpointer argument as source for initialisation!" );
     left   = static_cast< T > ( values[0] );
     right  = static_cast< T > ( values[1] );
     bottom = static_cast< T > ( values[2] );
@@ -133,10 +133,10 @@ Frustum< T >::Frustum( const float* values )
 
 
 template < class T > 
-Frustum< T >::Frustum( const double* values )
+frustum< T >::frustum( const double* values )
 {
     assert( values &&
-            "Frustum: Nullpointer argument as source for initialisation!" );
+            "frustum: Nullpointer argument as source for initialisation!" );
     left   = static_cast< T > ( values[0] );
     right  = static_cast< T > ( values[1] );
     bottom = static_cast< T > ( values[2] );
@@ -148,14 +148,14 @@ Frustum< T >::Frustum( const double* values )
 
 
 template < class T > 
-Frustum< T >::~Frustum()
+frustum< T >::~frustum()
 {}
 
 
 
 template < class T > 
 void 
-Frustum< T >::set( const T _left, const T _right, const T _bottom, 
+frustum< T >::set( const T _left, const T _right, const T _bottom, 
     const T _top, const T _near, const T _far )
 {
     left = _left;
@@ -171,7 +171,7 @@ Frustum< T >::set( const T _left, const T _right, const T _bottom,
 // other parameters in a way that the 'perspective pyramid' stays the same.
 template < class T > 
 void
-Frustum<T>::adjustNear( const T newNear )
+frustum<T>::adjustNear( const T newNear )
 {
 	if( newNear == nearPlane )
 		return;
@@ -189,7 +189,7 @@ Frustum<T>::adjustNear( const T newNear )
 // set the frustum using the same parameters as gluPerspective. 
 template < class T > 
 void
-Frustum<T>::setPerspective( T fieldOfViewY, T aspectRatio, T nearPlane_, T farPlane_ )
+frustum<T>::setPerspective( T fieldOfViewY, T aspectRatio, T nearPlane_, T farPlane_ )
 {
     nearPlane   = nearPlane_;
     farPlane    = farPlane_;
@@ -205,7 +205,7 @@ Frustum<T>::setPerspective( T fieldOfViewY, T aspectRatio, T nearPlane_, T farPl
 
 template < class T > 
 matrix< 4, 4, T >
-Frustum<T>::computeMatrix() const
+frustum<T>::computeMatrix() const
 {
     matrix< 4, 4, T > M;
 
@@ -221,7 +221,7 @@ Frustum<T>::computeMatrix() const
 
     M( 2,0 ) = 0.0;
     M( 2,1 ) = 0.0;
-    // NOTE: Some glFrustum man pages say wrongly '(far + near) / (far - near)'
+    // NOTE: Some glfrustum man pages say wrongly '(far + near) / (far - near)'
     M( 2,2 ) = -(farPlane + nearPlane) / (farPlane - nearPlane);
     M( 2,3 ) = -2.0 * farPlane * nearPlane / (farPlane - nearPlane);
 
@@ -237,7 +237,7 @@ Frustum<T>::computeMatrix() const
 
 template < typename T > 
 matrix< 4, 4, T >
-Frustum< T >::computeOrthoMatrix() const
+frustum< T >::computeOrthoMatrix() const
 {
     matrix< 4, 4, T > M;
 

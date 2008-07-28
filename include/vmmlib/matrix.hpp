@@ -49,7 +49,7 @@ public:
 
     // returned matrix_mxm = (this) matrix * other matrix_mxm;
     // only for square matrices ( M == N )
-    matrix< M, M, float_t > operator*( matrix< M, M, float_t >& other ); 
+    matrix< M, N, float_t > operator*( matrix< M, N, float_t >& other ); 
 
     // returned matrix_mxp = (this) matrix * other matrix_nxp;
     // use multiply(...) for performance reasons, it avoids a copy of the 
@@ -513,14 +513,14 @@ matrix< M, N, float_t >::multiply(
 
 
 template< size_t M, size_t N, typename float_t >
-matrix< M, M, float_t >
-matrix< M, N, float_t >::operator*( matrix< M, M, float_t >& other )
+matrix< M, N, float_t >
+matrix< M, N, float_t >::operator*( matrix< M, N, float_t >& other )
 {
     // this is a sfinae helper function that will make the compiler 
     // throw an compile-time error if the matrix is not square
     details::matrix_is_square< M, N, matrix< M, N, float_t > >();
 
-    matrix< M, M, float_t > result;
+    matrix< M, N, float_t > result;
     result.multiply( *this, other );
     return result;
 }

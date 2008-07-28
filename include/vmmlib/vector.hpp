@@ -72,6 +72,8 @@ public:
 
     vector< M, float_t > operator-() const;
 
+    void invert();
+
     // constructors 
     vector() {}; // std ctor - WARNING: NO INITIALIZATION
     vector( float_t a ); // sets all components to a;
@@ -556,6 +558,7 @@ vector< M, float_t >::operator-=( const float_t other )
 }
 
 
+
 template< size_t M, typename float_t >
 vector< M, float_t >
 vector< M, float_t >::operator-() const
@@ -566,6 +569,18 @@ vector< M, float_t >::operator-() const
         v.array[ index ] = -array[ index ];
     }
     return v;
+}
+
+
+
+template< size_t M, typename float_t >
+void
+vector< M, float_t >::invert()
+{
+    for( size_t index = 0; index < M; ++index )
+    {
+        array[ index ] = -array[ index ];
+    }
 }
 
 

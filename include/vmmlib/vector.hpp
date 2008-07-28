@@ -82,6 +82,7 @@ public:
     vector( float_t x, float_t y, float_t z, float_t w );
     
     void set( float_t a ); // sets all components to a;
+    void set( const vector< M-1, float_t >& v, float_t a );
 
     // WARNING: the following set functions will not work for vectors where
     // M != number of arguments. Instead, the compiler will throw an error such as
@@ -215,6 +216,7 @@ vector< M, float_t >::vector( float_t x, float_t y, float_t z, float_t w )
 }
 
 
+
 template< size_t M, typename float_t >
 void
 vector< M, float_t >::set( float_t a )
@@ -225,6 +227,17 @@ vector< M, float_t >::set( float_t a )
     }
 
 }
+
+
+
+template< size_t M, typename float_t >
+void
+vector< M, float_t >::set( const vector< M-1, float_t >& v, float_t a )
+{
+    memcpy( array, v.array, sizeof( float_t ) * (M-1) );
+    at( M-1 ) = a;
+}
+
 
 
 

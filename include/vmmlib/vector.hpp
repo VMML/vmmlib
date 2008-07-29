@@ -915,7 +915,7 @@ vector< M, float_t >::getSphereCenter() const
 // plane: normal xyz, distance w
 template< size_t M, typename float_t >
 inline float_t
-vector< M, float_t >::getDistanceToPlane( const vector< 3, float_t >::& point ) const
+vector< M, float_t >::getDistanceToPlane( const vector< 3, float_t >& point ) const
 {
     details::number_of_parameters_must_be_M< 4, M, vector< M, float_t > >();
 
@@ -926,16 +926,14 @@ vector< M, float_t >::getDistanceToPlane( const vector< 3, float_t >::& point ) 
 
 
 // plane: normal xyz, distance w
+template< size_t M, typename float_t >
 vector< 3, float_t >
 vector< M, float_t >::projectPointOntoPlane( const vector< 3, float_t >& point ) const
 {
     details::number_of_parameters_must_be_M< 4, M, vector< M, float_t > >();
 
-	const Vector3< T >& normal_ = *reinterpret_cast< const Vector3< T >* >( &x );
-	return point - ( normal_ * getDistanceToPlane( point ) );
-
     const vector< 3, float_t >& normal = reinterpret_cast< const vector< 3, float_t >& >( *this );
-    return point - ( normal_ * getDistanceToPlane( point ) );
+    return point - ( normal * getDistanceToPlane( point ) );
 }
 
 

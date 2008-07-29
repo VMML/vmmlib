@@ -131,6 +131,24 @@ public:
         const vector< M, float_t >& v2
         ) const;
     
+    
+	// sphere functions - sphere layout: center xyz, radius w
+	inline vector< 3, float_t > projectPointOntoSphere( const vector< 3, float_t >& point ) const;
+	// returns a negative distance if the point lies in the sphere
+	inline float_t getDistanceToSphere( const vector< 3, float_t >& point ) const;
+
+    inline vector< 3, float_t >& getSphereCenter();
+    inline const vector< 3, float_t >& getSphereCenter() const;
+    
+
+	// plane functions - plane layout; normal xyz, distance w
+    inline vector< 3, float_t > projectPointOntoPlane( const vector< 3, float_t >& point ) const;
+	inline float_t getDistanceToPlane( const vector< 3, float_t >& point ) const;
+    // this normalizes the vector3 consisting of the first three 
+    // coordinates, and leaves the fourth as is.
+    void normalizePlane();
+    
+    
     void copyFrom1DimCArray( const float_t* c_array );
 
     template< typename different_float_t >
@@ -836,6 +854,88 @@ vector< M, float_t >::computeNormal(
     vector< M, float_t > tmp;
     tmp.computeNormal( *this, bb, cc);
     return tmp;
+}
+
+
+
+// sphere layout: center xyz, radius w
+template< size_t M, typename float_t >
+inline vector< 3, float_t >
+vector< M, float_t >::
+projectPointOntoSphere( const vector< 3, float_t >& point ) const
+{
+    details::number_of_parameters_must_be_M< 4, M, vector< M, float_t > >();
+
+    const vector< 3, float_t >& center = reinterpret_cast< const vector< 3, float_t >& >( *this );
+    vector< 3, float_t > projPoint( point );
+    projPoint -= center;
+    projPoint.normalize();
+    projPoint *= w();
+    return center + projPoint;
+}
+
+
+
+// sphere layout: center xyz, radius w
+template< size_t M, typename float_t >
+inline float_t
+vector< M, float_t >::
+getDistanceToSphere( const vector< 3, float_t >& point ) const
+{
+    details::number_of_parameters_must_be_M< 4, M, vector< M, float_t > >();
+
+    const vector< 3, float_t >& center_ = reinterpret_cast< const vector< 3, float_t >& >( *this );
+	return ( point - center_ ).length() - w();
+}
+
+
+
+// sphere layout: center xyz, radius w
+template< size_t M, typename float_t >
+inline vector< 3, float_t >&
+vector< M, float_t >::getSphereCenter()
+{
+    details::number_of_parameters_must_be_M< 4, M, vector< M, float_t > >();
+    return reinterpret_cast< vector< 3, float_t >& >( *this );
+}
+
+
+
+// sphere layout: center xyz, radius w
+template< size_t M, typename float_t >
+inline const vector< 3, float_t >&
+vector< M, float_t >::getSphereCenter() const
+{
+    details::number_of_parameters_must_be_M< 4, M, vector< M, float_t > >();
+    return reinterpret_cast< vector< 3, float_t >& >( *this );
+}
+
+
+
+// plane: normal xyz, distance w
+template< size_t M, typename float_t >
+inline float_t
+vector< M, float_t >::getDistanceToPlane( const vector< 3, float_t >::& point ) const
+{
+    details::number_of_parameters_must_be_M< 4, M, vector< M, float_t > >();
+
+    const vector< 3, float_t >& normal = reinterpret_cast< const vector< 3, float_t >& >( *this );
+    return normal.dot( point ) + w();
+}
+
+
+
+// plane: normal xyz, distance w
+vector< 3, float_t >
+vector< M, float_t >::projectPointOntoPlane( const vector< 3, float_t >& point ) const
+{
+    details::number_of_parameters_must_be_M< 4, M, vector< M, float_t > >();
+
+	const Vector3< T >& normal_ = *reinterpret_cast< const Vector3< T >* >( &x );
+	return point - ( normal_ * getDistanceToPlane( point ) );
+
+    const vector< 3, float_t >& normal = reinterpret_cast< const vector< 3, float_t >& >( *this );
+    return point - ( normal_ * getDistanceToPlane( point ) );
 }
 
 

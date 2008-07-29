@@ -14,6 +14,7 @@
 		98244A420E3F5AEE0018E13A /* lapack_linear_least_squares_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98244A3D0E3F5AEE0018E13A /* lapack_linear_least_squares_test.cpp */; };
 		98244A430E3F5AEE0018E13A /* lapack_svd_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98244A3B0E3F5AEE0018E13A /* lapack_svd_test.cpp */; };
 		98244A440E3F5AEE0018E13A /* lapack_linear_least_squares_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98244A3D0E3F5AEE0018E13A /* lapack_linear_least_squares_test.cpp */; };
+		98244C010E3F76930018E13A /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9839FE0E0E2BB16D00A16721 /* Accelerate.framework */; };
 		9839FA240E2B5BBB00A16721 /* svd_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9839FA220E2B5BBB00A16721 /* svd_test.cpp */; };
 		9839FA250E2B5BBB00A16721 /* svd_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9839FA220E2B5BBB00A16721 /* svd_test.cpp */; };
 		9839FE440E2BB25200A16721 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9839FE0E0E2BB16D00A16721 /* Accelerate.framework */; };
@@ -164,6 +165,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				98244C010E3F76930018E13A /* Accelerate.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

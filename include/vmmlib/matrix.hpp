@@ -1058,7 +1058,7 @@ bool
 matrix< M, N, float_t >::set( const std::string& values, char delimiter )
 {
 	std::vector< std::string > tokens;
-	stringUtils::split( values, tokens, delimiter );
+	stringUtil::split( values, tokens, delimiter );
 	return set( tokens );
 }
 
@@ -1084,7 +1084,7 @@ matrix< M, N, float_t >::set( const std::vector< std::string >& values )
 		for( size_t col = 0; ok && col < N; ++col, ++it )
 		{
 			//m[ col ][ row ] = from_string< T >( *it );
-			ok = stringUtils::fromString< float_t >( *it, at( row, col ) );
+			ok = stringUtil::fromString< float_t >( *it, at( row, col ) );
 		}
 	}
 	
@@ -2165,7 +2165,7 @@ getString( std::string& result, const std::string& delimiter ) const
 	{
 		for( size_t col = 0; ok && col < N; ++col )
 		{
-			ok = stringUtils::to_string< float_t >( at( row, col ), tmp );
+			ok = stringUtil::toString< float_t >( at( row, col ), tmp );
 			result += tmp;
 			result += delimiter;
 		}

@@ -42,7 +42,7 @@ inline double toDouble( const std::string& source )
 *
 */
 template < typename T >
-inline bool to_string( T source, std::string& target )
+inline bool toString( T source, std::string& target )
 {
     std::stringstream ss;
     ss.precision( 8 * sizeof( void* ) - 1 );

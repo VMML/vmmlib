@@ -606,6 +606,10 @@ matrix_test::run()
         
         }
         
+        std::string data;
+        m.getString( data );
+        //std::cout << data << std::endl;
+        
 
     }
     

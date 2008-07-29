@@ -243,6 +243,10 @@ public:
     vector< 3, float_t > getTranslation() const;
         
 
+	// writes the values into param result, delimited by param 'delimiter'.
+	// returns false if it failed, true if it (seems to have) succeeded.
+	bool getString( std::string& result, const std::string& delimiter = " " ) const;
+
 	// legacy/compatibility accessor
 	struct row_accessor
 	{
@@ -2145,6 +2149,29 @@ getTranslation() const
     translation.array[ 2 ] = array[ 14 ];
     
     return translation;
+}
+
+
+
+// writes the values into param result, delimited by param 'delimiter'.
+// returns false if it failed, true if it (seems to have) succeeded.
+template< size_t M, size_t N, typename float_t >
+bool
+matrix< M, N, float_t >::
+getString( std::string& result, const std::string& delimiter ) const
+{
+	std::string tmp;
+	bool ok = true;
+	for( size_t row = 0; row < M; ++row )
+	{
+		for( size_t col = 0; ok && col < N; ++col )
+		{
+			ok = stringUtils::to_string< float_t >( at( row, col ), tmp );
+			result += tmp;
+			result += delimiter;
+		}
+	}
+	return ok;
 }
 
 

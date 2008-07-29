@@ -2,12 +2,11 @@
 #define __VMML__MATRIX__HPP__
 
 #include <vmmlib/vmmlib_config.hpp>
-
 #include <vmmlib/exception.hpp>
 #include <vmmlib/vector.hpp>
-#include <vmmlib/matrix_functors.hpp>
 #include <vmmlib/details.hpp>
-#include <vmmlib/stringUtils.h>
+#include <vmmlib/stringUtils.hpp>
+#include <vmmlib/matrix_functors.hpp>
 
 #include <iostream>
 #include <iomanip>

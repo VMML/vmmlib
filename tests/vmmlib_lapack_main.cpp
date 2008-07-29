@@ -1,5 +1,5 @@
 
-#include <vmmlib/vmmlib_lapack.hpp>
+#include <vmmlib/lapack.hpp>
 
 #include <iostream>
 

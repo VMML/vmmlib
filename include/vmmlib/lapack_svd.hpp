@@ -129,6 +129,8 @@ svd_call( svd_params< double >& p )
 
 } // namespace lapack
 
+
+
 template< size_t M, size_t N, typename float_t >
 struct lapack_svd
 {
@@ -184,11 +186,14 @@ lapack_svd< M, N, float_t >::lapack_svd()
 }
 
 
+
 template< size_t M, size_t N, typename float_t >
 lapack_svd< M, N, float_t >::~lapack_svd()
 {
     delete[] p.work; 
 }
+
+
 
 template< size_t M, size_t N, typename float_t >
 void

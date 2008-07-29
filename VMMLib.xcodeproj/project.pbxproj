@@ -7,6 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		98244A330E3F5A5E0018E13A /* unit_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98FE7DCD0E224EC400B1E17F /* unit_test.cpp */; };
+		98244A3F0E3F5AEE0018E13A /* lapack_svd_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98244A3B0E3F5AEE0018E13A /* lapack_svd_test.cpp */; };
+		98244A400E3F5AEE0018E13A /* lapack_linear_least_squares_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98244A3D0E3F5AEE0018E13A /* lapack_linear_least_squares_test.cpp */; };
+		98244A410E3F5AEE0018E13A /* lapack_svd_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98244A3B0E3F5AEE0018E13A /* lapack_svd_test.cpp */; };
+		98244A420E3F5AEE0018E13A /* lapack_linear_least_squares_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98244A3D0E3F5AEE0018E13A /* lapack_linear_least_squares_test.cpp */; };
+		98244A430E3F5AEE0018E13A /* lapack_svd_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98244A3B0E3F5AEE0018E13A /* lapack_svd_test.cpp */; };
+		98244A440E3F5AEE0018E13A /* lapack_linear_least_squares_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98244A3D0E3F5AEE0018E13A /* lapack_linear_least_squares_test.cpp */; };
 		9839FA240E2B5BBB00A16721 /* svd_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9839FA220E2B5BBB00A16721 /* svd_test.cpp */; };
 		9839FA250E2B5BBB00A16721 /* svd_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9839FA220E2B5BBB00A16721 /* svd_test.cpp */; };
 		9839FE440E2BB25200A16721 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9839FE0E0E2BB16D00A16721 /* Accelerate.framework */; };
@@ -42,15 +49,20 @@
 /* Begin PBXFileReference section */
 		089C1667FE841158C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		8DC2EF5A0486A6940098B216 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		9839005E0E2BD4DE00A16721 /* vmmlib_lapack_linear_least_squares.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = vmmlib_lapack_linear_least_squares.hpp; path = include/vmmlib/vmmlib_lapack_linear_least_squares.hpp; sourceTree = "<group>"; };
+		982449FB0E3F584A0018E13A /* lapack_svd.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = lapack_svd.hpp; path = include/vmmlib/lapack_svd.hpp; sourceTree = "<group>"; };
+		982449FC0E3F584A0018E13A /* lapack_linear_least_squares.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = lapack_linear_least_squares.hpp; path = include/vmmlib/lapack_linear_least_squares.hpp; sourceTree = "<group>"; };
+		982449FD0E3F584A0018E13A /* lapack.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = lapack.hpp; path = include/vmmlib/lapack.hpp; sourceTree = "<group>"; };
+		98244A310E3F59CD0018E13A /* stringUtils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = stringUtils.hpp; path = include/vmmlib/stringUtils.hpp; sourceTree = "<group>"; };
+		98244A3B0E3F5AEE0018E13A /* lapack_svd_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lapack_svd_test.cpp; path = tests/lapack_svd_test.cpp; sourceTree = "<group>"; };
+		98244A3C0E3F5AEE0018E13A /* lapack_svd_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = lapack_svd_test.hpp; path = tests/lapack_svd_test.hpp; sourceTree = "<group>"; };
+		98244A3D0E3F5AEE0018E13A /* lapack_linear_least_squares_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lapack_linear_least_squares_test.cpp; path = tests/lapack_linear_least_squares_test.cpp; sourceTree = "<group>"; };
+		98244A3E0E3F5AEE0018E13A /* lapack_linear_least_squares_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = lapack_linear_least_squares_test.hpp; path = tests/lapack_linear_least_squares_test.hpp; sourceTree = "<group>"; };
 		9839FA1D0E2B5A6C00A16721 /* svd.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = svd.hpp; path = include/vmmlib/svd.hpp; sourceTree = "<group>"; };
 		9839FA220E2B5BBB00A16721 /* svd_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = svd_test.cpp; path = tests/svd_test.cpp; sourceTree = "<group>"; };
 		9839FA230E2B5BBB00A16721 /* svd_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = svd_test.hpp; path = tests/svd_test.hpp; sourceTree = "<group>"; };
-		9839FE050E2BB10F00A16721 /* vmmlib_lapack.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = vmmlib_lapack.hpp; path = include/vmmlib/vmmlib_lapack.hpp; sourceTree = "<group>"; };
 		9839FE0E0E2BB16D00A16721 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = /System/Library/Frameworks/Accelerate.framework; sourceTree = "<absolute>"; };
 		9839FE1F0E2BB24700A16721 /* vmmlib_lapack_test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = vmmlib_lapack_test; sourceTree = BUILT_PRODUCTS_DIR; };
 		9839FE5D0E2BB5B300A16721 /* vmmlib_lapack_main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = vmmlib_lapack_main.cpp; path = tests/vmmlib_lapack_main.cpp; sourceTree = "<group>"; };
-		9839FEEF0E2BC59D00A16721 /* vmmlib_lapack_svd.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = vmmlib_lapack_svd.hpp; path = include/vmmlib/vmmlib_lapack_svd.hpp; sourceTree = "<group>"; };
 		9839FEF60E2BC67400A16721 /* svd_lapack_vs_old.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = svd_lapack_vs_old.cpp; path = tests/svd_lapack_vs_old.cpp; sourceTree = "<group>"; };
 		9839FEF70E2BC67400A16721 /* svd_lapack_vs_old.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = svd_lapack_vs_old.hpp; path = tests/svd_lapack_vs_old.hpp; sourceTree = "<group>"; };
 		985F6FC40C6B7C67002B05C5 /* vmmlib.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = vmmlib.h; path = include/vmmlib/vmmlib.h; sourceTree = "<group>"; };
@@ -172,7 +184,7 @@
 		0867D691FE84028FC02AAC07 /* VMMLib */ = {
 			isa = PBXGroup;
 			children = (
-				08FB77AEFE84172EC02AAC07 /* Source */,
+				08FB77AEFE84172EC02AAC07 /* Library */,
 				988F58330C22C0720005AC92 /* Tests */,
 				32C88DFF0371C24200C91783 /* Other Sources */,
 				089C1665FE841158C02AAC07 /* Resources */,
@@ -203,18 +215,13 @@
 			name = Resources;
 			sourceTree = "<group>";
 		};
-		08FB77AEFE84172EC02AAC07 /* Source */ = {
+		08FB77AEFE84172EC02AAC07 /* Library */ = {
 			isa = PBXGroup;
 			children = (
-				985F6FC40C6B7C67002B05C5 /* vmmlib.h */,
-				988F58300C22C0160005AC92 /* Basics */,
-				98FE7DBC0E224E3D00B1E17F /* matrix<M, N, float_t > */,
-				9839FE5C0E2BB59800A16721 /* lapack */,
-				988F58320C22C0570005AC92 /* Frustum */,
-				988F58310C22C01D0005AC92 /* Advanced */,
-				98B7A2400E24C7CF0064264E /* Misc */,
+				98FE7DBC0E224E3D00B1E17F /* 1.0 */,
+				988F58300C22C0160005AC92 /* Pre-1.0 */,
 			);
-			name = Source;
+			name = Library;
 			sourceTree = "<group>";
 		};
 		1058C7B0FEA5585E11CA2CBB /* Linked Frameworks */ = {
@@ -245,6 +252,7 @@
 				9868345D0E24F97D00618F55 /* vmmlib_config.hpp */,
 				98D411660E26806A00BEFA71 /* details.hpp */,
 				98D4102C0E2658FE00BEFA71 /* exception.hpp */,
+				98244A310E3F59CD0018E13A /* stringUtils.hpp */,
 			);
 			name = details;
 			sourceTree = "<group>";
@@ -253,16 +261,17 @@
 			isa = PBXGroup;
 			children = (
 				9839FE5D0E2BB5B300A16721 /* vmmlib_lapack_main.cpp */,
-				9839FE050E2BB10F00A16721 /* vmmlib_lapack.hpp */,
-				9839FEEF0E2BC59D00A16721 /* vmmlib_lapack_svd.hpp */,
-				9839005E0E2BD4DE00A16721 /* vmmlib_lapack_linear_least_squares.hpp */,
+				982449FD0E3F584A0018E13A /* lapack.hpp */,
+				982449FC0E3F584A0018E13A /* lapack_linear_least_squares.hpp */,
+				982449FB0E3F584A0018E13A /* lapack_svd.hpp */,
 			);
 			name = lapack;
 			sourceTree = "<group>";
 		};
-		988F58300C22C0160005AC92 /* Basics */ = {
+		988F58300C22C0160005AC92 /* Pre-1.0 */ = {
 			isa = PBXGroup;
 			children = (
+				985F6FC40C6B7C67002B05C5 /* vmmlib.h */,
 				985F6FC70C6B7C67002B05C5 /* vector2.h */,
 				985F6FC60C6B7C67002B05C5 /* vector3.h */,
 				985F6FC50C6B7C67002B05C5 /* vector4.h */,
@@ -270,8 +279,11 @@
 				985F6FCA0C6B7C67002B05C5 /* matrix4.h */,
 				985F6FC90C6B7C67002B05C5 /* quaternion.h */,
 				985F6FD10C6B7C67002B05C5 /* axisAlignedBoundingBox.h */,
+				988F58310C22C01D0005AC92 /* Advanced */,
+				988F58320C22C0570005AC92 /* Frustum */,
+				98B7A2400E24C7CF0064264E /* Misc */,
 			);
-			name = Basics;
+			name = "Pre-1.0";
 			sourceTree = "<group>";
 		};
 		988F58310C22C01D0005AC92 /* Advanced */ = {
@@ -343,12 +355,16 @@
 				98F556350E24377F0044BA3E /* matrix_test.cpp */,
 				986834C00E24FFD400618F55 /* vector_test.hpp */,
 				986834BF0E24FFD400618F55 /* vector_test.cpp */,
+				98D402D50E38D6A000B24DF1 /* quaternion_test.hpp */,
+				98D402D40E38D6A000B24DF1 /* quaternion_test.cpp */,
 				98F556380E24377F0044BA3E /* qr_decomposition_test.hpp */,
 				98F556370E24377F0044BA3E /* qr_decomposition_test.cpp */,
 				9839FA230E2B5BBB00A16721 /* svd_test.hpp */,
 				9839FA220E2B5BBB00A16721 /* svd_test.cpp */,
-				98D402D50E38D6A000B24DF1 /* quaternion_test.hpp */,
-				98D402D40E38D6A000B24DF1 /* quaternion_test.cpp */,
+				98244A3C0E3F5AEE0018E13A /* lapack_svd_test.hpp */,
+				98244A3B0E3F5AEE0018E13A /* lapack_svd_test.cpp */,
+				98244A3E0E3F5AEE0018E13A /* lapack_linear_least_squares_test.hpp */,
+				98244A3D0E3F5AEE0018E13A /* lapack_linear_least_squares_test.cpp */,
 			);
 			name = "unit tests";
 			sourceTree = "<group>";
@@ -364,7 +380,7 @@
 			name = "performance tests";
 			sourceTree = "<group>";
 		};
-		98FE7DBC0E224E3D00B1E17F /* matrix<M, N, float_t > */ = {
+		98FE7DBC0E224E3D00B1E17F /* 1.0 */ = {
 			isa = PBXGroup;
 			children = (
 				98D9E40F0E3E269700B046DD /* vmmlib.hpp */,
@@ -378,9 +394,10 @@
 				98D9E4110E3E26E000B046DD /* frustum.hpp */,
 				98D9E4120E3E26E000B046DD /* frustumCuller.hpp */,
 				98D9E4C10E3E314700B046DD /* visibility.hpp */,
+				9839FE5C0E2BB59800A16721 /* lapack */,
 				9816661D0E27891000AA6A4D /* details */,
 			);
-			name = "matrix<M, N, float_t >";
+			name = 1.0;
 			sourceTree = "<group>";
 		};
 		98FE7DCB0E224EA200B1E17F /* old tests */ = {
@@ -506,6 +523,9 @@
 				9839FF000E2BC75D00A16721 /* performance_test.cpp in Sources */,
 				9839FF020E2BC76600A16721 /* timer.cpp in Sources */,
 				98D402D60E38D6A000B24DF1 /* quaternion_test.cpp in Sources */,
+				98244A330E3F5A5E0018E13A /* unit_test.cpp in Sources */,
+				98244A3F0E3F5AEE0018E13A /* lapack_svd_test.cpp in Sources */,
+				98244A400E3F5AEE0018E13A /* lapack_linear_least_squares_test.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -537,6 +557,8 @@
 				9839FA250E2B5BBB00A16721 /* svd_test.cpp in Sources */,
 				98FAB2960E30CDF400C1A8FC /* unit_test.cpp in Sources */,
 				98D402D80E38D6A000B24DF1 /* quaternion_test.cpp in Sources */,
+				98244A430E3F5AEE0018E13A /* lapack_svd_test.cpp in Sources */,
+				98244A440E3F5AEE0018E13A /* lapack_linear_least_squares_test.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -551,6 +573,8 @@
 				986834C10E24FFD400618F55 /* vector_test.cpp in Sources */,
 				9839FA240E2B5BBB00A16721 /* svd_test.cpp in Sources */,
 				98D402D70E38D6A000B24DF1 /* quaternion_test.cpp in Sources */,
+				98244A410E3F5AEE0018E13A /* lapack_svd_test.cpp in Sources */,
+				98244A420E3F5AEE0018E13A /* lapack_linear_least_squares_test.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

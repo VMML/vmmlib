@@ -3,7 +3,7 @@
 #include <vmmlib/matrix.hpp>
 #include <vmmlib/vector.hpp>
 
-#include <vmmlib/vmmlib_lapack.hpp>
+#include <vmmlib/lapack.hpp>
 #include <vmmlib/svd.hpp>
 
 #define VMMLIB_LAPACK_DEBUG_OUT

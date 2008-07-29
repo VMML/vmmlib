@@ -1,15 +1,13 @@
 #ifndef __VMML__VECTOR__HPP__
 #define __VMML__VECTOR__HPP__
 
-#include <iostream>
-#include <iomanip>
-#include <vector>
-
 #include <vmmlib/exception.hpp>
 #include <vmmlib/vmmlib_config.hpp>
 #include <vmmlib/details.hpp>
 
-#include <cstdarg>
+#include <iostream>
+#include <iomanip>
+#include <vector>
 
 namespace vmml
 {

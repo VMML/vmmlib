@@ -106,6 +106,8 @@ public:
         const vector< M, float_t >& v1 );
 
     inline void normalize();
+    vector< M, float_t > getNormalized() const;
+    
     
     // L2 norm
     inline float_t norm() const;
@@ -723,6 +725,7 @@ vector< M, float_t >::dot(
 }
 
 
+
 template< size_t M, typename float_t >
 inline void
 vector< M, float_t >::normalize()
@@ -730,6 +733,18 @@ vector< M, float_t >::normalize()
     float_t norm_reciprocal = 1.0 / norm();
     this->operator*=( norm_reciprocal );
 }
+
+
+
+template< size_t M, typename float_t >
+vector< M, float_t >
+vector< M, float_t >::getNormalized() const
+{
+    vector< M, float_t > n( *this );
+    n.normalize();
+    return n;
+}
+
 
 
 template< size_t M, typename float_t >

@@ -285,6 +285,7 @@ vector_test::run()
             ok = vec.norm() - 1.0 < 1e-15;
             log( "normalize(), tolerance 1e-15", ok  );
         }
+
         if ( ! ok )
         {
             std::stringstream ss;

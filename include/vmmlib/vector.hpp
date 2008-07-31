@@ -177,7 +177,11 @@ public:
 
 
     // storage
-    float_t array[ M ];
+    float_t array[ M ]
+        #ifdef _GCC
+            __attribute__((aligned(16)))
+        #endif
+    ;
 
 }; // class vector
 

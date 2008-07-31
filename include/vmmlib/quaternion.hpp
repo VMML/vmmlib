@@ -187,7 +187,11 @@ public:
 	};
     
     //storage -> layout x,y,z,w 
-    float_t array[ 4 ];
+    float_t array[ 4 ]
+    #ifdef __GNUC__
+        __attribute__((alignment(16)))
+    #endif
+    ;
 
 	static const quaternion ZERO;
 	static const quaternion IDENTITY;

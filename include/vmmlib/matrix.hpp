@@ -313,7 +313,11 @@ public:
     // matrix.array[ row ][ column ];
     //array< array< float_t, N >, M >    _rows;
     // column_by_column
-    float_t array[ M * N ];
+    float_t array[ M * N ]
+        #ifdef __GNUC__
+                    __attribute__((aligned(16)))
+        #endif
+    ;
     
 
     // static members

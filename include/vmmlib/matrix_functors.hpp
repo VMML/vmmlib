@@ -9,6 +9,8 @@ struct matrix_functor
 {
     virtual void operator()( matrix_t& matrix_ ) const
     {}
+    
+    virtual ~matrix_functor() {};
 };
 
 template< typename matrix_t >

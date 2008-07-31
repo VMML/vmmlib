@@ -208,7 +208,7 @@ linear_least_squares_xgels()
     // workspace query
     llsq_call_xgels( p );
 
-    p.lwork = p.work[0];
+    p.lwork = static_cast< __CLPK_integer > ( p.work[0] );
     delete p.work;
 
     p.work = new float_t[ p.lwork ];

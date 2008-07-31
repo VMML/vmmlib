@@ -64,7 +64,7 @@ bool solveJacobi3x3(
         {
             for ( size_t iq = ip + 1; iq < 3; ++iq ) // < n
             {
-                sm += fabs( a( iq, ip );
+                sm += fabs( a( iq, ip ) );
             }
         }
         if ( sm == 0.0 ) 
@@ -78,7 +78,7 @@ bool solveJacobi3x3(
         {
             for ( ssize_t iq = ip + 1; iq < 3; ++iq )
             {
-                float_t g = 100.0 * fabs( a.m[ip][iq] );
+                float_t g = 100.0 * fabs( a( iq,ip ) );
                 // this has to be fabs( x ) + g == fabs( x ) and NOT
                 // g == 0.0 because of floating point evilness
                 // ( inaccuracies when comparing (anyfloat) to 0.0 )
@@ -87,7 +87,7 @@ bool solveJacobi3x3(
                      && fabs( d[iq] ) + g == fabs( d[iq] ) 
                    )
                 {
-                    a.m[ip][iq] = 0.0;
+                    a( iq, ip ) = 0.0;
                 }
                 else 
                 {

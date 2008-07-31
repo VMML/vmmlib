@@ -178,9 +178,11 @@ public:
 
     // storage
     float_t array[ M ]
+    #ifndef VMMLIB_DONT_FORCE_ALIGNMENT
         #ifdef _GCC
             __attribute__((aligned(16)))
         #endif
+    #endif
     ;
 
 }; // class vector

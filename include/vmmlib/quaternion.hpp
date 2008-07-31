@@ -188,8 +188,10 @@ public:
     
     //storage -> layout x,y,z,w 
     float_t array[ 4 ]
-    #ifdef __GNUC__
-        __attribute__((alignment(16)))
+    #ifndef VMMLIB_DONT_FORCE_ALIGNMENT
+        #ifdef __GNUC__
+            __attribute__((alignment(16)))
+        #endif
     #endif
     ;
 

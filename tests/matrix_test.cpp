@@ -19,8 +19,8 @@ matrix_test::run()
     m0.copyFrom1DimCArray( data );
     
     // test operator== / operator !=
-	ok = true;
-	{
+    {
+        bool ok = true;
 		matrix< 2, 3 > m0_copy;
 		m0.copyFrom1DimCArray( data );
 		m0_copy.copyFrom1DimCArray( data );
@@ -39,8 +39,8 @@ matrix_test::run()
 	}
 
     // tests copyFrom1DimCArray function with row_by_row data
-	ok = true;
-	{
+    {
+        bool ok = true;
 		size_t tmp = 1;
 		for( size_t rowIndex = 0; ok && rowIndex < 2; ++rowIndex )
 		{
@@ -74,8 +74,8 @@ matrix_test::run()
     m1.copyFrom1DimCArray( data, false );
 
     // tests copyFrom1DimCArray function with col_by_col data
-	ok = true;
-	{
+    {
+        bool ok = true;
         size_t tmp = 1;
 		for( size_t colIndex = 0; ok && colIndex < 2; ++colIndex )
 		{
@@ -105,8 +105,8 @@ matrix_test::run()
 	}
 
     // test copy ctor
-	ok = true;
-	{
+    {
+        bool ok = true;
 		matrix< 2, 3 > m0_copy( m0 );
 		ok = m0 == m0_copy;
 		if ( ok )
@@ -124,8 +124,8 @@ matrix_test::run()
 
 
     // test ::IDENTITY / ::ZERO
-	ok = true;
-	{
+    {
+        bool ok = true;
 		matrix< 5, 5 > identity( matrix< 5, 5 >::IDENTITY );
 		matrix< 5, 2 > zero( matrix< 5, 2 >::ZERO );
         
@@ -154,8 +154,8 @@ matrix_test::run()
 
 
     // test operator[]
-	ok = true;
-	{
+    {
+        bool ok = true;
 		m0 = data;
 		ok = m0[ 1 ][ 1 ] == 5;
 		if ( ok )
@@ -180,8 +180,8 @@ matrix_test::run()
 	}
 
     // test getRow/setRow/getColumn/setColumn
-	ok = true;
-	{
+    {
+        bool ok = true;
 		matrix< 2, 3 > M;
 		double Mdata[] = { 1, 2, 3, 4, 5, 6 };
 		M = Mdata;
@@ -244,8 +244,8 @@ matrix_test::run()
 
 	
     // test transpose functionality 
-	ok = true;
     {
+        bool ok = true;
 		m0 = data;
         matrix< 3, 2 > m0t = m0.getTransposed();
         m1.copyFrom1DimCArray( data, false );
@@ -262,8 +262,8 @@ matrix_test::run()
     
     
     // test multiplication
-    if ( ok )
     {
+        bool ok = true;
         matrix< 2, 3 > mul0;
         double mul0data[] = { 1, 0, 2, -1, 3, 1 };
         mul0 = mul0data;
@@ -313,8 +313,8 @@ matrix_test::run()
     }
 
     // test matrix * column vector multiplication
-    ok = true;
     {
+        bool ok = true;
         matrix< 4, 4 > transform;
         double transformData[] = 
         {
@@ -358,8 +358,8 @@ matrix_test::run()
 
 
     // test matrix4x4 * vector3 multiplication
-    ok = true;
     {
+        bool ok = true;
         matrix< 4, 4 > transform;
         double transformData[] = 
         {
@@ -436,16 +436,16 @@ matrix_test::run()
 	#endif
 
 	// matrix addition
-	ok = true;
-	{
+    {
+        bool ok = true;
 		// FIXME
 		matrix< 2, 3 > MplusM = m0 + m0;
 	
 	}
 
 	// getSubMatrix
-	ok = true;
-	{
+    {
+        bool ok = true;
 		matrix< 1, 2 > m;
 		m = m0.getSubMatrix< 1, 2 >( 1, 1 );
 		ok = m.at( 0, 0 ) == m0.at( 1, 1 );
@@ -468,17 +468,32 @@ matrix_test::run()
 
 
     // matrix inversion for 2x2
-	ok = true;
     {
-        matrix< 2, 2 > M, M_inverse, M_inverse_correct;
-        double Mdata[] = { 1, 3, 4, 2 };
-        M.copyFrom1DimCArray( Mdata );
+        bool ok = true;
+        matrix< 2, 2, double > M, M_inverse, M_inverse_correct;
+        double Mdata[] = 
+        #if 1
+        { 1., 3., 4., 2. };
+        #else
+        {
+            .81472368639317893634910205946653, .12698681629350605515327288230765,
+            .90579193707561922455084868488484, .91337585613901939307623933927971
+        };
+        #endif
+        M = Mdata;
 
-        double M_inverse_correct_data[] = { -0.2, 0.3, 0.4, -0.1 };
-        M_inverse_correct.copyFrom1DimCArray( M_inverse_correct_data );
+        double M_inverse_correct_data[] = 
+        #if 1
+        { -0.2, 0.3, 0.4, -0.1 };
+        #else
+        {   1.4518186460466018239401364553487, -.20184661818884985784450236678822,
+            -1.4397639425722887906999858387280,  1.2950101881184494789778227641364
+        };
+        #endif
+        M_inverse_correct = M_inverse_correct_data;
 
         M.getInverse( M_inverse );
-        
+               
         ok = M_inverse == M_inverse_correct;
 		log( "matrix inversion for 2x2 matrices, maximum precision", ok, true );
         if ( ! ok )
@@ -493,6 +508,7 @@ matrix_test::run()
                 << "matrix M " << M 
                 << "inverse (computed)" << M_inverse 
                 << "inverse (correct)" << M_inverse_correct 
+                << " diffs " << M_inverse - M_inverse_correct 
                 << std::endl;
 			log_error( error.str() );
         }
@@ -500,14 +516,16 @@ matrix_test::run()
 
 
     // matrix inversion for 3x3 
-    if ( ok )
     {
+        bool ok = true;
         matrix< 3, 3 > M, M_inverse, M_inverse_correct;
         double Mdata[] = { 8, 1, 6, 3, 5, 7, 4, 9, 2 };
         M.copyFrom1DimCArray( Mdata );
 
-        double M_inverse_correct_data[] = { 0.1472, -0.1444, 0.0639, 
-            -0.0611, 0.0222, 0.1056, -0.0194, 0.1889, -0.1028 };
+        double M_inverse_correct_data[] = 
+            {   .14722222222222222222222222222222, -.14444444444444444444444444444444, .63888888888888888888888888888889e-1,
+                -.61111111111111111111111111111111e-1, .22222222222222222222222222222222e-1, .10555555555555555555555555555556,
+                -.19444444444444444444444444444444e-1, .18888888888888888888888888888889, -.10277777777777777777777777777778 };
 
         M_inverse_correct.copyFrom1DimCArray( M_inverse_correct_data );
 
@@ -534,11 +552,11 @@ matrix_test::run()
 
 
     // matrix inversion for 4x4 
-    if ( ok )
     {
+        bool ok = true;
         matrix< 4, 4 > M, M_inverse, M_inverse_correct;
-       double Mdata[] = { 17., 24., 1., 8., 23., 5., 7., 14.,
-                 4., 6., 13., 20., 10., 12., 19., 21. };
+        double Mdata[] = { 17., 24., 1., 8., 23., 5., 7., 14.,
+             4., 6., 13., 20., 10., 12., 19., 21. };
         M.copyFrom1DimCArray( Mdata );
 
         double M_inverse_correct_data[] = { -5.780346820809248e-03, 4.962205424633170e-02, -4.811027123165852e-02, 1.493997332147622e-02, 

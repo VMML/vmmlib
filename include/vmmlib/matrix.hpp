@@ -314,9 +314,11 @@ public:
     //array< array< float_t, N >, M >    _rows;
     // column_by_column
     float_t array[ M * N ]
+    #ifndef VMMLIB_DONT_FORCE_ALIGNMENT
         #ifdef __GNUC__
                     __attribute__((aligned(16)))
         #endif
+    #endif
     ;
     
 
@@ -1227,7 +1229,7 @@ matrix< M, N, float_t >::
 operator-( const matrix< M, N, float_t >& other ) const
 {
 	matrix< M, N, float_t > result( *this );
-	result += other;
+	result -= other;
 	return result;
 }
 
@@ -1391,7 +1393,7 @@ matrix< 3, 3, float >::getDeterminant() const
         at( 1,0 ) * at( 2,1 ) - at( 1,1 ) * at( 2,0 )
         );
  
-    return at( 0,0 ) * cof( 0 ) + at( 0, 1 ) * cof( 1 ) + at( 0, 2 ) * cof( 2 );
+    return at( 0,0 ) * cof( 0 ) + at( 0,1 ) * cof( 1 ) + at( 0,2 ) * cof( 2 );
 }
 
 
@@ -1406,7 +1408,7 @@ matrix< 3, 3, double >::getDeterminant() const
         at( 1,0 ) * at( 2,1 ) - at( 1,1 ) * at( 2,0 ) 
         );
  
-    return at( 0,0 ) * cof( 0 ) + at( 0, 1 ) * cof( 1 ) + at( 0, 2 ) * cof( 2 );
+    return at( 0,0 ) * cof( 0 ) + at( 0,1 ) * cof( 1 ) + at( 0,2 ) * cof( 2 );
 }
 
 
@@ -1435,10 +1437,10 @@ matrix< 2, 2, float >::getAdjugate( matrix< 2, 2, float >& adjugate ) const
     const float& c = at( 1, 0 );
     const float& d = at( 1, 1 );
 
-    adjugate.at( 0, 0 ) = d;
-    adjugate.at( 0, 1 ) = -b;
-    adjugate.at( 1, 0 ) = -c;
-    adjugate.at( 1, 1 ) = a;
+    adjugate( 0, 0 ) = d;
+    adjugate( 0, 1 ) = -b;
+    adjugate( 1, 0 ) = -c;
+    adjugate( 1, 1 ) = a;
 }
 
 
@@ -1452,10 +1454,10 @@ matrix< 2, 2, double >::getAdjugate( matrix< 2, 2, double >& adjugate ) const
     const double& c = at( 1, 0 );
     const double& d = at( 1, 1 );
 
-    adjugate.at( 0, 0 ) = d;
-    adjugate.at( 0, 1 ) = -b;
-    adjugate.at( 1, 0 ) = -c;
-    adjugate.at( 1, 1 ) = a;
+    adjugate( 0, 0 ) = d;
+    adjugate( 0, 1 ) = -b;
+    adjugate( 1, 0 ) = -c;
+    adjugate( 1, 1 ) = a;
 }
 
 
@@ -1501,11 +1503,11 @@ inline bool
 matrix< 2, 2, float >::getInverse( matrix< 2, 2, float >& Minverse, float tolerance ) const
 {
     float det = getDeterminant();
-    if ( det > tolerance )
+    if ( fabs( det ) < tolerance )
     {
         return false;
     }
-    float reciprocal_of_determinant = 1.0 / det;
+    float reciprocal_of_determinant = 1.0f / det;
     
     // set Minverse to the adjugate of M
     getAdjugate( Minverse );
@@ -1520,18 +1522,59 @@ template<>
 inline bool
 matrix< 2, 2, double >::getInverse( matrix< 2, 2, double >& Minverse, double tolerance ) const
 {
-    float det = getDeterminant();
-    if ( det > tolerance )
+    double det = getDeterminant();
+    if ( fabs( det ) < tolerance )
     {
         return false;
     }
-    float reciprocal_of_determinant = 1.0 / det;
+    double reciprocal_of_determinant = 1.0 / det;
     
     // set Minverse to the adjugate of M
     getAdjugate( Minverse );
     
     Minverse *= reciprocal_of_determinant;
     
+    return true;
+}
+
+
+
+template<>
+inline bool
+matrix< 3, 3, float >::getInverse( matrix< 3, 3, float >& result, float tolerance ) const
+{
+    // Invert a 3x3 using cofactors.  This is about 8 times faster than
+    // the Numerical Recipes code which uses Gaussian elimination.
+
+    result.at( 0, 0 ) = at( 1, 1 ) * at( 2, 2 ) - at( 1, 2 ) * at( 2, 1 );
+    result.at( 0, 1 ) = at( 0, 2 ) * at( 2, 1 ) - at( 0, 1 ) * at( 2, 2 );
+    result.at( 0, 2 ) = at( 0, 1 ) * at( 1, 2 ) - at( 0, 2 ) * at( 1, 1 );
+    result.at( 1, 0 ) = at( 1, 2 ) * at( 2, 0 ) - at( 1, 0 ) * at( 2, 2 );
+    result.at( 1, 1 ) = at( 0, 0 ) * at( 2, 2 ) - at( 0, 2 ) * at( 2, 0 );
+    result.at( 1, 2 ) = at( 0, 2 ) * at( 1, 0 ) - at( 0, 0 ) * at( 1, 2 );
+    result.at( 2, 0 ) = at( 1, 0 ) * at( 2, 1 ) - at( 1, 1 ) * at( 2, 0 );
+    result.at( 2, 1 ) = at( 0, 1 ) * at( 2, 0 ) - at( 0, 0 ) * at( 2, 1 );
+    result.at( 2, 2 ) = at( 0, 0 ) * at( 1, 1 ) - at( 0, 1 ) * at( 1, 0 );
+    
+    const float determinant = at( 0, 0 ) * result.at( 0, 0 ) 
+        + at( 0, 1 ) * result.at( 1, 0 )
+        + at( 0, 2 ) * result.at( 2, 0 );
+    
+    if ( fabs( determinant ) <= tolerance )
+        return false; // matrix is not invertible
+
+    const float detinv = 1.0 / determinant;
+    
+    result.at( 0, 0 ) *= detinv;
+    result.at( 0, 1 ) *= detinv;
+    result.at( 0, 2 ) *= detinv;
+    result.at( 1, 0 ) *= detinv;
+    result.at( 1, 1 ) *= detinv;
+    result.at( 1, 2 ) *= detinv;
+    result.at( 2, 0 ) *= detinv;
+    result.at( 2, 1 ) *= detinv;
+    result.at( 2, 2 ) *= detinv;
+
     return true;
 }
 
@@ -1549,7 +1592,7 @@ matrix< 3, 3, double >::getInverse( matrix< 3, 3, double >& result, double toler
     result.at( 0, 2 ) = at( 0, 1 ) * at( 1, 2 ) - at( 0, 2 ) * at( 1, 1 );
     result.at( 1, 0 ) = at( 1, 2 ) * at( 2, 0 ) - at( 1, 0 ) * at( 2, 2 );
     result.at( 1, 1 ) = at( 0, 0 ) * at( 2, 2 ) - at( 0, 2 ) * at( 2, 0 );
-    result.at( 1, 2 ) = at( 0, 2 ) * at( 1, 0 ) - at( 0, 0 ) * at( 1, 1 );
+    result.at( 1, 2 ) = at( 0, 2 ) * at( 1, 0 ) - at( 0, 0 ) * at( 1, 2 );
     result.at( 2, 0 ) = at( 1, 0 ) * at( 2, 1 ) - at( 1, 1 ) * at( 2, 0 );
     result.at( 2, 1 ) = at( 0, 1 ) * at( 2, 0 ) - at( 0, 0 ) * at( 2, 1 );
     result.at( 2, 2 ) = at( 0, 0 ) * at( 1, 1 ) - at( 0, 1 ) * at( 1, 0 );
@@ -1575,6 +1618,65 @@ matrix< 3, 3, double >::getInverse( matrix< 3, 3, double >& result, double toler
 
     return true;
 }
+
+
+
+template<>
+inline bool
+matrix< 4, 4, float >::getInverse( matrix< 4, 4, float >& result, float tolerance ) const
+{
+    // tuned version from Claude Knaus
+    /* first set of 2x2 determinants: 12 multiplications, 6 additions */
+    const float t1[6] = { array[ 2] * array[ 7] - array[ 6] * array[ 3],
+                      array[ 2] * array[11] - array[10] * array[ 3],
+                      array[ 2] * array[15] - array[14] * array[ 3],
+                      array[ 6] * array[11] - array[10] * array[ 7],
+                      array[ 6] * array[15] - array[14] * array[ 7],
+                      array[10] * array[15] - array[14] * array[11] };
+
+    /* first half of comatrix: 24 multiplications, 16 additions */
+    result.array[0] = array[ 5] * t1[5] - array[ 9] * t1[4] + array[13] * t1[3];
+    result.array[1] = array[ 9] * t1[2] - array[13] * t1[1] - array[ 1] * t1[5];
+    result.array[2] = array[13] * t1[0] - array[ 5] * t1[2] + array[ 1] * t1[4];
+    result.array[3] = array[ 5] * t1[1] - array[ 1] * t1[3] - array[ 9] * t1[0];
+    result.array[4] = array[ 8] * t1[4] - array[ 4] * t1[5] - array[12] * t1[3];
+    result.array[5] = array[ 0] * t1[5] - array[ 8] * t1[2] + array[12] * t1[1];
+    result.array[6] = array[ 4] * t1[2] - array[12] * t1[0] - array[ 0] * t1[4];
+    result.array[7] = array[ 0] * t1[3] - array[ 4] * t1[1] + array[ 8] * t1[0];
+
+   /* second set of 2x2 determinants: 12 multiplications, 6 additions */
+    const float t2[6] = { array[ 0] * array[ 5] - array[ 4] * array[ 1],
+                      array[ 0] * array[ 9] - array[ 8] * array[ 1],
+                      array[ 0] * array[13] - array[12] * array[ 1],
+                      array[ 4] * array[ 9] - array[ 8] * array[ 5],
+                      array[ 4] * array[13] - array[12] * array[ 5],
+                      array[ 8] * array[13] - array[12] * array[ 9] };
+
+    /* second half of comatrix: 24 multiplications, 16 additions */
+    result.array[8]  = array[ 7] * t2[5] - array[11] * t2[4] + array[15] * t2[3];
+    result.array[9]  = array[11] * t2[2] - array[15] * t2[1] - array[ 3] * t2[5];
+    result.array[10] = array[15] * t2[0] - array[ 7] * t2[2] + array[ 3] * t2[4];
+    result.array[11] = array[ 7] * t2[1] - array[ 3] * t2[3] - array[11] * t2[0];
+    result.array[12] = array[10] * t2[4] - array[ 6] * t2[5] - array[14] * t2[3];
+    result.array[13] = array[ 2] * t2[5] - array[10] * t2[2] + array[14] * t2[1];
+    result.array[14] = array[ 6] * t2[2] - array[14] * t2[0] - array[ 2] * t2[4];
+    result.array[15] = array[ 2] * t2[3] - array[ 6] * t2[1] + array[10] * t2[0];
+
+   /* determinant: 4 multiplications, 3 additions */
+   const float determinant = array[0] * result.array[0] + array[4] * result.array[1] +
+                         array[8] * result.array[2] + array[12] * result.array[3];
+
+   if( fabs( determinant ) <= tolerance )
+        return false; // matrix is not invertible
+
+   /* division: 16 multiplications, 1 division */
+   const float detinv = 1.0 / determinant;
+   for( unsigned i = 0; i != 16; ++i )
+       result.array[i] *= detinv;
+       
+    return true;
+}
+
 
 
 template<>

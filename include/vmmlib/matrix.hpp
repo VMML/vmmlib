@@ -71,14 +71,14 @@ public:
 	void operator-=( const matrix< M, N, float_t >& other );
     		
 	template< size_t P, size_t Q >
-	void direct_sum( 
+	void directSum( 
 		const matrix< P, Q, float_t >& other, 
 		matrix< M + P, N + Q, float_t >& result 
 		);
 	
 	template< size_t P, size_t Q >
 	matrix< M + P, N + Q, float_t >
-		direct_sum( const matrix< P, Q, float_t >& other );
+		directSum( const matrix< P, Q, float_t >& other );
 
 	// 
 	// matrix-scalar operations / scaling 
@@ -1255,7 +1255,7 @@ template< size_t M, size_t N, typename float_t >
 template< size_t P, size_t Q >
 void
 matrix< M, N, float_t >::
-direct_sum( const matrix< P, Q, float_t >& other, matrix< M + P, N + Q, float_t >& result )
+directSum( const matrix< P, Q, float_t >& other, matrix< M + P, N + Q, float_t >& result )
 {
 	result.fill( 0.0 );
 	
@@ -1284,10 +1284,10 @@ template< size_t M, size_t N, typename float_t >
 template< size_t P, size_t Q >
 matrix< M + P, N + Q, float_t > 
 matrix< M, N, float_t >::
-direct_sum( const matrix< P, Q, float_t >& other )
+directSum( const matrix< P, Q, float_t >& other )
 {
 	matrix< M + P, N + Q, float_t > result;
-	direct_sum( other, result );
+	directSum( other, result );
 	return result;
 }
 
@@ -1831,7 +1831,7 @@ rotate( const float_t angle, const vector< M-1, float_t >& axis )
 
     float_t two = 2.0;
 
-    array[0]  = cosine + ( 1.0 - cosine ) * axis.array[0];
+    array[0]  = cosine + ( 1.0 - cosine ) * poew( axis.array[0], two );
     array[1]  = (1.0 - cosine ) * axis.array[0] * axis.array[1] + sine * axis.array[2];
     array[2]  = (1.0 - cosine ) * axis.array[0] * axis.array[2] - sine * axis.array[1];
     array[3]  = 0.0;

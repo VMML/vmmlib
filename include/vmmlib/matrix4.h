@@ -935,7 +935,7 @@ Matrix4<T>::rotate( const T angle, const Vector3< T >& axis )
 
     T two = 2.0;
 
-    ml[0]  = cosin + ( 1.0 - cosin ) * axis.x;
+    ml[0]  = cosin + ( 1.0 - cosin ) * pow( axis.x, two );
     ml[1]  = (1.0 - cosin ) * axis.x * axis.y + sinus * axis.z;
     ml[2]  = (1.0 - cosin ) * axis.x * axis.z - sinus * axis.y;
     ml[3]  = 0;

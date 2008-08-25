@@ -13,11 +13,11 @@
 
 #include <string>
 
-/* 
+/**
 *
-*   this is a wrapper for the following lapack routines: 
+* this is a wrapper for the following lapack routines: 
 *   
-*   xGESV
+* xGESV
 *
 *
 */ 

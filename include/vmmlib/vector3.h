@@ -567,8 +567,26 @@ Vector3< T > Vector3< T >::operator*( const T  a ) const
 template < typename T > 
 Vector3< T > Vector3< T >::operator/( T  a ) const 
 { 
+    return Vector3( x / a, y / a, z / a ); 
+}
+
+
+
+template <> 
+Vector3< float > Vector3< float >::operator/( float  a ) const 
+{ 
     assert( a != 0.0f ); 
     a = 1.0f / a; 
+    return Vector3( x * a, y * a, z * a ); 
+}
+
+
+
+template <> 
+Vector3< double > Vector3< double >::operator/( double  a ) const 
+{ 
+    assert( a != 0.0 ); 
+    a = 1.0 / a; 
     return Vector3( x * a, y * a, z * a ); 
 }
 
@@ -610,12 +628,35 @@ const Vector3< T >& Vector3< T >::operator*=( T  a )
 template < typename T > 
 const Vector3< T >& Vector3< T >::operator/=( T  a ) 
 { 
+    x /= a; 
+    y /= a; 
+    z /= a; 
+    return *this; 
+} 
+
+
+template <> 
+const Vector3< float >& Vector3< float >::operator/=( float  a ) 
+{ 
     a = 1.0f / a; 
     x *= a; 
     y *= a; 
     z *= a; 
     return *this; 
 } 
+
+
+
+template <> 
+const Vector3< double >& Vector3< double >::operator/=( double  a ) 
+{ 
+    a = 1.0 / a; 
+    x *= a; 
+    y *= a; 
+    z *= a; 
+    return *this; 
+} 
+
 
 
 

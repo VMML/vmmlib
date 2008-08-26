@@ -591,8 +591,26 @@ Vector4< T > Vector4< T >::operator*( const T  aa ) const
 template < typename T > 
 Vector4< T > Vector4< T >::operator/( T  aa ) const 
 { 
+    return Vector4( x / aa, y / aa, z / aa, w / aa ); 
+}
+
+
+
+template <> 
+Vector4< float > Vector4< float >::operator/( float  aa ) const 
+{ 
     assert( aa != 0.0f ); 
     aa = 1.0f / aa; 
+    return Vector4( x * aa, y * aa, z * aa, w * aa ); 
+}
+
+
+
+template <> 
+Vector4< double > Vector4< double >::operator/( double  aa ) const 
+{ 
+    assert( aa != 0.0 ); 
+    aa = 1.0 / aa; 
     return Vector4( x * aa, y * aa, z * aa, w * aa ); 
 }
 
@@ -644,6 +662,31 @@ const Vector4< T >& Vector4< T >::operator*=( T  aa )
  
 template < typename T > 
 const Vector4< T >& Vector4< T >::operator/=( T  aa ) 
+{ 
+    x /= aa; 
+    y /= aa; 
+    z /= aa; 
+    w /= aa;
+    return *this; 
+} 
+
+
+
+template <> 
+const Vector4< float >& Vector4< float >::operator/=( float  aa ) 
+{ 
+    aa = 1.0f / aa; 
+    x *= aa; 
+    y *= aa; 
+    z *= aa; 
+    w *= aa;
+    return *this; 
+} 
+
+
+
+template <> 
+const Vector4< double >& Vector4< double >::operator/=( double  aa ) 
 { 
     aa = 1.0f / aa; 
     x *= aa; 

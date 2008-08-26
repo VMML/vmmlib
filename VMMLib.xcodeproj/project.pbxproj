@@ -66,6 +66,8 @@
 		9839FE5D0E2BB5B300A16721 /* vmmlib_lapack_main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = vmmlib_lapack_main.cpp; path = tests/vmmlib_lapack_main.cpp; sourceTree = "<group>"; };
 		9839FEF60E2BC67400A16721 /* svd_lapack_vs_old.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = svd_lapack_vs_old.cpp; path = tests/svd_lapack_vs_old.cpp; sourceTree = "<group>"; };
 		9839FEF70E2BC67400A16721 /* svd_lapack_vs_old.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = svd_lapack_vs_old.hpp; path = tests/svd_lapack_vs_old.hpp; sourceTree = "<group>"; };
+		98584AF50E643AEC00314C4C /* lapack_types.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = lapack_types.hpp; path = include/vmmlib/lapack_types.hpp; sourceTree = "<group>"; };
+		98584B140E643BFC00314C4C /* lapack_includes.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = lapack_includes.hpp; path = include/vmmlib/lapack_includes.hpp; sourceTree = "<group>"; };
 		985F6FC40C6B7C67002B05C5 /* vmmlib.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = vmmlib.h; path = include/vmmlib/vmmlib.h; sourceTree = "<group>"; };
 		985F6FC50C6B7C67002B05C5 /* vector4.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = vector4.h; path = include/vmmlib/vector4.h; sourceTree = "<group>"; };
 		985F6FC60C6B7C67002B05C5 /* vector3.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = vector3.h; path = include/vmmlib/vector3.h; sourceTree = "<group>"; };
@@ -264,6 +266,8 @@
 			children = (
 				9839FE5D0E2BB5B300A16721 /* vmmlib_lapack_main.cpp */,
 				982449FD0E3F584A0018E13A /* lapack.hpp */,
+				98584AF50E643AEC00314C4C /* lapack_types.hpp */,
+				98584B140E643BFC00314C4C /* lapack_includes.hpp */,
 				982449FC0E3F584A0018E13A /* lapack_linear_least_squares.hpp */,
 				982449FB0E3F584A0018E13A /* lapack_svd.hpp */,
 			);

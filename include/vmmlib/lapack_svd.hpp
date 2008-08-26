@@ -5,11 +5,8 @@
 #include <vmmlib/vector.hpp>
 #include <vmmlib/exception.hpp>
 
-#ifdef __APPLE__
-#include <Accelerate/Accelerate.h>
-#else
-// FIXME - include clapack headers
-#endif
+#include <vmmlib/lapack_types.hpp>
+#include <vmmlib/lapack_includes.hpp>
 
 #include <string>
 
@@ -30,18 +27,18 @@ struct svd_params
 {
     char            jobu;
     char            jobvt;
-    __CLPK_integer  m;
-    __CLPK_integer  n;
+    lapack_int      m;
+    lapack_int      n;
     float_t*        a;
-    __CLPK_integer  lda;
+    lapack_int      lda;
     float_t*        s;
     float_t*        u;
-    __CLPK_integer  ldu;
+    lapack_int      ldu;
     float_t*        vt;
-    __CLPK_integer  ldvt;
+    lapack_int      ldvt;
     float_t*        work;
-    __CLPK_integer  lwork;
-    __CLPK_integer  info;
+    lapack_int      lwork;
+    lapack_int      info;
     
     friend std::ostream& operator << ( std::ostream& os, 
         const svd_params< float_t >& p )

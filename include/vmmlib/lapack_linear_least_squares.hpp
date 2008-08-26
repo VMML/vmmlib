@@ -5,11 +5,8 @@
 #include <vmmlib/vector.hpp>
 #include <vmmlib/exception.hpp>
 
-#ifdef __APPLE__
-#include <Accelerate/Accelerate.h>
-#else
-// FIXME - include clapack headers
-#endif
+#include <vmmlib/lapack_types.hpp>
+#include <vmmlib/lapack_includes.hpp>
 
 #include <string>
 
@@ -46,16 +43,16 @@ template< typename float_t >
 struct llsq_params_xgels
 {
     char            trans;  // 'N'->A, 'T'->Atransposed
-    __CLPK_integer  m;      // number of rows,      M >= 0
-    __CLPK_integer  n;      // number of columns,   N >= 0
-    __CLPK_integer  nrhs;   // number of columns of B/X
+    lapack_int      m;      // number of rows,      M >= 0
+    lapack_int      n;      // number of columns,   N >= 0
+    lapack_int      nrhs;   // number of columns of B/X
     float_t*        a;      // input A
-    __CLPK_integer  lda;    // leading dimension of A (number of rows)
+    lapack_int      lda;    // leading dimension of A (number of rows)
     float_t*        b;      // input B, output X
-    __CLPK_integer  ldb;    // leading dimension of b 
+    lapack_int      ldb;    // leading dimension of b 
     float_t*        work;   // workspace
-    __CLPK_integer  lwork;  // workspace size
-    __CLPK_integer  info;   // 'return' value
+    lapack_int      lwork;  // workspace size
+    lapack_int      info;   // 'return' value
     
     friend std::ostream& operator << ( std::ostream& os, 
         const llsq_params_xgels< float_t >& p )
@@ -208,7 +205,7 @@ linear_least_squares_xgels()
     // workspace query
     llsq_call_xgels( p );
 
-    p.lwork = static_cast< __CLPK_integer > ( p.work[0] );
+    p.lwork = static_cast< lapack_int > ( p.work[0] );
     delete p.work;
 
     p.work = new float_t[ p.lwork ];
@@ -234,14 +231,14 @@ linear_least_squares_xgels< M, N, float_t >::
 template< typename float_t >
 struct llsq_params_xgesv
 {
-    __CLPK_integer  n; // order of matrix A = M * N
-    __CLPK_integer  nrhs; // number of columns of B
+    lapack_int      n; // order of matrix A = M * N
+    lapack_int      nrhs; // number of columns of B
     float_t*        a;   // input A, output P*L*U
-    __CLPK_integer  lda; // leading dimension of A (for us: number of rows)
-    __CLPK_integer* ipiv; // pivot indices, integer array of size N
+    lapack_int      lda; // leading dimension of A (for us: number of rows)
+    lapack_int*     ipiv; // pivot indices, integer array of size N
     float_t*        b;  // input b, output X
-    __CLPK_integer  ldb; // leading dimension of b
-    __CLPK_integer  info;
+    lapack_int      ldb; // leading dimension of b
+    lapack_int      info;
     
     friend std::ostream& operator << ( std::ostream& os, 
         const llsq_params_xgesv< float_t >& p )
@@ -359,7 +356,7 @@ linear_least_squares_xgesv()
     p.nrhs  = M;
     p.lda   = N;
     p.ldb   = N;
-    p.ipiv = new __CLPK_integer[ N ];
+    p.ipiv = new lapack_int[ N ];
 
 }
 

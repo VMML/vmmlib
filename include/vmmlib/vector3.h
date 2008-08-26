@@ -97,12 +97,12 @@ public:
     Vector3 operator+( const T  a ) const;
     Vector3 operator-( const T  a ) const; 
     Vector3 operator*( const T  a ) const;
-    Vector3 operator/( T  a ) const;
+    inline Vector3 operator/( T  a ) const;
      
     const Vector3& operator+=( T  a );
     const Vector3& operator-=( T  a );
     const Vector3& operator*=( T  a );
-    const Vector3& operator/=( T  a ); 
+    inline const Vector3& operator/=( T  a ); 
 
     // vector/vector operations
     Vector3 operator+( const Vector3& rhs ) const; 
@@ -565,7 +565,7 @@ Vector3< T > Vector3< T >::operator*( const T  a ) const
 
 
 template < typename T > 
-Vector3< T > Vector3< T >::operator/( T  a ) const 
+inline Vector3< T > Vector3< T >::operator/( T  a ) const 
 { 
     return Vector3( x / a, y / a, z / a ); 
 }
@@ -573,7 +573,7 @@ Vector3< T > Vector3< T >::operator/( T  a ) const
 
 
 template <> 
-Vector3< float > Vector3< float >::operator/( float  a ) const 
+inline Vector3< float > Vector3< float >::operator/( float  a ) const 
 { 
     assert( a != 0.0f ); 
     a = 1.0f / a; 
@@ -583,7 +583,7 @@ Vector3< float > Vector3< float >::operator/( float  a ) const
 
 
 template <> 
-Vector3< double > Vector3< double >::operator/( double  a ) const 
+inline Vector3< double > Vector3< double >::operator/( double  a ) const 
 { 
     assert( a != 0.0 ); 
     a = 1.0 / a; 
@@ -626,7 +626,7 @@ const Vector3< T >& Vector3< T >::operator*=( T  a )
 
 
 template < typename T > 
-const Vector3< T >& Vector3< T >::operator/=( T  a ) 
+inline const Vector3< T >& Vector3< T >::operator/=( T  a ) 
 { 
     x /= a; 
     y /= a; 
@@ -636,7 +636,7 @@ const Vector3< T >& Vector3< T >::operator/=( T  a )
 
 
 template <> 
-const Vector3< float >& Vector3< float >::operator/=( float  a ) 
+inline const Vector3< float >& Vector3< float >::operator/=( float  a ) 
 { 
     a = 1.0f / a; 
     x *= a; 
@@ -648,7 +648,7 @@ const Vector3< float >& Vector3< float >::operator/=( float  a )
 
 
 template <> 
-const Vector3< double >& Vector3< double >::operator/=( double  a ) 
+inline const Vector3< double >& Vector3< double >::operator/=( double  a ) 
 { 
     a = 1.0 / a; 
     x *= a; 

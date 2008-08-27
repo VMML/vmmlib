@@ -18,11 +18,50 @@
 #include "SVDTest.h"
 #include "JacobiSolverTest.h"
 
+#include <vmmlib/vector3.h>
+#include <vmmlib/vector4.h>
+
 using std::cout;
 using std::endl;
 
 int main()
-{	
+{
+#if 1
+    typedef vmml::Vector3< ssize_t >            vec3i;
+    typedef vmml::Vector3< size_t >         vec3ui;
+    typedef vmml::Vector3< float >          vec3f;
+    typedef vmml::Vector3< double >         vec3d;
+    typedef vmml::Vector4< int >            vec4i;
+    typedef vmml::Vector4< unsigned int >   vec4ui;
+    typedef vmml::Vector4< float >          vec4f;
+    typedef vmml::Vector4< double >         vec4d;
+
+    std::cout << "running custom tests" << std::endl;
+    vec3f a( -1.0, 2.0, -3.0 );
+    
+    vec3ui b( a );
+    if ( b.x == 0 )
+        std::cout << " zero " << std::endl;
+    else
+        std::cout << " not zero " << std::endl;
+    
+    vec3ui c;
+    c = a;
+    
+    std::cout << a << b << c << std::endl;
+    std::cout << b.x << " " << b.y << " " << b.z << std::endl;
+
+    unsigned int aa = (unsigned int ) -2.0f;
+    unsigned int bb = static_cast< unsigned int >( -2.0f );
+    unsigned int cc;// = reinterpret_cast< unsigned int >( -2.0f );
+        
+    
+    std::cout << aa << " " << bb << " " << cc << std::endl;
+    
+
+
+#else
+    std::cout << "running vmmlib pre-1.0 library tests..." << std::endl;
     vmml::Matrix3Test m3t;
     bool ok = m3t.test();
 
@@ -58,5 +97,6 @@ int main()
         cout << "All tests passed!" << endl;
     else
         cout << "Some tests have failed!" << endl;    
+#endif
     return 0;
 }

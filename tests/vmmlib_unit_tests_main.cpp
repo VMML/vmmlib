@@ -23,6 +23,7 @@ run_and_log( vmml::unit_test& test )
 int
 main( int argc, const char* argv[] )
 {
+
     vmml::vector_test vector_test_;
     run_and_log( vector_test_ );
 
@@ -43,6 +44,5 @@ main( int argc, const char* argv[] )
 
 	//vmml::svd_test svd_test_;
 	//run_and_log( svd_test_ );
-
 
 }

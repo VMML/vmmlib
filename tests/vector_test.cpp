@@ -422,6 +422,52 @@ vector_test::run()
         v0 = vd;
         
     }
+    
+    {
+    
+        vector< 4, float > vf( -1.0f, 3.0f, -99.0f, -0.9f );
+        vector< 4, size_t > vui( 0, 5, 2, 4 );
+    
+        bool ok = true;
+        size_t index = vf.getSmallestComponentIndex();
+        float f = vf.getSmallestComponent();
+        
+        if ( index != 2 || f != -99.0f )
+            ok = false;
+        
+        if ( ok )
+        {
+            index = vf.getLargestComponentIndex();
+            f = vf.getLargestComponent();
+            
+            if ( index != 1 || f != 3.0f )
+                ok = false;
+        }
+        
+        size_t ui;
+        if ( ok )
+        {
+            index = vui.getSmallestComponentIndex();
+            ui = vui.getSmallestComponent();
+            if ( index != 0 || ui != 0 )
+            {
+                ok = false;
+            }
+        }
+
+        if ( ok )
+        {
+            index = vui.getLargestComponentIndex();
+            ui = vui.getLargestComponent();
+            if ( index != 1 || ui != 5 )
+            {
+                ok = false;
+            }
+        }
+
+        log( "getSmallest/LargestComponent(), ...ComponentIndex()", ok );
+    
+    }
 
 
     return ok;

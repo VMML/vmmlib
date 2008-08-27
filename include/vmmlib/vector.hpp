@@ -147,6 +147,15 @@ public:
     void normalizePlane();
     
     
+    size_t  getSmallestComponentIndex() const;
+    size_t  getLargestComponentIndex() const;
+
+    float_t&        getSmallestComponent();
+    float_t&        getLargestComponent();
+    const float_t&  getSmallestComponent() const;
+    const float_t&  getLargestComponent() const;
+    
+    
     void copyFrom1DimCArray( const float_t* c_array );
 
     template< typename different_float_t >
@@ -1057,6 +1066,72 @@ size_t
 vector< M, float_t >::getM() const
 {
     return M;
+}
+
+
+
+template< size_t M, typename float_t >
+size_t
+vector< M, float_t >::getSmallestComponentIndex() const
+{
+    size_t smallest_index = 0;
+    for( size_t index = 1; index != M; ++index )
+    {
+        if ( array[ index ] < array[ smallest_index ] )
+            smallest_index = index;
+    }   
+    return smallest_index;
+}
+
+
+
+template< size_t M, typename float_t >
+size_t
+vector< M, float_t >::getLargestComponentIndex() const
+{
+    size_t largest_index = 0;
+    for( size_t index = 1; index != M; ++index )
+    {
+        if ( array[ index ] > array[ largest_index ] )
+            largest_index = index;
+    }   
+    return largest_index;
+}
+
+
+
+template< size_t M, typename float_t >
+float_t&
+vector< M, float_t >::getSmallestComponent()
+{
+    return at( getSmallestComponentIndex() );
+}
+
+
+
+template< size_t M, typename float_t >
+const float_t&
+vector< M, float_t >::getSmallestComponent() const
+{
+    return at( getSmallestComponentIndex() );
+}
+
+
+
+template< size_t M, typename float_t >
+float_t&
+vector< M, float_t >::getLargestComponent()
+{
+    return at( getLargestComponentIndex() );
+}
+
+
+
+template< size_t M, typename float_t >
+const float_t&
+vector< M, float_t >::getLargestComponent() const
+{
+    return at( getLargestComponentIndex() );
 }
 
 

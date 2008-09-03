@@ -1831,7 +1831,7 @@ rotate( const float_t angle, const vector< M-1, float_t >& axis )
 
     float_t two = 2.0;
 
-    array[0]  = cosine + ( 1.0 - cosine ) * poew( axis.array[0], two );
+    array[0]  = cosine + ( 1.0 - cosine ) * pow( axis.array[0], two );
     array[1]  = (1.0 - cosine ) * axis.array[0] * axis.array[1] + sine * axis.array[2];
     array[2]  = (1.0 - cosine ) * axis.array[0] * axis.array[2] - sine * axis.array[1];
     array[3]  = 0.0;

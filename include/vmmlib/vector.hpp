@@ -197,6 +197,14 @@ public:
 }; // class vector
 
 
+// allows float * vector, not only vector * float 
+template< size_t M, typename float_t >
+vector< M, float_t >
+operator* ( float_t factor, const vector< M, float_t >& vector_ )
+{
+    return vector_ * factor;
+}
+
 
 #if 0
 typedef vector< 2, float >  vec2f;

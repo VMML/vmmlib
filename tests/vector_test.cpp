@@ -469,6 +469,21 @@ vector_test::run()
     
     }
 
+    {
+        vector< 4, float > v( -1.0f, 3.0f, -99.0f, -0.9f );
+        float f = 4.0f;
+        
+        vector< 4, float > v_scaled = f * v;
+
+        ok = true;
+        if ( v_scaled != vector< 4, float >( -4.0f, 12.0f, -396.0f, -3.6f ) )
+        {
+            ok = false;
+        }
+        
+        log( "operator*( float, vector )", ok );
+
+    }
 
     return ok;
 }

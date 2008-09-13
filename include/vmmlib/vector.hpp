@@ -93,19 +93,26 @@ public:
     void set( float_t x, float_t y, float_t z ); 
     void set( float_t x, float_t y, float_t z, float_t w );
     
+    // compute the cross product of two vectors
+    // note: there's also a free function:
+    // vector<> cross( const vector<>, const vector<> )
+
     // result = vec1.cross( vec2 ) => retval result = vec1 x vec2
     inline vector< M, float_t > cross( const vector< M, float_t >& rhs ) const;
 
     // result.cross( vec1, vec2 ) => (this) = vec1 x vec2
     void cross( const vector< M, float_t >& a, const vector< M, float_t >& b );
-
+  
+    // compute the dot product of two vectors
+    // note: there's also a free function:
+    // float_t dot( const vector<>, const vector<> );
     inline float_t dot( const vector< M, float_t >& other ) const;
-    static inline float_t dot( const vector< M, float_t >& v0, 
-        const vector< M, float_t >& v1 );
 
+    // normalize the vector
+    // note: there's also a free function:
+    // vector<> normalize( const vector<> );
     inline void normalize();
     vector< M, float_t > getNormalized() const;
-    
     
     // L2 norm
     inline float_t norm() const;
@@ -197,13 +204,47 @@ public:
 }; // class vector
 
 
+//
+//  some free functions for convenience
+//
+
 // allows float * vector, not only vector * float 
 template< size_t M, typename float_t >
-vector< M, float_t >
+static vector< M, float_t >
 operator* ( float_t factor, const vector< M, float_t >& vector_ )
 {
     return vector_ * factor;
 }
+
+
+template< size_t M, typename float_t >
+inline float_t
+dot( const vector< M, float_t >& first, const vector< M, float_t >& second ) 
+{
+    float_t tmp = 0.0;
+    for( size_t index = 0; index < M; ++index )
+    {
+        tmp += first.at( index ) * second.at( index );
+    }
+    return tmp;
+}
+
+
+template< size_t M, typename float_t >
+inline vector< M, float_t >
+cross( const vector< M, float_t >& a, const vector< M, float_t >& b )
+{
+    return a.cross( b );
+}
+
+
+template< size_t M, typename float_t >
+inline vector< M, float_t >
+normalize( const vector< M, float_t >& vector_ )
+{
+    return vector_.getNormalized();
+}
+
 
 
 #if 0
@@ -746,23 +787,6 @@ vector< M, float_t >::dot( const vector< M, float_t >& other ) const
     }
     return tmp;
 }
-
-
-
-template< size_t M, typename float_t >
-inline float_t
-vector< M, float_t >::dot( 
-    const vector< M, float_t >& first, 
-    const vector< M, float_t >& second ) 
-{
-    float_t tmp = 0.0;
-    for( size_t index = 0; index < M; ++index )
-    {
-        tmp += first.at( index ) * second.at( index );
-    }
-    return tmp;
-}
-
 
 
 template< size_t M, typename float_t >

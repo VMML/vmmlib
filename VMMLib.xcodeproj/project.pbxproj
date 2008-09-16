@@ -41,6 +41,27 @@
 		98D402D60E38D6A000B24DF1 /* quaternion_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98D402D40E38D6A000B24DF1 /* quaternion_test.cpp */; };
 		98D402D70E38D6A000B24DF1 /* quaternion_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98D402D40E38D6A000B24DF1 /* quaternion_test.cpp */; };
 		98D402D80E38D6A000B24DF1 /* quaternion_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98D402D40E38D6A000B24DF1 /* quaternion_test.cpp */; };
+		98E863770E8005C00004F396 /* vmmlib.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 98D9E40F0E3E269700B046DD /* vmmlib.hpp */; };
+		98E863780E8005C00004F396 /* matrix.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 98F556320E2437540044BA3E /* matrix.hpp */; };
+		98E863790E8005C00004F396 /* vector.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 9868345B0E24F8F300618F55 /* vector.hpp */; };
+		98E8637A0E8005C00004F396 /* quaternion.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 98D402D30E38D6A000B24DF1 /* quaternion.hpp */; };
+		98E8637B0E8005C00004F396 /* matrix_functors.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 98B7A3F00E24EAA30064264E /* matrix_functors.hpp */; };
+		98E8637C0E8005C00004F396 /* qr_decomposition.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 98F556330E2437540044BA3E /* qr_decomposition.hpp */; };
+		98E8637D0E8005C00004F396 /* svd.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 9839FA1D0E2B5A6C00A16721 /* svd.hpp */; };
+		98E8637E0E8005C00004F396 /* jacobiSolver.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 98D9E3EF0E3E14FB00B046DD /* jacobiSolver.hpp */; };
+		98E8637F0E8005C00004F396 /* frustum.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 98D9E4110E3E26E000B046DD /* frustum.hpp */; };
+		98E863800E8005C00004F396 /* frustumCuller.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 98D9E4120E3E26E000B046DD /* frustumCuller.hpp */; };
+		98E863810E8005C00004F396 /* visibility.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 98D9E4C10E3E314700B046DD /* visibility.hpp */; };
+		98E863830E8005C90004F396 /* lapack.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 982449FD0E3F584A0018E13A /* lapack.hpp */; };
+		98E863840E8005C90004F396 /* lapack_types.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 98584AF50E643AEC00314C4C /* lapack_types.hpp */; };
+		98E863850E8005C90004F396 /* lapack_includes.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 98584B140E643BFC00314C4C /* lapack_includes.hpp */; };
+		98E863860E8005C90004F396 /* lapack_linear_least_squares.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 982449FC0E3F584A0018E13A /* lapack_linear_least_squares.hpp */; };
+		98E863870E8005C90004F396 /* lapack_svd.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 982449FB0E3F584A0018E13A /* lapack_svd.hpp */; };
+		98E863880E8005DA0004F396 /* vmmlib_config.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 9868345D0E24F97D00618F55 /* vmmlib_config.hpp */; };
+		98E863890E8005DA0004F396 /* details.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 98D411660E26806A00BEFA71 /* details.hpp */; };
+		98E8638A0E8005DA0004F396 /* exception.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 98D4102C0E2658FE00BEFA71 /* exception.hpp */; };
+		98E8638B0E8005DA0004F396 /* stringUtils.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 98244A310E3F59CD0018E13A /* stringUtils.hpp */; };
+		98E8638C0E8006390004F396 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9839FE0E0E2BB16D00A16721 /* Accelerate.framework */; };
 		98F5563A0E24377F0044BA3E /* matrix_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98F556350E24377F0044BA3E /* matrix_test.cpp */; };
 		98F5563B0E24377F0044BA3E /* qr_decomposition_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98F556370E24377F0044BA3E /* qr_decomposition_test.cpp */; };
 		98FAB2960E30CDF400C1A8FC /* unit_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98FE7DCD0E224EC400B1E17F /* unit_test.cpp */; };
@@ -128,6 +149,8 @@
 		98D9E4120E3E26E000B046DD /* frustumCuller.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = frustumCuller.hpp; path = include/vmmlib/frustumCuller.hpp; sourceTree = "<group>"; };
 		98D9E4C10E3E314700B046DD /* visibility.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = visibility.hpp; path = include/vmmlib/visibility.hpp; sourceTree = "<group>"; };
 		98D9E4C30E3E317100B046DD /* visibility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = visibility.h; path = include/vmmlib/visibility.h; sourceTree = "<group>"; };
+		98E863700E8005B10004F396 /* vmmlib.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = vmmlib.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		98E863710E8005B10004F396 /* vmmlib-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "vmmlib-Info.plist"; sourceTree = "<group>"; };
 		98F556320E2437540044BA3E /* matrix.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = matrix.hpp; path = include/vmmlib/matrix.hpp; sourceTree = "<group>"; };
 		98F556330E2437540044BA3E /* qr_decomposition.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = qr_decomposition.hpp; path = include/vmmlib/qr_decomposition.hpp; sourceTree = "<group>"; };
 		98F556340E2437540044BA3E /* stringUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = stringUtils.h; path = include/vmmlib/stringUtils.h; sourceTree = "<group>"; };
@@ -163,6 +186,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		98E8636E0E8005B10004F396 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				98E8638C0E8006390004F396 /* Accelerate.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		98FE7DC30E224E8700B1E17F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -181,6 +212,7 @@
 				98FE7DC50E224E8700B1E17F /* vmmlib_unit_tests */,
 				98B7A2490E24C85C0064264E /* vmmlib_performance_tests */,
 				9839FE1F0E2BB24700A16721 /* vmmlib_lapack_test */,
+				98E863700E8005B10004F396 /* vmmlib.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -195,6 +227,7 @@
 				0867D69AFE84028FC02AAC07 /* External Frameworks and Libraries */,
 				034768DFFF38A50411DB9C8B /* Products */,
 				988F59AC0C22C9A90005AC92 /* VMMLib-Info.plist */,
+				98E863710E8005B10004F396 /* vmmlib-Info.plist */,
 			);
 			name = VMMLib;
 			sourceTree = "<group>";
@@ -433,6 +466,36 @@
 		};
 /* End PBXGroup section */
 
+/* Begin PBXHeadersBuildPhase section */
+		98E8636B0E8005B10004F396 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				98E863770E8005C00004F396 /* vmmlib.hpp in Headers */,
+				98E863780E8005C00004F396 /* matrix.hpp in Headers */,
+				98E863790E8005C00004F396 /* vector.hpp in Headers */,
+				98E8637A0E8005C00004F396 /* quaternion.hpp in Headers */,
+				98E8637B0E8005C00004F396 /* matrix_functors.hpp in Headers */,
+				98E8637C0E8005C00004F396 /* qr_decomposition.hpp in Headers */,
+				98E8637D0E8005C00004F396 /* svd.hpp in Headers */,
+				98E8637E0E8005C00004F396 /* jacobiSolver.hpp in Headers */,
+				98E8637F0E8005C00004F396 /* frustum.hpp in Headers */,
+				98E863800E8005C00004F396 /* frustumCuller.hpp in Headers */,
+				98E863810E8005C00004F396 /* visibility.hpp in Headers */,
+				98E863830E8005C90004F396 /* lapack.hpp in Headers */,
+				98E863840E8005C90004F396 /* lapack_types.hpp in Headers */,
+				98E863850E8005C90004F396 /* lapack_includes.hpp in Headers */,
+				98E863860E8005C90004F396 /* lapack_linear_least_squares.hpp in Headers */,
+				98E863870E8005C90004F396 /* lapack_svd.hpp in Headers */,
+				98E863880E8005DA0004F396 /* vmmlib_config.hpp in Headers */,
+				98E863890E8005DA0004F396 /* details.hpp in Headers */,
+				98E8638A0E8005DA0004F396 /* exception.hpp in Headers */,
+				98E8638B0E8005DA0004F396 /* stringUtils.hpp in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
 /* Begin PBXNativeTarget section */
 		9839FE1E0E2BB24700A16721 /* vmmlib_lapack_test */ = {
 			isa = PBXNativeTarget;
@@ -482,6 +545,24 @@
 			productReference = 98B7A2490E24C85C0064264E /* vmmlib_performance_tests */;
 			productType = "com.apple.product-type.tool";
 		};
+		98E8636F0E8005B10004F396 /* vmmlib */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 98E863740E8005B10004F396 /* Build configuration list for PBXNativeTarget "vmmlib" */;
+			buildPhases = (
+				98E8636B0E8005B10004F396 /* Headers */,
+				98E8636C0E8005B10004F396 /* Resources */,
+				98E8636D0E8005B10004F396 /* Sources */,
+				98E8636E0E8005B10004F396 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = vmmlib;
+			productName = vmmlib;
+			productReference = 98E863700E8005B10004F396 /* vmmlib.framework */;
+			productType = "com.apple.product-type.framework";
+		};
 		98FE7DC40E224E8700B1E17F /* vmmlib_unit_tests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 98FE7DCA0E224E9800B1E17F /* Build configuration list for PBXNativeTarget "vmmlib_unit_tests" */;
@@ -515,9 +596,20 @@
 				98FE7DC40E224E8700B1E17F /* vmmlib_unit_tests */,
 				98B7A2480E24C85C0064264E /* vmmlib_performance_tests */,
 				9839FE1E0E2BB24700A16721 /* vmmlib_lapack_test */,
+				98E8636F0E8005B10004F396 /* vmmlib */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		98E8636C0E8005B10004F396 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		9839FE1C0E2BB24700A16721 /* Sources */ = {
@@ -565,6 +657,13 @@
 				98D402D80E38D6A000B24DF1 /* quaternion_test.cpp in Sources */,
 				98244A430E3F5AEE0018E13A /* lapack_svd_test.cpp in Sources */,
 				98244A440E3F5AEE0018E13A /* lapack_linear_least_squares_test.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		98E8636D0E8005B10004F396 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -724,6 +823,56 @@
 			};
 			name = Release;
 		};
+		98E863720E8005B10004F396 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+				INFOPLIST_FILE = "vmmlib-Info.plist";
+				INSTALL_PATH = "@executable_path/../Frameworks/";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = vmmlib;
+			};
+			name = Debug;
+		};
+		98E863730E8005B10004F396 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+				INFOPLIST_FILE = "vmmlib-Info.plist";
+				INSTALL_PATH = "@executable_path/../Frameworks/";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = vmmlib;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
 		98FE7DC70E224E8800B1E17F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -792,6 +941,15 @@
 			buildConfigurations = (
 				98B7A24B0E24C85C0064264E /* Debug */,
 				98B7A24C0E24C85C0064264E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		98E863740E8005B10004F396 /* Build configuration list for PBXNativeTarget "vmmlib" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				98E863720E8005B10004F396 /* Debug */,
+				98E863730E8005B10004F396 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

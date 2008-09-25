@@ -127,6 +127,7 @@ public:
     // WARNING: assumes row_by_row layout - if this is not the case, 
     // use copyFrom1DimCArray( data_array, false )
     void operator=( const float_t* data_array );
+    void operator=( const float_t old_fashioned_matrix[ M ][ N ] );
     void operator=( const std::vector< float_t >& data );
 	
 	// sets all elements to fill_value
@@ -451,6 +452,7 @@ operator==( const matrix< M, N, float_t >& other )
 
 
 
+
 template< size_t M, size_t N, typename float_t >
 bool
 matrix< M, N, float_t >::
@@ -479,6 +481,23 @@ isEqualTo( const matrix< M, N, float_t >& other, float_t tolerance )
     }
     return ok;
 }
+
+
+
+template< size_t M, size_t N, typename float_t >
+void
+matrix< M, N, float_t >::operator=( const float_t matrix_[ M ][ N ] )
+{
+    for( size_t rowIndex = 0; rowIndex < M; rowIndex++)
+    {
+        for( size_t colIndex = 0; colIndex < N; colIndex++) 
+        {
+            at( rowIndex, colIndex ) = matrix_[ rowIndex ][ colIndex ];
+        }
+    }
+
+}
+
 
 
 // WARNING: data_array[] must be at least of size M * N - otherwise CRASH!

@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include <string>
 #include <sstream>
+#include <cassert>
 
 #include <vmmlib/vmmlib_config.hpp>
 
@@ -14,7 +15,7 @@
 #ifdef VMMLIB_THROW_EXCEPTIONS
 #define VMMLIB_ERROR( desc, here ) throw( exception( desc, here ) )
 #else
-#define VMMLIB_ERROR( desc, here ) error_noexcept( desc )
+#define VMMLIB_ERROR( desc, here ) error_noexcept( desc, here )
 #endif
 
 
@@ -49,7 +50,7 @@ public:
     , _here( here )
     {}
     
-    virtual ~exception() throw() {};
+    virtual ~exception() throw() {}
     
     virtual const char* what() const throw()
     {
@@ -59,8 +60,8 @@ public:
             << _description 
             << std::endl;
         return ss.str().c_str();
-    };
-
+    }
+    
 protected:
     std::string         _description;
     const except_here&  _here;
@@ -68,6 +69,8 @@ protected:
 private:
     // disallow std ctor
     exception() : _here( *new except_here( "", 0 ) ){};
+    // disallow assignment operator
+    virtual const exception& operator=( const exception& ){ return *this; }
 
 
 };

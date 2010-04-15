@@ -10,7 +10,7 @@ namespace vmml
 class svd_test : public unit_test
 {
 public: 
-	svd_test() : unit_test( "singular value decomposition (svd)" ) {}
+	svd_test() : unit_test( "SVD, singular value decomposition" ) {}
     virtual bool run();
 };
 

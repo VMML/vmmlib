@@ -22,6 +22,6 @@
 #include <vmmlib/matrix.hpp>
 #include <vmmlib/quaternion.hpp>
 #include <vmmlib/frustum.hpp>
-#include <vmmlib/frustumCuller.hpp>
+#include <vmmlib/frustum_culler.hpp>
 
 #endif

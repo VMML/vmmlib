@@ -10,6 +10,28 @@
 
 #include <string>
 
+/** 
+*
+*   a wrapper for lapack's DGESVD routine.
+*   
+*   returns a boolean to indicate success of the operation. 
+*   if the return value is false, you can get the parameters using
+*   get_params(). 
+*   error states:
+*
+*  INFO    (output) INTEGER
+*          = 0:  successful exit.
+*          < 0:  if INFO = -i, the i-th argument had an illegal value.
+*          > 0:  if DBDSQR did not converge, INFO specifies how many
+*                superdiagonals of an intermediate bidiagonal form B
+*                did not converge to zero. See the description of WORK
+*                above for details.
+*
+*   more information in: http://www.netlib.org/lapack/double/dgesvd.f
+**
+*/
+
+
 namespace vmml
 {
 
@@ -135,18 +157,26 @@ struct lapack_svd
     ~lapack_svd();
 
     // slow version, use if U and Vt are needed
-    void compute(
+    bool compute(
         const matrix< M, N, float_t >& A,
         matrix< M, N, float_t >& U,
         vector< N, float_t >& sigma,
         matrix< N, N, float_t >& Vt
         );
 
+    // overwrites A with the result U, 
+    bool compute_and_overwrite_input( 
+        matrix< M, N, float_t >& A_U,
+        vector< N, float_t >& sigma
+        );
+
     // fast version, use if only sigma is needed.
-    void compute( 
+    bool compute( 
         const matrix< M, N, float_t >& A,
         vector< N, float_t >& sigma
         );
+        
+    inline bool test_success( lapack::lapack_int info );
     
     lapack::svd_params< float_t > p;
 
@@ -175,7 +205,7 @@ lapack_svd< M, N, float_t >::lapack_svd()
     // workspace query
     lapack::svd_call( p );
 
-    p.lwork = p.work[0];
+    p.lwork = static_cast< lapack::lapack_int >( p.work[0] );
     delete p.work;
 
     p.work = new float_t[ p.lwork ];
@@ -193,7 +223,7 @@ lapack_svd< M, N, float_t >::~lapack_svd()
 
 
 template< size_t M, size_t N, typename float_t >
-void
+bool
 lapack_svd< M, N, float_t >::compute(
     const matrix< M, N, float_t >& A,
     matrix< M, N, float_t >& U,
@@ -201,7 +231,9 @@ lapack_svd< M, N, float_t >::compute(
     matrix< N, N, float_t >& Vt
     )
 {
+    // lapack destroys the contents of the input matrix
     matrix< M, N, float_t > AA( A );
+
     p.jobu      = 'A';
     p.jobvt     = 'A';
     p.a         = AA.array;
@@ -211,27 +243,42 @@ lapack_svd< M, N, float_t >::compute(
     p.ldvt      = N;
 
     lapack::svd_call< float_t >( p );
-
-    if ( p.info != 0 )
-    {
-        if ( p.info < 0 )
-            VMMLIB_ERROR( "invalid value in input matrix", VMMLIB_HERE );
-        else
-            VMMLIB_ERROR( "no convergence.", VMMLIB_HERE );
-    }
-
+    
+    return p.info == 0;
 }
 
 
 
 template< size_t M, size_t N, typename float_t >
-void
+bool
+lapack_svd< M, N, float_t >::compute_and_overwrite_input(
+    matrix< M, N, float_t >& A_U,
+    vector< N, float_t >& S
+    )
+{
+    p.jobu      = 'O';
+    p.jobvt     = 'N';
+    p.a         = A_U.array;
+    p.s         = S.array;
+    p.ldvt      = N;
+
+    lapack::svd_call< float_t >( p );
+
+    return p.info == 0;
+}
+
+
+
+template< size_t M, size_t N, typename float_t >
+bool
 lapack_svd< M, N, float_t >::compute( 
     const matrix< M, N, float_t >& A,
     vector< N, float_t >& S
     )
 {
-    matrix< M, N, float_t > AA( A );
+    // lapack destroys the contents of the input matrix
+    matrix< M, N, float_t > AA( A ); 
+    
     p.jobu      = 'N';
     p.jobvt     = 'N';
     p.a         = AA.array;
@@ -241,18 +288,8 @@ lapack_svd< M, N, float_t >::compute(
 
     lapack::svd_call< float_t >( p );
 
-    if ( p.info != 0 )
-    {
-        if ( p.info < 0 )
-            VMMLIB_ERROR( "invalid value in input matrix", VMMLIB_HERE );
-        else
-            VMMLIB_ERROR( "no convergence.", VMMLIB_HERE );
-    }
-
+    return p.info == 0;
 }
-
-
-
 
 
 } // namespace vmml

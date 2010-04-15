@@ -4,13 +4,16 @@
 #include "quaternion_test.hpp"
 #include "qr_decomposition_test.hpp"
 #include "svd_test.hpp"
+#include "tensor3_test.hpp"
+#include "tucker3_tensor_test.hpp"
 
 #include <iostream>
 
-#define VMMLIB_USE_LAPACK
+//#define VMMLIB_USE_LAPACK
 
 #ifdef VMMLIB_USE_LAPACK
 #include "lapack_linear_least_squares_test.hpp"
+#include "lapack_svd_test.hpp"
 #endif
 
 void
@@ -30,19 +33,27 @@ main( int argc, const char* argv[] )
     vmml::matrix_test matrix_test_;
     run_and_log( matrix_test_ );
 
-
     vmml::quaternion_test quaternion_test_;
     run_and_log( quaternion_test_ );
     
+	vmml::qr_decomposition_test qr_test_;
+	run_and_log( qr_test_ );
+
+	vmml::svd_test svd_test_;
+	run_and_log( svd_test_ );
+    
 #ifdef VMMLIB_USE_LAPACK
+    vmml::lapack_svd_test lapack_svd_test_;
+    run_and_log( lapack_svd_test_ );
+
     vmml::lapack_linear_least_squares_test lapack_llsq_test;
     run_and_log( lapack_llsq_test );
 #endif
 
-	//vmml::qr_decomposition_test qr_test_;
-	//run_and_log( qr_test_ );
-
-	//vmml::svd_test svd_test_;
-	//run_and_log( svd_test_ );
-
+    vmml::tensor3_test t3t;
+    run_and_log( t3t );
+	
+    vmml::tucker3_tensor_test tt3t;
+    run_and_log( tt3t );
+	
 }

@@ -44,8 +44,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		089C1667FE841158C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		8DC2EF5A0486A6940098B216 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		982449FB0E3F584A0018E13A /* lapack_svd.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = lapack_svd.hpp; path = include/vmmlib/lapack_svd.hpp; sourceTree = "<group>"; };
 		982449FC0E3F584A0018E13A /* lapack_linear_least_squares.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = lapack_linear_least_squares.hpp; path = include/vmmlib/lapack_linear_least_squares.hpp; sourceTree = "<group>"; };
 		982449FD0E3F584A0018E13A /* lapack.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = lapack.hpp; path = include/vmmlib/lapack.hpp; sourceTree = "<group>"; };
@@ -75,7 +73,6 @@
 		9868345D0E24F97D00618F55 /* vmmlib_config.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = vmmlib_config.hpp; path = include/vmmlib/vmmlib_config.hpp; sourceTree = "<group>"; };
 		986834BF0E24FFD400618F55 /* vector_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = vector_test.cpp; path = tests/vector_test.cpp; sourceTree = "<group>"; };
 		986834C00E24FFD400618F55 /* vector_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = vector_test.hpp; path = tests/vector_test.hpp; sourceTree = "<group>"; };
-		988F59AC0C22C9A90005AC92 /* VMMLib-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "VMMLib-Info.plist"; sourceTree = "<group>"; };
 		988F5A100C22CAFE0005AC92 /* README */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
 		98B22A260FB8353900EEDF5F /* frustum_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = frustum_test.cpp; path = tests/frustum_test.cpp; sourceTree = "<group>"; };
 		98B22A270FB8353900EEDF5F /* frustum_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = frustum_test.hpp; path = tests/frustum_test.hpp; sourceTree = "<group>"; };
@@ -98,7 +95,6 @@
 		98D9E40F0E3E269700B046DD /* vmmlib.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = vmmlib.hpp; path = include/vmmlib/vmmlib.hpp; sourceTree = "<group>"; };
 		98D9E4110E3E26E000B046DD /* frustum.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = frustum.hpp; path = include/vmmlib/frustum.hpp; sourceTree = "<group>"; };
 		98D9E4C10E3E314700B046DD /* visibility.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = visibility.hpp; path = include/vmmlib/visibility.hpp; sourceTree = "<group>"; };
-		98E863710E8005B10004F396 /* vmmlib-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "vmmlib-Info.plist"; sourceTree = "<group>"; };
 		98F556320E2437540044BA3E /* matrix.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = matrix.hpp; path = include/vmmlib/matrix.hpp; sourceTree = "<group>"; };
 		98F556330E2437540044BA3E /* qr_decomposition.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = qr_decomposition.hpp; path = include/vmmlib/qr_decomposition.hpp; sourceTree = "<group>"; };
 		98F556350E24377F0044BA3E /* matrix_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = matrix_test.cpp; path = tests/matrix_test.cpp; sourceTree = "<group>"; };
@@ -159,8 +155,6 @@
 				089C1665FE841158C02AAC07 /* Resources */,
 				0867D69AFE84028FC02AAC07 /* External Frameworks and Libraries */,
 				034768DFFF38A50411DB9C8B /* Products */,
-				988F59AC0C22C9A90005AC92 /* VMMLib-Info.plist */,
-				98E863710E8005B10004F396 /* vmmlib-Info.plist */,
 			);
 			name = VMMLib;
 			sourceTree = "<group>";
@@ -168,7 +162,7 @@
 		0867D69AFE84028FC02AAC07 /* External Frameworks and Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				1058C7B0FEA5585E11CA2CBB /* Linked Frameworks */,
+				9839FE0E0E2BB16D00A16721 /* Accelerate.framework */,
 			);
 			name = "External Frameworks and Libraries";
 			sourceTree = "<group>";
@@ -178,8 +172,6 @@
 			children = (
 				985F6FCC0C6B7C67002B05C5 /* LICENSE */,
 				988F5A100C22CAFE0005AC92 /* README */,
-				8DC2EF5A0486A6940098B216 /* Info.plist */,
-				089C1666FE841158C02AAC07 /* InfoPlist.strings */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -200,14 +192,6 @@
 				9839FE5C0E2BB59800A16721 /* lapack */,
 			);
 			name = Library;
-			sourceTree = "<group>";
-		};
-		1058C7B0FEA5585E11CA2CBB /* Linked Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				9839FE0E0E2BB16D00A16721 /* Accelerate.framework */,
-			);
-			name = "Linked Frameworks";
 			sourceTree = "<group>";
 		};
 		9839FE5C0E2BB59800A16721 /* lapack */ = {
@@ -391,7 +375,7 @@
 /* Begin PBXProject section */
 		0867D690FE84028FC02AAC07 /* Project object */ = {
 			isa = PBXProject;
-			buildConfigurationList = 1DEB91B108733DA50010E9CD /* Build configuration list for PBXProject "VMMLib" */;
+			buildConfigurationList = 1DEB91B108733DA50010E9CD /* Build configuration list for PBXProject "vmmlib" */;
 			compatibilityVersion = "Xcode 2.4";
 			hasScannedForEncodings = 1;
 			mainGroup = 0867D691FE84028FC02AAC07 /* VMMLib */;
@@ -460,17 +444,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXVariantGroup section */
-		089C1666FE841158C02AAC07 /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				089C1667FE841158C02AAC07 /* English */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		1DEB91B208733DA50010E9CD /* Debug */ = {
@@ -609,7 +582,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1DEB91B108733DA50010E9CD /* Build configuration list for PBXProject "VMMLib" */ = {
+		1DEB91B108733DA50010E9CD /* Build configuration list for PBXProject "vmmlib" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1DEB91B208733DA50010E9CD /* Debug */,

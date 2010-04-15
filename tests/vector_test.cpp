@@ -549,6 +549,18 @@ vector_test::run()
         log( "get_sub_vector< N >()", ok );
         
     }
+    
+    
+    {
+        vector< 4, double > v;
+        double* array               = v;
+        const double* const_array   = v;
+
+        array[ 1 ]          = 2.0;
+        //const_array[ 2 ]    = 3.0;
+    
+    }
+    
 
     return ok;
 }

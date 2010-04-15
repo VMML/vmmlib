@@ -41,6 +41,10 @@ public:
     inline const_reverse_iterator rbegin() const;
     inline const_reverse_iterator rend() const;
     
+    // conversion operators
+    inline operator T*();
+    inline operator const T*() const;
+    
     // accessors 
     inline T& operator()( size_t index );
     inline const T& operator()( size_t index ) const;
@@ -578,6 +582,22 @@ vector< M, T >::at( size_t index ) const
     }
     #endif
     return array[ index ];
+}
+
+
+
+template< size_t M, typename T >
+vector< M, T >::operator T*()
+{
+    return array;
+}
+
+
+
+template< size_t M, typename T >
+vector< M, T >::operator const T*() const
+{
+    return array;
 }
 
 

@@ -691,6 +691,18 @@ matrix_test::run()
         //m.getString( data );
         //std::cout << data << std::endl;
     }
+
+    {
+    
+        matrix< 4, 4, double > m;
+        double* array               = m;
+        const double* const_array   = m;
+        
+        array[ 3 ] = 1.0;
+        //const_array[ 3 ] = 1.0;
+    }
+
+
     return ok;
 }
 

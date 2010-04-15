@@ -48,9 +48,11 @@ public:
     // accessors 
     inline T& operator()( size_t index );
     inline const T& operator()( size_t index ) const;
+    #if 0
     inline T& operator[]( size_t index );
     inline const T& operator[]( size_t index ) const;
-
+    #endif
+    
     inline T& at( size_t index );
     inline const T& at( size_t index ) const;
 
@@ -601,7 +603,7 @@ vector< M, T >::operator const T*() const
 }
 
 
-
+#if 0
 template< size_t M, typename T >
 inline T&
 vector< M, T >::operator[]( size_t index )
@@ -617,7 +619,7 @@ vector< M, T >::operator[]( size_t index ) const
 {
     return at( index );
 }
-
+#endif
 
 
 template< size_t M, typename T >

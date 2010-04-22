@@ -41,7 +41,6 @@ public:
     typedef vector< 4, T >  super;
 
     using super::operator();
-    using super::operator[];
     using super::operator=;
     using super::at;
     using super::x;

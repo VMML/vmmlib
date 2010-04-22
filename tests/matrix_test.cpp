@@ -669,6 +669,35 @@ matrix_test::run()
         log( "direct_sum", ok );
     }
     
+    // test determinants
+    {
+        matrix< 2, 2, double >  m22;
+        matrix< 3, 3, double >  m33;
+        matrix< 4, 4, double >  m44;
+        
+        double data[] =
+        {
+            1,2,0,0,
+            2,1,2,0,
+            0,2,1,2,
+            0,0,2,1
+        };
+        
+        m44.set( data, data+16 );
+        m44.get_sub_matrix( m33 );
+        m33.get_sub_matrix( m22 );
+        
+        double  det44 = m44.det();
+        double det33 = m33.det();
+        double det22 = m22.det();
+        
+        bool ok = det44 == 5.0 && det33 == -7.0 && det22 == -3.0;
+        
+        log( "determinant for 2x2, 3x3 and 4x4 matrices", ok );
+    
+    }
+    
+    
     
     {
         bool ok = true;

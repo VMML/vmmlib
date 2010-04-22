@@ -200,8 +200,7 @@ public:
     size_t get_number_of_rows() const;
     size_t get_number_of_columns() const;
     
-    template< typename dummy_t >
-    T det( typename enable_if< M == N, dummy_t >::type* = 0 ) const;
+    T det() const;
     
     // the return value indicates if the matrix is invertible.
     // we need a tolerance term since the computation of the determinant is
@@ -469,6 +468,54 @@ inline T compute_determinant( const matrix< 3, 3, T >& m_ )
           m_( 0,0 ) * ( m_( 1,1 ) * m_( 2,2 ) - m_( 1,2 ) * m_( 2,1 ) )
         + m_( 0,1 ) * ( m_( 1,2 ) * m_( 2,0 ) - m_( 1,0 ) * m_( 2,2 ) )
         + m_( 0,2 ) * ( m_( 1,0 ) * m_( 2,1 ) - m_( 1,1 ) * m_( 2,0 ) );
+}
+
+
+template< typename T >
+inline T compute_determinant( const matrix< 4, 4, T >& m )
+{
+    T m00   = m( 0, 0 );
+    T m10   = m( 1, 0 );
+    T m20   = m( 2, 0 );
+    T m30   = m( 3, 0 );
+    T m01   = m( 0, 1 );
+    T m11   = m( 1, 1 );
+    T m21   = m( 2, 1 );
+    T m31   = m( 3, 1 );
+    T m02   = m( 0, 2 );
+    T m12   = m( 1, 2 );
+    T m22   = m( 2, 2 );
+    T m32   = m( 3, 2 );
+    T m03   = m( 0, 3 );
+    T m13   = m( 1, 3 );
+    T m23   = m( 2, 3 );
+    T m33   = m( 3, 3 );
+
+    return
+        m03 * m12 * m21 * m30
+            - m02 * m13 * m21 * m30
+            - m03 * m11 * m22 * m30
+            + m01 * m13 * m22 * m30
+            + m02 * m11 * m23 * m30
+            - m01 * m12 * m23 * m30
+            - m03 * m12 * m20 * m31
+            + m02 * m13 * m20 * m31
+            + m03 * m10 * m22 * m31
+            - m00 * m13 * m22 * m31
+            - m02 * m10 * m23 * m31
+            + m00 * m12 * m23 * m31
+            + m03 * m11 * m20 * m32
+            - m01 * m13 * m20 * m32
+            - m03 * m10 * m21 * m32
+            + m00 * m13 * m21 * m32
+            + m01 * m10 * m23 * m32
+            - m00 * m11 * m23 * m32
+            - m02 * m11 * m20 * m33
+            + m01 * m12 * m20 * m33
+            + m02 * m10 * m21 * m33
+            - m00 * m12 * m21 * m33
+            - m01 * m10 * m22 * m33
+            + m00 * m11 * m22 * m33;
 }
 
 
@@ -1526,9 +1573,8 @@ set_sub_matrix( const matrix< O, P, T >& sub_matrix,
 
 
 template< size_t M, size_t N, typename T >
-template< typename dummy_t >
 inline T
-matrix< M, N, T >::det( typename enable_if< M == N, dummy_t >::type* ) const
+matrix< M, N, T >::det() const
 {
     return compute_determinant( *this );
 }

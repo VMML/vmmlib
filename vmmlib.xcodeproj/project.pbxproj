@@ -375,7 +375,7 @@
 /* Begin PBXProject section */
 		0867D690FE84028FC02AAC07 /* Project object */ = {
 			isa = PBXProject;
-			buildConfigurationList = 1DEB91B108733DA50010E9CD /* Build configuration list for PBXProject "vmmlib" */;
+			buildConfigurationList = 1DEB91B108733DA50010E9CD /* Build configuration list for PBXProject "VMMLib" */;
 			compatibilityVersion = "Xcode 2.4";
 			hasScannedForEncodings = 1;
 			mainGroup = 0867D691FE84028FC02AAC07 /* VMMLib */;
@@ -582,7 +582,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1DEB91B108733DA50010E9CD /* Build configuration list for PBXProject "vmmlib" */ = {
+		1DEB91B108733DA50010E9CD /* Build configuration list for PBXProject "VMMLib" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1DEB91B208733DA50010E9CD /* Debug */,

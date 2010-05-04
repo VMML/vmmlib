@@ -14,7 +14,7 @@
 *
 * this is a wrapper for the following lapack routines: 
 *   
-* xGESV
+* xGELS
 *
 *
 */ 

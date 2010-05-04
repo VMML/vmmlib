@@ -13,6 +13,7 @@
 
 #ifdef VMMLIB_USE_LAPACK
 #include "lapack_linear_least_squares_test.hpp"
+#include "lapack_gaussian_elimination_test.hpp"
 #include "lapack_svd_test.hpp"
 #endif
 
@@ -48,6 +49,10 @@ main( int argc, const char* argv[] )
 
     vmml::lapack_linear_least_squares_test lapack_llsq_test;
     run_and_log( lapack_llsq_test );
+
+    vmml::lapack_gaussian_elimination_test lapack_ge_test;
+    run_and_log( lapack_ge_test );
+
 #endif
 
     vmml::tensor3_test t3t;

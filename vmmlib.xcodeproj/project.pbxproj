@@ -23,6 +23,7 @@
 		9839FF000E2BC75D00A16721 /* performance_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98B7A2680E24CB140064264E /* performance_test.cpp */; };
 		9839FF020E2BC76600A16721 /* timer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98B7A2560E24C9540064264E /* timer.cpp */; };
 		98476419110DDB940024A1F8 /* tensor3_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98476417110DDB940024A1F8 /* tensor3_test.cpp */; };
+		9863B6F211903EFE00887FFC /* lapack_gaussian_elimination_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9863B6F111903EFE00887FFC /* lapack_gaussian_elimination_test.cpp */; };
 		986834C10E24FFD400618F55 /* vector_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 986834BF0E24FFD400618F55 /* vector_test.cpp */; };
 		986834C20E24FFD400618F55 /* vector_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 986834BF0E24FFD400618F55 /* vector_test.cpp */; };
 		98B22A280FB8353900EEDF5F /* frustum_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98B22A260FB8353900EEDF5F /* frustum_test.cpp */; };
@@ -69,6 +70,9 @@
 		98596E730FB4897C006CA0F8 /* jacobi_solver.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = jacobi_solver.hpp; path = include/vmmlib/jacobi_solver.hpp; sourceTree = "<group>"; };
 		98596E840FB489D4006CA0F8 /* frustum_culler.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = frustum_culler.hpp; path = include/vmmlib/frustum_culler.hpp; sourceTree = "<group>"; };
 		985F6FCC0C6B7C67002B05C5 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = LICENSE; path = include/vmmlib/LICENSE; sourceTree = "<group>"; };
+		9863B6E711903E5D00887FFC /* lapack_gaussian_elimination.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = lapack_gaussian_elimination.hpp; path = include/vmmlib/lapack_gaussian_elimination.hpp; sourceTree = "<group>"; };
+		9863B6F011903EFE00887FFC /* lapack_gaussian_elimination_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = lapack_gaussian_elimination_test.hpp; path = tests/lapack_gaussian_elimination_test.hpp; sourceTree = "<group>"; };
+		9863B6F111903EFE00887FFC /* lapack_gaussian_elimination_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lapack_gaussian_elimination_test.cpp; path = tests/lapack_gaussian_elimination_test.cpp; sourceTree = "<group>"; };
 		9868345B0E24F8F300618F55 /* vector.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = vector.hpp; path = include/vmmlib/vector.hpp; sourceTree = "<group>"; };
 		9868345D0E24F97D00618F55 /* vmmlib_config.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = vmmlib_config.hpp; path = include/vmmlib/vmmlib_config.hpp; sourceTree = "<group>"; };
 		986834BF0E24FFD400618F55 /* vector_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = vector_test.cpp; path = tests/vector_test.cpp; sourceTree = "<group>"; };
@@ -203,6 +207,7 @@
 				98584B140E643BFC00314C4C /* lapack_includes.hpp */,
 				982449FC0E3F584A0018E13A /* lapack_linear_least_squares.hpp */,
 				982449FB0E3F584A0018E13A /* lapack_svd.hpp */,
+				9863B6E711903E5D00887FFC /* lapack_gaussian_elimination.hpp */,
 			);
 			name = lapack;
 			sourceTree = "<group>";
@@ -302,6 +307,8 @@
 				98244A3B0E3F5AEE0018E13A /* lapack_svd_test.cpp */,
 				98244A3E0E3F5AEE0018E13A /* lapack_linear_least_squares_test.hpp */,
 				98244A3D0E3F5AEE0018E13A /* lapack_linear_least_squares_test.cpp */,
+				9863B6F011903EFE00887FFC /* lapack_gaussian_elimination_test.hpp */,
+				9863B6F111903EFE00887FFC /* lapack_gaussian_elimination_test.cpp */,
 				CF7FA8D4114EB617003076E4 /* tucker3_tensor_test.cpp */,
 				CF7FA8D9114EB696003076E4 /* tucker3_tensor_test.hpp */,
 			);
@@ -375,7 +382,7 @@
 /* Begin PBXProject section */
 		0867D690FE84028FC02AAC07 /* Project object */ = {
 			isa = PBXProject;
-			buildConfigurationList = 1DEB91B108733DA50010E9CD /* Build configuration list for PBXProject "VMMLib" */;
+			buildConfigurationList = 1DEB91B108733DA50010E9CD /* Build configuration list for PBXProject "vmmlib" */;
 			compatibilityVersion = "Xcode 2.4";
 			hasScannedForEncodings = 1;
 			mainGroup = 0867D691FE84028FC02AAC07 /* VMMLib */;
@@ -440,6 +447,7 @@
 				98B230730FB985D700EEDF5F /* jacobi_test.cpp in Sources */,
 				98476419110DDB940024A1F8 /* tensor3_test.cpp in Sources */,
 				CF7FA8D5114EB617003076E4 /* tucker3_tensor_test.cpp in Sources */,
+				9863B6F211903EFE00887FFC /* lapack_gaussian_elimination_test.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -582,7 +590,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1DEB91B108733DA50010E9CD /* Build configuration list for PBXProject "VMMLib" */ = {
+		1DEB91B108733DA50010E9CD /* Build configuration list for PBXProject "vmmlib" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1DEB91B208733DA50010E9CD /* Debug */,

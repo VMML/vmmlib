@@ -79,7 +79,7 @@ lapack_svd_test::run()
     if ( ok ) ok = sigma == sigmaCorrect;
     if ( ok ) ok = Vt == VtCorrect;
     #endif
-    log( "singular value decomposition using lapack xGESV, maximum precision", ok, true );
+    log( "singular value decomposition using lapack xGESVD, maximum precision", ok, true );
 
     double tolerance = 1e-8;
     #if 1
@@ -96,7 +96,7 @@ lapack_svd_test::run()
     #endif
     
 
-    log( "singular value decomposition using lapack xGESV, tolerance 1e-8", ok );
+    log( "singular value decomposition using lapack xGESVD, tolerance 1e-8", ok );
 
     if ( ! ok )
     {

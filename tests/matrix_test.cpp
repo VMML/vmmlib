@@ -16,6 +16,57 @@ matrix_test::run()
     matrix< 2, 3, double > m0;
     double data[] = { 1, 2, 3, 4, 5, 6 };
     
+    
+    // iterator set test
+    {
+        matrix< 2, 3, double > m_correct;
+        m_correct( 0, 0 )   = 1;
+        m_correct( 0, 1 )   = 2;
+        m_correct( 0, 2 )   = 3;
+        m_correct( 1, 0 )   = 4;
+        m_correct( 1, 1 )   = 5;
+        m_correct( 1, 2 )   = 6;
+        
+        m0.set( data, data + 6 );
+
+        bool ok = m0 == m_correct;
+
+        if ( ok )
+        {
+            matrix< 4, 4, double > m_c2;
+            m_c2( 0, 0 )    = 1;
+            m_c2( 0, 1 )    = 2;
+            m_c2( 0, 2 )    = 3;
+            m_c2( 0, 3 )    = 4;
+            m_c2( 1, 0 )    = 5;
+            m_c2( 1, 1 )    = 6;
+            m_c2( 1, 2 )    = 7;
+            m_c2( 1, 3 )    = 8;
+            m_c2( 2, 0 )    = 9;
+            m_c2( 2, 1 )    = 10;
+            m_c2( 2, 2 )    = 11;
+            m_c2( 2, 3 )    = 12;
+            m_c2( 3, 0 )    = 13;
+            m_c2( 3, 1 )    = 14;
+            m_c2( 3, 2 )    = 15;
+            m_c2( 3, 3 )    = 16;
+            
+            double m2_data[] = 
+                { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
+            matrix< 4, 4, double > m2;
+            m2.set( m2_data, m2_data + 16 );
+            
+            ok = m2 == m_c2;
+            
+            std::cout << m2 << std::endl;
+            std::cout << m_c2 << std::endl;
+        }
+        log( "iterator set", ok );
+    
+    }
+    
+    
+    
     m0.set( data, data + 6 );
     
     // test operator== / operator !=
@@ -694,7 +745,6 @@ matrix_test::run()
         bool ok = det44 == 5.0 && det33 == -7.0 && det22 == -3.0;
         
         log( "determinant for 2x2, 3x3 and 4x4 matrices", ok );
-    
     }
     
     

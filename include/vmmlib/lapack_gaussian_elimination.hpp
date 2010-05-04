@@ -126,7 +126,7 @@ struct gaussian_elimination
 
     void compute( 
         matrix< N, N, float_t >& A, 
-        vector< N >& b 
+        vector< N, float_t >& b 
         );
         
     gaussian_elimination();
@@ -137,6 +137,7 @@ struct gaussian_elimination
     lapack::xgesv_params< float_t > p;
     
 }; // struct lapack_linear_least_squares
+
 
 
 template< size_t M, size_t N, typename float_t >
@@ -168,7 +169,7 @@ void
 gaussian_elimination< M, N, float_t >::
 compute(
         matrix< N, N, float_t >& A, 
-        vector< N >& b
+        vector< N, float_t >& b
         )
 {
     p.a = A.array;

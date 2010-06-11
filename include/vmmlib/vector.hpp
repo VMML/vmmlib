@@ -41,9 +41,11 @@ public:
     inline const_reverse_iterator rbegin() const;
     inline const_reverse_iterator rend() const;
     
+    #ifndef VMMLIB_NO_CONVERSION_OPERATORS
     // conversion operators
     inline operator T*();
     inline operator const T*() const;
+    #endif
     
     // accessors 
     inline T& operator()( size_t index );
@@ -587,6 +589,7 @@ vector< M, T >::at( size_t index ) const
 }
 
 
+#ifndef VMMLIB_NO_CONVERSION_OPERATORS
 
 template< size_t M, typename T >
 vector< M, T >::operator T*()
@@ -601,6 +604,8 @@ vector< M, T >::operator const T*() const
 {
     return array;
 }
+
+#endif
 
 
 #if 0

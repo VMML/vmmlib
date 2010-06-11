@@ -65,9 +65,11 @@ public:
     template< size_t P, size_t Q >
     matrix( const matrix< P, Q, T >& source_ );
     
+    #ifndef VMMLIB_NO_CONVERSION_OPERATORS
     // auto conversion operator
     operator T*();
     operator const T*() const;
+    #endif
     
     bool operator==( const matrix& other ) const;
     bool operator!=( const matrix& other ) const;
@@ -777,6 +779,7 @@ matrix< M, N, T >::matrix( const matrix< M, N >& original )
 #endif
 
 
+#ifndef VMMLIB_NO_CONVERSION_OPERATORS
 
 template< size_t M, size_t N, typename T >
 matrix< M, N, T >::
@@ -794,6 +797,7 @@ operator const T*() const
     return array;
 }
 
+#endif
 
 
 template< size_t M, size_t N, typename T >

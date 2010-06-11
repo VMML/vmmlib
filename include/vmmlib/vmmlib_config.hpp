@@ -2,6 +2,7 @@
 #define __VMML__VMMLIB_CONFIG__HPP__
 
 // #define VMMLIB_NO_SFINAE 
+// #define VMMLIB_NO_CONVERSION_OPERATORS
 
 #ifndef VMMLIB_CUSTOM_CONFIG
 #  ifndef NDEBUG

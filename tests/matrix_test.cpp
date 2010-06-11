@@ -771,6 +771,7 @@ matrix_test::run()
         //std::cout << data << std::endl;
     }
 
+    #ifndef VMMLIB_NO_CONVERSION_OPERATORS
     {
     
         matrix< 4, 4, double > m;
@@ -780,7 +781,7 @@ matrix_test::run()
         array[ 3 ] = 1.0;
         //const_array[ 3 ] = 1.0;
     }
-
+    #endif
 
     return ok;
 }

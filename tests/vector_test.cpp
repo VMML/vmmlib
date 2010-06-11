@@ -550,7 +550,7 @@ vector_test::run()
         
     }
     
-    
+    #ifndef VMMLIB_NO_CONVERSION_OPERATORS
     {
         vector< 4, double > v;
         double* array               = v;
@@ -560,6 +560,7 @@ vector_test::run()
         //const_array[ 2 ]    = 3.0;
     
     }
+    #endif
     
 
     return ok;

@@ -2,6 +2,7 @@
 #define __VMML__UNIT_TEST__HPP__
 
 #include <string>
+#include <iostream>
 
 namespace vmml
 {

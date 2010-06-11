@@ -2,7 +2,15 @@
 #define __VMML__VMMLIB_CONFIG__HPP__
 
 // #define VMMLIB_NO_SFINAE 
-// #define VMMLIB_NO_CONVERSION_OPERATORS
+
+
+
+// enabling this switch will have the following effect:
+// operator T* will not be compiled, but for vectors, 
+// operator[] will instead be used. This means you can 
+// use vec[2] as before, but things like glVertex3fv( vec )
+// will not work anymore.
+//#define VMMLIB_NO_CONVERSION_OPERATORS
 
 #ifndef VMMLIB_CUSTOM_CONFIG
 #  ifndef NDEBUG

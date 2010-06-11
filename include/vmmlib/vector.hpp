@@ -45,6 +45,9 @@ public:
     // conversion operators
     inline operator T*();
     inline operator const T*() const;
+    #else
+    inline T& operator[]( size_t index );
+    inline const T& operator[]( size_t index ) const;
     #endif
     
     // accessors 
@@ -604,6 +607,22 @@ vector< M, T >::operator const T*() const
 {
     return array;
 }
+#else
+
+template< size_t M, typename T >
+T&
+vector< M, T >::operator[]( size_t index )
+{   
+    return at( index );
+}
+
+template< size_t M, typename T >
+const T&
+vector< M, T >::operator[]( size_t index ) const
+{   
+    return at( index );
+}
+
 
 #endif
 

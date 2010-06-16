@@ -38,6 +38,7 @@ public:
 	void reconstruction( tensor3< I1, I2, I3, T >& tensor_ ) const;
 	void decomposition( const tensor3< I1, I2, I3, T >& tensor_ ); 
 	void tucker_method1( const tensor3< I1, I2, I3, T >& tensor_ );
+    void derive_core( const tensor3< I1, I2, I3, T >& data_, tensor3< J1, J2, J3, T >& core_, const matrix< I1, J1, T >& U1_, const matrix< I2, J2, T >& U2_, const matrix< I3, J3, T >& U3_ );
 
 	template< size_t K1, size_t K2, size_t K3>
 	void rank_reduction( const tucker3_tensor< K1, K2, K3, I1, I2, I3, T>& other ); //call TuckerJI.rank_recuction(TuckerKI) K1 -> J1, K2 -> J2, K3 -> J3
@@ -51,8 +52,12 @@ public:
 							const T& start_index2, const T& end_index2, 
 							const T& start_index3, const T& end_index3);
 	
+	void tucker_method1();
+
+	
+	
 	/*TODO:
-	void tuckals3();
+	void tuck3als();
 	void hosvd();
 	void hooi();
 	*/
@@ -87,12 +92,20 @@ VMML_TEMPLATE_CLASSNAME::reconstruction( tensor3< I1, I2, I3, T >& tensor_ ) con
 	tensor_.full_tensor3_matrix_multiplication( _core, _u1, _u2, _u3 );
 }
 
+
 VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::decomposition( const tensor3< I1, I2, I3, T >& tensor_ )
 {
 	tucker_method1( tensor_ ); //or tuckals3 or hooi
+	
+	//do ALS iterations
+	
+	
+	//derive core
+	derive_core( tensor_, _core, _u1, _u2, _u3 );
 }
+
 
 VMML_TEMPLATE_STRING
 void 
@@ -137,21 +150,51 @@ VMML_TEMPLATE_CLASSNAME::tucker_method1( const tensor3< I1, I2, I3, T >& tensor_
 	vector< I2, double > lambdas_u2;
 	vector< I3, double > lambdas_u3;
 	
-	bool ok = 1;
-	
+	bool ok = false;
+	    
 	lapack_svd< I1, I1, double > svd1;
 	ok = svd1.compute_and_overwrite_input( u1, lambdas_u1 ); 
 	//std::cout << "u1 singular vectors: " << std::endl << u1 << std::endl << "u1 lambdas: " << lambdas_u1 << std::endl;
+	_u1 = u1;
 	
 	lapack_svd< I2, I2, double > svd2;
 	ok = svd2.compute_and_overwrite_input( u2, lambdas_u2 ); 
 	//std::cout << "u2 singular vectors: " << std::endl << u2 << std::endl << "u2 lambdas: " << lambdas_u2 << std::endl;
-
+	_u2 = u2;
+	
 	lapack_svd< I3, I3, double > svd3;
 	ok = svd3.compute_and_overwrite_input( u3, lambdas_u3 ); 
 	//std::cout << "u3 singular vectors: " << std::endl << u3 << std::endl << "u3 lambdas: " << lambdas_u3 << std::endl;
+	_u3 = u3;
 	
-	
+}
+
+
+VMML_TEMPLATE_STRING
+void 
+VMML_TEMPLATE_CLASSNAME::derive_core( const tensor3< I1, I2, I3, T >& data_, tensor3< J1, J2, J3, T >& core_, const matrix< I1, J1, T >& U1_, const matrix< I2, J2, T >& U2_, const matrix< I3, J3, T >& U3_ )
+{
+	for( size_t j3 = 0; j3 < J3; ++j3 ) 
+	{
+		for( size_t j1 = 0; j1 < J1; ++j1 ) 
+		{
+			for( size_t j2 = 0; j2 < J2; ++j2 ) 
+			{
+				double sum_i1_i2_i3 = 0.0;
+				for( size_t i3 = 0; i3 < I3; ++i3 ) 
+				{
+					for( size_t i1 = 0; i1 < I1; ++i1 ) 
+					{
+						for( size_t i2 = 0; i2 < I2; ++i2 ) 
+						{
+							sum_i1_i2_i3 += U1_.at( i1, j1 ) * U2_.at( i2, j2 ) * U3_.at( i3, j3 ) * data_.at( i1, i2, i3 );
+						}
+					}
+				}
+				core_.at( j1, j2, j3 ) = sum_i1_i2_i3;
+			}
+		}
+	}
 }
 
 

@@ -13,6 +13,7 @@ tensor3_test::run()
     bool ok = false;
 	        
     tensor3< 2, 3, 4, uint16_t >  t3;
+    tensor3< 2, 3, 4, uint16_t >  t3_tmp;
 
 	//test size
 	if (t3.size() == 24)
@@ -24,44 +25,14 @@ tensor3_test::run()
 		error << "size should be 24, but size is: " << t3.size() << std::endl;
 		log_error( error.str() );
 	}
+
 	
-	//test
-	ok = true;
-	
-	t3.fill_increasing_values();
-	//std::cout << "fill_increasing_values " << std::endl << t3 << std::endl;
-	ok = true;
-	uint16_t value = 0;
-	for ( size_t i3 = 0; i3 < 4; ++i3 )
-	{
-		for( size_t i1 = 0; i1 < 2; ++i1 )
-		{
-			for( size_t i2 = 0; i2< 3 && ok; ++i2, ++i2 )
-			{
-				uint16_t debug = t3.at( i1, i2, i3 );
-				if(debug  != value)
-				{
-					std::stringstream error;
-					error << "T3 with all values from 0 to 23: " << std::endl << t3 << std::endl;
-					log_error( error.str() );
-					ok = false;
-				} else {
-					ok = true;
-				}
-				++value;
-				
-			}
-		}
-	}
-	if(ok) 
-	{
-		log( "fill_increasing_values()", true  );
-	}
-	
+	//test at()
+	//TODO
     t3.at( 0,0,0 ) = 255.0;
     t3( 0,2,0 ) = 128.0;
 	ok = true;
-	if (!ok)
+	if (ok)
 	{	
 		log( "at() ", true  );
 	} else
@@ -72,15 +43,48 @@ tensor3_test::run()
 		log_error( error.str() );
 	}
 	
- 	t3.fill( 4.0 );
-	ok = true;
+	
+	//test set tensor from input
+	uint16_t data[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24 };
+	t3.set(data, data + 24);
+	ok = false;
+	uint16_t check_value = 1;
 	for ( size_t i3 = 0; i3 < 4; ++i3 )
 	{
 		for( size_t i1 = 0; i1 < 2; ++i1 )
 		{
-			for( size_t i2 = 0; i2 < 3 && ok; ++i2, ++i2 )
+			for( size_t i2 = 0; i2 < 3 && ok; ++i2, ++check_value )
 			{
-				if( t3.at(i1, i2, i3) != 4)
+				if( t3.at(i1, i2, i3) != check_value)
+				{
+					std::stringstream error;
+					error << "T3 set from input, values from 1... 24: " << std::endl << t3 << std::endl;
+					log_error( error.str() );
+					ok = false;
+				} else {
+					ok = true;
+				}
+				
+			}
+		}
+	}
+	if (ok)
+	{	
+		log( "set() ", true  );
+	}
+	
+	
+	//test fil()
+ 	t3.fill( 4.0 );
+	ok = false;
+	check_value = 4;
+	for ( size_t i3 = 0; i3 < 4; ++i3 )
+	{
+		for( size_t i1 = 0; i1 < 2; ++i1 )
+		{
+			for( size_t i2 = 0; i2 < 3 && ok; ++i2 )
+			{
+				if( t3.at(i1, i2, i3) != check_value )
 				{
 					std::stringstream error;
 					error << "T3 with all values to 4: " << std::endl << t3 << std::endl;
@@ -89,7 +93,7 @@ tensor3_test::run()
 				} else {
 					ok = true;
 				}
-					
+				
 			}
 		}
 	}
@@ -99,15 +103,135 @@ tensor3_test::run()
 	}
 	
 	
-	t3.zero();
-	ok = true;
+	//operations
+    tensor3< 2, 3, 4, uint16_t >  t3_2;
+    tensor3< 2, 3, 4, uint16_t >  t3_3;
+    tensor3< 2, 3, 4, uint16_t >  t3_result;
+	t3.fill( 2 );
+	t3_2.fill( 5 );
+	t3_3.fill( 5 );
+	
+	//test equals operator
+	if ( !(t3==t3_2) && (t3_2==t3_3) && t3 != t3_2 && !(t3_2!=t3_3))
+	{	
+		log( "operator== and operator!= ", true  );
+	} else
+	{
+		std::stringstream error;
+		error 
+		<< "T3: " << std::endl << t3
+		<< "T3_2: " << std::endl << t3_2
+		<< "T3_3: " << std::endl << t3_3
+		<< std::endl;
+		log_error( error.str() );
+	}
+	//test sum with other t3
+	t3_result = t3 + t3_2;
+	t3_3.fill( 7 );
+	if ( t3_result == t3_3)
+	{	
+		log( "operator+ and operator += with other tensor3", true  );
+	} else
+	{
+		std::stringstream error;
+		error 
+		<< "T3_result: " << std::endl << t3_result
+		<< "T3_3: " << std::endl << t3_3
+		<< std::endl;
+		log_error( error.str() );
+	}
+	
+	//test subtraction
+	t3_result = t3_2 - t3;
+	t3_3.fill( 3 );
+	if ( t3_result == t3_3)
+	{	
+		log( "operator- and operator -= with other tensor3 ", true  );
+	} else
+	{
+		std::stringstream error;
+		error 
+		<< "T3_result: " << std::endl << t3_result
+		<< "T3_3: " << std::endl << t3_3
+		<< std::endl;
+		log_error( error.str() );
+	}
+	
+	
+	//test sum with scalar (shift)
+	t3_result = t3 + 4;
+	t3_3.fill( 6 );
+	if ( t3_result == t3_3)
+	{	
+		log( "operator+ and operator += with scalar", true  );
+	} else
+	{
+		std::stringstream error;
+		error 
+		<< "T3_result: " << std::endl << t3_result
+		<< "T3_3: " << std::endl << t3_3
+		<< std::endl;
+		log_error( error.str() );
+	}
+	
+	//test subtraction with scalar (negative shift)
+	t3_result = t3 - 2;
+	t3_3.zero();
+	if ( t3_result == t3_3 )
+	{	
+		log( "operator- and operator -= with scalar", true  );
+	} else
+	{
+		std::stringstream error;
+		error 
+		<< "T3_result: " << std::endl << t3_result
+		<< "T3_3: " << std::endl << t3_3
+		<< std::endl;
+		log_error( error.str() );
+	}
+	
+	
+	//test fill increasing values
+	t3.fill_increasing_values();
+	
+	ok = false;
+	check_value = 0;
 	for ( size_t i3 = 0; i3 < 4; ++i3 )
 	{
 		for( size_t i1 = 0; i1 < 2; ++i1 )
 		{
-			for( size_t i2 = 0; i2 < 3 && ok; ++i2, ++i2 )
+			for( size_t i2 = 0; i2 < 3 && ok; ++i2, ++check_value )
 			{
-				if( t3.at(i1, i2, i3) != 0)
+				if( t3.at(i1, i2, i3) != check_value)
+				{
+					std::stringstream error;
+					error << "T3 with all values from 0 to 23:: " << std::endl << t3 << std::endl;
+					log_error( error.str() );
+					ok = false;
+				} else {
+					ok = true;
+				}
+				
+			}
+		}
+	}
+	if (ok)
+	{	
+		log( "fill_increasing_values()", true  );
+	} 
+	
+	
+	//test zero()
+	t3.zero();
+	ok = false;
+	check_value = 0;
+	for ( size_t i3 = 0; i3 < 4; ++i3 )
+	{
+		for( size_t i1 = 0; i1 < 2; ++i1 )
+		{
+			for( size_t i2 = 0; i2 < 3 && ok; ++i2 )
+			{
+				if( t3.at(i1, i2, i3) != check_value )
 				{
 					std::stringstream error;
 					error << "T3 with all values to 0: " << std::endl << t3 << std::endl;
@@ -125,34 +249,20 @@ tensor3_test::run()
 		log( "zero()", true  );
 	}
 	
-	//test fill_random and fill_random_signed -> not checked, since every time new values
+	//test fill_random and fill_random_signed -> not checked, since every time new values -> cannot be tested with values
 	t3.fill_random();
-	//std::cout << "fill_random " << std::endl << t3 << std::endl;
 
     tensor3< 2, 3, 4, int16_t >  t3s;
 	t3s.fill_random_signed();
-	//std::cout << "fill_random_signed " << std::endl << t3s << std::endl;
+
 	
-	//set tensor from input
-	uint16_t data[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24 };
-	t3.set(data, data + 24);
-	ok = true;
-	if (!ok)
-	{	
-		log( "set() ", true  );
-	} else
-	{
-		std::stringstream error;
-		error 
-		<< "T3 set from input, values from 1... 24: " << std::endl << t3 << std::endl;
-		log_error( error.str() );
-	}
-	
+	//test get_n_vector functions
 	uint16_t i1 = 1;
 	uint16_t i2 = 2;
 	uint16_t i3 = 3;
-	
-	//test get_n_vector functions
+	t3.fill_increasing_values();
+	t3 += 1;
+
 	vmml::vector< 3, uint16_t > test_I2_data ; 
 	vmml::vector< 3, uint16_t > I2_data ; 
 	t3.get_row( i1, i3, I2_data );
@@ -289,95 +399,6 @@ tensor3_test::run()
 		error 
 		<< "after get_horizontal_slice at i1 = 0: " << mat_horizontal << std::endl
 		<< "after set_horizontal_slice at i1 = 0: " << mat_horizontal_2 << std::endl;
-		log_error( error.str() );
-	}
-	
-	
-	//operations
-    tensor3< 2, 3, 4, uint16_t >  t3_2;
-    tensor3< 2, 3, 4, uint16_t >  t3_3;
-    tensor3< 2, 3, 4, uint16_t >  t3_result;
-	t3.fill( 2 );
-	t3_2.fill( 5 );
-	t3_3.fill( 5 );
-	
-	//test equals operator
-	if ( !(t3==t3_2) && (t3_2==t3_3) && t3 != t3_2 && !(t3_2!=t3_3))
-	{	
-		log( "operator== and operator!= ", true  );
-	} else
-	{
-		std::stringstream error;
-		error 
-			<< "T3: " << std::endl << t3
-		    << "T3_2: " << std::endl << t3_2
-			<< "T3_3: " << std::endl << t3_3
-		    << std::endl;
-		log_error( error.str() );
-	}
-
-	//test sum with other t3
-	t3_result = t3 + t3_2;
-	t3_3.fill( 7 );
-	if ( t3_result == t3_3)
-	{	
-		log( "operator+ and operator += with other tensor3", true  );
-	} else
-	{
-		std::stringstream error;
-		error 
-		<< "T3_result: " << std::endl << t3_result
-		<< "T3_3: " << std::endl << t3_3
-		<< std::endl;
-		log_error( error.str() );
-	}
-	
-	//test subtraction
-	t3_result = t3_2 - t3;
-	t3_3.fill( 3 );
-	if ( t3_result == t3_3)
-	{	
-		log( "operator- and operator -= with other tensor3 ", true  );
-	} else
-	{
-		std::stringstream error;
-		error 
-		<< "T3_result: " << std::endl << t3_result
-		<< "T3_3: " << std::endl << t3_3
-		<< std::endl;
-		log_error( error.str() );
-	}
-	
-
-	//test sum with scalar (shift)
-	t3_result = t3 + 4;
-	t3_3.fill( 6 );
-	if ( t3_result == t3_3)
-	{	
-		log( "operator+ and operator += with scalar", true  );
-	} else
-	{
-		std::stringstream error;
-		error 
-		<< "T3_result: " << std::endl << t3_result
-		<< "T3_3: " << std::endl << t3_3
-		<< std::endl;
-		log_error( error.str() );
-	}
-	
-	//test subtraction with scalar (negative shift)
-	t3_result = t3 - 2;
-	t3_3.zero();
-	if ( t3_result == t3_3 )
-	{	
-		log( "operator- and operator -= with scalar", true  );
-	} else
-	{
-		std::stringstream error;
-		error 
-		<< "T3_result: " << std::endl << t3_result
-		<< "T3_3: " << std::endl << t3_3
-		<< std::endl;
 		log_error( error.str() );
 	}
 	

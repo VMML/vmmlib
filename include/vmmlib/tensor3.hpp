@@ -73,7 +73,7 @@ public:
 
 	inline void get_row( size_t i1, size_t i3, vmml::vector< I2, T >& data ) const; // same as get_I2_vector
     inline void get_column( size_t i2, size_t i3, vmml::vector< I1, T >& data ) const; // same as get_I1_vector
-    inline void get_tube( size_t i1, size_t i1, vmml::vector< I3, T >& data ) const; // same as get_I3_vector
+    inline void get_tube( size_t i1, size_t i2, vmml::vector< I3, T >& data ) const; // same as get_I3_vector
 	
     inline void set_I1_vector( size_t i2, size_t i3, const vmml::vector< I1, T >& data ); // I1_vector is a column vector with all values i1 at i2 and i3
 	inline void set_I2_vector( size_t i1, size_t i3, const vmml::vector< I2, T >& data ); // I2_vector is a row vector with all values i2 at i1 and i3

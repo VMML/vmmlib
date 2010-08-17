@@ -12,7 +12,65 @@ namespace vmml
 	{
 		bool ok = false;
 		
+		//decomposition (hosvd test data after lathauwer 2000a)
+		//prepare control data
+		matrix<3, 3, double> u1_hosvd;
+		matrix<3, 3, double> u2_hosvd;
+		matrix<3, 3, double> u3_hosvd;
+		matrix<3, 3, double> u1_hosvd_check;
+		matrix<3, 3, double> u2_hosvd_check;
+		matrix<3, 3, double> u3_hosvd_check;
+		double data_u1_hosvd[] = { 0.1121, -0.7739, -0.6233, 0.5771, 0.5613, -0.5932, 0.8090, -0.2932, 0.5095 };
+		u1_hosvd_check.set( data_u1_hosvd, data_u1_hosvd + 9);
+		double data_u2_hosvd[] = { 0.4624, 0.0102, 0.8866, 0.8866, -0.0135, -0.4623, -0.0072, -0.9999, -0.0152 };
+		u2_hosvd_check.set( data_u2_hosvd, data_u2_hosvd + 9);
+		double data_u3_hosvd[] = { 0.6208, -0.4986, 0.6050, -0.0575, -0.7986, -0.5992, 0.7819, 0.3371, -0.5244 };
+		u3_hosvd_check.set( data_u3_hosvd, data_u3_hosvd + 9);
+		
+		tensor3<3, 3, 3, double> core_hosvd;
+		tensor3<3, 3, 3, double> core_hosvd_check;
+		double data_core_hosvd[] = { 
+			8.7088, 0.0489, -0.2797, -0.0256, 3.2546, -0.2853, 0.0, 0.0, 0.0, 
+			0.1066, 3.2737, 0.3223, 3.1965, -0.2130, 0.7829, 0.0, 0.0, 0.0,
+			-0.0033, -0.1797, -0.2222, 0.2948, -0.0378, -0.3704, 0.0, 0.0, 0.0
+		};
+		core_hosvd_check.set( data_core_hosvd, data_core_hosvd + 27);
 
+		
+		//do decomposition
+		tensor3< 3, 3, 3, double> t3_data_hosvd;
+		double data_hosvd[] = { 
+			0.9073, 0.7158, -0.3698, 0.8924, -0.4989, 2.4288, 2.1488, 0.3054, 2.3753, 
+			1.7842, 1.6970, 0.0151, 1.7753, -1.5077, 4.0337, 4.2495, 0.3207, 4.7146,
+			2.1236, -0.704, 1.4429, -0.6631, 1.9103, -1.7495, 1.8260, 2.1335, -0.2716
+		};
+		t3_data_hosvd.set(data_hosvd, data_hosvd + 27);
+		
+
+		tucker3_tensor< 3, 3, 3, 3, 3, 3, double > tuck3_hosvd( t3_data_hosvd, u1_hosvd, u2_hosvd, u3_hosvd );
+		//tuck3_hosvd.decomposition( t3_data_hosvd );		
+		
+		//std::cout << u1_hosvd_check << std::endl << u2_hosvd_check << std::endl << u3_hosvd_check << std::endl;
+		
+		//derive core tensor
+		/*tuck3_hosvd.derive_core( t3_data_hosvd, core_hosvd, u1_hosvd_check, u2_hosvd_check, u3_hosvd_check );
+		
+		
+		if ( core_hosvd.equals( core_hosvd_check, 0.1 ))
+		{	
+			log( "HOSVD derive core tensor", true  );
+		} else
+		{
+			std::stringstream error;
+			error 
+			<< "HOSVD derive core: " << std::endl
+			<< "core should be: " << core_hosvd_check << std::endl
+			<< "core is: " << core_hosvd << std::endl;
+			
+			log_error( error.str() );
+		}*/
+		
+		
 		//decomposition
 		//tucker method1
 		//prepare control data
@@ -151,7 +209,7 @@ namespace vmml
 		matrix<5, 3, uint16_t> u3_red;
 		
 		tucker3_tensor< 1, 2, 3, 6, 7, 5, uint16_t > tuck3_red( core_red, u1_red, u2_red, u3_red );
-		tuck3_red.rank_reduction( tuck3 );
+		tuck3_red.progressive_rank_reduction( tuck3 );
 		
 		u1_red.fill(2);
 		u2_red.fill(3);
@@ -161,12 +219,12 @@ namespace vmml
 		
 		if ( tuck3_red.get_u1() == u1_red && tuck3_red.get_u2() == u2_red && tuck3_red.get_u3() == u3_red && tuck3_red.get_core() == core_red)
 		{	
-			log( "tucker3 rank reduction", true  );
+			log( "tucker3 progressive rank reduction", true  );
 		} else
 		{
 			std::stringstream error;
 			error 
-			<< "Tucker3 rank reduction: " << std::endl
+			<< "Tucker3 progressive rank reduction: " << std::endl
 			<< "u1 should be: " << u1_red << std::endl
 			<< "u1 is: " << tuck3_red.get_u1() << std::endl
 			<< "u2 should be: " <<  u2_red << std::endl
@@ -204,6 +262,38 @@ namespace vmml
 			<< std::endl;
 			log_error( error.str() );
 		}
+		
+		//basis matrices subsampling, average data
+		tensor3< 3, 4, 3, uint16_t > t3_sub_avg;
+		tensor3< 2, 3, 4, uint16_t > core_sub_avg;
+		matrix< 3, 2, uint16_t > u1_sub_avg;
+		matrix< 4, 3, uint16_t > u2_sub_avg;
+		matrix< 3, 4, uint16_t > u3_sub_avg;
+		tucker3_tensor< 2, 3, 4, 3, 4, 3, uint16_t > tuck3_sub_avg( core_sub_avg, u1_sub_avg, u2_sub_avg, u3_sub_avg );
+		
+		/*matrix<6, 2, uint16_t> u1_new;
+		u1_new.fill(5);
+		u1_new.at(1,1) = 2;
+		u1_new.at(4,0) = 3;
+		u1_new.at(3,1) = 8;
+		tuck3.set_u1(u1_new);*/
+		
+		tuck3_sub_avg.subsampling_on_average( tuck3, 2);
+		tuck3_sub_avg.reconstruction( t3_sub_avg );
+		
+		t3_sub_test.fill(1656);
+		if ( t3_sub_test == t3_sub_avg )
+		{	
+			log( "basis matrices subsampling on average", true  );
+		} else
+		{
+			std::stringstream error;
+			error 
+			<< "basis matrices subsampling on average with factor 2: " << std::endl << t3_sub_avg
+			<< std::endl;
+			log_error( error.str() );
+		}
+		
 		
 		//basis matrices region of interest selection
 		tensor3< 1, 1, 3, uint16_t > t3_roi;

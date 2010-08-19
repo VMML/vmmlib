@@ -61,7 +61,7 @@ public:
 	
 	
 	template< size_t K1, size_t K2, size_t K3>
-	void progressive_rank_reduction( const tucker3_tensor< K1, K2, K3, I1, I2, I3, T>& other ); //call TuckerJI.rank_recuction(TuckerKI) K1 -> J1, K2 -> J2, K3 -> J3
+	void reduce_ranks( const tucker3_tensor< K1, K2, K3, I1, I2, I3, T>& other ); //call TuckerJI.reduce_ranks(TuckerKI) K1 -> J1, K2 -> J2, K3 -> J3
 
 	template< size_t K1, size_t K2, size_t K3>
 	void subsampling( const tucker3_tensor< J1, J2, J3, K1, K2, K3, T>& other, const T& factor  );
@@ -74,8 +74,8 @@ public:
 							const T& start_index1, const T& end_index1, 
 							const T& start_index2, const T& end_index2, 
 							const T& start_index3, const T& end_index3);
-		
-
+	
+	
 private:
     tensor3< J1, J2, J3, T > _core ;
 	matrix< I1, J1, T > _u1 ;
@@ -231,7 +231,7 @@ VMML_TEMPLATE_CLASSNAME::derive_core( const tensor3< I1, I2, I3, T >& data_, ten
 VMML_TEMPLATE_STRING
 template< size_t K1, size_t K2, size_t K3>
 void 
-VMML_TEMPLATE_CLASSNAME::progressive_rank_reduction( const tucker3_tensor< K1, K2, K3, I1, I2, I3, T>& other )
+VMML_TEMPLATE_CLASSNAME::reduce_ranks( const tucker3_tensor< K1, K2, K3, I1, I2, I3, T>& other )
 //TuckerJI.rank_recuction(TuckerKI) K1 -> J1, K2 -> J2, K3 -> J3; I1, I2, I3 stay the same
 {
 	assert(J1 <= K1);

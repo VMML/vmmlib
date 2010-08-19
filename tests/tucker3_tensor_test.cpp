@@ -209,7 +209,7 @@ namespace vmml
 		matrix<5, 3, uint16_t> u3_red;
 		
 		tucker3_tensor< 1, 2, 3, 6, 7, 5, uint16_t > tuck3_red( core_red, u1_red, u2_red, u3_red );
-		tuck3_red.progressive_rank_reduction( tuck3 );
+		tuck3_red.reduce_ranks( tuck3 );
 		
 		u1_red.fill(2);
 		u2_red.fill(3);
@@ -219,12 +219,12 @@ namespace vmml
 		
 		if ( tuck3_red.get_u1() == u1_red && tuck3_red.get_u2() == u2_red && tuck3_red.get_u3() == u3_red && tuck3_red.get_core() == core_red)
 		{	
-			log( "tucker3 progressive rank reduction", true  );
+			log( "tucker3 reduce ranks", true  );
 		} else
 		{
 			std::stringstream error;
 			error 
-			<< "Tucker3 progressive rank reduction: " << std::endl
+			<< "Tucker3 reduce ranks: " << std::endl
 			<< "u1 should be: " << u1_red << std::endl
 			<< "u1 is: " << tuck3_red.get_u1() << std::endl
 			<< "u2 should be: " <<  u2_red << std::endl

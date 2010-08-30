@@ -88,6 +88,10 @@ public:
         const matrix< M, P, T >& left,
         const matrix< P, N, T >& right 
         );
+	
+	// convolution operation (extending borders) of (this) matrix and the given kernel
+	template< size_t U, size_t V >
+	void convolve(const matrix< U, V, T >& kernel);
 
     // returned matrix_mxp = (this) matrix * other matrix_nxp;
     // note: using multiply(...) it avoids a copy of the resulting matrix
@@ -418,6 +422,47 @@ multiply( const matrix< M, N, T >& left, const matrix< M, N, T >& right,
 {
     result.multiply( left, right );
 }
+
+
+
+template< size_t M, size_t N, typename T >
+template< size_t U, size_t V >
+void matrix< M, N, T>::convolve(const matrix< U, V, T >& kernel)
+{
+	matrix< M, N, T> temp;  // do not override original values instantly as old values are needed for calculation
+	
+	for(int y = 0; y < N; ++y) 
+    {
+		for(int x = 0; x < M; ++x) 
+        {
+			double sum = 0.0;
+	
+			for(int j = 0; j < V; ++j)
+            {
+				int srcy = y - V/2 + j;
+		
+				// Extending border values
+				if(srcy < 0)	srcy = 0;
+				if(srcy >= N)	srcy = N-1;
+		
+				for(int i = 0; i < U; ++i)
+                {
+					int srcx = x - U/2 + i;
+			
+					// Extending border values
+					if(srcx < 0)	srcx = 0;
+					if(srcx >= M)	srcx = M-1;
+					
+					sum += kernel.at(j,i) * at(srcy,srcx);
+				}
+			}
+			temp.at(y,x) = sum;
+		}
+	}
+	
+	*this = temp;
+}
+
 
 
 template< size_t M, size_t N, size_t P, typename T >

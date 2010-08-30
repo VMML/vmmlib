@@ -746,6 +746,35 @@ matrix_test::run()
         
         log( "determinant for 2x2, 3x3 and 4x4 matrices", ok );
     }
+	
+	// test convolution
+	{
+		matrix< 4, 4, int > data;
+		int test_data[] = {
+            1, 2, 3, 4,
+            5, 6, 7, 8, 
+            9, 8, 7, 6, 
+            5, 4, 3, 2 };
+		matrix< 3, 3, int > kernel;
+		int test_kernel[] = {
+			1, 2, 3, 
+			4, 5, 6, 
+			7, 8, 9 };
+		
+		data = test_data;
+		kernel = test_kernel;
+		data.convolve(kernel);
+		
+		matrix< 4, 4, int > correct_result;
+        int corr_res_data[] = {
+            159, 192, 237, 264,
+            297, 296, 293, 290, 
+            273, 250, 217, 196, 
+            231, 198, 153, 126 };
+        correct_result = corr_res_data;
+		bool ok = data == correct_result;
+		log( "convolution", ok );
+	}
     
     
     

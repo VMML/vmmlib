@@ -63,6 +63,8 @@
 		984763FE110DDB3C0024A1F8 /* tensor3.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = tensor3.hpp; path = include/vmmlib/tensor3.hpp; sourceTree = "<group>"; };
 		98476417110DDB940024A1F8 /* tensor3_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = tensor3_test.cpp; path = tests/tensor3_test.cpp; sourceTree = "<group>"; };
 		98476418110DDB940024A1F8 /* tensor3_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = tensor3_test.hpp; path = tests/tensor3_test.hpp; sourceTree = "<group>"; };
+		984F581211B8CFD90027D673 /* vector_traits.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = vector_traits.hpp; path = include/vmmlib/vector_traits.hpp; sourceTree = "<group>"; };
+		984F581311B8CFD90027D673 /* matrix_traits.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = matrix_traits.hpp; path = include/vmmlib/matrix_traits.hpp; sourceTree = "<group>"; };
 		98584AF50E643AEC00314C4C /* lapack_types.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = lapack_types.hpp; path = include/vmmlib/lapack_types.hpp; sourceTree = "<group>"; };
 		98584B140E643BFC00314C4C /* lapack_includes.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = lapack_includes.hpp; path = include/vmmlib/lapack_includes.hpp; sourceTree = "<group>"; };
 		985964770FB177A6006CA0F8 /* math.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = math.hpp; path = include/vmmlib/math.hpp; sourceTree = "<group>"; };
@@ -194,6 +196,7 @@
 				98596E740FB489AC006CA0F8 /* frustum */,
 				984763FD110DDB210024A1F8 /* tensor */,
 				9839FE5C0E2BB59800A16721 /* lapack */,
+				984F581111B8CFB50027D673 /* boost la */,
 			);
 			name = Library;
 			sourceTree = "<group>";
@@ -219,6 +222,15 @@
 				CF7FA84C114AAC01003076E4 /* tucker3_tensor.hpp */,
 			);
 			name = tensor;
+			sourceTree = "<group>";
+		};
+		984F581111B8CFB50027D673 /* boost la */ = {
+			isa = PBXGroup;
+			children = (
+				984F581211B8CFD90027D673 /* vector_traits.hpp */,
+				984F581311B8CFD90027D673 /* matrix_traits.hpp */,
+			);
+			name = "boost la";
 			sourceTree = "<group>";
 		};
 		98596E630FB48923006CA0F8 /* misc */ = {

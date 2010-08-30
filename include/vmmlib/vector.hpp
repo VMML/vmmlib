@@ -261,6 +261,11 @@ public:
     
     inline static size_t size(); // returns M
     
+    bool is_unit_vector() const;
+
+    // perturbs each component by randomly + or - the perturbation parameter
+    void perturb( T perturbation = 0.0001 );
+    
     friend std::ostream& operator<< ( std::ostream& os, const vector& vector_ )
     {
 #ifdef EQ_EXPORT
@@ -1569,6 +1574,47 @@ vector< M, T >::rend() const
 {
     return array - 1;
 }
+
+
+
+template< size_t M, typename T >
+bool
+vector< M, T >::is_unit_vector() const
+{
+    const_iterator it = begin(), it_end = end();
+    bool one = false;
+    for( ; it != it_end; ++it )
+    {
+        if ( *it == 1.0 )
+        {
+            if ( one )
+                return false;
+            one = true;
+        }
+        else if ( *it != 0.0 )
+        {
+            return false;
+        }
+    }
+    return one;
+}
+
+
+
+
+template< size_t M, typename T >
+void
+vector< M, T >::perturb( T perturbation )
+{
+    for( iterator it = begin(), it_end = end(); it != it_end; ++it )
+    {
+        (*it) += ( rand() & 1u ) ? perturbation : -perturbation;
+    }
+    
+}
+
+
+
 
 } // namespace vmml
 

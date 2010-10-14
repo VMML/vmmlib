@@ -31,7 +31,7 @@ lapack_svd_test::run()
 
     //svdecompose( U, Wdiag, Vt );
     lapack_svd< 6, 3, double >  svd;
-    svd.compute( A, U, sigma, V );
+    svd.compute_full( A, U, sigma, V );
     
     Vt = transpose( V );
     	

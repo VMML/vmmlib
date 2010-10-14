@@ -157,7 +157,7 @@ struct lapack_svd
     ~lapack_svd();
 
     // slow version, full SVD, use if all values of U(MXM) and Vt(NXN) are needed
-    bool compute(
+    bool compute_full(
         const matrix< M, N, float_t >& A,
         matrix< M, M, float_t >& U,
         vector< N, float_t >& sigma,
@@ -233,7 +233,7 @@ lapack_svd< M, N, float_t >::~lapack_svd()
 
 template< size_t M, size_t N, typename float_t >
 bool
-lapack_svd< M, N, float_t >::compute(
+lapack_svd< M, N, float_t >::compute_full(
     const matrix< M, N, float_t >& A,
     matrix< M, M, float_t >& U,
     vector< N, float_t >& S,

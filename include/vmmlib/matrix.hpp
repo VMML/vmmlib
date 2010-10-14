@@ -141,6 +141,8 @@ public:
     typename enable_if< uM == 3 && vM == 3 && M == N && M == 4 >::type* 
     tensor( const vector< uM, T >& u, const vector< vM, T >& v );
 	
+	// row_offset and col_offset define the starting indices for the sub_matrix
+	// the sub_matrix is extracted according to the size of the target matrix, i.e. ( OXP )
 	template< size_t O, size_t P >
 	matrix< O, P, T >
     get_sub_matrix( size_t row_offset, size_t col_offset, 

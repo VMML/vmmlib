@@ -41,6 +41,7 @@
 		98F5563B0E24377F0044BA3E /* qr_decomposition_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98F556370E24377F0044BA3E /* qr_decomposition_test.cpp */; };
 		98FAB2960E30CDF400C1A8FC /* unit_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98FE7DCD0E224EC400B1E17F /* unit_test.cpp */; };
 		98FE7DCF0E224EC400B1E17F /* unit_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98FE7DCD0E224EC400B1E17F /* unit_test.cpp */; };
+		CF42E5EA125F738600C0A38E /* matrix_pseudoinverse_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CF42E5E9125F738600C0A38E /* matrix_pseudoinverse_test.cpp */; };
 		CF7FA8D5114EB617003076E4 /* tucker3_tensor_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CF7FA8D4114EB617003076E4 /* tucker3_tensor_test.cpp */; };
 /* End PBXBuildFile section */
 
@@ -110,6 +111,9 @@
 		98FE7DC50E224E8700B1E17F /* vmmlib_unit_tests */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = vmmlib_unit_tests; sourceTree = BUILT_PRODUCTS_DIR; };
 		98FE7DCD0E224EC400B1E17F /* unit_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = unit_test.cpp; path = tests/unit_test.cpp; sourceTree = "<group>"; };
 		98FE7DCE0E224EC400B1E17F /* unit_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = unit_test.hpp; path = tests/unit_test.hpp; sourceTree = "<group>"; };
+		CF42E5E7125F736E00C0A38E /* matrix_pseudoinverse_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = matrix_pseudoinverse_test.hpp; path = tests/matrix_pseudoinverse_test.hpp; sourceTree = "<group>"; };
+		CF42E5E9125F738600C0A38E /* matrix_pseudoinverse_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = matrix_pseudoinverse_test.cpp; path = tests/matrix_pseudoinverse_test.cpp; sourceTree = "<group>"; };
+		CF42E65B125F7F2100C0A38E /* matrix_pseudoinverse.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = matrix_pseudoinverse.hpp; path = include/vmmlib/matrix_pseudoinverse.hpp; sourceTree = "<group>"; };
 		CF7FA84C114AAC01003076E4 /* tucker3_tensor.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = tucker3_tensor.hpp; path = include/vmmlib/tucker3_tensor.hpp; sourceTree = "<group>"; };
 		CF7FA8D4114EB617003076E4 /* tucker3_tensor_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = tucker3_tensor_test.cpp; path = tests/tucker3_tensor_test.cpp; sourceTree = "<group>"; };
 		CF7FA8D9114EB696003076E4 /* tucker3_tensor_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = tucker3_tensor_test.hpp; path = tests/tucker3_tensor_test.hpp; sourceTree = "<group>"; };
@@ -191,6 +195,7 @@
 				98B7A3F00E24EAA30064264E /* matrix_functors.hpp */,
 				9868345B0E24F8F300618F55 /* vector.hpp */,
 				98D402D30E38D6A000B24DF1 /* quaternion.hpp */,
+				CF42E65B125F7F2100C0A38E /* matrix_pseudoinverse.hpp */,
 				98596E640FB48941006CA0F8 /* advanced */,
 				98596E630FB48923006CA0F8 /* misc */,
 				98596E740FB489AC006CA0F8 /* frustum */,
@@ -299,8 +304,6 @@
 		98B7A2620E24CA760064264E /* unit tests */ = {
 			isa = PBXGroup;
 			children = (
-				98476418110DDB940024A1F8 /* tensor3_test.hpp */,
-				98476417110DDB940024A1F8 /* tensor3_test.cpp */,
 				98F556360E24377F0044BA3E /* matrix_test.hpp */,
 				98F556350E24377F0044BA3E /* matrix_test.cpp */,
 				986834C00E24FFD400618F55 /* vector_test.hpp */,
@@ -321,8 +324,12 @@
 				98244A3D0E3F5AEE0018E13A /* lapack_linear_least_squares_test.cpp */,
 				9863B6F011903EFE00887FFC /* lapack_gaussian_elimination_test.hpp */,
 				9863B6F111903EFE00887FFC /* lapack_gaussian_elimination_test.cpp */,
-				CF7FA8D4114EB617003076E4 /* tucker3_tensor_test.cpp */,
+				98476418110DDB940024A1F8 /* tensor3_test.hpp */,
+				98476417110DDB940024A1F8 /* tensor3_test.cpp */,
 				CF7FA8D9114EB696003076E4 /* tucker3_tensor_test.hpp */,
+				CF7FA8D4114EB617003076E4 /* tucker3_tensor_test.cpp */,
+				CF42E5E7125F736E00C0A38E /* matrix_pseudoinverse_test.hpp */,
+				CF42E5E9125F738600C0A38E /* matrix_pseudoinverse_test.cpp */,
 			);
 			name = "unit tests";
 			sourceTree = "<group>";
@@ -460,6 +467,7 @@
 				98476419110DDB940024A1F8 /* tensor3_test.cpp in Sources */,
 				CF7FA8D5114EB617003076E4 /* tucker3_tensor_test.cpp in Sources */,
 				9863B6F211903EFE00887FFC /* lapack_gaussian_elimination_test.cpp in Sources */,
+				CF42E5EA125F738600C0A38E /* matrix_pseudoinverse_test.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

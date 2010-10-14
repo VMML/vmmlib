@@ -13,7 +13,6 @@
 #define __VMML__TUCKER3_TENSOR__HPP__
 
 #include <vmmlib/tensor3.hpp>
-#include <vmmlib/svd.hpp>
 #include <vmmlib/lapack_svd.hpp>
 
 namespace vmml

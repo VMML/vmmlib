@@ -156,14 +156,23 @@ struct lapack_svd
     lapack_svd();
     ~lapack_svd();
 
-    // slow version, use if U and Vt are needed
+    // slow version, full SVD, use if all values of U(MXM) and Vt(NXN) are needed
     bool compute(
         const matrix< M, N, float_t >& A,
-        matrix< M, N, float_t >& U,
+        matrix< M, M, float_t >& U,
         vector< N, float_t >& sigma,
         matrix< N, N, float_t >& Vt
         );
-
+	
+    // version of reduced SVD, computes only most significant left and right singular vectors, 
+	// i.e., use if U(MXN) and Vt(NXN) are needed
+    bool compute(
+				 const matrix< M, N, float_t >& A,
+				 matrix< M, N, float_t >& U,
+				 vector< N, float_t >& sigma,
+				 matrix< N, N, float_t >& Vt
+				 );
+	
     // overwrites A with the result U, 
     bool compute_and_overwrite_input( 
         matrix< M, N, float_t >& A_U,
@@ -226,7 +235,7 @@ template< size_t M, size_t N, typename float_t >
 bool
 lapack_svd< M, N, float_t >::compute(
     const matrix< M, N, float_t >& A,
-    matrix< M, N, float_t >& U,
+    matrix< M, M, float_t >& U,
     vector< N, float_t >& S,
     matrix< N, N, float_t >& Vt
     )
@@ -246,8 +255,32 @@ lapack_svd< M, N, float_t >::compute(
     
     return p.info == 0;
 }
-
-
+	
+template< size_t M, size_t N, typename float_t >
+bool
+lapack_svd< M, N, float_t >::compute(
+									 const matrix< M, N, float_t >& A,
+									 matrix< M, N, float_t >& U,
+									 vector< N, float_t >& S,
+									 matrix< N, N, float_t >& Vt
+									 )
+{
+	// lapack destroys the contents of the input matrix
+	matrix< M, N, float_t > AA( A );
+	
+	p.jobu      = 'S';
+	p.jobvt     = 'S';
+	p.a         = AA.array;
+	p.u         = U.array;
+	p.s         = S.array;
+	p.vt        = Vt.array;
+	p.ldvt      = N;
+	
+	lapack::svd_call< float_t >( p );
+	
+	return p.info == 0;
+}
+	
 
 template< size_t M, size_t N, typename float_t >
 bool

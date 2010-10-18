@@ -479,6 +479,22 @@ tensor3_test::run()
 	}
 	
 	
+	//compute frobenius norm of a tensor3
+	double f_norm_check = 65.75712889109438;
+	
+	t3.fill_increasing_values();
+	double f_norm = t3.compute_frobenius_norm();
+	
+	if ( f_norm == f_norm_check )
+	{	
+		log( "compute frobenius norm", true  );
+	} else
+	{
+		std::stringstream error;
+		error 
+		<< "compute frobenius norm: should be: " << f_norm_check << " is: " << f_norm << std::endl;
+		log_error( error.str() );
+	}
 	
 	ok = true;
     return ok;

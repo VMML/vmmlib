@@ -99,7 +99,7 @@ public:
     void fill_random_signed( );
     void fill_increasing_values( );
 	
-	void RangeThreshold(tensor3<I1, I2, I3, T>& other_, const T& start_value, const T& end_value) const;
+	void range_threshold(tensor3<I1, I2, I3, T>& other_, const T& start_value, const T& end_value) const;
     
     // note: this function copies elements until either the matrix is full or
     // the iterator equals end_.
@@ -130,12 +130,18 @@ public:
     template< size_t J1, size_t J2, size_t J3 > 
     void multiply_frontal( const tensor3< J1, J2, J3, T >& core, const matrix< I2, J2, T >& U2 ); //output: tensor3< J1, I2, J3, T >
 	
-    template< size_t J1, size_t J2, size_t J3 > 
+	//backward cyclic matricization (after Lathauwer et al., 2000a)
+	template< size_t J1, size_t J2, size_t J3 > 
 	void full_tensor3_matrix_multiplication( const tensor3< J1, J2, J3, T >& core, const matrix< I1, J1, T >& U1, const matrix< I2, J2, T >& U2, const matrix< I3, J3, T >& U3 );
 	
 	void horizontal_matricization( matrix< I3, I1*I2, T>& matricization) const;
 	void lateral_matricization( matrix< I1, I2*I3, T>& matricization) const;
 	void frontal_matricization( matrix< I2, I1*I3, T>& matricization) const;
+	
+	
+	//error computation between two tensor3
+	double compute_frobenius_norm( ) const;
+
 		
 	
  	inline tensor3 operator+( T scalar ) const;
@@ -550,7 +556,7 @@ fill_increasing_values( )
 
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::RangeThreshold(tensor3<I1, I2, I3, T>& other_, const T& start_value, const T& end_value) const
+VMML_TEMPLATE_CLASSNAME::range_threshold(tensor3<I1, I2, I3, T>& other_, const T& start_value, const T& end_value) const
 {
 	
 	for( size_t i3 = 0; i3 < I3; ++i3 )
@@ -947,6 +953,8 @@ VMML_TEMPLATE_CLASSNAME::full_tensor3_matrix_multiplication(  const tensor3< J1,
 	tensor3< I1, J2, J3, T> t3_result_1;
 	tensor3< I1, I2, J3, T> t3_result_2;
 	
+	
+	//backward cyclic matricization (after Lathauwer et al., 2000a)
 	t3_result_1.multiply_lateral( core, U1 );
 	t3_result_2.multiply_frontal( t3_result_1, U2 );
 	multiply_horizontal( t3_result_2, U3 );
@@ -1051,6 +1059,36 @@ VMML_TEMPLATE_CLASSNAME::negate() const
     return result;
 }
 
+
+VMML_TEMPLATE_STRING
+double 
+VMML_TEMPLATE_CLASSNAME::compute_frobenius_norm( ) const
+{
+	double f_norm = 0.0;
+	
+/*	std::cout << *this << std::endl;
+	
+	const_iterator it = begin(), it_end = end(); 
+    for( ; it != it_end; ++it )
+    {
+		std::cout << f_norm << " " << *it << " " << *it * *it << std::endl;
+        f_norm += *it * *it;
+    }*/
+	
+	
+	for( size_t i3 = 0; i3 < I3; ++i3 )
+	{
+		for( size_t i1 = 0; i1 < I1; ++i1 )
+		{
+			for( size_t i2 = 0; i2 < I2; ++i2 )
+			{
+				f_norm += at( i1, i2, i3 ) * at( i1, i2, i3 );
+			}
+		}
+	}
+	
+	return sqrt(f_norm);
+}
 
 
 

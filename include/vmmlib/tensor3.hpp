@@ -26,14 +26,18 @@ public:
     typedef T                                       value_type;
 	typedef T*                                      pointer;
 	typedef T&                                      reference;
-	typedef T*                                      iterator;
-    typedef const T*                                const_iterator;
-    typedef std::reverse_iterator< iterator >       reverse_iterator;
-    typedef std::reverse_iterator< const_iterator > const_reverse_iterator;
+//	typedef T*                                      iterator;
+//  typedef const T*                                const_iterator;
+
+//    typedef std::reverse_iterator< iterator >       reverse_iterator;
+//    typedef std::reverse_iterator< const_iterator > const_reverse_iterator;
 	
 	typedef typename matrix< I1, I2, T>::iterator matrix_iterator;
 	
-	//typedef typename vmml::tensor3_iterator< < tensor3< I1, I2, I3, T > > iterator;
+    typedef typename vmml::tensor3_iterator< tensor3< I1, I2, I3, T > > iterator;
+    typedef typename vmml::tensor3_const_iterator< tensor3< I1, I2, I3, T > > const_iterator;
+    typedef typename vmml::tensor3_iterator< tensor3< I1, I2, I3, T > > reverse_iterator;
+    typedef typename vmml::tensor3_iterator< tensor3< I1, I2, I3, T > > const_reverse_iterator;
     
     typedef typename vmml::matrix< I1, I2, T >        slice_type_frontal;
     
@@ -52,14 +56,17 @@ public:
     // element iterators - NOTE: column-major order
     iterator                begin();
     iterator                end();
+    
     const_iterator          begin() const;
     const_iterator          end() const;
 	
+    #if 0
     reverse_iterator        rbegin();
     reverse_iterator        rend();
     const_reverse_iterator  rbegin() const;
     const_reverse_iterator  rend() const;
-	
+	#endif
+    
 	// hack for static-member-init
 	template< typename init_functor_t >
 	static const tensor3 get_initialized_tensor3();
@@ -100,6 +107,8 @@ public:
 	inline void set_lateral_slice( size_t i2, const vmml::matrix< I1, I3, T >& data ); 
 	inline void set_horizontal_slice( size_t i1, const vmml::matrix< I2, I3, T >& data );
 	
+    inline slice_type_frontal& get_frontal_slice( size_t index );
+    inline const slice_type_frontal& get_frontal_slice( size_t index ) const;
 	
 	// sets all elements to fill_value
     void operator=( T fill_value ); //@SUS: todo
@@ -392,6 +401,30 @@ set_tube( size_t i1, size_t i2, const vmml::vector< I3, T >& data )
 	set_I3_vector( i1, i2, data );
 }
 
+VMML_TEMPLATE_STRING
+inline typename VMML_TEMPLATE_CLASSNAME::slice_type_frontal& 
+VMML_TEMPLATE_CLASSNAME::
+get_frontal_slice( size_t index )
+{
+#ifdef VMMLIB_SAFE_ACCESSORS
+    if ( index >= I3 )
+        VMMLIB_ERROR( "get_frontal_slice() - index out of bounds.", VMMLIB_HERE );
+#endif
+	return array[ index ];
+}
+
+
+VMML_TEMPLATE_STRING
+inline const typename VMML_TEMPLATE_CLASSNAME::slice_type_frontal& 
+VMML_TEMPLATE_CLASSNAME::
+get_frontal_slice( size_t index ) const
+{
+#ifdef VMMLIB_SAFE_ACCESSORS
+    if ( index >= I3 )
+        VMMLIB_ERROR( "get_frontal_slice() - index out of bounds.", VMMLIB_HERE );
+#endif
+	return array[ index ];
+}
 
 VMML_TEMPLATE_STRING
 inline void 
@@ -648,7 +681,7 @@ VMML_TEMPLATE_STRING
 typename VMML_TEMPLATE_CLASSNAME::iterator
 VMML_TEMPLATE_CLASSNAME::begin()
 {
-    return array[0].array;
+    return iterator( *this, true );
 }
 
 
@@ -658,7 +691,7 @@ VMML_TEMPLATE_STRING
 typename VMML_TEMPLATE_CLASSNAME::iterator
 VMML_TEMPLATE_CLASSNAME::end()
 {
-    return array[ I3 ].array + array[ I3 ].size();
+    return iterator( *this, false );
 }
 
 
@@ -667,7 +700,7 @@ VMML_TEMPLATE_STRING
 typename VMML_TEMPLATE_CLASSNAME::const_iterator
 VMML_TEMPLATE_CLASSNAME::begin() const
 {
-    return array[0].array;
+    return const_iterator( *this, true );
 }
 
 
@@ -676,11 +709,11 @@ VMML_TEMPLATE_STRING
 typename VMML_TEMPLATE_CLASSNAME::const_iterator
 VMML_TEMPLATE_CLASSNAME::end() const
 {
-    return array[ I3 ].array + array[I3 ].size();
+    return const_iterator( *this, false );
 }
 
 
-
+#if 0
 VMML_TEMPLATE_STRING
 typename VMML_TEMPLATE_CLASSNAME::reverse_iterator
 VMML_TEMPLATE_CLASSNAME::rbegin()
@@ -714,7 +747,7 @@ VMML_TEMPLATE_CLASSNAME::rend() const
 {
     return array[ I3 ].array -1;
 }
-
+#endif
 
 VMML_TEMPLATE_STRING
 template< typename input_iterator_t >
@@ -1089,7 +1122,9 @@ VMML_TEMPLATE_CLASSNAME::compute_frobenius_norm( ) const
 	{
 		get_frontal_slice( i3, slice );
 		
-		const_iterator it = slice.begin(), it_end = slice.end(); 
+        typename matrix< I1, I2, T >::const_iterator 
+            it = slice.begin(), it_end = slice.end(); 
+
 		for( ; it != it_end; ++it )
 		{
 			f_norm += *it * *it;

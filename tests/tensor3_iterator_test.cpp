@@ -18,29 +18,51 @@ namespace vmml
 		
 		t3.fill_increasing_values();
 		
-		tensor3_iterator< tensor3< 2, 3, 4, uint16_t> > t3_it( t3 );
+        typedef tensor3< 2, 3, 4, uint16_t >    myt3;
 		
-		/*tensor3_iterator< tensor3< 2, 3, 4, uint16_t>>::iterator it = t3_it.begin(), it_end = t3_it.end();
+		myt3::iterator it = t3.begin(), it_end = t3.end();
+        
+        std::vector< uint16_t > t3_iter_order;
+        std::vector< uint16_t > hand_iter_order;
+        
 		
 		
 		for( ; it != it_end; ++it )
 		{
 			std::cout << *it << std::endl;
-		}*/
-		
-		
+            t3_iter_order.push_back( *it );
+		}
+        
+        std::cout << "XXXXXXX" << std::endl;
+        for( size_t index = 0; index < 4; ++index )
+        {
+            matrix< 2, 3, uint16_t >& m = t3.get_frontal_slice( index );
+            
+            tensor3< 2, 3, 4, uint16_t >::matrix_iterator 
+                it      = m.begin(),
+                it_end  = m.end();
+            for( ; it != it_end; ++it )
+            {
+                std::cout << *it << std::endl;
+                hand_iter_order.push_back( *it );
+            }
+        }
+        
+        ok = t3_iter_order == hand_iter_order;
+        
+		log( "tensor3 iterator  ", ok  );
+		#if 0
 		if ( ok)
 		{	
 			log( "tensor3 iterator  ", true  );
 		} else
 		{
 			std::stringstream error;
-			error 
-			<< "tensor3 iterator: " << std::endl;
+			error  << "tensor3 iterator: iterating failed." << std::endl;
 			
 			log_error( error.str() );
 		}
-		
+		#endif
 		
 		ok = true;
 		return ok;

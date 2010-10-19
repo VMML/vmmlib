@@ -26,11 +26,6 @@ public:
     typedef T                                       value_type;
 	typedef T*                                      pointer;
 	typedef T&                                      reference;
-//	typedef T*                                      iterator;
-//  typedef const T*                                const_iterator;
-
-//    typedef std::reverse_iterator< iterator >       reverse_iterator;
-//    typedef std::reverse_iterator< const_iterator > const_reverse_iterator;
 	
 	typedef typename matrix< I1, I2, T>::iterator matrix_iterator;
 	
@@ -713,42 +708,6 @@ VMML_TEMPLATE_CLASSNAME::end() const
 }
 
 
-#if 0
-VMML_TEMPLATE_STRING
-typename VMML_TEMPLATE_CLASSNAME::reverse_iterator
-VMML_TEMPLATE_CLASSNAME::rbegin()
-{
-    return array[ I3 ].array + array[ I3 ].size() -1;
-}
-
-
-
-VMML_TEMPLATE_STRING
-typename VMML_TEMPLATE_CLASSNAME::reverse_iterator
-VMML_TEMPLATE_CLASSNAME::rend()
-{
-    return array[ I3 ].array - 1;
-}
-
-
-
-VMML_TEMPLATE_STRING
-typename VMML_TEMPLATE_CLASSNAME::const_reverse_iterator
-VMML_TEMPLATE_CLASSNAME::rbegin() const
-{
-    return array[ I3 ].array + array[ I3 ].size() -1;
-}
-
-
-
-VMML_TEMPLATE_STRING
-typename VMML_TEMPLATE_CLASSNAME::const_reverse_iterator
-VMML_TEMPLATE_CLASSNAME::rend() const
-{
-    return array[ I3 ].array -1;
-}
-#endif
-
 VMML_TEMPLATE_STRING
 template< typename input_iterator_t >
 void 
@@ -1107,30 +1066,13 @@ double
 VMML_TEMPLATE_CLASSNAME::compute_frobenius_norm( ) const
 {
 	double f_norm = 0.0;
-	
-/*	std::cout << *this << std::endl;
-	
-	const_iterator it = begin(), it_end = end(); 
-    for( ; it != it_end; ++it )
-    {
-		std::cout << f_norm << " " << *it << " " << *it * *it << std::endl;
-        f_norm += *it * *it;
-    }*/
-	
-	matrix< I1, I2, T > slice;
-	for( size_t i3 = 0; i3 < I3; ++i3 )
-	{
-		get_frontal_slice( i3, slice );
-		
-        typename matrix< I1, I2, T >::const_iterator 
-            it = slice.begin(), it_end = slice.end(); 
 
-		for( ; it != it_end; ++it )
-		{
-			f_norm += *it * *it;
-		}		
+    const_iterator it = begin(), it_end = end(); 
+	for( ; it != it_end; ++it )
+	{
+		f_norm += *it * *it;
 	}
-	
+
 	return sqrt(f_norm);
 }
 

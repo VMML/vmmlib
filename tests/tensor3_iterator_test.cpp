@@ -14,7 +14,6 @@ namespace vmml
 		bool ok = false;
 		
 		tensor3< 2, 3, 4, uint16_t >  t3;
-		tensor3< 2, 3, 4, uint16_t >  t3_check;
 		
 		t3.fill_increasing_values();
 		
@@ -29,11 +28,9 @@ namespace vmml
 		
 		for( ; it != it_end; ++it )
 		{
-			std::cout << *it << std::endl;
             t3_iter_order.push_back( *it );
 		}
         
-        std::cout << "XXXXXXX" << std::endl;
         for( size_t index = 0; index < 4; ++index )
         {
             matrix< 2, 3, uint16_t >& m = t3.get_frontal_slice( index );
@@ -43,7 +40,6 @@ namespace vmml
                 it_end  = m.end();
             for( ; it != it_end; ++it )
             {
-                std::cout << *it << std::endl;
                 hand_iter_order.push_back( *it );
             }
         }
@@ -51,18 +47,7 @@ namespace vmml
         ok = t3_iter_order == hand_iter_order;
         
 		log( "tensor3 iterator  ", ok  );
-		#if 0
-		if ( ok)
-		{	
-			log( "tensor3 iterator  ", true  );
-		} else
-		{
-			std::stringstream error;
-			error  << "tensor3 iterator: iterating failed." << std::endl;
-			
-			log_error( error.str() );
-		}
-		#endif
+
 		
 		ok = true;
 		return ok;

@@ -7,7 +7,7 @@
 #include "tensor3_test.hpp"
 #include "tensor3_iterator_test.hpp"
 #include "tucker3_tensor_test.hpp"
-//#include "cp3_tensor_test.hpp"
+#include "cp3_tensor_test.hpp"
 #include "matrix_pseudoinverse_test.hpp"
 
 #include <iostream>
@@ -67,9 +67,9 @@ main( int argc, const char* argv[] )
     vmml::tucker3_tensor_test tt3t;
     run_and_log( tt3t );
 	
-	/*vmml::cp3_tensor_test cp3t;
+	vmml::cp3_tensor_test cp3t;
     run_and_log( cp3t );
-	*/
+
     vmml::matrix_pseudoinverse_test m_pinv;
     run_and_log( m_pinv );
 	

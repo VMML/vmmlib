@@ -5,7 +5,13 @@
  * @author Jonas Boesch
  *
  * The tucker3 tensor class is consists of the same components (core tensor, basis matrices u1-u3) as the tucker3 model described in:
- * Tucker, “Some mathematical notes on three-mode factor analysis”, Psychometrika, vol. 31, no. 3, pp. 279–311, 1966 Sep.
+ * - Tucker,  “Some mathematical notes on three-mode factor analysis”, Psychometrika, vol. 31, no. 3, pp. 279–311., 1966 Sep.
+ * - De Lathauwer L., De Moor B., Vandewalle J., ``A multilinear singular value decomposition'', 
+ * SIAM J. Matrix Anal. Appl., vol. 21, no. 4, Apr. 2000, pp. 1253-1278.
+ * - De Lathauwer L., De Moor B., Vandewalle J., ``On the Best rank-1 and Rank-$(R_1, R_2, ..., R_N)$ Approximation and Applications of Higher-Order Tensors'', 
+ * SIAM J. Matrix Anal. Appl., vol. 21, no. 4, Apr. 2000, pp. 1324-1342.
+ * - T. G. Kolda and B. W. Bader. Tensor Decompositions and Applications. 
+ * SIAM Review, Volume 51, Number 3, Pages 455-500, September 2009.
  * 
  */
 
@@ -72,6 +78,9 @@ public:
 	void optimize_mode2( const tensor3< I1, I2, I3, T >& data_, tensor3< J1, I2, J3, T >& projection_, const matrix< I1, J1, T >& U1_, const matrix< I3, J3, T >& U3_ ) const;		
 	void optimize_mode3( const tensor3< I1, I2, I3, T >& data_, tensor3< J1, J2, I3, T >& projection_, const matrix< I1, J1, T >& U1_, const matrix< I2, J2, T >& U2_ ) const;
 	
+		
+	void tucker_als( const tensor3< I1, I2, I3, T >& data_ );	
+		
 	template< size_t K1, size_t K2, size_t K3>
 	void reduce_ranks( const tucker3_tensor< K1, K2, K3, I1, I2, I3, T>& other ); //call TuckerJI.reduce_ranks(TuckerKI) K1 -> J1, K2 -> J2, K3 -> J3
 
@@ -122,14 +131,19 @@ VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::decomposition( const tensor3< I1, I2, I3, T >& data_ )
 {
-	hoii( data_ );
+	tucker_als( data_ );
 		
 	
 	//derive core
 	derive_core( data_, _core, _u1, _u2, _u3 );
 }
 
-	
+VMML_TEMPLATE_STRING
+void 
+VMML_TEMPLATE_CLASSNAME::tucker_als( const tensor3< I1, I2, I3, T >& data_ )
+{
+	hoii( data_ );
+}
 
 
 VMML_TEMPLATE_STRING

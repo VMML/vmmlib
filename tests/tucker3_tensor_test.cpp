@@ -11,6 +11,7 @@ namespace vmml
 	tucker3_tensor_test::run()
 	{
 		bool ok = false;
+		double precision = 0.001;
 		
 		//decomposition (hosvd test data after lathauwer 2000a)
 		//prepare control data
@@ -62,7 +63,7 @@ namespace vmml
 		//(1) derive core tensor
 		tuck3_hosvd.derive_core( t3_data_hosvd, core_hosvd, u1_hosvd_check, u2_hosvd_check, u3_hosvd_check );
 		
-		if ( core_hosvd.equals( core_hosvd_check, 0.001 ))
+		if ( core_hosvd.equals( core_hosvd_check, precision ))
 		{	
 			log( "HOSVD derive core tensor", true  );
 		} else
@@ -84,7 +85,7 @@ namespace vmml
 		u2_hosvd = tuck3_hosvd.get_u2();
 		u3_hosvd = tuck3_hosvd.get_u3();
 		
-		if ( u1_hosvd.equals( u1_hosvd_check, 0.001 ) && u2_hosvd.equals( u2_hosvd_check, 0.001 ) && u3_hosvd.equals( u3_hosvd_check, 0.001 ))
+		if ( u1_hosvd.equals( u1_hosvd_check, precision ) && u2_hosvd.equals( u2_hosvd_check, precision ) && u3_hosvd.equals( u3_hosvd_check, precision ))
 		{	
 			log( "HOSVD compute basis matrices U1, U2, U3", true  );
 		} else
@@ -131,7 +132,7 @@ namespace vmml
 		u3_hoii = tuck3_hoii.get_u3();
 		core_hoii = tuck3_hoii.get_core();
 		
-		if ( u1_hoii.equals( u1_hoii_check, 0.001 ) && u2_hoii.equals( u2_hoii_check, 0.001 ) && u3_hoii.equals( u3_hoii_check, 0.001 ))
+		if ( u1_hoii.equals( u1_hoii_check, precision ) && u2_hoii.equals( u2_hoii_check, precision ) && u3_hoii.equals( u3_hoii_check, precision ))
 		{	
 			log( "HOII (step 1) initalize basis matrices by HOSVD U1, U2, U3", true  );
 		} else
@@ -178,7 +179,7 @@ namespace vmml
 		u3_hoii_2 = tuck3_hoii_2.get_u3();
 		core_hoii_2 = tuck3_hoii_2.get_core();
 		
-		if ( u1_hoii_2.equals( u1_hoii_check_2, 0.001 ) && u2_hoii_2.equals( u2_hoii_check_2, 0.001 ) && u3_hoii_2.equals( u3_hoii_check_2, 0.001 ) && core_hoii_2.equals( core_hoii_check_2, 0.001))
+		if ( u1_hoii_2.equals( u1_hoii_check_2, precision ) && u2_hoii_2.equals( u2_hoii_check_2, precision ) && u3_hoii_2.equals( u3_hoii_check_2, precision ) && core_hoii_2.equals( core_hoii_check_2, precision))
 		{	
 			log( "HOII (step 2) rank-(2,2,1) approximation" , true  );
 		} else

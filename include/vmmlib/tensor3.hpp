@@ -12,6 +12,7 @@
 #define __VMML__TENSOR3__HPP__
 
 #include <vmmlib/matrix.hpp>
+#include <vmmlib/tensor3_iterator.hpp>
 
 namespace vmml
 {
@@ -25,13 +26,21 @@ public:
     typedef T                                       value_type;
 	typedef T*                                      pointer;
 	typedef T&                                      reference;
-    typedef T*                                      iterator;
+	typedef T*                                      iterator;
     typedef const T*                                const_iterator;
     typedef std::reverse_iterator< iterator >       reverse_iterator;
     typedef std::reverse_iterator< const_iterator > const_reverse_iterator;
+	
+	typedef typename matrix< I1, I2, T>::iterator matrix_iterator;
+	
+	//typedef typename vmml::tensor3_iterator< < tensor3< I1, I2, I3, T > > iterator;
     
     typedef typename vmml::matrix< I1, I2, T >        slice_type_frontal;
     
+	static const size_t ROWS	= I1;
+	static const size_t COLS	= I2;
+	static const size_t SLICES	= I3;
+	static const size_t SIZE = I1 * I2 * I3;
  
     // accessors
     inline T& operator()( size_t i1, size_t i2, size_t i3 );
@@ -1075,16 +1084,16 @@ VMML_TEMPLATE_CLASSNAME::compute_frobenius_norm( ) const
         f_norm += *it * *it;
     }*/
 	
-	
+	matrix< I1, I2, T > slice;
 	for( size_t i3 = 0; i3 < I3; ++i3 )
 	{
-		for( size_t i1 = 0; i1 < I1; ++i1 )
+		get_frontal_slice( i3, slice );
+		
+		const_iterator it = slice.begin(), it_end = slice.end(); 
+		for( ; it != it_end; ++it )
 		{
-			for( size_t i2 = 0; i2 < I2; ++i2 )
-			{
-				f_norm += at( i1, i2, i3 ) * at( i1, i2, i3 );
-			}
-		}
+			f_norm += *it * *it;
+		}		
 	}
 	
 	return sqrt(f_norm);

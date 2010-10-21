@@ -38,15 +38,16 @@ namespace vmml
 		void set_u2( const matrix< I2, R, T >& U2 ) { _u2 = U2; } ;
 		void set_u3( const matrix< I3, R, T >& U3 ) { _u3 = U3; } ;
 		
-		vector< R, T > get_lambdas() const { return _lambdas; } ;
-		matrix< I1, R, T > get_u1() const { return _u1; } ;
-		matrix< I2, R, T > get_u2() const { return _u2; } ;
-		matrix< I3, R, T > get_u3() const { return _u3; } ;
+		void get_lambdas( vector< R, T >& data_ ) const { data_  = _lambdas; } ;
+		void get_u1( matrix< I1, R, T >& U1 ) const { U1 = _u1; } ;
+		void get_u2( matrix< I2, R, T >& U2 ) const { U2 = _u2; } ;
+		void get_u3( matrix< I3, R, T >& U3 ) const { U3 = _u3; } ;
 		
 		void decomposition( const tensor3< I1, I2, I3, T >& data_ ); 
 		void reconstruction( tensor3< I1, I2, I3, T >& data_ ) const;
 		
 		void cp_als( const tensor3< I1, I2, I3, T >& data_ );
+		
 		//higher-order power method (lathauwer et al., 2000b)
 		void hopm( const tensor3< I1, I2, I3, T >& data_ );
 		

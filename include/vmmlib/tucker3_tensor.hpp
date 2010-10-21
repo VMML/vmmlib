@@ -36,10 +36,13 @@ public:
 	void set_u2( const matrix< I2, J2, T >& U2 ) { _u2 = U2; } ;
 	void set_u3( const matrix< I3, J3, T >& U3 ) { _u3 = U3; } ;
 	
-    tensor3< J1, J2, J3, T > get_core() const { return _core; } ;
-	matrix< I1, J1, T > get_u1() const { return _u1; } ;
-	matrix< I2, J2, T > get_u2() const { return _u2; } ;
-	matrix< I3, J3, T > get_u3() const { return _u3; } ;
+    void get_core( tensor3< J1, J2, J3, T >& data_ ) const { data_ = _core; } ;
+	void get_u1( matrix< I1, J1, T >& U1 ) const { U1 = _u1; } ;
+	void get_u2( matrix< I2, J2, T >& U2 ) const { U2 = _u2; } ;
+	void get_u3( matrix< I3, J3, T >& U3 ) const { U3 = _u3; } ;
+		
+	void export_to( std::vector< T >& data_ ) const;
+	void import_from( std::vector< T >& data_ );	
 	
 	void reconstruction( tensor3< I1, I2, I3, T >& data_ ) const;
 	void decomposition( const tensor3< I1, I2, I3, T >& data_ ); 
@@ -439,19 +442,22 @@ VMML_TEMPLATE_CLASSNAME::reduce_ranks( const tucker3_tensor< K1, K2, K3, I1, I2,
 	assert(J3 <= K3);	
 		
 	//reduce basis matrices
-	matrix< I1, K1, T> u1 = other.get_u1();
+	matrix< I1, K1, T> u1;
+	other.get_u1( u1);
 	for( size_t j1 = 0; j1 < J1; ++j1 ) 
 	{
 		_u1.set_column( j1, u1.get_column( j1 ));
 	}
 	
-	matrix< I2, K2, T> u2 = other.get_u2();
+	matrix< I2, K2, T> u2;
+	other.get_u2( u2 );
 	for( size_t j2 = 0; j2 < J2; ++j2) 
 	{
 		_u2.set_column( j2, u2.get_column( j2 ));
 	}
 	
-	matrix< I3, K3, T> u3 = other.get_u3();
+	matrix< I3, K3, T> u3;
+	other.get_u3( u3 );
 	for( size_t j3 = 0; j3 < J3; ++j3) 
 	{
 		_u3.set_column( j3, u3.get_column( j3 ));
@@ -459,7 +465,7 @@ VMML_TEMPLATE_CLASSNAME::reduce_ranks( const tucker3_tensor< K1, K2, K3, I1, I2,
 	
 	//reduce core
 	tensor3<K1, K2, K3, T> other_core;
-	other_core = other.get_core();
+	other.get_core( other_core );
 
 	for( size_t j3 = 0; j3 < J3; ++j3 ) 
 	{
@@ -485,25 +491,28 @@ VMML_TEMPLATE_CLASSNAME::subsampling( const tucker3_tensor< J1, J2, J3, K1, K2, 
 	assert(I1 <= K3);	
 	
 	//subsample basis matrices
-	matrix< K1, J1, T> u1 = other.get_u1();
+	matrix< K1, J1, T> u1;
+	other.get_u1( u1 );
 	for( size_t i1 = 0, i = 0; i1 < K1; i1 += factor, ++i ) 
 	{
 		_u1.set_row( i, u1.get_row( i1 ));
 	}
 	
-	matrix< K2, J2, T> u2 = other.get_u2();
+	matrix< K2, J2, T> u2;
+	other.get_u2( u2 );
 	for( size_t i2 = 0,  i = 0; i2 < K2; i2 += factor, ++i) 
 	{
 		_u2.set_row( i, u2.get_row( i2 ));
 	}
 	
-	matrix< K3, J3, T> u3 = other.get_u3();
+	matrix< K3, J3, T> u3 ;
+	other.get_u3( u3);
 	for( size_t i3 = 0,  i = 0; i3 < K3; i3 += factor, ++i) 
 	{
 		_u3.set_row( i, u3.get_row( i3 ));
 	}
 	
-	_core = other.get_core();
+	other.get_core(_core );
 }
 
 
@@ -518,7 +527,8 @@ VMML_TEMPLATE_CLASSNAME::subsampling_on_average( const tucker3_tensor< J1, J2, J
 	
 	
 	//subsample basis matrices
-	matrix< K1, J1, T> u1 = other.get_u1();
+	matrix< K1, J1, T> u1;
+	other.get_u1( u1 );
 	for( size_t i1 = 0, i = 0; i1 < K1; i1 += factor, ++i )
 	{
 		vector< J1, T > tmp_row = u1.get_row( i1 );
@@ -530,7 +540,8 @@ VMML_TEMPLATE_CLASSNAME::subsampling_on_average( const tucker3_tensor< J1, J2, J
 		_u1.set_row( i, tmp_row);
 	}
 	
-	matrix< K2, J2, T> u2 = other.get_u2();
+	matrix< K2, J2, T> u2;
+	other.get_u2( u2 );
 	for( size_t i2 = 0,  i = 0; i2 < K2; i2 += factor, ++i) 
 	{
 		vector< J2, T > tmp_row = u2.get_row( i2 );
@@ -542,7 +553,8 @@ VMML_TEMPLATE_CLASSNAME::subsampling_on_average( const tucker3_tensor< J1, J2, J
 		_u2.set_row( i, u2.get_row( i2 ));
 	}
 	
-	matrix< K3, J3, T> u3 = other.get_u3();
+	matrix< K3, J3, T> u3;
+	other.get_u3( u3);
 	for( size_t i3 = 0,  i = 0; i3 < K3; i3 += factor, ++i) 
 	{
 		vector< J3, T > tmp_row = u3.get_row( i3 );
@@ -554,7 +566,7 @@ VMML_TEMPLATE_CLASSNAME::subsampling_on_average( const tucker3_tensor< J1, J2, J
 		_u3.set_row( i, u3.get_row( i3 ));
 	}
   	
-	_core = other.get_core();
+	 other.get_core( _core );
 }
 
 
@@ -579,28 +591,47 @@ VMML_TEMPLATE_CLASSNAME::region_of_interest( const tucker3_tensor< J1, J2, J3, K
 	assert(end_index3 < K3);
 	
 	//region_of_interes of basis matrices
-	matrix< K1, J1, T> u1 = other.get_u1();
+	matrix< K1, J1, T> u1;
+	other.get_u1( u1 );
 	for( size_t i1 = start_index1,  i = 0; i1 < end_index1; ++i1, ++i ) 
 	{
 		_u1.set_row( i, u1.get_row( i1 ));
 	}
 	
-	matrix< K2, J2, T> u2 = other.get_u2();
+	matrix< K2, J2, T> u2;
+	other.get_u2( u2 );
 	for( size_t i2 = start_index2,  i = 0; i2 < end_index2; ++i2, ++i) 
 	{
 		_u2.set_row( i, u2.get_row( i2 ));
 	}
 	
-	matrix< K3, J3, T> u3 = other.get_u3();
+	matrix< K3, J3, T> u3;
+	other.get_u3( u3 );
 	for( size_t i3 = start_index3,  i = 0; i3 < end_index3; ++i3, ++i) 
 	{
 		_u3.set_row( i, u3.get_row( i3 ));
 	}
 	
-	_core = other.get_core();
+	other.get_core( _core );
 	
 }
+	
+	
+VMML_TEMPLATE_STRING
+void
+VMML_TEMPLATE_CLASSNAME::export_to( std::vector< T >& data_) const
+{
 
+}
+	
+	
+VMML_TEMPLATE_STRING
+void
+VMML_TEMPLATE_CLASSNAME::import_from( std::vector< T >& data_ )
+{
+	
+}	
+	
 
 
 #undef VMML_TEMPLATE_STRING

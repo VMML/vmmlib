@@ -38,10 +38,10 @@ namespace vmml
 		cp3_tensor< 3, 2, 2, 1, double > cp3_rank1( u1_rank1, u2_rank1, u3_rank1, lambda_rank1 );
 
 		cp3_rank1.cp_als( t3_data );
-		u1_rank1 = cp3_rank1.get_u1();
-		u2_rank1 = cp3_rank1.get_u2();
-		u3_rank1 = cp3_rank1.get_u3();
-		lambda_rank1 = cp3_rank1.get_lambdas();
+		cp3_rank1.get_u1( u1_rank1 );
+		cp3_rank1.get_u2( u2_rank1 );
+		cp3_rank1.get_u3( u3_rank1 );
+		cp3_rank1.get_lambdas( lambda_rank1 );
 		
 		double precision = 0.001;
 		ok = ( u1_rank1.equals( u1_rank1_check, precision ) && u2_rank1.equals( u2_rank1_check, precision) && u3_rank1.equals( u3_rank1_check, precision) && lambda_rank1 == lambda_rank1_check );

@@ -81,9 +81,9 @@ namespace vmml
 		//(2) decomposition into basis matrices 		
 		
 		tuck3_hosvd.hosvd( t3_data_hosvd );
-		u1_hosvd = tuck3_hosvd.get_u1();
-		u2_hosvd = tuck3_hosvd.get_u2();
-		u3_hosvd = tuck3_hosvd.get_u3();
+		 tuck3_hosvd.get_u1( u1_hosvd );
+		 tuck3_hosvd.get_u2( u2_hosvd );
+		 tuck3_hosvd.get_u3( u3_hosvd );
 		
 		if ( u1_hosvd.equals( u1_hosvd_check, precision ) && u2_hosvd.equals( u2_hosvd_check, precision ) && u3_hosvd.equals( u3_hosvd_check, precision ))
 		{	
@@ -127,10 +127,10 @@ namespace vmml
 		tucker3_tensor< 3, 2, 2, 3, 2, 2, double > tuck3_hoii( core_hoii, u1_hoii, u2_hoii, u3_hoii );
 		//Step 1
 		tuck3_hoii.hosvd( t3_data_hoii );
-		u1_hoii = tuck3_hoii.get_u1();
-		u2_hoii = tuck3_hoii.get_u2();
-		u3_hoii = tuck3_hoii.get_u3();
-		core_hoii = tuck3_hoii.get_core();
+		tuck3_hoii.get_u1( u1_hoii );
+		tuck3_hoii.get_u2( u2_hoii );
+		tuck3_hoii.get_u3( u3_hoii );
+		tuck3_hoii.get_core( core_hoii);
 		
 		if ( u1_hoii.equals( u1_hoii_check, precision ) && u2_hoii.equals( u2_hoii_check, precision ) && u3_hoii.equals( u3_hoii_check, precision ))
 		{	
@@ -174,10 +174,10 @@ namespace vmml
 		tucker3_tensor< 2, 2, 1, 3, 2, 2, double > tuck3_hoii_2( core_hoii_2, u1_hoii_2, u2_hoii_2, u3_hoii_2 );
 		
 		tuck3_hoii_2.hoii( t3_data_hoii );
-		u1_hoii_2 = tuck3_hoii_2.get_u1();
-		u2_hoii_2 = tuck3_hoii_2.get_u2();
-		u3_hoii_2 = tuck3_hoii_2.get_u3();
-		core_hoii_2 = tuck3_hoii_2.get_core();
+		tuck3_hoii_2.get_u1( u1_hoii_2 );
+		tuck3_hoii_2.get_u2( u2_hoii_2 );
+		tuck3_hoii_2.get_u3( u3_hoii_2 );
+		tuck3_hoii_2.get_core( core_hoii_2 );
 		
 		if ( u1_hoii_2.equals( u1_hoii_check_2, precision ) && u2_hoii_2.equals( u2_hoii_check_2, precision ) && u3_hoii_2.equals( u3_hoii_check_2, precision ) && core_hoii_2.equals( core_hoii_check_2, precision))
 		{	
@@ -239,6 +239,10 @@ namespace vmml
 		matrix<6, 1, uint16_t> u1_red;
 		matrix<7, 2, uint16_t> u2_red;
 		matrix<5, 3, uint16_t> u3_red;
+		tensor3< 1, 2, 3, uint16_t >  core_red2;
+		matrix<6, 1, uint16_t> u1_red2;
+		matrix<7, 2, uint16_t> u2_red2;
+		matrix<5, 3, uint16_t> u3_red2;
 		
 		tucker3_tensor< 1, 2, 3, 6, 7, 5, uint16_t > tuck3_red( core_red, u1_red, u2_red, u3_red );
 		tuck3_red.reduce_ranks( tuck3 );
@@ -249,7 +253,9 @@ namespace vmml
 		double data[] = { 0, 1, 6, 7, 12, 13 };
 		core_red.set(data, data+6);
 		
-		if ( tuck3_red.get_u1() == u1_red && tuck3_red.get_u2() == u2_red && tuck3_red.get_u3() == u3_red && tuck3_red.get_core() == core_red)
+		tuck3_red.get_u1( u1_red2 ); tuck3_red.get_u2( u2_red2 ); tuck3_red.get_u3( u3_red2 ); tuck3_red.get_core( core_red2 );
+		
+		if (  u1_red2 == u1_red && u2_red2 == u2_red && u3_red2 == u3_red && core_red2 == core_red)
 		{	
 			log( "tucker3 reduce ranks", true  );
 		} else
@@ -258,13 +264,13 @@ namespace vmml
 			error 
 			<< "Tucker3 reduce ranks: " << std::endl
 			<< "u1 should be: " << u1_red << std::endl
-			<< "u1 is: " << tuck3_red.get_u1() << std::endl
+			<< "u1 is: " << u1_red2 << std::endl
 			<< "u2 should be: " <<  u2_red << std::endl
-			<< "u2 is: " <<  tuck3_red.get_u2() << std::endl
+			<< "u2 is: " <<  u2_red2 << std::endl
 			<< "u3 should be: " << u3_red << std::endl
-			<< "u3 is: " << tuck3_red.get_u3() << std::endl
+			<< "u3 is: " << u3_red2 << std::endl
 			<< "core should be: " << core_red << std::endl
-			<< "core is: " << tuck3_red.get_core() << std::endl;
+			<< "core is: " << core_red2 << std::endl;
 
 			log_error( error.str() );
 		}

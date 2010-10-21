@@ -47,11 +47,16 @@ namespace vmml
 		void reconstruction( tensor3< I1, I2, I3, T >& data_ ) const;
 		
 		void cp_als( const tensor3< I1, I2, I3, T >& data_ );
-		void hoii( const tensor3< I1, I2, I3, T >& data_ );
+		//higher-order power method (lathauwer et al., 2000b)
+		void hopm( const tensor3< I1, I2, I3, T >& data_ );
 		
 		void hosvd_mode1( const tensor3< I1, I2, I3, T >& data_, matrix< I1, R, T >& U1_ ) const;
 		void hosvd_mode2( const tensor3< I1, I2, I3, T >& data_, matrix< I2, R, T >& U2_ ) const;
 		void hosvd_mode3( const tensor3< I1, I2, I3, T >& data_, matrix< I3, R, T >& U3_ ) const;
+		
+		void optimize_mode1( const tensor3< I1, I2, I3, T >& data_, matrix< I1, R, T >& U1_optimized_, const matrix< I2, R, T >& U2_, const matrix< I3, R, T >& U3_ ) const;
+		void optimize_mode2( const tensor3< I1, I2, I3, T >& data_, const matrix< I1, R, T >& U1_, matrix< I2, R, T >& U2_optimized_, const matrix< I3, R, T >& U3_ ) const;		
+		double optimize_mode3( const tensor3< I1, I2, I3, T >& data_, const matrix< I1, R, T >& U1_, const matrix< I2, R, T >& U2_, matrix< I3, R, T >& U3_optimized_ ) const;
 		
 	private:
 		vector< R, T > _lambdas ;
@@ -76,7 +81,10 @@ VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::reconstruction( tensor3< I1, I2, I3, T >& data_ ) const
 {
-	//data_.full_tensor3_matrix_multiplication( _core, _u1, _u2, _u3 );
+	tensor3< R, R, R, T > core_diag;
+	core_diag.diag( _lambdas );
+	
+	data_.full_tensor3_matrix_multiplication( core_diag, _u1, _u2, _u3 );
 }
 
 
@@ -91,68 +99,67 @@ VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::cp_als( const tensor3< I1, I2, I3, T >& data_ )
 {
-	hoii( data_ );
+	hopm( data_ );
 }
 
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::hoii( const tensor3< I1, I2, I3, T >& data_ )
+VMML_TEMPLATE_CLASSNAME::hopm( const tensor3< I1, I2, I3, T >& data_ )
 {
 	
 	//compute best rank-(R) approximation (Lathauwer et al., 2000b)
 	tensor3< I1, I2, I3, T > approximated_data;
 	reconstruction( approximated_data );
-	double f_norm = approximated_data.compute_frobenius_norm();
-	double max_f_norm = data_.compute_frobenius_norm();
+	double max_f_norm = data_.frobenius_norm();
 	//std::cout << "frobenius norm original: " << max_f_norm << std::endl;
 	
+	double f_norm = approximated_data.frobenius_norm();
 	double last_f_norm = f_norm;
 	double improvement = max_f_norm - f_norm;
-	double min_improvement = 0.1;
+	double min_improvement = 0.0001;
 	size_t i = 0;
-	size_t max_iterations = 3;
+	size_t max_iterations = 20;
+	double lambda;
 	
-		
-	//optimize for mode 1
-	//intialize u1
-	hosvd_mode1( data_, _u1 );
-	std::cout << "initial u1: " << std::endl << _u1 << std::endl;
+	//intialize u1-u3
+	//hosvd_mode1( data_, _u1 ); inital guess not needed for u1 since it will be computed in the first optimization step
+	hosvd_mode2( data_, _u2 );
+	hosvd_mode3( data_, _u3 );
+	
+	//std::cout << "initial u2: " << std::endl << _u2 << std::endl;
+	//std::cout << "initial u3: " << std::endl << _u3 << std::endl;
+	
+	//std::cout << " data: " << std::endl << data_ << std::endl;
+	
 	while( improvement > min_improvement && i < max_iterations )
 	{
 		
+		//optimize u1
+		optimize_mode1( data_, _u1, _u2, _u3);
+		//std::cout << std::endl << " *** iteration: " << i << std::endl << " new u1: " << std::endl << _u1 << std::endl;
+
+		//optimize u1
+		optimize_mode2( data_, _u1, _u2, _u3);
+		//std::cout << " new u2: " << std::endl << _u2 << std::endl;
+
+		//optimize u1
+		lambda = optimize_mode3( data_, _u1, _u2, _u3);
+		//std::cout << " new u3: " << std::endl << _u3 <<  std::endl;
 		
-		set_u1( _u1 );
-		set_u2( _u2 );
-		set_u3( _u3 );
+		
+		set_u1(_u1); set_u2(_u2); set_u3(_u3);
+		_lambdas.at(0) = lambda; //TODO: for all lambdas/ranks
 		set_lambdas( _lambdas );
 		
 		reconstruction( approximated_data );
-		f_norm = approximated_data.compute_frobenius_norm();
+		f_norm = approximated_data.frobenius_norm();
 		improvement = f_norm - last_f_norm;
 		last_f_norm = f_norm;
-		
-		//std::cout << "iteration '" << i << "': frobenius norm: " << std::setprecision(8) << f_norm << ", improvement: " << improvement << std::endl;
-		
+						
 		++i;
 	}
-	//std::cout << "number of iterations: " << i << std::endl;
 	
-		/*tensor3< I1, J2, J3, T > projection1; 
-		optimize_mode1( data_, projection1, _u2, _u3);
-		hosvd_mode1( projection1, _u1 );
-		
-		//optimize for mode 2
-		tensor3< J1, I2, J3, T > projection2; 
-		optimize_mode2( data_, projection2, _u1, _u3);
-		hosvd_mode2( projection2, _u2 );
-		
-		//optimize for mode 3
-		tensor3< J1, J2, I3, T > projection3; 
-		optimize_mode3( data_, projection3, _u1, _u2);
-		hosvd_mode3( projection3, _u3);*/
-		
-
-
+	std::cout << "number of cp iterations: " << i << std::endl;
 }
 
 	
@@ -210,6 +217,66 @@ VMML_TEMPLATE_CLASSNAME::hosvd_mode3( const tensor3< I1, I2, I3, T >& data_, mat
 	else 
 		U3_.zero();
 }
+
+	
+
+VMML_TEMPLATE_STRING
+void 
+VMML_TEMPLATE_CLASSNAME::optimize_mode1( const tensor3< I1, I2, I3, T >& data_, matrix< I1, R, T >& U1_optimized_, const matrix< I2, R, T >& U2_, const matrix< I3, R, T >& U3_ ) const
+{	
+	matrix< I1, I2*I3, T> unfolding; // -> u1
+	data_.lateral_matricization( unfolding);
+	
+	matrix< I2*I3, R, T> u1_krp;
+	u1_krp = U2_.khatri_rao_product( U3_ );	
+	U1_optimized_.multiply( unfolding, u1_krp );
+	
+	//std::cout << "m_lateral " << std::endl << m_lateral << std::endl;
+	//std::cout << "khatri-rao  " << std::endl << u1_krp << std::endl;
+	//std::cout << "u1_ optimized " << std::endl << U1_optimized_ << std::endl;
+	
+	//normalize u with lambda (= norm)
+	double lambda = U1_optimized_.frobenius_norm();
+	U1_optimized_ *= (1 / lambda);
+}
+
+
+VMML_TEMPLATE_STRING
+void 
+VMML_TEMPLATE_CLASSNAME::optimize_mode2( const tensor3< I1, I2, I3, T >& data_, const matrix< I1, R, T >& U1_, matrix< I2, R, T >& U2_optimized_, const matrix< I3, R, T >& U3_ ) const
+{
+	matrix< I2, I1*I3, T> unfolding; // -> u2
+	data_.frontal_matricization( unfolding);
+	
+	matrix< I1*I3, R, T> u2_krp;
+	u2_krp = U1_.khatri_rao_product( U3_ );
+	U2_optimized_.multiply( unfolding, u2_krp );
+	
+	
+	//normalize u with lambda (= norm)
+	double lambda = U2_optimized_.frobenius_norm();
+	U2_optimized_ *= (1 / lambda);
+}	
+
+
+VMML_TEMPLATE_STRING
+double  
+VMML_TEMPLATE_CLASSNAME::optimize_mode3( const tensor3< I1, I2, I3, T >& data_, const matrix< I1, R, T >& U1_, const matrix< I2, R, T >& U2_,  matrix< I3, R, T >& U3_optimized_ ) const
+{
+	matrix< I3, I1*I2, T> unfolding; //-> u3
+	data_.horizontal_matricization( unfolding);
+	
+	matrix< I1*I2, R, T> u3_krp;
+	u3_krp = U1_.khatri_rao_product( U2_ );
+	U3_optimized_.multiply( unfolding, u3_krp );
+	
+	//normalize u with lambda (= norm)
+	double lambda = U3_optimized_.frobenius_norm();
+	U3_optimized_ *= (1 / lambda);
+	
+	return lambda;
+}
+
 	
 		
 #undef VMML_TEMPLATE_STRING

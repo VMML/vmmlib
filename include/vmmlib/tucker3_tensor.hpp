@@ -324,8 +324,8 @@ VMML_TEMPLATE_CLASSNAME::hoii( const tensor3< I1, I2, I3, T >& data_ )
 	//compute best rank-(J1, J2, J3) approximation (Lathauwer et al., 2000b)
 	tensor3< I1, I2, I3, T > approximated_data;
 	reconstruction( approximated_data );
-	double f_norm = approximated_data.compute_frobenius_norm();
-	double max_f_norm = data_.compute_frobenius_norm();
+	double f_norm = approximated_data.frobenius_norm();
+	double max_f_norm = data_.frobenius_norm();
 	//std::cout << "frobenius norm original: " << max_f_norm << std::endl;
 	
 	double last_f_norm = f_norm;
@@ -359,7 +359,7 @@ VMML_TEMPLATE_CLASSNAME::hoii( const tensor3< I1, I2, I3, T >& data_ )
 		set_core( _core );
 		
 		reconstruction( approximated_data );
-		f_norm = approximated_data.compute_frobenius_norm();
+		f_norm = approximated_data.frobenius_norm();
 		improvement = f_norm - last_f_norm;
 		last_f_norm = f_norm;
 		

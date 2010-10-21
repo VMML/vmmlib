@@ -811,7 +811,83 @@ matrix_test::run()
         //const_array[ 3 ] = 1.0;
     }
     #endif
-
+	
+	
+	{
+		//test computation of norm
+		matrix< 4, 4, int > data_2;
+		int test_data[] = {
+			1, 2, 3, 4,
+			5, 6, 7, 8, 
+			9, 8, 7, 6, 
+			5, 4, 3, 2 };
+		data_2 = test_data;
+		double norm_check = 22.0907220343745223090082;
+		double norm = data_2.frobenius_norm();
+		ok = norm == norm_check;
+		if ( ok )
+		{	
+			log( " matrix frobenius norm", ok  );
+		} else
+		{
+			std::stringstream error;
+			error 
+			<< " matrix frobenius norm: should be: " << norm_check << " is: " << norm << std::endl;
+			log_error( error.str() );
+		}
+	}
+	
+	{
+		//test khatri-rao matrix product
+		matrix< 3, 4, int > left;
+		matrix< 4, 4, int > right;
+		matrix< 12, 4, int > khatri_rao;
+		matrix< 12, 4, int > khatri_rao_check;
+		int data_left[] = {
+			1, 2, 3, 4,
+			5, 6, 7, 8,
+			9, 10, 11, 12 };
+		int data_right[] = {
+			1, 2, 3, 4,
+			5, 6, 7, 8,
+			9, 10, 11, 12,
+			13, 14, 15, 16 };
+		left = data_left;
+		right = data_right;
+		
+		int data_khatri_rao[] = {
+			1,4,9,16,
+			5,12,21,32,
+			9,20,33,48,
+			13,28,45,64,
+			5,12,21,32,
+			25,36,49,64,
+			45,60,77,96,
+			65,84,105,128,
+			9,20,33,48,
+			45,60,77,96,
+			81,100,121,144,
+			117,140,165,192 };
+		khatri_rao_check = data_khatri_rao;
+		
+		khatri_rao = left.khatri_rao_product( right );
+		
+		ok = khatri_rao == khatri_rao_check;
+		if ( ok )
+		{	
+			log( " khatri-rao matrix product ", ok  );
+		} else
+		{
+			std::stringstream error;
+			error 
+			<< " khatri-rao matrix product: should be: " << std::endl 
+			<< std::setprecision(24) << khatri_rao_check << std::endl 
+			<< " is: " << std::endl << khatri_rao << std::endl;
+			log_error( error.str() );
+		}
+	}
+	
+	
     return ok;
 }
 

@@ -13,7 +13,7 @@ namespace vmml
 	{
 		bool ok = false;
 		
-		//decomposition (hosvd test data after lathauwer 2000b)
+		//decomposition (hopm test data after lathauwer 2000b)
 		//prepare control data
 		//rank-1 approximation
 		matrix<3, 1, double> u1_rank1;
@@ -31,23 +31,24 @@ namespace vmml
 		vector< 1, double> lambda_rank1_check;
 		lambda_rank1_check.at(0)  = 10.1693;
 		
-		tensor3< 3, 2, 2, double> t3_data_hoii;
-		double data_hoii[] = { 0, 1, 2, 3, 4, 5, -1, 4, -2, -5, 3, -6};
-		t3_data_hoii.set(data_hoii, data_hoii + 12);
+		tensor3< 3, 2, 2, double> t3_data;
+		double data[] = { 0, 1, 2, 3, 4, 5, -1, 4, -2, -5, 3, -6};
+		t3_data.set(data, data + 12);
 		
-		cp3_tensor< 3, 2, 2, 1, double > cp3_hoii_rank1( u1_rank1, u2_rank1, u3_rank1, lambda_rank1 );
+		cp3_tensor< 3, 2, 2, 1, double > cp3_rank1( u1_rank1, u2_rank1, u3_rank1, lambda_rank1 );
 
-		//cp3_hoii_rank1.hoii( t3_data_hoii );
-		u1_rank1 = cp3_hoii_rank1.get_u1();
-		u2_rank1 = cp3_hoii_rank1.get_u2();
-		u3_rank1 = cp3_hoii_rank1.get_u3();
-		lambda_rank1 = cp3_hoii_rank1.get_lambdas();
+		cp3_rank1.cp_als( t3_data );
+		u1_rank1 = cp3_rank1.get_u1();
+		u2_rank1 = cp3_rank1.get_u2();
+		u3_rank1 = cp3_rank1.get_u3();
+		lambda_rank1 = cp3_rank1.get_lambdas();
 		
 		double precision = 0.001;
-		//if ( u1_rank1.equals( u1_rank1_check, precision ) && u2_rank1.equals( u2_rank1_check, precision) && u3_rank1.equals( u3_rank1_check, precision) && lambda_rank1 == lambda_rank1_check )
-		if ( true )
+		ok = ( u1_rank1.equals( u1_rank1_check, precision ) && u2_rank1.equals( u2_rank1_check, precision) && u3_rank1.equals( u3_rank1_check, precision) && lambda_rank1 == lambda_rank1_check );
+		
+		if( !ok)
 		{	
-			log( "cp3 tensor test: rank-1 approximation ", false  );
+			log( "cp3 tensor test: rank-1 approximation ", ok  );
 		} else
 		{
 			std::stringstream error;

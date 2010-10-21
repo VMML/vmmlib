@@ -13,6 +13,7 @@
 
 #include <vmmlib/matrix.hpp>
 #include <vmmlib/tensor3_iterator.hpp>
+#include <vmmlib/enable_if.hpp>
 
 namespace vmml
 {
@@ -112,7 +113,11 @@ public:
     void fill_random_signed( );
     void fill_increasing_values( );
 	
-	void range_threshold(tensor3<I1, I2, I3, T>& other_, const T& start_value, const T& end_value) const;
+    template< size_t R >
+    typename enable_if< R == I1 && R == I2 && R == I3 >::type* 
+		diag( const vector< R, T >& diag_values_ );
+	
+	void range_threshold(tensor3< I1, I2, I3, T >& other_, const T& start_value, const T& end_value) const;
     
     // note: this function copies elements until either the matrix is full or
     // the iterator equals end_.
@@ -153,7 +158,7 @@ public:
 	
 	
 	//error computation between two tensor3
-	double compute_frobenius_norm( ) const;
+	double frobenius_norm( ) const;
 
 		
 	
@@ -610,6 +615,21 @@ VMML_TEMPLATE_CLASSNAME::range_threshold(tensor3<I1, I2, I3, T>& other_, const T
 	}
 }
 
+	
+VMML_TEMPLATE_STRING
+template< size_t R>
+typename enable_if< R == I1 && R == I2 && R == I3>::type* 
+VMML_TEMPLATE_CLASSNAME::diag( const vector< R, T >& diag_values_ )
+{
+	zero();
+	for( size_t r = 0; r < R; ++r )
+	{
+		at(r, r, r) = static_cast< T >(diag_values_.at(r));
+	}
+}
+	
+	
+	
 
 VMML_TEMPLATE_STRING
 void 
@@ -1063,7 +1083,7 @@ VMML_TEMPLATE_CLASSNAME::negate() const
 
 VMML_TEMPLATE_STRING
 double 
-VMML_TEMPLATE_CLASSNAME::compute_frobenius_norm( ) const
+VMML_TEMPLATE_CLASSNAME::frobenius_norm( ) const
 {
 	double f_norm = 0.0;
 

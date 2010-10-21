@@ -187,7 +187,14 @@ public:
         
     void zero();
     void identity();
-        
+	
+	double frobenius_norm() const;
+	
+	//Khatri-Rao Product: columns must be of same size
+    template< size_t O >
+    matrix< M*O, N, T > khatri_rao_product( const matrix< O, N, T >& right_ ) const;
+
+	
     vector< M, T >  get_column( size_t column_index ) const;
     void get_column( size_t column_index, vector< M, T>& column ) const;
 
@@ -2215,6 +2222,46 @@ matrix< M, N, T >::ZERO(
     );
 
 
+	
+template< size_t M, size_t N, typename T >
+double 
+matrix< M, N, T >::frobenius_norm( ) const
+{
+	double norm = 0.0;
+	
+	const_iterator it = begin(), it_end = end(); 
+	for( ; it != it_end; ++it )
+	{
+		norm += *it * *it;
+	}
+	
+	return sqrt(norm);
+}
+
+
+template< size_t M, size_t N, typename T  >
+template< size_t O >
+matrix< M*O, N, T > 
+matrix< M, N, T >::khatri_rao_product( const matrix< O, N, T >& right_ ) const
+{
+	matrix< M*O, N, T > khatri_rao;
+	
+	//build product for every column
+	for (size_t col = 0; col < N; ++col )
+	{
+		for ( size_t m = 0; m < M; ++m )
+		{
+			for (size_t o = 0; o < O; ++o )
+			{
+				khatri_rao.at(O*m + o, col) = at( m, col ) * right_.at( o, col );
+			}
+		}
+	}
+		
+	return khatri_rao;
+}
+	
+	
 
 } // namespace vmml
 

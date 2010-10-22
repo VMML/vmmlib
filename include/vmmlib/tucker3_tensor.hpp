@@ -80,6 +80,8 @@ public:
 	   the inversion is done with a matrix pseudoinverse computation
 	 */
     void derive_core( const t3_type& data_, t3_core_type& core_, const u1_type& U1_, const u2_type& U2_, const u3_type& U3_ );
+	//faster: but only if basis matrices are orthogonal
+	void derive_core_orthogonal_bases( const t3_type& data_, t3_core_type& core_, const u1_type& U1_, const u2_type& U2_, const u3_type& U3_ );
 
 	/*	higher-order singular value decomposition (HOSVD) with full rank decomposition (also known as Tucker decomposition). 
 		see: De Lathauer et al, 2000a: A multilinear singular value decomposition. 
@@ -163,9 +165,6 @@ VMML_TEMPLATE_CLASSNAME::decomposition( const t3_type& data_ )
 {
 	tucker_als( data_ );
 		
-	
-	//derive core
-	derive_core( data_, _core, _u1, _u2, _u3 );
 }
 
 VMML_TEMPLATE_STRING
@@ -173,6 +172,9 @@ void
 VMML_TEMPLATE_CLASSNAME::tucker_als( const t3_type& data_ )
 {
 	hoii( data_ );
+	
+	//derive core
+	derive_core_orthogonal_bases( data_, _core, _u1, _u2, _u3 );
 }
 
 
@@ -385,7 +387,7 @@ VMML_TEMPLATE_CLASSNAME::hoii( const t3_type& data_ )
 		set_u1( _u1 );
 		set_u2( _u2 );
 		set_u3( _u3 );
-		derive_core(data_, _core, _u1, _u2, _u3);
+		derive_core_orthogonal_bases(data_, _core, _u1, _u2, _u3);
 		set_core( _core );
 		
 		reconstruction( approximated_data );
@@ -400,10 +402,24 @@ VMML_TEMPLATE_CLASSNAME::hoii( const t3_type& data_ )
 	
 	//std::cout << "number of iterations: " << i << std::endl;
 	
-	derive_core(data_, _core, _u1, _u2, _u3);
+	derive_core_orthogonal_bases(data_, _core, _u1, _u2, _u3);
 	
 }	
 
+VMML_TEMPLATE_STRING
+void 
+VMML_TEMPLATE_CLASSNAME::derive_core_orthogonal_bases( const t3_type& data_, t3_core_type& core_, const u1_type& U1_, const u2_type& U2_, const u3_type& U3_ )
+{
+	matrix< J1, I1, T > u1_inv = transpose( U1_ );
+	matrix< J2, I2, T > u2_inv = transpose( U2_ );
+	matrix< J3, I3, T > u3_inv = transpose( U3_ );
+	
+	core_.full_tensor3_matrix_multiplication( data_, u1_inv, u2_inv, u3_inv );
+}
+	
+	
+	
+	
 VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::derive_core( const t3_type& data_, t3_core_type& core_, const u1_type& U1_, const u2_type& U2_, const u3_type& U3_ )
@@ -415,7 +431,6 @@ VMML_TEMPLATE_CLASSNAME::derive_core( const t3_type& data_, t3_core_type& core_,
 	u3_type u3_pinv_t ;
 	
 	
-	//would be faster with transpose instead of pseudo-inverse for orthogonal input matrices
 	compute_pseudoinverse<  u1_type > compute_pinv_u1;
 	compute_pinv_u1( U1_, u1_pinv_t );
 	compute_pseudoinverse<  u2_type > compute_pinv_u2;

@@ -60,7 +60,7 @@ namespace vmml
 		
 		tucker3_tensor< 3, 3, 3, 3, 3, 3, double > tuck3_hosvd( core_hosvd, u1_hosvd, u2_hosvd, u3_hosvd );
 		
-		//(1) derive core tensor
+		//(1a) derive core tensor (with pseudo inverse)
 		tuck3_hosvd.derive_core( t3_data_hosvd, core_hosvd, u1_hosvd_check, u2_hosvd_check, u3_hosvd_check );
 		
 		if ( core_hosvd.equals( core_hosvd_check, precision ))
@@ -71,6 +71,22 @@ namespace vmml
 			std::stringstream error;
 			error 
 			<< "HOSVD derive core: " << std::endl
+			<< "core should be: " << std::endl << core_hosvd_check << std::endl
+			<< "core is: " << std::setprecision(16) << std::endl << core_hosvd << std::endl;
+			
+			log_error( error.str() );
+		}
+		//(1b) derive core tensor with orthogonal basis
+		tuck3_hosvd.derive_core_orthogonal_bases( t3_data_hosvd, core_hosvd, u1_hosvd_check, u2_hosvd_check, u3_hosvd_check );
+		
+		if ( core_hosvd.equals( core_hosvd_check, precision ))
+		{	
+			log( "HOSVD derive core tensor (orthogonal bases)", true  );
+		} else
+		{
+			std::stringstream error;
+			error 
+			<< "HOSVD derive core (orthogonal bases): " << std::endl
 			<< "core should be: " << std::endl << core_hosvd_check << std::endl
 			<< "core is: " << std::setprecision(16) << std::endl << core_hosvd << std::endl;
 			

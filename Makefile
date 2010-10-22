@@ -27,6 +27,9 @@ CXXFLAGS += -framework Accelerate -DVMMLIB_USE_LAPACK
 LDFLAGS += -framework Accelerate
 
 else
+CXXFLAGS += -DVMMLIB_USE_LAPACK
+LDFLAGS +=
+LIBS += -lclapack -lf2c
 
 endif
 
@@ -36,7 +39,11 @@ all: vmmlib_unit_tests
 	$(CXX) $(CXXFLAGS) -c $< -o $@  
 
 vmmlib_unit_tests: $(VMMLIB_UNIT_TESTS_OBJECTS)
+ifeq "$(ARCH)" "Darwin"
 	 $(CXX) $(LDFLAGS) $(VMMLIB_UNIT_TESTS_OBJECTS) -o $@  
+else
+	 $(CXX) $(LDFLAGS) $(VMMLIB_UNIT_TESTS_OBJECTS) -o $@  $(LIBS)
+endif
 
 clean:
 	rm -rf $(VMMLIB_UNIT_TESTS_OBJECTS) vmmlib_unit_tests

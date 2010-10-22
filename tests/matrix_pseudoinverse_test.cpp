@@ -2,6 +2,7 @@
 #include <vmmlib/matrix_pseudoinverse.hpp>
 
 #include <sstream>
+#include <stdint.h>
 
 namespace vmml
 {

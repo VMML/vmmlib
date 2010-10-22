@@ -19,6 +19,7 @@
 #define __VMML__TUCKER3_TENSOR__HPP__
 
 #include <vmmlib/tensor3.hpp>
+#include <vmmlib/tensor3_iterator.hpp>
 #include <vmmlib/lapack_svd.hpp>
 #include <vmmlib/matrix_pseudoinverse.hpp>
 
@@ -31,15 +32,34 @@ namespace vmml
 public:    
     tucker3_tensor( tensor3< J1, J2, J3, T >& core, matrix< I1, J1, T >& U1, matrix< I2, J2, T >& U2, matrix< I3, J3, T >& U3 );
 
-	void set_core( const tensor3< J1, J2, J3, T >& core )  { _core = core; } ;
-	void set_u1( const matrix< I1, J1, T >& U1 ) { _u1 = U1; } ;
-	void set_u2( const matrix< I2, J2, T >& U2 ) { _u2 = U2; } ;
-	void set_u3( const matrix< I3, J3, T >& U3 ) { _u3 = U3; } ;
+	typedef tensor3< J1, J2, J3, T > t3_core_type;
+	typedef typename t3_core_type::iterator t3_core_iterator;
+	typedef typename t3_core_type::const_iterator t3_core_const_iterator;
+		
+	typedef matrix< I1, J1, T > u1_type;
+	typedef typename u1_type::iterator u1_iterator;
+	typedef typename u1_type::const_iterator u1_const_iterator;
+
+	typedef matrix< I2, J2, T > u2_type;
+	typedef typename u2_type::iterator u2_iterator;
+	typedef typename u2_type::const_iterator u2_const_iterator;
 	
-    void get_core( tensor3< J1, J2, J3, T >& data_ ) const { data_ = _core; } ;
-	void get_u1( matrix< I1, J1, T >& U1 ) const { U1 = _u1; } ;
-	void get_u2( matrix< I2, J2, T >& U2 ) const { U2 = _u2; } ;
-	void get_u3( matrix< I3, J3, T >& U3 ) const { U3 = _u3; } ;
+	typedef matrix< I3, J3, T > u3_type;
+	typedef typename u3_type::iterator u3_iterator;
+	typedef typename u3_type::const_iterator u3_const_iterator;
+		
+	//TODO typedef for m_lateral_type, m_frontal_type, and m_horizontal_type;
+		
+		
+	void set_core( const t3_core_type& core )  { _core = core; } ;
+	void set_u1( const u1_type& U1 ) { _u1 = U1; } ;
+	void set_u2( const u2_type& U2 ) { _u2 = U2; } ;
+	void set_u3( const u3_type& U3 ) { _u3 = U3; } ;
+	
+    void get_core( t3_core_type& data_ ) const { data_ = _core; } ;
+	void get_u1( u1_type& U1 ) const { U1 = _u1; } ;
+	void get_u2( u2_type& U2 ) const { U2 = _u2; } ;
+	void get_u3( u3_type& U3 ) const { U3 = _u3; } ;
 		
 	void export_to( std::vector< T >& data_ ) const;
 	void import_from( std::vector< T >& data_ );	
@@ -52,7 +72,7 @@ public:
 	   where x_1 ... x_3 are n-mode products and U1_pinv ... U3_pinv are inverted basis matrices
 	   the inversion is done with a matrix pseudoinverse computation
 	 */
-    void derive_core( const tensor3< I1, I2, I3, T >& data_, tensor3< J1, J2, J3, T >& core_, const matrix< I1, J1, T >& U1_, const matrix< I2, J2, T >& U2_, const matrix< I3, J3, T >& U3_ );
+    void derive_core( const tensor3< I1, I2, I3, T >& data_, t3_core_type& core_, const u1_type& U1_, const u2_type& U2_, const u3_type& U3_ );
 
 	/*	higher-order singular value decomposition (HOSVD) with full rank decomposition (also known as Tucker decomposition). 
 		see: De Lathauer et al, 2000a: A multilinear singular value decomposition. 
@@ -63,9 +83,9 @@ public:
 	 */
 	void hosvd( const tensor3< I1, I2, I3, T >& data_ );
 	void hosvd_on_eigs( const tensor3< I1, I2, I3, T >& data_ );
-	void hosvd_mode1( const tensor3< I1, I2, I3, T >& data_, matrix< I1, J1, T >& U1_ ) const;
-	void hosvd_mode2( const tensor3< I1, I2, I3, T >& data_, matrix< I2, J2, T >& U2_ ) const;
-	void hosvd_mode3( const tensor3< I1, I2, I3, T >& data_, matrix< I3, J3, T >& U3_ ) const;
+	void hosvd_mode1( const tensor3< I1, I2, I3, T >& data_, u1_type& U1_ ) const;
+	void hosvd_mode2( const tensor3< I1, I2, I3, T >& data_, u2_type& U2_ ) const;
+	void hosvd_mode3( const tensor3< I1, I2, I3, T >& data_, u3_type& U3_ ) const;
 
 		
 	/*	higher-order orthogonal iteration (HOII) is a truncated HOSVD decompositions, i.e., the HOSVD components are of lower-ranks. An optimal rank-reduction is 
@@ -77,9 +97,9 @@ public:
 	 */
 	void hoii( const tensor3< I1, I2, I3, T >& data_ );
 		
-	void optimize_mode1( const tensor3< I1, I2, I3, T >& data_, tensor3< I1, J2, J3, T >& projection_, const matrix< I2, J2, T >& U2_, const matrix< I3, J3, T >& U3_ ) const;
-	void optimize_mode2( const tensor3< I1, I2, I3, T >& data_, tensor3< J1, I2, J3, T >& projection_, const matrix< I1, J1, T >& U1_, const matrix< I3, J3, T >& U3_ ) const;		
-	void optimize_mode3( const tensor3< I1, I2, I3, T >& data_, tensor3< J1, J2, I3, T >& projection_, const matrix< I1, J1, T >& U1_, const matrix< I2, J2, T >& U2_ ) const;
+	void optimize_mode1( const tensor3< I1, I2, I3, T >& data_, tensor3< I1, J2, J3, T >& projection_, const u2_type& U2_, const u3_type& U3_ ) const;
+	void optimize_mode2( const tensor3< I1, I2, I3, T >& data_, tensor3< J1, I2, J3, T >& projection_, const u1_type& U1_, const u3_type& U3_ ) const;		
+	void optimize_mode3( const tensor3< I1, I2, I3, T >& data_, tensor3< J1, J2, I3, T >& projection_, const u1_type& U1_, const u2_type& U2_ ) const;
 	
 		
 	void tucker_als( const tensor3< I1, I2, I3, T >& data_ );	
@@ -101,10 +121,10 @@ public:
 	
 	
 private:
-    tensor3< J1, J2, J3, T > _core ;
-	matrix< I1, J1, T > _u1 ;
-	matrix< I2, J2, T > _u2 ;
-	matrix< I3, J3, T > _u3 ;
+    t3_core_type _core ;
+	u1_type _u1 ;
+	u2_type _u2 ;
+	u3_type _u3 ;
 	
 }; // class tucker3_tensor
 
@@ -114,7 +134,7 @@ private:
 
 
 VMML_TEMPLATE_STRING
-VMML_TEMPLATE_CLASSNAME::tucker3_tensor( tensor3< J1, J2, J3, T >& core, matrix< I1, J1, T >& U1, matrix< I2, J2, T >& U2, matrix< I3, J3, T >& U3 )
+VMML_TEMPLATE_CLASSNAME::tucker3_tensor( t3_core_type& core, u1_type& U1, u2_type& U2, u3_type& U3 )
 : _core(core), _u1(U1), _u2(U2), _u3(U3)
 {
 	//assert(J1 <= I1);
@@ -151,7 +171,7 @@ VMML_TEMPLATE_CLASSNAME::tucker_als( const tensor3< I1, I2, I3, T >& data_ )
 
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::hosvd_mode1( const tensor3< I1, I2, I3, T >& data_, matrix< I1, J1, T >& U1_ ) const
+VMML_TEMPLATE_CLASSNAME::hosvd_mode1( const tensor3< I1, I2, I3, T >& data_, u1_type& U1_ ) const
 {
 	matrix< I1, I2*I3, T> m_lateral; // -> u1
 	data_.lateral_matricization( m_lateral);
@@ -170,7 +190,7 @@ VMML_TEMPLATE_CLASSNAME::hosvd_mode1( const tensor3< I1, I2, I3, T >& data_, mat
 	
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::hosvd_mode2( const tensor3< I1, I2, I3, T >& data_, matrix< I2, J2, T >& U2_ ) const
+VMML_TEMPLATE_CLASSNAME::hosvd_mode2( const tensor3< I1, I2, I3, T >& data_, u2_type& U2_ ) const
 {
 	matrix< I2, I1*I3, T> m_frontal; // -> u2
 	data_.frontal_matricization( m_frontal);
@@ -189,7 +209,7 @@ VMML_TEMPLATE_CLASSNAME::hosvd_mode2( const tensor3< I1, I2, I3, T >& data_, mat
 
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::hosvd_mode3( const tensor3< I1, I2, I3, T >& data_, matrix< I3, J3, T >& U3_ ) const
+VMML_TEMPLATE_CLASSNAME::hosvd_mode3( const tensor3< I1, I2, I3, T >& data_, u3_type& U3_ ) const
 {
 	matrix< I3, I1*I2, T> m_horizontal; //-> u3
 	data_.horizontal_matricization( m_horizontal);
@@ -250,15 +270,15 @@ VMML_TEMPLATE_CLASSNAME::hosvd_on_eigs( const tensor3< I1, I2, I3, T >& data_ )
 	
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::optimize_mode1( const tensor3< I1, I2, I3, T >& data_, tensor3< I1, J2, J3, T >& projection_, const matrix< I2, J2, T >& U2_, const matrix< I3, J3, T >& U3_ ) const
+VMML_TEMPLATE_CLASSNAME::optimize_mode1( const tensor3< I1, I2, I3, T >& data_, tensor3< I1, J2, J3, T >& projection_, const u2_type& U2_, const u3_type& U3_ ) const
 {
 	//compute pseudo inverse for matrices u2,u3
-	matrix< I2, J2, T > u2_pinv_t ;
-	matrix< I3, J3, T > u3_pinv_t ;
+	u2_type u2_pinv_t ;
+	u3_type u3_pinv_t ;
 	
-	compute_pseudoinverse<  matrix< I2, J2, T > > compute_pinv_u2;
+	compute_pseudoinverse<  u2_type > compute_pinv_u2;
 	compute_pinv_u2( U2_, u2_pinv_t );	
-	compute_pseudoinverse<  matrix< I3, J3, T > > compute_pinv_u3;
+	compute_pseudoinverse<  u3_type > compute_pinv_u3;
 	compute_pinv_u3( U3_, u3_pinv_t );
 	
 	matrix< J2, I2, T > u2_pinv = transpose( u2_pinv_t );
@@ -273,15 +293,15 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode1( const tensor3< I1, I2, I3, T >& data_, 
 	
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::optimize_mode2( const tensor3< I1, I2, I3, T >& data_, tensor3< J1, I2, J3, T >& projection_, const matrix< I1, J1, T >& U1_, const matrix< I3, J3, T >& U3_ ) const
+VMML_TEMPLATE_CLASSNAME::optimize_mode2( const tensor3< I1, I2, I3, T >& data_, tensor3< J1, I2, J3, T >& projection_, const u1_type& U1_, const u3_type& U3_ ) const
 {
 	//compute pseudo inverse for matrices u2,u3
-	matrix< I1, J1, T > u1_pinv_t ;
-	matrix< I3, J3, T > u3_pinv_t ;
+	u1_type u1_pinv_t ;
+	u3_type u3_pinv_t ;
 	
-	compute_pseudoinverse<  matrix< I1, J1, T > > compute_pinv_u1;
+	compute_pseudoinverse<  u1_type > compute_pinv_u1;
 	compute_pinv_u1( U1_, u1_pinv_t );	
-	compute_pseudoinverse<  matrix< I3, J3, T > > compute_pinv_u3;
+	compute_pseudoinverse<  u3_type > compute_pinv_u3;
 	compute_pinv_u3( U3_, u3_pinv_t );
 	
 	matrix< J1, I1, T > u1_pinv = transpose( u1_pinv_t );
@@ -296,15 +316,15 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode2( const tensor3< I1, I2, I3, T >& data_, 
 	
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::optimize_mode3( const tensor3< I1, I2, I3, T >& data_, tensor3< J1, J2, I3, T >& projection_, const matrix< I1, J1, T >& U1_, const matrix< I2, J2, T >& U2_ ) const
+VMML_TEMPLATE_CLASSNAME::optimize_mode3( const tensor3< I1, I2, I3, T >& data_, tensor3< J1, J2, I3, T >& projection_, const u1_type& U1_, const u2_type& U2_ ) const
 {
 	//compute pseudo inverse for matrices u2,u3
-	matrix< I1, J1, T > u1_pinv_t ;
-	matrix< I2, J2, T > u2_pinv_t ;
+	u1_type u1_pinv_t ;
+	u2_type u2_pinv_t ;
 	
-	compute_pseudoinverse<  matrix< I1, J1, T > > compute_pinv_u1;
+	compute_pseudoinverse<  u1_type > compute_pinv_u1;
 	compute_pinv_u1( U1_, u1_pinv_t );
-	compute_pseudoinverse<  matrix< I2, J2, T > > compute_pinv_u2;
+	compute_pseudoinverse<  u2_type > compute_pinv_u2;
 	compute_pinv_u2( U2_, u2_pinv_t );	
 	
 	matrix< J1, I1, T > u1_pinv = transpose( u1_pinv_t );
@@ -379,19 +399,19 @@ VMML_TEMPLATE_CLASSNAME::hoii( const tensor3< I1, I2, I3, T >& data_ )
 
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::derive_core( const tensor3< I1, I2, I3, T >& data_, tensor3< J1, J2, J3, T >& core_, const matrix< I1, J1, T >& U1_, const matrix< I2, J2, T >& U2_, const matrix< I3, J3, T >& U3_ )
+VMML_TEMPLATE_CLASSNAME::derive_core( const tensor3< I1, I2, I3, T >& data_, t3_core_type& core_, const u1_type& U1_, const u2_type& U2_, const u3_type& U3_ )
 {
 
 	//compute pseudo inverse for matrices u1-u3
-	matrix< I1, J1, T > u1_pinv_t ;
-	matrix< I2, J2, T > u2_pinv_t ;
-	matrix< I3, J3, T > u3_pinv_t ;
+	u1_type u1_pinv_t ;
+	u2_type u2_pinv_t ;
+	u3_type u3_pinv_t ;
 	
-	compute_pseudoinverse<  matrix< I1, J1, T > > compute_pinv_u1;
+	compute_pseudoinverse<  u1_type > compute_pinv_u1;
 	compute_pinv_u1( U1_, u1_pinv_t );
-	compute_pseudoinverse<  matrix< I2, J2, T > > compute_pinv_u2;
+	compute_pseudoinverse<  u2_type > compute_pinv_u2;
 	compute_pinv_u2( U2_, u2_pinv_t );	
-	compute_pseudoinverse<  matrix< I3, J3, T > > compute_pinv_u3;
+	compute_pseudoinverse<  u3_type > compute_pinv_u3;
 	compute_pinv_u3( U3_, u3_pinv_t );
 	
 	matrix< J1, I1, T > u1_pinv = transpose( u1_pinv_t );
@@ -619,9 +639,35 @@ VMML_TEMPLATE_CLASSNAME::region_of_interest( const tucker3_tensor< J1, J2, J3, K
 	
 VMML_TEMPLATE_STRING
 void
-VMML_TEMPLATE_CLASSNAME::export_to( std::vector< T >& data_) const
+VMML_TEMPLATE_CLASSNAME::export_to( std::vector< T >& data_ ) const
 {
+	u1_const_iterator  it = _u1.begin(),
+	it_end = _u1.end();
+	for( ; it != it_end; ++it )
+	{
+		data_.push_back( *it );
+	}
+	
+	u2_const_iterator  u2_it = _u2.begin(),
+	u2_it_end = _u2.end();
+	for( ; u2_it != u2_it_end; ++u2_it )
+	{
+		data_.push_back( *u2_it );
+	}
 
+	u3_const_iterator  u3_it = _u3.begin(),
+	u3_it_end = _u3.end();
+	for( ; u3_it != u3_it_end; ++u3_it )
+	{
+		data_.push_back( *u3_it );
+	}
+	
+	t3_core_const_iterator  it_core = _core.begin(),
+	it_core_end = _core.end();
+	for( ; it_core != it_core_end; ++it_core )
+	{
+		data_.push_back( *it_core );
+	}
 }
 	
 	
@@ -629,6 +675,35 @@ VMML_TEMPLATE_STRING
 void
 VMML_TEMPLATE_CLASSNAME::import_from( std::vector< T >& data_ )
 {
+	size_t i = 0; //iterator over data_
+	
+	u1_iterator  it = _u1.begin(),
+	it_end = _u1.end();
+	for( ; it != it_end; ++it, ++i )
+	{
+		*it = data_.at(i);
+	}
+	
+	u2_iterator  u2_it = _u2.begin(),
+	u2_it_end = _u2.end();
+	for( ; u2_it != u2_it_end; ++u2_it, ++i )
+	{
+		*u2_it = data_.at(i);
+	}
+	
+	u3_iterator  u3_it = _u3.begin(),
+	u3_it_end = _u3.end();
+	for( ; u3_it != u3_it_end; ++u3_it, ++i )
+	{
+		*u3_it = data_.at(i);
+	}
+	
+	t3_core_iterator  it_core = _core.begin(),
+	it_core_end = _core.end();
+	for( ; it_core != it_core_end; ++it_core, ++i )
+	{
+		*it_core = data_.at(i);
+	}
 	
 }	
 	

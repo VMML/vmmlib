@@ -68,7 +68,9 @@ namespace vmml
 		
 		
 		
-		
+		ok = false;
+		log( "export cp3 ", ok  );
+		log( "import cp3 ", ok  );
 		
 		
 		ok = true;

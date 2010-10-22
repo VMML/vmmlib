@@ -198,7 +198,60 @@ namespace vmml
 			
 			
 			log_error( error.str() );
+		}		
+		
+		//export
+		std::vector< double > export_data;
+		tuck3_hoii_2.export_to( export_data );
+		
+		double export_data_check[] = {
+			-0.2789474111071825,  0.5983607967045261, 0.7511009910815755, -0.4141266306147141, -0.7806355076145298, 0.4680890279285662,
+			0.09816424894941822, 0.9951702267593203, 0.9951702267593203, -0.09816424894941811,
+			-0.5104644303570166, 0.8598988692516618,
+			-10.14733447424582, -1.110223024625157e-15, 1.720845688168993e-15, 2.760705584847321 };
+		
+		ok = true;
+		for (int i = 0; i < 16 && ok; ++i )
+		{
+			ok = (abs(export_data_check[i]) - abs(export_data[i])) < 1.0e-8;
 		}
+
+		log( "export tucker3", ok  );
+		
+		//import tucker3 from vector
+		std::vector< double > in_data = export_data;
+				
+		matrix<3, 2, double> u1_imported;
+		matrix<2, 2, double> u2_imported;
+		matrix<2, 1, double> u3_imported;
+		tensor3<2, 2, 1, double> core_imported;
+		tucker3_tensor< 2, 2, 1, 3, 2, 2, double > tuck3_import( core_imported, u1_imported, u2_imported, u3_imported );
+		
+		tuck3_import.import_from( in_data );
+		
+		tuck3_import.get_core( core_imported ); tuck3_import.get_u1( u1_imported  ); tuck3_import.get_u2( u2_imported ); tuck3_import.get_u3( u3_imported );
+		
+		if ( u1_imported.equals( u1_hoii_check_2, precision ) && u2_imported.equals( u2_hoii_check_2, precision ) && u3_imported.equals( u3_hoii_check_2, precision ) && core_hoii_2.equals( core_hoii_check_2, precision))
+		{	
+			log( "import tucker3" , true  );
+		} else
+		{
+			std::stringstream error;
+			error 
+			<< "import tucker3: " << std::setprecision(16) << std::endl
+			<< "U1 should be: " << std::endl << u1_hoii_check_2 << std::endl
+			<< "U1 is: " << std::endl << u1_imported << std::endl
+			<< "U2 should be: " << std::endl << u2_hoii_check_2 << std::endl
+			<< "U2 is: " << std::endl << u2_imported << std::endl
+			<< "U3 should be: " << std::endl << u3_hoii_check_2 << std::endl
+			<< "U3 is: " << std::endl << u3_imported << std::endl
+			<< "core should be: " << std::endl << core_hoii_check_2 << std::endl
+			<< "core is: " << std::endl << core_imported << std::endl;
+			
+			
+			log_error( error.str() );
+		}		
+		
 		
 		
 		//tucker3 reconstruction

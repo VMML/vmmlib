@@ -32,6 +32,10 @@ namespace vmml
 public:    
     tucker3_tensor( tensor3< J1, J2, J3, T >& core, matrix< I1, J1, T >& U1, matrix< I2, J2, T >& U2, matrix< I3, J3, T >& U3 );
 
+	typedef tensor3< I1, I2, I3, T > t3_type;
+	typedef typename t3_type::iterator t3_iterator;
+	typedef typename t3_type::const_iterator t3_const_iterator;
+
 	typedef tensor3< J1, J2, J3, T > t3_core_type;
 	typedef typename t3_core_type::iterator t3_core_iterator;
 	typedef typename t3_core_type::const_iterator t3_core_const_iterator;
@@ -49,7 +53,10 @@ public:
 	typedef typename u3_type::const_iterator u3_const_iterator;
 		
 	//TODO typedef for m_lateral_type, m_frontal_type, and m_horizontal_type;
-		
+	typedef matrix< I1, I2*I3, T > mode1_matricization_type;
+	typedef matrix< I2, I1*I3, T > mode2_matricization_type;
+	typedef matrix< I3, I1*I2, T > mode3_matricization_type;
+
 		
 	void set_core( const t3_core_type& core )  { _core = core; } ;
 	void set_u1( const u1_type& U1 ) { _u1 = U1; } ;
@@ -64,15 +71,15 @@ public:
 	void export_to( std::vector< T >& data_ ) const;
 	void import_from( std::vector< T >& data_ );	
 	
-	void reconstruction( tensor3< I1, I2, I3, T >& data_ ) const;
-	void decomposition( const tensor3< I1, I2, I3, T >& data_ ); 
+	void reconstruction( t3_type& data_ ) const;
+	void decomposition( const t3_type& data_ ); 
 		
 	/* derive core
 	   implemented accodring to core = data x_1 U1_pinv x_2 U2_pinv x_3 U3_pinv, 
 	   where x_1 ... x_3 are n-mode products and U1_pinv ... U3_pinv are inverted basis matrices
 	   the inversion is done with a matrix pseudoinverse computation
 	 */
-    void derive_core( const tensor3< I1, I2, I3, T >& data_, t3_core_type& core_, const u1_type& U1_, const u2_type& U2_, const u3_type& U3_ );
+    void derive_core( const t3_type& data_, t3_core_type& core_, const u1_type& U1_, const u2_type& U2_, const u3_type& U3_ );
 
 	/*	higher-order singular value decomposition (HOSVD) with full rank decomposition (also known as Tucker decomposition). 
 		see: De Lathauer et al, 2000a: A multilinear singular value decomposition. 
@@ -81,11 +88,11 @@ public:
 		with the dimensions I1xI2I3, which corresponds to a matrizitation alonge mode I1.
 		other known names for HOSVD: n-mode SVD, 3-mode factor analysis (3MFA, tucker3), 3M-PCA, n-mode PCA, higher-order SVD
 	 */
-	void hosvd( const tensor3< I1, I2, I3, T >& data_ );
-	void hosvd_on_eigs( const tensor3< I1, I2, I3, T >& data_ );
-	void hosvd_mode1( const tensor3< I1, I2, I3, T >& data_, u1_type& U1_ ) const;
-	void hosvd_mode2( const tensor3< I1, I2, I3, T >& data_, u2_type& U2_ ) const;
-	void hosvd_mode3( const tensor3< I1, I2, I3, T >& data_, u3_type& U3_ ) const;
+	void hosvd( const t3_type& data_ );
+	void hosvd_on_eigs( const t3_type& data_ );
+	void hosvd_mode1( const t3_type& data_, u1_type& U1_ ) const;
+	void hosvd_mode2( const t3_type& data_, u2_type& U2_ ) const;
+	void hosvd_mode3( const t3_type& data_, u3_type& U3_ ) const;
 
 		
 	/*	higher-order orthogonal iteration (HOII) is a truncated HOSVD decompositions, i.e., the HOSVD components are of lower-ranks. An optimal rank-reduction is 
@@ -95,14 +102,14 @@ public:
 		(b) by performing a 2D SVD on the matricization of every mode. Matrix matricization means that a tensor I1xI2xI3 is unfolded/sliced into one matrix
 		with the dimensions I1xI2I3, which corresponds to a matrizitation alonge mode I1.
 	 */
-	void hoii( const tensor3< I1, I2, I3, T >& data_ );
+	void hoii( const t3_type& data_ );
 		
-	void optimize_mode1( const tensor3< I1, I2, I3, T >& data_, tensor3< I1, J2, J3, T >& projection_, const u2_type& U2_, const u3_type& U3_ ) const;
-	void optimize_mode2( const tensor3< I1, I2, I3, T >& data_, tensor3< J1, I2, J3, T >& projection_, const u1_type& U1_, const u3_type& U3_ ) const;		
-	void optimize_mode3( const tensor3< I1, I2, I3, T >& data_, tensor3< J1, J2, I3, T >& projection_, const u1_type& U1_, const u2_type& U2_ ) const;
+	void optimize_mode1( const t3_type& data_, tensor3< I1, J2, J3, T >& projection_, const u2_type& U2_, const u3_type& U3_ ) const;
+	void optimize_mode2( const t3_type& data_, tensor3< J1, I2, J3, T >& projection_, const u1_type& U1_, const u3_type& U3_ ) const;		
+	void optimize_mode3( const t3_type& data_, tensor3< J1, J2, I3, T >& projection_, const u1_type& U1_, const u2_type& U2_ ) const;
 	
 		
-	void tucker_als( const tensor3< I1, I2, I3, T >& data_ );	
+	void tucker_als( const t3_type& data_ );	
 		
 	template< size_t K1, size_t K2, size_t K3>
 	void reduce_ranks( const tucker3_tensor< K1, K2, K3, I1, I2, I3, T>& other ); //call TuckerJI.reduce_ranks(TuckerKI) K1 -> J1, K2 -> J2, K3 -> J3
@@ -144,7 +151,7 @@ VMML_TEMPLATE_CLASSNAME::tucker3_tensor( t3_core_type& core, u1_type& U1, u2_typ
 
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::reconstruction( tensor3< I1, I2, I3, T >& data_ ) const
+VMML_TEMPLATE_CLASSNAME::reconstruction( t3_type& data_ ) const
 {
 	data_.full_tensor3_matrix_multiplication( _core, _u1, _u2, _u3 );
 }
@@ -152,7 +159,7 @@ VMML_TEMPLATE_CLASSNAME::reconstruction( tensor3< I1, I2, I3, T >& data_ ) const
 
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::decomposition( const tensor3< I1, I2, I3, T >& data_ )
+VMML_TEMPLATE_CLASSNAME::decomposition( const t3_type& data_ )
 {
 	tucker_als( data_ );
 		
@@ -163,7 +170,7 @@ VMML_TEMPLATE_CLASSNAME::decomposition( const tensor3< I1, I2, I3, T >& data_ )
 
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::tucker_als( const tensor3< I1, I2, I3, T >& data_ )
+VMML_TEMPLATE_CLASSNAME::tucker_als( const t3_type& data_ )
 {
 	hoii( data_ );
 }
@@ -171,9 +178,9 @@ VMML_TEMPLATE_CLASSNAME::tucker_als( const tensor3< I1, I2, I3, T >& data_ )
 
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::hosvd_mode1( const tensor3< I1, I2, I3, T >& data_, u1_type& U1_ ) const
+VMML_TEMPLATE_CLASSNAME::hosvd_mode1( const t3_type& data_, u1_type& U1_ ) const
 {
-	matrix< I1, I2*I3, T> m_lateral; // -> u1
+	mode1_matricization_type m_lateral; // -> u1
 	data_.lateral_matricization( m_lateral);
 	
 	//std::cout << "hosvd mode1, m_lateral: " << std::endl << m_lateral << std::endl;
@@ -190,9 +197,9 @@ VMML_TEMPLATE_CLASSNAME::hosvd_mode1( const tensor3< I1, I2, I3, T >& data_, u1_
 	
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::hosvd_mode2( const tensor3< I1, I2, I3, T >& data_, u2_type& U2_ ) const
+VMML_TEMPLATE_CLASSNAME::hosvd_mode2( const t3_type& data_, u2_type& U2_ ) const
 {
-	matrix< I2, I1*I3, T> m_frontal; // -> u2
+	mode2_matricization_type m_frontal; // -> u2
 	data_.frontal_matricization( m_frontal);
 	//std::cout << "hosvd mode2, m_frontal: " << std::endl << m_frontal << std::endl;
 	
@@ -209,9 +216,9 @@ VMML_TEMPLATE_CLASSNAME::hosvd_mode2( const tensor3< I1, I2, I3, T >& data_, u2_
 
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::hosvd_mode3( const tensor3< I1, I2, I3, T >& data_, u3_type& U3_ ) const
+VMML_TEMPLATE_CLASSNAME::hosvd_mode3( const t3_type& data_, u3_type& U3_ ) const
 {
-	matrix< I3, I1*I2, T> m_horizontal; //-> u3
+	mode3_matricization_type m_horizontal; //-> u3
 	data_.horizontal_matricization( m_horizontal);
 	//std::cout << "hosvd mode3, m_horizontal: " << std::endl << m_horizontal << std::endl;
 	
@@ -226,7 +233,7 @@ VMML_TEMPLATE_CLASSNAME::hosvd_mode3( const tensor3< I1, I2, I3, T >& data_, u3_
 
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::hosvd( const tensor3< I1, I2, I3, T >& data_ )
+VMML_TEMPLATE_CLASSNAME::hosvd( const t3_type& data_ )
 {	
 	hosvd_mode1( data_, _u1 );
 	hosvd_mode2( data_, _u2 );
@@ -236,12 +243,12 @@ VMML_TEMPLATE_CLASSNAME::hosvd( const tensor3< I1, I2, I3, T >& data_ )
 
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::hosvd_on_eigs( const tensor3< I1, I2, I3, T >& data_ )
+VMML_TEMPLATE_CLASSNAME::hosvd_on_eigs( const t3_type& data_ )
 {
 	//matricization along each mode (backward matricization after Lathauwer et al. 2000a)
-	matrix< I1, I2*I3, T> m_lateral; // -> u1
-	matrix< I2, I1*I3, T> m_frontal; // -> u2
-	matrix< I3, I1*I2, T> m_horizontal; //-> u3
+	mode1_matricization_type m_lateral; // -> u1
+	mode2_matricization_type m_frontal; // -> u2
+	mode3_matricization_type m_horizontal; //-> u3
 	data_.lateral_matricization( m_lateral);
 	data_.frontal_matricization( m_frontal);
 	data_.horizontal_matricization( m_horizontal);
@@ -270,7 +277,7 @@ VMML_TEMPLATE_CLASSNAME::hosvd_on_eigs( const tensor3< I1, I2, I3, T >& data_ )
 	
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::optimize_mode1( const tensor3< I1, I2, I3, T >& data_, tensor3< I1, J2, J3, T >& projection_, const u2_type& U2_, const u3_type& U3_ ) const
+VMML_TEMPLATE_CLASSNAME::optimize_mode1( const t3_type& data_, tensor3< I1, J2, J3, T >& projection_, const u2_type& U2_, const u3_type& U3_ ) const
 {
 	//compute pseudo inverse for matrices u2,u3
 	u2_type u2_pinv_t ;
@@ -293,7 +300,7 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode1( const tensor3< I1, I2, I3, T >& data_, 
 	
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::optimize_mode2( const tensor3< I1, I2, I3, T >& data_, tensor3< J1, I2, J3, T >& projection_, const u1_type& U1_, const u3_type& U3_ ) const
+VMML_TEMPLATE_CLASSNAME::optimize_mode2( const t3_type& data_, tensor3< J1, I2, J3, T >& projection_, const u1_type& U1_, const u3_type& U3_ ) const
 {
 	//compute pseudo inverse for matrices u2,u3
 	u1_type u1_pinv_t ;
@@ -316,7 +323,7 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode2( const tensor3< I1, I2, I3, T >& data_, 
 	
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::optimize_mode3( const tensor3< I1, I2, I3, T >& data_, tensor3< J1, J2, I3, T >& projection_, const u1_type& U1_, const u2_type& U2_ ) const
+VMML_TEMPLATE_CLASSNAME::optimize_mode3( const t3_type& data_, tensor3< J1, J2, I3, T >& projection_, const u1_type& U1_, const u2_type& U2_ ) const
 {
 	//compute pseudo inverse for matrices u2,u3
 	u1_type u1_pinv_t ;
@@ -339,13 +346,13 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode3( const tensor3< I1, I2, I3, T >& data_, 
 	
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::hoii( const tensor3< I1, I2, I3, T >& data_ )
+VMML_TEMPLATE_CLASSNAME::hoii( const t3_type& data_ )
 {
 	//intialize basis matrices
 	hosvd( data_ );
 		
 	//compute best rank-(J1, J2, J3) approximation (Lathauwer et al., 2000b)
-	tensor3< I1, I2, I3, T > approximated_data;
+	t3_type approximated_data;
 	reconstruction( approximated_data );
 	double f_norm = approximated_data.frobenius_norm();
 	double max_f_norm = data_.frobenius_norm();
@@ -399,7 +406,7 @@ VMML_TEMPLATE_CLASSNAME::hoii( const tensor3< I1, I2, I3, T >& data_ )
 
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::derive_core( const tensor3< I1, I2, I3, T >& data_, t3_core_type& core_, const u1_type& U1_, const u2_type& U2_, const u3_type& U3_ )
+VMML_TEMPLATE_CLASSNAME::derive_core( const t3_type& data_, t3_core_type& core_, const u1_type& U1_, const u2_type& U2_, const u3_type& U3_ )
 {
 
 	//compute pseudo inverse for matrices u1-u3
@@ -407,6 +414,8 @@ VMML_TEMPLATE_CLASSNAME::derive_core( const tensor3< I1, I2, I3, T >& data_, t3_
 	u2_type u2_pinv_t ;
 	u3_type u3_pinv_t ;
 	
+	
+	//would be faster with transpose instead of pseudo-inverse for orthogonal input matrices
 	compute_pseudoinverse<  u1_type > compute_pinv_u1;
 	compute_pinv_u1( U1_, u1_pinv_t );
 	compute_pseudoinverse<  u2_type > compute_pinv_u2;
@@ -497,6 +506,7 @@ VMML_TEMPLATE_CLASSNAME::reduce_ranks( const tucker3_tensor< K1, K2, K3, I1, I2,
 			}
 		}
 	}
+
 }
 
 

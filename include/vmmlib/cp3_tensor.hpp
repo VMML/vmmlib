@@ -34,6 +34,10 @@ namespace vmml
 	public:    
 		cp3_tensor( matrix< I1, R, T >& U1, matrix< I2, R, T >& U2, matrix< I3, R, T >& U3, vector< R, T >& lambdas_ );
 		
+		typedef tensor3< I1, I2, I3, T > t3_type;
+		typedef typename t3_type::iterator t3_iterator;
+		typedef typename t3_type::const_iterator t3_const_iterator;
+
 		typedef matrix< I1, R, T > u1_type;
 		typedef typename u1_type::iterator u1_iterator;
 		typedef typename u1_type::const_iterator u1_const_iterator;
@@ -47,6 +51,9 @@ namespace vmml
 		typedef typename u3_type::const_iterator u3_const_iterator;
 		
 		//TODO typedef for m_lateral_type, m_frontal_type, and m_horizontal_type;
+		typedef matrix< I1, I2*I3, T > mode1_matricization_type;
+		typedef matrix< I2, I1*I3, T > mode2_matricization_type;
+		typedef matrix< I3, I1*I2, T > mode3_matricization_type;
 		
 
 		void set_lambdas( const vector< R, T >& lambdas_ )  { _lambdas = lambdas_; } ;
@@ -62,21 +69,21 @@ namespace vmml
 		void export_to( std::vector< T >& data_ ) const;
 		void import_from( std::vector< T >& data_ );	
 		
-		void decomposition( const tensor3< I1, I2, I3, T >& data_ ); 
-		void reconstruction( tensor3< I1, I2, I3, T >& data_ ) const;
+		void decomposition( const t3_type& data_ ); 
+		void reconstruction( t3_type& data_ ) const;
 		
-		void cp_als( const tensor3< I1, I2, I3, T >& data_ );
+		void cp_als( const t3_type& data_ );
 		
 		//higher-order power method (lathauwer et al., 2000b)
-		void hopm( const tensor3< I1, I2, I3, T >& data_ );
+		void hopm( const t3_type& data_ );
 		
-		void hosvd_mode1( const tensor3< I1, I2, I3, T >& data_, u1_type& U1_ ) const;
-		void hosvd_mode2( const tensor3< I1, I2, I3, T >& data_, u2_type& U2_ ) const;
-		void hosvd_mode3( const tensor3< I1, I2, I3, T >& data_, u3_type& U3_ ) const;
+		void hosvd_mode1( const t3_type& data_, u1_type& U1_ ) const;
+		void hosvd_mode2( const t3_type& data_, u2_type& U2_ ) const;
+		void hosvd_mode3( const t3_type& data_, u3_type& U3_ ) const;
 		
-		void optimize_mode1( const tensor3< I1, I2, I3, T >& data_, u1_type& U1_optimized_, const u2_type& U2_, const u3_type& U3_ ) const;
-		void optimize_mode2( const tensor3< I1, I2, I3, T >& data_, const u1_type& U1_, u2_type& U2_optimized_, const u3_type& U3_ ) const;		
-		double optimize_mode3( const tensor3< I1, I2, I3, T >& data_, const u1_type& U1_, const u2_type& U2_, u3_type& U3_optimized_ ) const;
+		void optimize_mode1( const t3_type& data_, u1_type& U1_optimized_, const u2_type& U2_, const u3_type& U3_ ) const;
+		void optimize_mode2( const t3_type& data_, const u1_type& U1_, u2_type& U2_optimized_, const u3_type& U3_ ) const;		
+		double optimize_mode3( const t3_type& data_, const u1_type& U1_, const u2_type& U2_, u3_type& U3_optimized_ ) const;
 		
 	private:
 		vector< R, T > _lambdas ;
@@ -99,7 +106,7 @@ VMML_TEMPLATE_CLASSNAME::cp3_tensor( u1_type& U1, u2_type& U2, u3_type& U3, vect
 
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::reconstruction( tensor3< I1, I2, I3, T >& data_ ) const
+VMML_TEMPLATE_CLASSNAME::reconstruction( t3_type& data_ ) const
 {
 	tensor3< R, R, R, T > core_diag;
 	core_diag.diag( _lambdas );
@@ -110,25 +117,25 @@ VMML_TEMPLATE_CLASSNAME::reconstruction( tensor3< I1, I2, I3, T >& data_ ) const
 
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::decomposition( const tensor3< I1, I2, I3, T >& data_ )
+VMML_TEMPLATE_CLASSNAME::decomposition( const t3_type& data_ )
 {
 	cp_als( data_ );
 }
 
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::cp_als( const tensor3< I1, I2, I3, T >& data_ )
+VMML_TEMPLATE_CLASSNAME::cp_als( const t3_type& data_ )
 {
 	hopm( data_ );
 }
 
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::hopm( const tensor3< I1, I2, I3, T >& data_ )
+VMML_TEMPLATE_CLASSNAME::hopm( const t3_type& data_ )
 {
 	
 	//compute best rank-(R) approximation (Lathauwer et al., 2000b)
-	tensor3< I1, I2, I3, T > approximated_data;
+	t3_type approximated_data;
 	reconstruction( approximated_data );
 	double max_f_norm = data_.frobenius_norm();
 	//std::cout << "frobenius norm original: " << max_f_norm << std::endl;
@@ -186,7 +193,7 @@ VMML_TEMPLATE_CLASSNAME::hopm( const tensor3< I1, I2, I3, T >& data_ )
 	
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::hosvd_mode1( const tensor3< I1, I2, I3, T >& data_, u1_type& U1_ ) const
+VMML_TEMPLATE_CLASSNAME::hosvd_mode1( const t3_type& data_, u1_type& U1_ ) const
 {
 	matrix< I1, I2*I3, T> m_lateral; // -> u1
 	data_.lateral_matricization( m_lateral);
@@ -205,7 +212,7 @@ VMML_TEMPLATE_CLASSNAME::hosvd_mode1( const tensor3< I1, I2, I3, T >& data_, u1_
 
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::hosvd_mode2( const tensor3< I1, I2, I3, T >& data_, u2_type& U2_ ) const
+VMML_TEMPLATE_CLASSNAME::hosvd_mode2( const t3_type& data_, u2_type& U2_ ) const
 {
 	matrix< I2, I1*I3, T> m_frontal; // -> u2
 	data_.frontal_matricization( m_frontal);
@@ -224,7 +231,7 @@ VMML_TEMPLATE_CLASSNAME::hosvd_mode2( const tensor3< I1, I2, I3, T >& data_, u2_
 
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::hosvd_mode3( const tensor3< I1, I2, I3, T >& data_, u3_type& U3_ ) const
+VMML_TEMPLATE_CLASSNAME::hosvd_mode3( const t3_type& data_, u3_type& U3_ ) const
 {
 	matrix< I3, I1*I2, T> m_horizontal; //-> u3
 	data_.horizontal_matricization( m_horizontal);
@@ -242,7 +249,7 @@ VMML_TEMPLATE_CLASSNAME::hosvd_mode3( const tensor3< I1, I2, I3, T >& data_, u3_
 
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::optimize_mode1( const tensor3< I1, I2, I3, T >& data_, u1_type& U1_optimized_, const u2_type& U2_, const u3_type& U3_ ) const
+VMML_TEMPLATE_CLASSNAME::optimize_mode1( const t3_type& data_, u1_type& U1_optimized_, const u2_type& U2_, const u3_type& U3_ ) const
 {	
 	matrix< I1, I2*I3, T> unfolding; // -> u1
 	data_.lateral_matricization( unfolding);
@@ -263,7 +270,7 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode1( const tensor3< I1, I2, I3, T >& data_, 
 
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::optimize_mode2( const tensor3< I1, I2, I3, T >& data_, const u1_type& U1_, u2_type& U2_optimized_, const u3_type& U3_ ) const
+VMML_TEMPLATE_CLASSNAME::optimize_mode2( const t3_type& data_, const u1_type& U1_, u2_type& U2_optimized_, const u3_type& U3_ ) const
 {
 	matrix< I2, I1*I3, T> unfolding; // -> u2
 	data_.frontal_matricization( unfolding);
@@ -281,7 +288,7 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode2( const tensor3< I1, I2, I3, T >& data_, 
 
 VMML_TEMPLATE_STRING
 double  
-VMML_TEMPLATE_CLASSNAME::optimize_mode3( const tensor3< I1, I2, I3, T >& data_, const u1_type& U1_, const u2_type& U2_,  u3_type& U3_optimized_ ) const
+VMML_TEMPLATE_CLASSNAME::optimize_mode3( const t3_type& data_, const u1_type& U1_, const u2_type& U2_,  u3_type& U3_optimized_ ) const
 {
 	matrix< I3, I1*I2, T> unfolding; //-> u3
 	data_.horizontal_matricization( unfolding);

@@ -1,5 +1,6 @@
 #include "tensor3_test.hpp"
 
+#include <stdint.h>
 #include <vmmlib/tensor3.hpp>
 
 #include <sstream>

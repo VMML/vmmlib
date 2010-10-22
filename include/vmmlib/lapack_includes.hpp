@@ -9,6 +9,11 @@
 #else
 
 // FIXME - include clapack headers
+extern "C" {
+#include <f2c.h>
+#include <clapack/clapack.h>
+}
+
 
 #endif
 

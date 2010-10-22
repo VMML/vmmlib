@@ -8,7 +8,13 @@ VMMLIB_UNIT_TESTS =\
     tests/svd_test.cpp\
     tests/lapack_svd_test.cpp\
     tests/lapack_linear_least_squares_test.cpp\
+    tests/lapack_gaussian_elimination_test.cpp\
     tests/vmmlib_unit_tests_main.cpp\
+    tests/tensor3_test.cpp \
+    tests/tensor3_iterator_test.cpp \
+    tests/tucker3_tensor_test.cpp \
+    tests/cp3_tensor_test.cpp \
+    tests/matrix_pseudoinverse_test.cpp
 
 VMMLIB_UNIT_TESTS_OBJECTS = ${VMMLIB_UNIT_TESTS:%.cpp=%.o}  
 

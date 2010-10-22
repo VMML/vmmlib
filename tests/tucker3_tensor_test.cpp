@@ -1,7 +1,7 @@
 #include "tucker3_tensor_test.hpp"
 
+#include <stdint.h>
 #include <vmmlib/tucker3_tensor.hpp>
-
 #include <sstream>
 
 namespace vmml

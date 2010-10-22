@@ -1,5 +1,6 @@
 #include "tensor3_iterator_test.hpp"
 
+#include <stdint.h>
 #include <vmmlib/tensor3_iterator.hpp>
 #include <vmmlib/tensor3.hpp>
 

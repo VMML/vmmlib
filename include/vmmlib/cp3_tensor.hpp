@@ -33,6 +33,7 @@ namespace vmml
 	{
 	public:    
 		cp3_tensor( matrix< I1, R, T_coeff >& U1, matrix< I2, R, T_coeff >& U2, matrix< I3, R, T_coeff >& U3, vector< R, T_coeff >& lambdas_ );
+		cp3_tensor();
 		
 		typedef tensor3< I1, I2, I3, T_value > t3_type;
 		typedef typename t3_type::iterator t3_iterator;
@@ -71,8 +72,8 @@ namespace vmml
 		void export_to( std::vector< T_coeff >& data_ ) const;
 		void import_from( std::vector< T_coeff >& data_ );	
 		
-		void decomposition( const t3_type& data_ ); 
-		void reconstruction( t3_type& data_ ) const;
+		void decompose( const t3_type& data_ ); 
+		void reconstruct( t3_type& data_ ) const;
 		
 		void cp_als( const t3_type& data_ );
 		
@@ -107,8 +108,15 @@ VMML_TEMPLATE_CLASSNAME::cp3_tensor( u1_type& U1, u2_type& U2, u3_type& U3, vect
 }
 
 VMML_TEMPLATE_STRING
+VMML_TEMPLATE_CLASSNAME::cp3_tensor()
+: _lambdas(0), _u1(0), _u2(0), _u3(0)
+{
+}
+	
+	
+VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::reconstruction( t3_type& data_ ) const
+VMML_TEMPLATE_CLASSNAME::reconstruct( t3_type& data_ ) const
 {
 	tensor3< R, R, R, T_coeff > core_diag;
 	core_diag.diag( _lambdas );
@@ -122,7 +130,7 @@ VMML_TEMPLATE_CLASSNAME::reconstruction( t3_type& data_ ) const
 
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::decomposition( const t3_type& data_ )
+VMML_TEMPLATE_CLASSNAME::decompose( const t3_type& data_ )
 {
 	cp_als( data_ );
 }
@@ -141,7 +149,7 @@ VMML_TEMPLATE_CLASSNAME::hopm( const t3_type& data_ )
 	
 	//compute best rank-(R) approximation (Lathauwer et al., 2000b)
 	t3_type approximated_data;
-	reconstruction( approximated_data );
+	reconstruct( approximated_data );
 	double max_f_norm = data_.frobenius_norm();
 	//std::cout << "frobenius norm original: " << max_f_norm << std::endl;
 	
@@ -183,7 +191,7 @@ VMML_TEMPLATE_CLASSNAME::hopm( const t3_type& data_ )
 		_lambdas.at(0) = lambda; //TODO: for all lambdas/ranks
 		set_lambdas( _lambdas );
 		
-		reconstruction( approximated_data );
+		reconstruct( approximated_data );
 		f_norm = approximated_data.frobenius_norm();
 		improvement = f_norm - last_f_norm;
 		last_f_norm = f_norm;

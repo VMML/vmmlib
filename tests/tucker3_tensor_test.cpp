@@ -283,7 +283,7 @@ namespace vmml
 		
 		tucker3_tensor<2, 3, 4, 6, 7, 5, uint16_t, uint16_t > tuck3( core, u1, u2, u3 );
 
-		tuck3.reconstruction( t3_reco );
+		tuck3.reconstruct( t3_reco );
 		
 		tensor3<6, 7, 5, uint16_t> t3_reco_test;
 		t3_reco_test.fill(1656);
@@ -354,7 +354,7 @@ namespace vmml
 		tucker3_tensor< 2, 3, 4, 3, 4, 3, uint16_t, uint16_t > tuck3_sub( core_sub, u1_sub, u2_sub, u3_sub );
 		
 		tuck3_sub.subsampling( tuck3, 2);
-		tuck3_sub.reconstruction( t3_sub );
+		tuck3_sub.reconstruct( t3_sub );
 		
 		tensor3< 3, 4, 3, uint16_t > t3_sub_test;
 		t3_sub_test.fill(1656);
@@ -386,7 +386,7 @@ namespace vmml
 		tuck3.set_u1(u1_new);*/
 		
 		tuck3_sub_avg.subsampling_on_average( tuck3, 2);
-		tuck3_sub_avg.reconstruction( t3_sub_avg );
+		tuck3_sub_avg.reconstruct( t3_sub_avg );
 		
 		t3_sub_test.fill(1656);
 		if ( t3_sub_test == t3_sub_avg )
@@ -411,7 +411,7 @@ namespace vmml
 		tucker3_tensor< 2, 3, 4, 1, 1, 3, uint16_t, uint16_t > tuck3_roi( core_roi, u1_roi, u2_roi, u3_roi );
 		
 		tuck3_roi.region_of_interest( tuck3, 0, 1, 1, 2, 1, 4);
-		tuck3_roi.reconstruction( t3_roi );
+		tuck3_roi.reconstruct( t3_roi );
 
 		tensor3< 1, 1, 3, uint16_t > t3_roi_test;
 		t3_roi_test.fill(1656);

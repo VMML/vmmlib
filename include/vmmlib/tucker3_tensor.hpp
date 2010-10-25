@@ -80,8 +80,8 @@ public:
 	void export_to( std::vector< T_coeff >& data_ ) const;
 	void import_from( const std::vector< T_coeff >& data_ );	
 	
-	void reconstruction( t3_type& data_ ) const;
-	void decomposition( const t3_type& data_ ); 
+	void reconstruct( t3_type& data_ ) const;
+	void decompose( const t3_type& data_ ); 
 		
 	/* derive core
 	   implemented accodring to core = data x_1 U1_pinv x_2 U2_pinv x_3 U3_pinv, 
@@ -165,7 +165,7 @@ VMML_TEMPLATE_CLASSNAME::tucker3_tensor( )
 	
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::reconstruction( t3_type& data_ ) const
+VMML_TEMPLATE_CLASSNAME::reconstruct( t3_type& data_ ) const
 {
 	t3_coeff_type data;
 	data.convert_from_type( data_ );
@@ -176,7 +176,7 @@ VMML_TEMPLATE_CLASSNAME::reconstruction( t3_type& data_ ) const
 
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::decomposition( const t3_type& data_ )
+VMML_TEMPLATE_CLASSNAME::decompose( const t3_type& data_ )
 {
 	tucker_als( data_ );
 		
@@ -373,7 +373,7 @@ VMML_TEMPLATE_CLASSNAME::hoii( const t3_type& data_ )
 		
 	//compute best rank-(R1, R2, R3) approximation (Lathauwer et al., 2000b)
 	t3_type approximated_data;
-	reconstruction( approximated_data );
+	reconstruct( approximated_data );
 	double f_norm = approximated_data.frobenius_norm();
 	double max_f_norm = data_.frobenius_norm();
 	//std::cout << "frobenius norm original: " << max_f_norm << std::endl;
@@ -408,7 +408,7 @@ VMML_TEMPLATE_CLASSNAME::hoii( const t3_type& data_ )
 		derive_core_orthogonal_bases(data_, _core, _u1, _u2, _u3);
 		set_core( _core );
 		
-		reconstruction( approximated_data );
+		reconstruct( approximated_data );
 		f_norm = approximated_data.frobenius_norm();
 		improvement = f_norm - last_f_norm;
 		last_f_norm = f_norm;

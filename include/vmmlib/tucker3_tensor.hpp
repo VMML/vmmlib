@@ -26,11 +26,12 @@
 namespace vmml
 {
 	
-	template< size_t J1, size_t J2, size_t J3, size_t I1, size_t I2, size_t I3, typename T_value = float, typename T_coeff = float >
+	template< size_t R1, size_t R2, size_t R3, size_t I1, size_t I2, size_t I3, typename T_value = float, typename T_coeff = float >
 	class tucker3_tensor
 	{
 public:    
-    tucker3_tensor( tensor3< J1, J2, J3, T_coeff >& core, matrix< I1, J1, T_coeff >& U1, matrix< I2, J2, T_coeff >& U2, matrix< I3, J3, T_coeff >& U3 );
+    tucker3_tensor( tensor3< R1, R2, R3, T_coeff >& core, matrix< I1, R1, T_coeff >& U1, matrix< I2, R2, T_coeff >& U2, matrix< I3, R3, T_coeff >& U3 );
+	tucker3_tensor();
 
 	typedef tensor3< I1, I2, I3, T_value > t3_type;
 	typedef typename t3_type::iterator t3_iterator;
@@ -40,26 +41,26 @@ public:
 	typedef typename t3_coeff_type::iterator t3_coeff_iterator;
 	typedef typename t3_coeff_type::const_iterator t3_coeff_const_iterator;
 		
-	typedef tensor3< J1, J2, J3, T_coeff > t3_core_type;
+	typedef tensor3< R1, R2, R3, T_coeff > t3_core_type;
 	typedef typename t3_core_type::iterator t3_core_iterator;
 	typedef typename t3_core_type::const_iterator t3_core_const_iterator;
 		
-	typedef matrix< I1, J1, T_coeff > u1_type;
+	typedef matrix< I1, R1, T_coeff > u1_type;
 	typedef typename u1_type::iterator u1_iterator;
 	typedef typename u1_type::const_iterator u1_const_iterator;
 
-	typedef matrix< I2, J2, T_coeff > u2_type;
+	typedef matrix< I2, R2, T_coeff > u2_type;
 	typedef typename u2_type::iterator u2_iterator;
 	typedef typename u2_type::const_iterator u2_const_iterator;
 	
-	typedef matrix< I3, J3, T_coeff > u3_type;
+	typedef matrix< I3, R3, T_coeff > u3_type;
 	typedef typename u3_type::iterator u3_iterator;
 	typedef typename u3_type::const_iterator u3_const_iterator;
 	
 	//matrix types for inverted (pseudo-inverted) u1-u3
-	typedef matrix< J1, I1, T_coeff > u1_inv_type;
-	typedef matrix< J2, I2, T_coeff > u2_inv_type;
-	typedef matrix< J3, I3, T_coeff > u3_inv_type;
+	typedef matrix< R1, I1, T_coeff > u1_inv_type;
+	typedef matrix< R2, I2, T_coeff > u2_inv_type;
+	typedef matrix< R3, I3, T_coeff > u3_inv_type;
 		
 	typedef matrix< I1, I2*I3, T_coeff > mode1_matricization_type;
 	typedef matrix< I2, I1*I3, T_coeff > mode2_matricization_type;
@@ -114,24 +115,24 @@ public:
 	 */
 	void hoii( const t3_type& data_ );
 		
-	void optimize_mode1( const t3_coeff_type& data_, tensor3< I1, J2, J3, T_coeff >& projection_, const u2_type& U2_, const u3_type& U3_ ) const;
-	void optimize_mode2( const t3_coeff_type& data_, tensor3< J1, I2, J3, T_coeff >& projection_, const u1_type& U1_, const u3_type& U3_ ) const;		
-	void optimize_mode3( const t3_coeff_type& data_, tensor3< J1, J2, I3, T_coeff >& projection_, const u1_type& U1_, const u2_type& U2_ ) const;
+	void optimize_mode1( const t3_coeff_type& data_, tensor3< I1, R2, R3, T_coeff >& projection_, const u2_type& U2_, const u3_type& U3_ ) const;
+	void optimize_mode2( const t3_coeff_type& data_, tensor3< R1, I2, R3, T_coeff >& projection_, const u1_type& U1_, const u3_type& U3_ ) const;		
+	void optimize_mode3( const t3_coeff_type& data_, tensor3< R1, R2, I3, T_coeff >& projection_, const u1_type& U1_, const u2_type& U2_ ) const;
 	
 		
 	void tucker_als( const t3_type& data_ );	
 		
 	template< size_t K1, size_t K2, size_t K3>
-	void reduce_ranks( const tucker3_tensor< K1, K2, K3, I1, I2, I3, T_value, T_coeff >& other ); //call TuckerJI.reduce_ranks(TuckerKI) K1 -> J1, K2 -> J2, K3 -> J3
+	void reduce_ranks( const tucker3_tensor< K1, K2, K3, I1, I2, I3, T_value, T_coeff >& other ); //call TuckerJI.reduce_ranks(TuckerKI) K1 -> R1, K2 -> R2, K3 -> R3
 
 	template< size_t K1, size_t K2, size_t K3>
-	void subsampling( const tucker3_tensor< J1, J2, J3, K1, K2, K3, T_value, T_coeff >& other, const size_t& factor  );
+	void subsampling( const tucker3_tensor< R1, R2, R3, K1, K2, K3, T_value, T_coeff >& other, const size_t& factor  );
 
 	template< size_t K1, size_t K2, size_t K3>
-	void subsampling_on_average( const tucker3_tensor< J1, J2, J3, K1, K2, K3, T_value, T_coeff >& other, const size_t& factor  );
+	void subsampling_on_average( const tucker3_tensor< R1, R2, R3, K1, K2, K3, T_value, T_coeff >& other, const size_t& factor  );
 
 	template< size_t K1, size_t K2, size_t K3>
-	void region_of_interest( const tucker3_tensor< J1, J2, J3, K1, K2, K3, T_value, T_coeff >& other, 
+	void region_of_interest( const tucker3_tensor< R1, R2, R3, K1, K2, K3, T_value, T_coeff >& other, 
 							const size_t& start_index1, const size_t& end_index1, 
 							const size_t& start_index2, const size_t& end_index2, 
 							const size_t& start_index3, const size_t& end_index3);
@@ -146,19 +147,22 @@ private:
 }; // class tucker3_tensor
 
 
-#define VMML_TEMPLATE_STRING    	template< size_t J1, size_t J2, size_t J3, size_t I1, size_t I2, size_t I3, typename T_value, typename T_coeff >
-#define VMML_TEMPLATE_CLASSNAME     tucker3_tensor< J1, J2, J3, I1, I2, I3, T_value, T_coeff >
+#define VMML_TEMPLATE_STRING    	template< size_t R1, size_t R2, size_t R3, size_t I1, size_t I2, size_t I3, typename T_value, typename T_coeff >
+#define VMML_TEMPLATE_CLASSNAME     tucker3_tensor< R1, R2, R3, I1, I2, I3, T_value, T_coeff >
 
 
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::tucker3_tensor( t3_core_type& core, u1_type& U1, u2_type& U2, u3_type& U3 )
 : _core(core), _u1(U1), _u2(U2), _u3(U3)
-{
-	//assert(J1 <= I1);
-	//assert(J2 <= I2);
-	//assert(J3 <= I3);	
+{	
 }
-
+	
+VMML_TEMPLATE_STRING
+VMML_TEMPLATE_CLASSNAME::tucker3_tensor( )
+: _core(0), _u1(0), _u2(0), _u3(0)
+{
+}
+	
 VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::reconstruction( t3_type& data_ ) const
@@ -290,7 +294,7 @@ VMML_TEMPLATE_CLASSNAME::hosvd_on_eigs( const t3_type& data_ )
 	
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::optimize_mode1( const t3_coeff_type& data_, tensor3< I1, J2, J3, T_coeff >& projection_, const u2_type& U2_, const u3_type& U3_ ) const
+VMML_TEMPLATE_CLASSNAME::optimize_mode1( const t3_coeff_type& data_, tensor3< I1, R2, R3, T_coeff >& projection_, const u2_type& U2_, const u3_type& U3_ ) const
 {
 	//compute pseudo inverse for matrices u2,u3
 	u2_type u2_pinv_t ;
@@ -305,7 +309,7 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode1( const t3_coeff_type& data_, tensor3< I1
 	u3_inv_type u3_pinv = transpose( u3_pinv_t );
 	
 	//backward cyclic matricization (after Lathauwer et al., 2000a)
-	tensor3< I1, J2, I3, T_coeff > tmp;
+	tensor3< I1, R2, I3, T_coeff > tmp;
 	tmp.multiply_frontal( data_, u2_pinv );
 	projection_.multiply_horizontal( tmp, u3_pinv );
 }
@@ -313,7 +317,7 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode1( const t3_coeff_type& data_, tensor3< I1
 	
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::optimize_mode2( const t3_coeff_type& data_, tensor3< J1, I2, J3, T_coeff >& projection_, const u1_type& U1_, const u3_type& U3_ ) const
+VMML_TEMPLATE_CLASSNAME::optimize_mode2( const t3_coeff_type& data_, tensor3< R1, I2, R3, T_coeff >& projection_, const u1_type& U1_, const u3_type& U3_ ) const
 {
 	//compute pseudo inverse for matrices u2,u3
 	u1_type u1_pinv_t ;
@@ -328,7 +332,7 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode2( const t3_coeff_type& data_, tensor3< J1
 	u3_inv_type u3_pinv = transpose( u3_pinv_t );
 	
 	//backward cyclic matricization (after Lathauwer et al., 2000a)
-	tensor3< J1, I2, I3, T_coeff > tmp;
+	tensor3< R1, I2, I3, T_coeff > tmp;
 	tmp.multiply_lateral( data_, u1_pinv );
 	projection_.multiply_horizontal( tmp, u3_pinv );
 }	
@@ -336,7 +340,7 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode2( const t3_coeff_type& data_, tensor3< J1
 	
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::optimize_mode3( const t3_coeff_type& data_, tensor3< J1, J2, I3, T_coeff >& projection_, const u1_type& U1_, const u2_type& U2_ ) const
+VMML_TEMPLATE_CLASSNAME::optimize_mode3( const t3_coeff_type& data_, tensor3< R1, R2, I3, T_coeff >& projection_, const u1_type& U1_, const u2_type& U2_ ) const
 {
 	//compute pseudo inverse for matrices u2,u3
 	u1_type u1_pinv_t ;
@@ -351,7 +355,7 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode3( const t3_coeff_type& data_, tensor3< J1
 	u2_inv_type u2_pinv = transpose( u2_pinv_t );
 	
 	//backward cyclic matricization (after Lathauwer et al., 2000a)
-	tensor3< J1, I2, I3, T_coeff > tmp;
+	tensor3< R1, I2, I3, T_coeff > tmp;
 	tmp.multiply_lateral( data_, u1_pinv );
 	projection_.multiply_frontal( tmp, u2_pinv );
 }
@@ -367,7 +371,7 @@ VMML_TEMPLATE_CLASSNAME::hoii( const t3_type& data_ )
 	t3_coeff_type data;
 	data.convert_from_type( data_ );
 		
-	//compute best rank-(J1, J2, J3) approximation (Lathauwer et al., 2000b)
+	//compute best rank-(R1, R2, R3) approximation (Lathauwer et al., 2000b)
 	t3_type approximated_data;
 	reconstruction( approximated_data );
 	double f_norm = approximated_data.frobenius_norm();
@@ -384,17 +388,17 @@ VMML_TEMPLATE_CLASSNAME::hoii( const t3_type& data_ )
 	{
 		
 		//optimize for mode 1
-		tensor3< I1, J2, J3, T_coeff > projection1; 
+		tensor3< I1, R2, R3, T_coeff > projection1; 
 		optimize_mode1( data, projection1, _u2, _u3);
 		hosvd_mode1( projection1, _u1 );
 		
 		//optimize for mode 2
-		tensor3< J1, I2, J3, T_coeff > projection2; 
+		tensor3< R1, I2, R3, T_coeff > projection2; 
 		optimize_mode2( data, projection2, _u1, _u3);
 		hosvd_mode2( projection2, _u2 );
 		
 		//optimize for mode 3
-		tensor3< J1, J2, I3, T_coeff > projection3; 
+		tensor3< R1, R2, I3, T_coeff > projection3; 
 		optimize_mode3( data, projection3, _u1, _u2);
 		hosvd_mode3( projection3, _u3);
 		
@@ -424,9 +428,9 @@ VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::derive_core_orthogonal_bases( const t3_type& data_, t3_core_type& core_, const u1_type& U1_, const u2_type& U2_, const u3_type& U3_ )
 {
-	matrix< J1, I1, T_coeff > u1_inv = transpose( U1_ );
-	matrix< J2, I2, T_coeff > u2_inv = transpose( U2_ );
-	matrix< J3, I3, T_coeff > u3_inv = transpose( U3_ );
+	matrix< R1, I1, T_coeff > u1_inv = transpose( U1_ );
+	matrix< R2, I2, T_coeff > u2_inv = transpose( U2_ );
+	matrix< R3, I3, T_coeff > u3_inv = transpose( U3_ );
 	
 	t3_coeff_type data = data_;
 	core_.full_tensor3_matrix_multiplication( data, u1_inv, u2_inv, u3_inv );
@@ -453,19 +457,19 @@ VMML_TEMPLATE_CLASSNAME::derive_core( const t3_type& data_, t3_core_type& core_,
 	compute_pseudoinverse<  u3_type > compute_pinv_u3;
 	compute_pinv_u3( U3_, u3_pinv_t );
 	
-	matrix< J1, I1, T_coeff > u1_pinv = transpose( u1_pinv_t );
-	matrix< J2, I2, T_coeff > u2_pinv = transpose( u2_pinv_t );
-	matrix< J3, I3, T_coeff > u3_pinv = transpose( u3_pinv_t );
+	matrix< R1, I1, T_coeff > u1_pinv = transpose( u1_pinv_t );
+	matrix< R2, I2, T_coeff > u2_pinv = transpose( u2_pinv_t );
+	matrix< R3, I3, T_coeff > u3_pinv = transpose( u3_pinv_t );
 		
 	core_.full_tensor3_matrix_multiplication( data_, u1_pinv, u2_pinv, u3_pinv );
 
 
 	//previous version of compute core	
-	//	for( size_t j3 = 0; j3 < J3; ++j3 ) 
+	//	for( size_t R3 = 0; R3 < R3; ++R3 ) 
 	//	{
-	//		for( size_t j1 = 0; j1 < J1; ++j1 ) 
+	//		for( size_t R1 = 0; R1 < R1; ++R1 ) 
 	//		{
-	//			for( size_t j2 = 0; j2 < J2; ++j2 ) 
+	//			for( size_t R2 = 0; R2 < R2; ++R2 ) 
 	//			{
 	//				double sum_i1_i2_i3 = 0.0;
 	//				for( size_t i3 = 0; i3 < I3; ++i3 ) 
@@ -474,11 +478,11 @@ VMML_TEMPLATE_CLASSNAME::derive_core( const t3_type& data_, t3_core_type& core_,
 	//					{
 	//						for( size_t i2 = 0; i2 < I2; ++i2 ) 
 	//						{
-	//							sum_i1_i2_i3 += U1_.at( i1, j1 ) * U2_.at( i2, j2 ) * U3_.at( i3, j3 ) * data_.at( i1, i2, i3 );
+	//							sum_i1_i2_i3 += U1_.at( i1, R1 ) * U2_.at( i2, R2 ) * U3_.at( i3, R3 ) * data_.at( i1, i2, i3 );
 	//						}
 	//					}
 	//				}
-	//				core_.at( j1, j2, j3 ) = sum_i1_i2_i3;
+	//				core_.at( R1, R2, R3 ) = sum_i1_i2_i3;
 	//			}
 	//		}
 	//	}
@@ -494,45 +498,45 @@ VMML_TEMPLATE_STRING
 template< size_t K1, size_t K2, size_t K3>
 void 
 VMML_TEMPLATE_CLASSNAME::reduce_ranks( const tucker3_tensor< K1, K2, K3, I1, I2, I3, T_value, T_coeff >& other )
-//TuckerJI.rank_recuction(TuckerKI) K1 -> J1, K2 -> J2, K3 -> J3; I1, I2, I3 stay the same
+//TuckerJI.rank_recuction(TuckerKI) K1 -> R1, K2 -> R2, K3 -> R3; I1, I2, I3 stay the same
 {
-	assert(J1 <= K1);
-	assert(J2 <= K2);
-	assert(J3 <= K3);	
+	assert(R1 <= K1);
+	assert(R2 <= K2);
+	assert(R3 <= K3);	
 		
 	//reduce basis matrices
 	matrix< I1, K1, T_coeff > u1;
 	other.get_u1( u1);
-	for( size_t j1 = 0; j1 < J1; ++j1 ) 
+	for( size_t r1 = 0; r1 < R1; ++r1 ) 
 	{
-		_u1.set_column( j1, u1.get_column( j1 ));
+		_u1.set_column( r1, u1.get_column( r1 ));
 	}
 	
 	matrix< I2, K2, T_coeff > u2;
 	other.get_u2( u2 );
-	for( size_t j2 = 0; j2 < J2; ++j2) 
+	for( size_t r2 = 0; r2 < R2; ++r2) 
 	{
-		_u2.set_column( j2, u2.get_column( j2 ));
+		_u2.set_column( r2, u2.get_column( r2 ));
 	}
 	
 	matrix< I3, K3, T_coeff > u3;
 	other.get_u3( u3 );
-	for( size_t j3 = 0; j3 < J3; ++j3) 
+	for( size_t r3 = 0; r3 < R3; ++r3) 
 	{
-		_u3.set_column( j3, u3.get_column( j3 ));
+		_u3.set_column( r3, u3.get_column( r3 ));
 	}
 	
 	//reduce core
 	tensor3<K1, K2, K3, T_coeff > other_core;
 	other.get_core( other_core );
 
-	for( size_t j3 = 0; j3 < J3; ++j3 ) 
+	for( size_t r3 = 0; r3 < R3; ++r3 ) 
 	{
-		for( size_t j1 = 0; j1 < J1; ++j1 ) 
+		for( size_t r1 = 0; r1 < R1; ++r1 ) 
 		{
-			for( size_t j2 = 0; j2 < J2; ++j2 ) 
+			for( size_t r2 = 0; r2 < R2; ++r2 ) 
 			{
-				_core.at( j1, j2, j3 ) = other_core.at( j1, j2, j3 );
+				_core.at( r1, r2, r3 ) = other_core.at( r1, r2, r3 );
 			}
 		}
 	}
@@ -544,28 +548,28 @@ VMML_TEMPLATE_CLASSNAME::reduce_ranks( const tucker3_tensor< K1, K2, K3, I1, I2,
 VMML_TEMPLATE_STRING
 template< size_t K1, size_t K2, size_t K3>
 void 
-VMML_TEMPLATE_CLASSNAME::subsampling( const tucker3_tensor< J1, J2, J3, K1, K2, K3, T_value, T_coeff >& other, const size_t& factor )
+VMML_TEMPLATE_CLASSNAME::subsampling( const tucker3_tensor< R1, R2, R3, K1, K2, K3, T_value, T_coeff >& other, const size_t& factor )
 {
 	assert(I1 <= K1);
 	assert(I1 <= K2);
 	assert(I1 <= K3);	
 	
 	//subsample basis matrices
-	matrix< K1, J1, T_coeff > u1;
+	matrix< K1, R1, T_coeff > u1;
 	other.get_u1( u1 );
 	for( size_t i1 = 0, i = 0; i1 < K1; i1 += factor, ++i ) 
 	{
 		_u1.set_row( i, u1.get_row( i1 ));
 	}
 	
-	matrix< K2, J2, T_coeff > u2;
+	matrix< K2, R2, T_coeff > u2;
 	other.get_u2( u2 );
 	for( size_t i2 = 0,  i = 0; i2 < K2; i2 += factor, ++i) 
 	{
 		_u2.set_row( i, u2.get_row( i2 ));
 	}
 	
-	matrix< K3, J3, T_coeff > u3 ;
+	matrix< K3, R3, T_coeff > u3 ;
 	other.get_u3( u3);
 	for( size_t i3 = 0,  i = 0; i3 < K3; i3 += factor, ++i) 
 	{
@@ -579,7 +583,7 @@ VMML_TEMPLATE_CLASSNAME::subsampling( const tucker3_tensor< J1, J2, J3, K1, K2, 
 VMML_TEMPLATE_STRING
 template< size_t K1, size_t K2, size_t K3>
 void 
-VMML_TEMPLATE_CLASSNAME::subsampling_on_average( const tucker3_tensor< J1, J2, J3, K1, K2, K3, T_value, T_coeff >& other, const size_t& factor )
+VMML_TEMPLATE_CLASSNAME::subsampling_on_average( const tucker3_tensor< R1, R2, R3, K1, K2, K3, T_value, T_coeff >& other, const size_t& factor )
 {
 	assert(I1 <= K1);
 	assert(I1 <= K2);
@@ -587,11 +591,11 @@ VMML_TEMPLATE_CLASSNAME::subsampling_on_average( const tucker3_tensor< J1, J2, J
 	
 	
 	//subsample basis matrices
-	matrix< K1, J1, T_coeff > u1;
+	matrix< K1, R1, T_coeff > u1;
 	other.get_u1( u1 );
 	for( size_t i1 = 0, i = 0; i1 < K1; i1 += factor, ++i )
 	{
-		vector< J1, T_coeff > tmp_row = u1.get_row( i1 );
+		vector< R1, T_coeff > tmp_row = u1.get_row( i1 );
 		T_coeff num_items_averaged = 1;
 		for( size_t j = i1+1; (j < (factor+i1)) & (j < K1); ++j, ++num_items_averaged )
 			tmp_row += u1.get_row( j );
@@ -600,11 +604,11 @@ VMML_TEMPLATE_CLASSNAME::subsampling_on_average( const tucker3_tensor< J1, J2, J
 		_u1.set_row( i, tmp_row);
 	}
 	
-	matrix< K2, J2, T_coeff > u2;
+	matrix< K2, R2, T_coeff > u2;
 	other.get_u2( u2 );
 	for( size_t i2 = 0,  i = 0; i2 < K2; i2 += factor, ++i) 
 	{
-		vector< J2, T_coeff > tmp_row = u2.get_row( i2 );
+		vector< R2, T_coeff > tmp_row = u2.get_row( i2 );
 		T_coeff num_items_averaged = 1;
 		for( size_t j = i2+1; (j < (factor+i2)) & (j < K2); ++j, ++num_items_averaged )
 			tmp_row += u2.get_row( j );
@@ -613,11 +617,11 @@ VMML_TEMPLATE_CLASSNAME::subsampling_on_average( const tucker3_tensor< J1, J2, J
 		_u2.set_row( i, u2.get_row( i2 ));
 	}
 	
-	matrix< K3, J3, T_coeff > u3;
+	matrix< K3, R3, T_coeff > u3;
 	other.get_u3( u3);
 	for( size_t i3 = 0,  i = 0; i3 < K3; i3 += factor, ++i) 
 	{
-		vector< J3, T_coeff > tmp_row = u3.get_row( i3 );
+		vector< R3, T_coeff > tmp_row = u3.get_row( i3 );
 		T_coeff num_items_averaged = 1;
 		for( size_t j = i3+1; (j < (factor+i3)) & (j < K3); ++j, ++num_items_averaged )
 			tmp_row += u3.get_row( j );
@@ -635,7 +639,7 @@ VMML_TEMPLATE_CLASSNAME::subsampling_on_average( const tucker3_tensor< J1, J2, J
 VMML_TEMPLATE_STRING
 template< size_t K1, size_t K2, size_t K3>
 void 
-VMML_TEMPLATE_CLASSNAME::region_of_interest( const tucker3_tensor< J1, J2, J3, K1, K2, K3, T_value, T_coeff >& other, 
+VMML_TEMPLATE_CLASSNAME::region_of_interest( const tucker3_tensor< R1, R2, R3, K1, K2, K3, T_value, T_coeff >& other, 
 											const size_t& start_index1, const size_t& end_index1, 
 											const size_t& start_index2, const size_t& end_index2, 
 											const size_t& start_index3, const size_t& end_index3)
@@ -651,21 +655,21 @@ VMML_TEMPLATE_CLASSNAME::region_of_interest( const tucker3_tensor< J1, J2, J3, K
 	assert(end_index3 < K3);
 	
 	//region_of_interes of basis matrices
-	matrix< K1, J1, T_coeff > u1;
+	matrix< K1, R1, T_coeff > u1;
 	other.get_u1( u1 );
 	for( size_t i1 = start_index1,  i = 0; i1 < end_index1; ++i1, ++i ) 
 	{
 		_u1.set_row( i, u1.get_row( i1 ));
 	}
 	
-	matrix< K2, J2, T_coeff> u2;
+	matrix< K2, R2, T_coeff> u2;
 	other.get_u2( u2 );
 	for( size_t i2 = start_index2,  i = 0; i2 < end_index2; ++i2, ++i) 
 	{
 		_u2.set_row( i, u2.get_row( i2 ));
 	}
 	
-	matrix< K3, J3, T_coeff > u3;
+	matrix< K3, R3, T_coeff > u3;
 	other.get_u3( u3 );
 	for( size_t i3 = start_index3,  i = 0; i3 < end_index3; ++i3, ++i) 
 	{

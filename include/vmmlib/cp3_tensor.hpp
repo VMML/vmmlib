@@ -28,46 +28,50 @@
 namespace vmml
 {
 	
-	template< size_t I1, size_t I2, size_t I3, size_t R, typename T = float >
+	template< size_t I1, size_t I2, size_t I3, size_t R, typename T_value = float, typename T_coeff = float >
 	class cp3_tensor
 	{
 	public:    
-		cp3_tensor( matrix< I1, R, T >& U1, matrix< I2, R, T >& U2, matrix< I3, R, T >& U3, vector< R, T >& lambdas_ );
+		cp3_tensor( matrix< I1, R, T_coeff >& U1, matrix< I2, R, T_coeff >& U2, matrix< I3, R, T_coeff >& U3, vector< R, T_coeff >& lambdas_ );
 		
-		typedef tensor3< I1, I2, I3, T > t3_type;
+		typedef tensor3< I1, I2, I3, T_value > t3_type;
 		typedef typename t3_type::iterator t3_iterator;
 		typedef typename t3_type::const_iterator t3_const_iterator;
-
-		typedef matrix< I1, R, T > u1_type;
+		
+		typedef tensor3< I1, I2, I3, T_coeff > t3_coeff_type;
+		typedef typename t3_coeff_type::iterator t3_coeff_iterator;
+		typedef typename t3_coeff_type::const_iterator t3_coeff_const_iterator;
+		
+		typedef matrix< I1, R, T_coeff > u1_type;
 		typedef typename u1_type::iterator u1_iterator;
 		typedef typename u1_type::const_iterator u1_const_iterator;
 		
-		typedef matrix< I2, R, T > u2_type;
+		typedef matrix< I2, R, T_coeff > u2_type;
 		typedef typename u2_type::iterator u2_iterator;
 		typedef typename u2_type::const_iterator u2_const_iterator;
 		
-		typedef matrix< I3, R, T > u3_type;
+		typedef matrix< I3, R, T_coeff > u3_type;
 		typedef typename u3_type::iterator u3_iterator;
 		typedef typename u3_type::const_iterator u3_const_iterator;
 		
 		//TODO typedef for m_lateral_type, m_frontal_type, and m_horizontal_type;
-		typedef matrix< I1, I2*I3, T > mode1_matricization_type;
-		typedef matrix< I2, I1*I3, T > mode2_matricization_type;
-		typedef matrix< I3, I1*I2, T > mode3_matricization_type;
+		typedef matrix< I1, I2*I3, T_coeff > mode1_matricization_type;
+		typedef matrix< I2, I1*I3, T_coeff > mode2_matricization_type;
+		typedef matrix< I3, I1*I2, T_coeff > mode3_matricization_type;
 		
 
-		void set_lambdas( const vector< R, T >& lambdas_ )  { _lambdas = lambdas_; } ;
+		void set_lambdas( const vector< R, T_coeff >& lambdas_ )  { _lambdas = lambdas_; } ;
 		void set_u1( const u1_type& U1 ) { _u1 = U1; } ;
 		void set_u2( const u2_type& U2 ) { _u2 = U2; } ;
 		void set_u3( const u3_type& U3 ) { _u3 = U3; } ;
 		
-		void get_lambdas( vector< R, T >& data_ ) const { data_  = _lambdas; } ;
+		void get_lambdas( vector< R, T_coeff >& data_ ) const { data_  = _lambdas; } ;
 		void get_u1( u1_type& U1 ) const { U1 = _u1; } ;
 		void get_u2( u2_type& U2 ) const { U2 = _u2; } ;
 		void get_u3( u3_type& U3 ) const { U3 = _u3; } ;
 		
-		void export_to( std::vector< T >& data_ ) const;
-		void import_from( std::vector< T >& data_ );	
+		void export_to( std::vector< T_coeff >& data_ ) const;
+		void import_from( std::vector< T_coeff >& data_ );	
 		
 		void decomposition( const t3_type& data_ ); 
 		void reconstruction( t3_type& data_ ) const;
@@ -86,7 +90,7 @@ namespace vmml
 		double optimize_mode3( const t3_type& data_, const u1_type& U1_, const u2_type& U2_, u3_type& U3_optimized_ ) const;
 		
 	private:
-		vector< R, T > _lambdas ;
+		vector< R, T_coeff > _lambdas ;
 		u1_type _u1 ;
 		u2_type _u2 ;
 		u3_type _u3 ;
@@ -94,12 +98,12 @@ namespace vmml
 	}; // class cp3_tensor
 	
 	
-#define VMML_TEMPLATE_STRING    	template< size_t I1, size_t I2, size_t I3, size_t R, typename T >
-#define VMML_TEMPLATE_CLASSNAME     cp3_tensor< I1, I2, I3, R, T >
+#define VMML_TEMPLATE_STRING    	template< size_t I1, size_t I2, size_t I3, size_t R, typename T_value, typename T_coeff >
+#define VMML_TEMPLATE_CLASSNAME     cp3_tensor< I1, I2, I3, R, T_value, T_coeff >
 	
 	
 VMML_TEMPLATE_STRING
-VMML_TEMPLATE_CLASSNAME::cp3_tensor( u1_type& U1, u2_type& U2, u3_type& U3, vector< R, T >& lambdas_ )
+VMML_TEMPLATE_CLASSNAME::cp3_tensor( u1_type& U1, u2_type& U2, u3_type& U3, vector< R, T_coeff >& lambdas_ )
 : _lambdas(lambdas_), _u1(U1), _u2(U2), _u3(U3)
 {
 }
@@ -108,10 +112,12 @@ VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::reconstruction( t3_type& data_ ) const
 {
-	tensor3< R, R, R, T > core_diag;
+	tensor3< R, R, R, T_coeff > core_diag;
 	core_diag.diag( _lambdas );
 	
-	data_.full_tensor3_matrix_multiplication( core_diag, _u1, _u2, _u3 );
+	t3_coeff_type data = data_;
+	data.full_tensor3_matrix_multiplication( core_diag, _u1, _u2, _u3 );
+	data_ = data;
 }
 
 
@@ -195,7 +201,7 @@ VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::hosvd_mode1( const t3_type& data_, u1_type& U1_ ) const
 {
-	matrix< I1, I2*I3, T> m_lateral; // -> u1
+	matrix< I1, I2*I3, T_coeff> m_lateral; // -> u1
 	data_.lateral_matricization( m_lateral);
 	
 	//std::cout << "hosvd mode1, m_lateral: " << std::endl << m_lateral << std::endl;
@@ -214,15 +220,16 @@ VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::hosvd_mode2( const t3_type& data_, u2_type& U2_ ) const
 {
-	matrix< I2, I1*I3, T> m_frontal; // -> u2
+	matrix< I2, I1*I3, T_value > m_frontal; // -> u2
 	data_.frontal_matricization( m_frontal);
 	//std::cout << "hosvd mode2, m_frontal: " << std::endl << m_frontal << std::endl;
 	
-	vector< I1*I3, double > lambdas_u2;
+	vector< I1*I3, T_coeff > lambdas;
+	matrix< I2, I1*I3, T_coeff > u = m_frontal;
 	
-	lapack_svd< I2, I1*I3, double > svd2;
-	if( svd2.compute_and_overwrite_input( m_frontal, lambdas_u2 ))
-		m_frontal.get_sub_matrix( U2_ );
+	lapack_svd< I2, I1*I3, T_coeff > svd;
+	if( svd.compute_and_overwrite_input( u, lambdas ))
+		u.get_sub_matrix( U2_ );
 	else 
 		U2_.zero();
 }
@@ -233,14 +240,15 @@ VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::hosvd_mode3( const t3_type& data_, u3_type& U3_ ) const
 {
-	matrix< I3, I1*I2, T> m_horizontal; //-> u3
+	matrix< I3, I1*I2, T_value > m_horizontal; //-> u3
 	data_.horizontal_matricization( m_horizontal);
 	//std::cout << "hosvd mode3, m_horizontal: " << std::endl << m_horizontal << std::endl;
 	
-	vector< I1*I2, double > lambdas_u3;
-	lapack_svd< I3, I1*I2, double > svd3;
-	if( svd3.compute_and_overwrite_input( m_horizontal, lambdas_u3 ))
-		m_horizontal.get_sub_matrix( U3_ );
+	vector< I1*I2, T_coeff > lambdas;
+	matrix< I3, I1*I2, T_coeff> u = m_horizontal;
+	lapack_svd< I3, I1*I2, T_coeff > svd;
+	if( svd.compute_and_overwrite_input( u, lambdas ))
+		u.get_sub_matrix( U3_ );
 	else 
 		U3_.zero();
 }
@@ -251,12 +259,13 @@ VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::optimize_mode1( const t3_type& data_, u1_type& U1_optimized_, const u2_type& U2_, const u3_type& U3_ ) const
 {	
-	matrix< I1, I2*I3, T> unfolding; // -> u1
+	matrix< I1, I2*I3, T_value > unfolding; // -> u1
 	data_.lateral_matricization( unfolding);
 	
-	matrix< I2*I3, R, T> u1_krp;
+	matrix< I1, I2*I3, T_coeff > data = unfolding; // -> u1
+	matrix< I2*I3, R, T_coeff> u1_krp;
 	u1_krp = U2_.khatri_rao_product( U3_ );	
-	U1_optimized_.multiply( unfolding, u1_krp );
+	U1_optimized_.multiply( data, u1_krp );
 	
 	//std::cout << "m_lateral " << std::endl << m_lateral << std::endl;
 	//std::cout << "khatri-rao  " << std::endl << u1_krp << std::endl;
@@ -272,12 +281,13 @@ VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::optimize_mode2( const t3_type& data_, const u1_type& U1_, u2_type& U2_optimized_, const u3_type& U3_ ) const
 {
-	matrix< I2, I1*I3, T> unfolding; // -> u2
+	matrix< I2, I1*I3, T_value > unfolding; // -> u2
 	data_.frontal_matricization( unfolding);
 	
-	matrix< I1*I3, R, T> u2_krp;
+	matrix< I2, I1*I3, T_coeff> data = unfolding; // -> u2
+	matrix< I1*I3, R, T_coeff> u2_krp;
 	u2_krp = U1_.khatri_rao_product( U3_ );
-	U2_optimized_.multiply( unfolding, u2_krp );
+	U2_optimized_.multiply( data, u2_krp );
 	
 	
 	//normalize u with lambda (= norm)
@@ -290,12 +300,13 @@ VMML_TEMPLATE_STRING
 double  
 VMML_TEMPLATE_CLASSNAME::optimize_mode3( const t3_type& data_, const u1_type& U1_, const u2_type& U2_,  u3_type& U3_optimized_ ) const
 {
-	matrix< I3, I1*I2, T> unfolding; //-> u3
+	matrix< I3, I1*I2, T_value > unfolding; //-> u3
 	data_.horizontal_matricization( unfolding);
 	
-	matrix< I1*I2, R, T> u3_krp;
+	matrix< I3, I1*I2, T_coeff > data; //-> u3
+	matrix< I1*I2, R, T_coeff> u3_krp;
 	u3_krp = U1_.khatri_rao_product( U2_ );
-	U3_optimized_.multiply( unfolding, u3_krp );
+	U3_optimized_.multiply( data, u3_krp );
 	
 	//normalize u with lambda (= norm)
 	double lambda = U3_optimized_.frobenius_norm();
@@ -307,7 +318,7 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode3( const t3_type& data_, const u1_type& U1
 	
 VMML_TEMPLATE_STRING
 void
-VMML_TEMPLATE_CLASSNAME::export_to( std::vector< T >& data_ ) const
+VMML_TEMPLATE_CLASSNAME::export_to( std::vector< T_coeff >& data_ ) const
 {
 	u1_const_iterator  it = _u1.begin(),
 	it_end = _u1.end();
@@ -336,7 +347,7 @@ VMML_TEMPLATE_CLASSNAME::export_to( std::vector< T >& data_ ) const
 
 VMML_TEMPLATE_STRING
 void
-VMML_TEMPLATE_CLASSNAME::import_from( std::vector< T >& data_ )
+VMML_TEMPLATE_CLASSNAME::import_from( std::vector< T_coeff >& data_ )
 {
 	size_t i = 0; //iterator over data_
 	

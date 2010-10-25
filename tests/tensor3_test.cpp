@@ -13,7 +13,8 @@ tensor3_test::run()
 {
     bool ok = false;
 	        
-    tensor3< 2, 3, 4, uint16_t >  t3;
+	
+	tensor3< 2, 3, 4, uint16_t >  t3;
     tensor3< 2, 3, 4, uint16_t >  t3_tmp;
 
 	//test size
@@ -518,7 +519,20 @@ tensor3_test::run()
 		log_error( error.str() );
 	}
 	
+	//tensor3 type conversion
+	tensor3< 2, 3, 4, uint16_t >  t3_type_a;
+    tensor3< 2, 3, 4, double >  t3_type_b;
+    tensor3< 2, 3, 4, uint16_t >  t3_type_aa;
 	
+#if 0	
+	t3_type_a.fill(2);
+	std::cout << "tensor3 in type a: " << t3_type_a << std::endl;
+	t3_type_b.convert_to_type( t3_type_a );
+	std::cout << "tensor3 in type b: " << t3_type_b << std::endl;
+    
+	t3_type_aa.convert_to_type( t3_type_b );
+	std::cout << "tensor3 reverted to type a: " << t3_type_aa << std::endl;
+#endif	
 	
 	
 	ok = true;

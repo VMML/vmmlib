@@ -58,7 +58,7 @@ namespace vmml
 		};
 		t3_data_hosvd.set(data_hosvd, data_hosvd + 27);
 		
-		tucker3_tensor< 3, 3, 3, 3, 3, 3, double > tuck3_hosvd( core_hosvd, u1_hosvd, u2_hosvd, u3_hosvd );
+		tucker3_tensor< 3, 3, 3, 3, 3, 3, double, double > tuck3_hosvd( core_hosvd, u1_hosvd, u2_hosvd, u3_hosvd );
 		
 		//(1a) derive core tensor (with pseudo inverse)
 		tuck3_hosvd.derive_core( t3_data_hosvd, core_hosvd, u1_hosvd_check, u2_hosvd_check, u3_hosvd_check );
@@ -140,7 +140,7 @@ namespace vmml
 		double data_hoii[] = { 0, 1, 2, 3, 4, 5, -1, 4, -2, -5, 3, -6};
 		t3_data_hoii.set(data_hoii, data_hoii + 12);
 		
-		tucker3_tensor< 3, 2, 2, 3, 2, 2, double > tuck3_hoii( core_hoii, u1_hoii, u2_hoii, u3_hoii );
+		tucker3_tensor< 3, 2, 2, 3, 2, 2, double, double > tuck3_hoii( core_hoii, u1_hoii, u2_hoii, u3_hoii );
 		//Step 1
 		tuck3_hoii.hosvd( t3_data_hoii );
 		tuck3_hoii.get_u1( u1_hoii );
@@ -187,7 +187,7 @@ namespace vmml
 		double data_core_hoii_2[] = { -10.14733447424582, 0.0, 0.0, 2.760705584847321 };
 		core_hoii_check_2.set( data_core_hoii_2, data_core_hoii_2 + 4);
 		
-		tucker3_tensor< 2, 2, 1, 3, 2, 2, double > tuck3_hoii_2( core_hoii_2, u1_hoii_2, u2_hoii_2, u3_hoii_2 );
+		tucker3_tensor< 2, 2, 1, 3, 2, 2, double, double > tuck3_hoii_2( core_hoii_2, u1_hoii_2, u2_hoii_2, u3_hoii_2 );
 		
 		tuck3_hoii_2.hoii( t3_data_hoii );
 		tuck3_hoii_2.get_u1( u1_hoii_2 );
@@ -241,7 +241,7 @@ namespace vmml
 		matrix<2, 2, double> u2_imported;
 		matrix<2, 1, double> u3_imported;
 		tensor3<2, 2, 1, double> core_imported;
-		tucker3_tensor< 2, 2, 1, 3, 2, 2, double > tuck3_import( core_imported, u1_imported, u2_imported, u3_imported );
+		tucker3_tensor< 2, 2, 1, 3, 2, 2, double, double > tuck3_import( core_imported, u1_imported, u2_imported, u3_imported );
 		
 		tuck3_import.import_from( in_data );
 		
@@ -281,7 +281,7 @@ namespace vmml
 		u2.fill(3);
 		u3.fill(1);
 		
-		tucker3_tensor<2, 3, 4, 6, 7, 5, uint16_t > tuck3( core, u1, u2, u3 );
+		tucker3_tensor<2, 3, 4, 6, 7, 5, uint16_t, uint16_t > tuck3( core, u1, u2, u3 );
 
 		tuck3.reconstruction( t3_reco );
 		
@@ -313,7 +313,7 @@ namespace vmml
 		matrix<7, 2, uint16_t> u2_red2;
 		matrix<5, 3, uint16_t> u3_red2;
 		
-		tucker3_tensor< 1, 2, 3, 6, 7, 5, uint16_t > tuck3_red( core_red, u1_red, u2_red, u3_red );
+		tucker3_tensor< 1, 2, 3, 6, 7, 5, uint16_t, uint16_t > tuck3_red( core_red, u1_red, u2_red, u3_red );
 		tuck3_red.reduce_ranks( tuck3 );
 		
 		u1_red.fill(2);
@@ -351,7 +351,7 @@ namespace vmml
 		matrix< 3, 2, uint16_t > u1_sub;
 		matrix< 4, 3, uint16_t > u2_sub;
 		matrix< 3, 4, uint16_t > u3_sub;
-		tucker3_tensor< 2, 3, 4, 3, 4, 3, uint16_t > tuck3_sub( core_sub, u1_sub, u2_sub, u3_sub );
+		tucker3_tensor< 2, 3, 4, 3, 4, 3, uint16_t, uint16_t > tuck3_sub( core_sub, u1_sub, u2_sub, u3_sub );
 		
 		tuck3_sub.subsampling( tuck3, 2);
 		tuck3_sub.reconstruction( t3_sub );
@@ -376,7 +376,7 @@ namespace vmml
 		matrix< 3, 2, uint16_t > u1_sub_avg;
 		matrix< 4, 3, uint16_t > u2_sub_avg;
 		matrix< 3, 4, uint16_t > u3_sub_avg;
-		tucker3_tensor< 2, 3, 4, 3, 4, 3, uint16_t > tuck3_sub_avg( core_sub_avg, u1_sub_avg, u2_sub_avg, u3_sub_avg );
+		tucker3_tensor< 2, 3, 4, 3, 4, 3, uint16_t, uint16_t > tuck3_sub_avg( core_sub_avg, u1_sub_avg, u2_sub_avg, u3_sub_avg );
 		
 		/*matrix<6, 2, uint16_t> u1_new;
 		u1_new.fill(5);
@@ -408,7 +408,7 @@ namespace vmml
 		matrix< 1, 2, uint16_t > u1_roi;
 		matrix< 1, 3, uint16_t > u2_roi;
 		matrix< 3, 4, uint16_t > u3_roi;
-		tucker3_tensor< 2, 3, 4, 1, 1, 3, uint16_t > tuck3_roi( core_roi, u1_roi, u2_roi, u3_roi );
+		tucker3_tensor< 2, 3, 4, 1, 1, 3, uint16_t, uint16_t > tuck3_roi( core_roi, u1_roi, u2_roi, u3_roi );
 		
 		tuck3_roi.region_of_interest( tuck3, 0, 1, 1, 2, 1, 4);
 		tuck3_roi.reconstruction( t3_roi );

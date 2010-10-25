@@ -35,7 +35,7 @@ namespace vmml
 		double data[] = { 0, 1, 2, 3, 4, 5, -1, 4, -2, -5, 3, -6};
 		t3_data.set(data, data + 12);
 		
-		cp3_tensor< 3, 2, 2, 1, double > cp3_rank1( u1_rank1, u2_rank1, u3_rank1, lambda_rank1 );
+		cp3_tensor< 3, 2, 2, 1, double, double > cp3_rank1( u1_rank1, u2_rank1, u3_rank1, lambda_rank1 );
 
 		cp3_rank1.cp_als( t3_data );
 		cp3_rank1.get_u1( u1_rank1 );

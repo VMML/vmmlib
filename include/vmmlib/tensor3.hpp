@@ -32,6 +32,14 @@ public:
 	
     typedef typename vmml::tensor3_iterator< tensor3< I1, I2, I3, T > > iterator;
     typedef typename vmml::tensor3_const_iterator< tensor3< I1, I2, I3, T > > const_iterator;
+	
+#if 0
+	template< typename TT>
+	typedef vmml::tensor3< I1, I2, I3, TT > t3_tt_type ;
+	typedef typename t3_tt_type::iterator tt_iterator;
+	typedef typename t3_tt_type::const_iterator tt_const_iterator;
+#endif
+	
     typedef typename vmml::tensor3_iterator< tensor3< I1, I2, I3, T > > reverse_iterator;
     typedef typename vmml::tensor3_iterator< tensor3< I1, I2, I3, T > > const_reverse_iterator;
     
@@ -159,8 +167,13 @@ public:
 	
 	//error computation between two tensor3
 	double frobenius_norm( ) const;
-
-		
+	
+#if 0
+	template< typename TT >
+	void convert_to_type( const tensor3< I1, I2, I3, TT >& other );
+#endif	
+	void export_to( std::vector< T >& data_ ) const ;
+	void import_from( const std::vector< T >& data_ ) ;
 	
  	inline tensor3 operator+( T scalar ) const;
 	inline tensor3 operator-( T scalar ) const;
@@ -1096,7 +1109,53 @@ VMML_TEMPLATE_CLASSNAME::frobenius_norm( ) const
 	return sqrt(f_norm);
 }
 
+#if 0
+VMML_TEMPLATE_STRING
+template< typename TT >
+void
+VMML_TEMPLATE_CLASSNAME::convert_to_type( const tensor3< I1, I2, I3, TT >& other )
+{
+    iterator it = begin(), it_end = end();
+    tt_const_iterator other_it = other.begin();
+    for( ; it != it_end; ++it, ++other_it )
+    {
+        *it += static_cast< T >( *other_it );
+    }
+	
+	
+}
+#endif
 
+VMML_TEMPLATE_STRING
+void
+VMML_TEMPLATE_CLASSNAME::export_to( std::vector< T >& data_ ) const
+{
+
+	const_iterator  it = begin(),
+	it_end = end();
+	for( ; it != it_end; ++it )
+	{
+		data_.push_back( *it );
+	}
+}
+
+
+VMML_TEMPLATE_STRING
+void
+VMML_TEMPLATE_CLASSNAME::import_from( const std::vector< T >& data_ )
+{
+	size_t i = 0; //iterator over data_
+
+	iterator  it = begin(),
+	it_end = end();
+	for( ; it != it_end; ++it, ++i )
+	{
+		*it = data_.at(i);
+	}
+	
+}	
+
+	
 
 #undef VMML_TEMPLATE_STRING
 #undef VMML_TEMPLATE_CLASSNAME

@@ -520,19 +520,65 @@ tensor3_test::run()
 	}
 	
 	//tensor3 type conversion
-	tensor3< 2, 3, 4, uint16_t >  t3_type_a;
-    tensor3< 2, 3, 4, double >  t3_type_b;
-    tensor3< 2, 3, 4, uint16_t >  t3_type_aa;
+	tensor3< 2, 3, 4, double >  t3_type_a;
+    tensor3< 2, 3, 4, uint16_t >  t3_type_b;
+    tensor3< 2, 3, 4, uint16_t >  t3_type_b_check;
 	
-#if 0	
-	t3_type_a.fill(2);
-	std::cout << "tensor3 in type a: " << t3_type_a << std::endl;
-	t3_type_b.convert_to_type( t3_type_a );
-	std::cout << "tensor3 in type b: " << t3_type_b << std::endl;
-    
-	t3_type_aa.convert_to_type( t3_type_b );
-	std::cout << "tensor3 reverted to type a: " << t3_type_aa << std::endl;
-#endif	
+	t3_type_a.fill(2.4); 
+	t3_type_b_check.fill(2);
+	t3_type_b.convert_from_type( t3_type_a );
+	
+	if (t3_type_b_check == t3_type_b )
+	{	
+		log( "type conversion ", true  );
+	} else
+	{
+		std::stringstream error;
+		error << "type conversion - tensor3 type double: " << std::endl << t3_type_a << std::endl
+		<< " tensor3 type uint16_t shoudl be: " << std::endl << t3_type_b_check << std::endl
+		<< " is: " << t3_type_b << std::endl;
+		log_error( error.str() );
+	}
+	
+	
+	//export
+	tensor3< 2, 3, 4, double >  t3_export_import;
+	t3_export_import.fill_increasing_values();
+	std::vector< double > export_data;
+	t3_export_import.export_to( export_data );
+	
+	double export_data_check[] = { 0, 3, 1, 4, 2, 5, 6, 9, 7, 10, 8, 11, 12, 15, 13, 16, 14, 17, 18, 21, 19, 22, 20, 23 };
+	double precision = 1.0e-1;
+	ok = true;
+	for (int i = 0; i < 24 && ok; ++i )
+	{
+		ok = (abs(export_data_check[i]) - abs(export_data[i])) < precision;
+	}
+	
+	log( "export tensor3", ok  );
+	
+	//import tucker3 from vector
+	std::vector< double > in_data = export_data;
+	tensor3< 2, 3, 4, double >  t3_import_check;
+	t3_import_check.fill_increasing_values();
+	t3_export_import.zero();
+	t3_export_import.import_from( in_data );
+		
+	if ( t3_export_import.equals( t3_import_check, precision ) )	{	
+		log( "import tensor3" , true  );
+	} else
+	{
+		std::stringstream error;
+		error 
+		<< "import tensor3: " << std::endl
+		<< "import tensor3 should be: " << std::endl << t3_import_check << std::endl
+		<< "is: " << std::endl << t3_export_import << std::endl;		
+		
+		log_error( error.str() );
+	}		
+	
+	
+	
 	
 	
 	ok = true;

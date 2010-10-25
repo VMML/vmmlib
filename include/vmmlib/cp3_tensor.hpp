@@ -54,11 +54,9 @@ namespace vmml
 		typedef typename u3_type::iterator u3_iterator;
 		typedef typename u3_type::const_iterator u3_const_iterator;
 		
-		//TODO typedef for m_lateral_type, m_frontal_type, and m_horizontal_type;
 		typedef matrix< I1, I2*I3, T_coeff > mode1_matricization_type;
 		typedef matrix< I2, I1*I3, T_coeff > mode2_matricization_type;
-		typedef matrix< I3, I1*I2, T_coeff > mode3_matricization_type;
-		
+		typedef matrix< I3, I1*I2, T_coeff > mode3_matricization_type;		
 
 		void set_lambdas( const vector< R, T_coeff >& lambdas_ )  { _lambdas = lambdas_; } ;
 		void set_u1( const u1_type& U1 ) { _u1 = U1; } ;
@@ -115,9 +113,10 @@ VMML_TEMPLATE_CLASSNAME::reconstruction( t3_type& data_ ) const
 	tensor3< R, R, R, T_coeff > core_diag;
 	core_diag.diag( _lambdas );
 	
-	t3_coeff_type data = data_;
+	t3_coeff_type data;
+	data.convert_from_type( data_ );
 	data.full_tensor3_matrix_multiplication( core_diag, _u1, _u2, _u3 );
-	data_ = data;
+	data_.convert_from_type( data );
 }
 
 
@@ -201,16 +200,15 @@ VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::hosvd_mode1( const t3_type& data_, u1_type& U1_ ) const
 {
-	matrix< I1, I2*I3, T_coeff> m_lateral; // -> u1
-	data_.lateral_matricization( m_lateral);
-	
-	//std::cout << "hosvd mode1, m_lateral: " << std::endl << m_lateral << std::endl;
-	
-	vector< I2*I3, double > lambdas_u1;
-	
-	lapack_svd< I1, I2*I3, double > svd1;
-	if( svd1.compute_and_overwrite_input( m_lateral, lambdas_u1 ))
-		m_lateral.get_sub_matrix( U1_ );
+	t3_coeff_type data;
+	data.convert_from_type( data_ );
+	mode1_matricization_type u; // -> u1
+	data.lateral_matricization( u);
+		
+	vector< I2*I3, T_coeff > lambdas;
+	lapack_svd< I1, I2*I3, T_coeff > svd;
+	if( svd.compute_and_overwrite_input( u, lambdas ))
+		u.get_sub_matrix( U1_ );
 	else 
 		U1_.zero();
 }
@@ -220,13 +218,12 @@ VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::hosvd_mode2( const t3_type& data_, u2_type& U2_ ) const
 {
-	matrix< I2, I1*I3, T_value > m_frontal; // -> u2
-	data_.frontal_matricization( m_frontal);
-	//std::cout << "hosvd mode2, m_frontal: " << std::endl << m_frontal << std::endl;
+	t3_coeff_type data;
+	data.convert_from_type( data_ );
+	mode2_matricization_type u; // -> u2
+	data.frontal_matricization( u );
 	
 	vector< I1*I3, T_coeff > lambdas;
-	matrix< I2, I1*I3, T_coeff > u = m_frontal;
-	
 	lapack_svd< I2, I1*I3, T_coeff > svd;
 	if( svd.compute_and_overwrite_input( u, lambdas ))
 		u.get_sub_matrix( U2_ );
@@ -240,12 +237,12 @@ VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::hosvd_mode3( const t3_type& data_, u3_type& U3_ ) const
 {
-	matrix< I3, I1*I2, T_value > m_horizontal; //-> u3
-	data_.horizontal_matricization( m_horizontal);
-	//std::cout << "hosvd mode3, m_horizontal: " << std::endl << m_horizontal << std::endl;
+	t3_coeff_type data;
+	data.convert_from_type( data_ );
+	mode3_matricization_type u; //-> u3
+	data.horizontal_matricization( u );
 	
 	vector< I1*I2, T_coeff > lambdas;
-	matrix< I3, I1*I2, T_coeff> u = m_horizontal;
 	lapack_svd< I3, I1*I2, T_coeff > svd;
 	if( svd.compute_and_overwrite_input( u, lambdas ))
 		u.get_sub_matrix( U3_ );
@@ -259,13 +256,14 @@ VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::optimize_mode1( const t3_type& data_, u1_type& U1_optimized_, const u2_type& U2_, const u3_type& U3_ ) const
 {	
-	matrix< I1, I2*I3, T_value > unfolding; // -> u1
-	data_.lateral_matricization( unfolding);
+	t3_coeff_type data;
+	data.convert_from_type( data_ );
+	mode1_matricization_type unfolding; // -> u1
+	data.lateral_matricization( unfolding );
 	
-	matrix< I1, I2*I3, T_coeff > data = unfolding; // -> u1
 	matrix< I2*I3, R, T_coeff> u1_krp;
 	u1_krp = U2_.khatri_rao_product( U3_ );	
-	U1_optimized_.multiply( data, u1_krp );
+	U1_optimized_.multiply( unfolding, u1_krp );
 	
 	//std::cout << "m_lateral " << std::endl << m_lateral << std::endl;
 	//std::cout << "khatri-rao  " << std::endl << u1_krp << std::endl;
@@ -281,13 +279,14 @@ VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::optimize_mode2( const t3_type& data_, const u1_type& U1_, u2_type& U2_optimized_, const u3_type& U3_ ) const
 {
-	matrix< I2, I1*I3, T_value > unfolding; // -> u2
-	data_.frontal_matricization( unfolding);
+	t3_coeff_type data;
+	data.convert_from_type( data_ );
+	mode2_matricization_type unfolding; // -> u2
+	data.frontal_matricization( unfolding );
 	
-	matrix< I2, I1*I3, T_coeff> data = unfolding; // -> u2
 	matrix< I1*I3, R, T_coeff> u2_krp;
 	u2_krp = U1_.khatri_rao_product( U3_ );
-	U2_optimized_.multiply( data, u2_krp );
+	U2_optimized_.multiply( unfolding, u2_krp );
 	
 	
 	//normalize u with lambda (= norm)
@@ -300,13 +299,14 @@ VMML_TEMPLATE_STRING
 double  
 VMML_TEMPLATE_CLASSNAME::optimize_mode3( const t3_type& data_, const u1_type& U1_, const u2_type& U2_,  u3_type& U3_optimized_ ) const
 {
-	matrix< I3, I1*I2, T_value > unfolding; //-> u3
-	data_.horizontal_matricization( unfolding);
+	t3_coeff_type data;
+	data.convert_from_type( data_ );
+	mode3_matricization_type unfolding; //-> u3
+	data.horizontal_matricization( unfolding);
 	
-	matrix< I3, I1*I2, T_coeff > data; //-> u3
 	matrix< I1*I2, R, T_coeff> u3_krp;
 	u3_krp = U1_.khatri_rao_product( U2_ );
-	U3_optimized_.multiply( data, u3_krp );
+	U3_optimized_.multiply( unfolding, u3_krp );
 	
 	//normalize u with lambda (= norm)
 	double lambda = U3_optimized_.frobenius_norm();

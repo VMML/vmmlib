@@ -827,12 +827,12 @@ matrix_test::run()
 		ok = norm == norm_check;
 		if ( ok )
 		{	
-			log( " matrix frobenius norm", ok  );
+			log( "matrix frobenius norm", ok  );
 		} else
 		{
 			std::stringstream error;
 			error 
-			<< " matrix frobenius norm: should be: " << norm_check << " is: " << norm << std::endl;
+			<< "matrix frobenius norm: should be: " << norm_check << " is: " << norm << std::endl;
 			log_error( error.str() );
 		}
 	}
@@ -875,12 +875,12 @@ matrix_test::run()
 		ok = khatri_rao == khatri_rao_check;
 		if ( ok )
 		{	
-			log( " khatri-rao matrix product ", ok  );
+			log( "khatri-rao matrix product ", ok  );
 		} else
 		{
 			std::stringstream error;
 			error 
-			<< " khatri-rao matrix product: should be: " << std::endl 
+			<< "khatri-rao matrix product: should be: " << std::endl 
 			<< std::setprecision(24) << khatri_rao_check << std::endl 
 			<< " is: " << std::endl << khatri_rao << std::endl;
 			log_error( error.str() );

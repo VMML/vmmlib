@@ -254,7 +254,7 @@ namespace vmml
 		{
 			std::stringstream error;
 			error 
-			<< "import tucker3: " << std::setprecision(16) << std::endl
+			<< "import tucker3: " << std::endl
 			<< "U1 should be: " << std::endl << u1_hoii_check_2 << std::endl
 			<< "U1 is: " << std::endl << u1_imported << std::endl
 			<< "U2 should be: " << std::endl << u2_hoii_check_2 << std::endl

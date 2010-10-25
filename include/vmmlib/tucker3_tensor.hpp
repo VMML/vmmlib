@@ -55,11 +55,15 @@ public:
 	typedef matrix< I3, J3, T_coeff > u3_type;
 	typedef typename u3_type::iterator u3_iterator;
 	typedef typename u3_type::const_iterator u3_const_iterator;
+	
+	//matrix types for inverted (pseudo-inverted) u1-u3
+	typedef matrix< J1, I1, T_coeff > u1_inv_type;
+	typedef matrix< J2, I2, T_coeff > u2_inv_type;
+	typedef matrix< J3, I3, T_coeff > u3_inv_type;
 		
-	//TODO typedef for m_lateral_type, m_frontal_type, and m_horizontal_type;
-	typedef matrix< I1, I2*I3, T_value > mode1_matricization_type;
-	typedef matrix< I2, I1*I3, T_value > mode2_matricization_type;
-	typedef matrix< I3, I1*I2, T_value > mode3_matricization_type;
+	typedef matrix< I1, I2*I3, T_coeff > mode1_matricization_type;
+	typedef matrix< I2, I1*I3, T_coeff > mode2_matricization_type;
+	typedef matrix< I3, I1*I2, T_coeff > mode3_matricization_type;
 
 		
 	void set_core( const t3_core_type& core )  { _core = core; } ;
@@ -73,7 +77,7 @@ public:
 	void get_u3( u3_type& U3 ) const { U3 = _u3; } ;
 		
 	void export_to( std::vector< T_coeff >& data_ ) const;
-	void import_from( std::vector< T_coeff >& data_ );	
+	void import_from( const std::vector< T_coeff >& data_ );	
 	
 	void reconstruction( t3_type& data_ ) const;
 	void decomposition( const t3_type& data_ ); 
@@ -110,9 +114,9 @@ public:
 	 */
 	void hoii( const t3_type& data_ );
 		
-	void optimize_mode1( const t3_type& data_, tensor3< I1, J2, J3, T_coeff >& projection_, const u2_type& U2_, const u3_type& U3_ ) const;
-	void optimize_mode2( const t3_type& data_, tensor3< J1, I2, J3, T_coeff >& projection_, const u1_type& U1_, const u3_type& U3_ ) const;		
-	void optimize_mode3( const t3_type& data_, tensor3< J1, J2, I3, T_coeff >& projection_, const u1_type& U1_, const u2_type& U2_ ) const;
+	void optimize_mode1( const t3_coeff_type& data_, tensor3< I1, J2, J3, T_coeff >& projection_, const u2_type& U2_, const u3_type& U3_ ) const;
+	void optimize_mode2( const t3_coeff_type& data_, tensor3< J1, I2, J3, T_coeff >& projection_, const u1_type& U1_, const u3_type& U3_ ) const;		
+	void optimize_mode3( const t3_coeff_type& data_, tensor3< J1, J2, I3, T_coeff >& projection_, const u1_type& U1_, const u2_type& U2_ ) const;
 	
 		
 	void tucker_als( const t3_type& data_ );	
@@ -159,9 +163,10 @@ VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::reconstruction( t3_type& data_ ) const
 {
-	t3_coeff_type data = data_;
+	t3_coeff_type data;
+	data.convert_from_type( data_ );
 	data.full_tensor3_matrix_multiplication( _core, _u1, _u2, _u3 );
-	data_ = data;
+	data_.convert_from_type( data );
 }
 
 
@@ -188,14 +193,12 @@ VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::hosvd_mode1( const t3_type& data_, u1_type& U1_ ) const
 {
-	mode1_matricization_type m_lateral; // -> u1
-	data_.lateral_matricization( m_lateral);
-	
-	//std::cout << "hosvd mode1, m_lateral: " << std::endl << m_lateral << std::endl;
-	
+	t3_coeff_type data;
+	data.convert_from_type( data_ );
+	mode1_matricization_type u; // -> u1
+	data.lateral_matricization( u);
+		
 	vector< I2*I3, T_coeff > lambdas;
-	matrix< I1, I2*I3, T_coeff > u = m_lateral;
-
 	lapack_svd< I1, I2*I3, T_coeff > svd;
 	if( svd.compute_and_overwrite_input( u, lambdas ))
 		u.get_sub_matrix( U1_ );
@@ -208,13 +211,12 @@ VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::hosvd_mode2( const t3_type& data_, u2_type& U2_ ) const
 {
-	mode2_matricization_type m_frontal; // -> u2
-	data_.frontal_matricization( m_frontal);
-	//std::cout << "hosvd mode2, m_frontal: " << std::endl << m_frontal << std::endl;
+	t3_coeff_type data;
+	data.convert_from_type( data_ );
+	mode2_matricization_type u; // -> u2
+	data.frontal_matricization( u);
 	
 	vector< I1*I3, T_coeff > lambdas;
-	matrix< I2, I1*I3, T_coeff > u = m_frontal;
-
 	lapack_svd< I2, I1*I3, T_coeff > svd;
 	if( svd.compute_and_overwrite_input( u, lambdas ))
 		u.get_sub_matrix( U2_ );
@@ -228,13 +230,12 @@ VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::hosvd_mode3( const t3_type& data_, u3_type& U3_ ) const
 {
-	mode3_matricization_type m_horizontal; //-> u3
-	data_.horizontal_matricization( m_horizontal);
-	//std::cout << "hosvd mode3, m_horizontal: " << std::endl << m_horizontal << std::endl;
+	t3_coeff_type data;
+	data.convert_from_type( data_ );
+	mode3_matricization_type u; //-> u3
+	data.horizontal_matricization( u);
 	
 	vector< I1*I2, T_coeff > lambdas;
-	matrix< I3, I1*I2, T_coeff > u = m_horizontal;
-
 	lapack_svd< I3, I1*I2, T_coeff > svd;
 	if( svd.compute_and_overwrite_input( u, lambdas ))
 		u.get_sub_matrix( U3_ );
@@ -289,7 +290,7 @@ VMML_TEMPLATE_CLASSNAME::hosvd_on_eigs( const t3_type& data_ )
 	
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::optimize_mode1( const t3_type& data_, tensor3< I1, J2, J3, T_coeff >& projection_, const u2_type& U2_, const u3_type& U3_ ) const
+VMML_TEMPLATE_CLASSNAME::optimize_mode1( const t3_coeff_type& data_, tensor3< I1, J2, J3, T_coeff >& projection_, const u2_type& U2_, const u3_type& U3_ ) const
 {
 	//compute pseudo inverse for matrices u2,u3
 	u2_type u2_pinv_t ;
@@ -300,20 +301,19 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode1( const t3_type& data_, tensor3< I1, J2, 
 	compute_pseudoinverse<  u3_type > compute_pinv_u3;
 	compute_pinv_u3( U3_, u3_pinv_t );
 	
-	matrix< J2, I2, T_coeff > u2_pinv = transpose( u2_pinv_t );
-	matrix< J3, I3, T_coeff > u3_pinv = transpose( u3_pinv_t );
+	u2_inv_type u2_pinv = transpose( u2_pinv_t );
+	u3_inv_type u3_pinv = transpose( u3_pinv_t );
 	
 	//backward cyclic matricization (after Lathauwer et al., 2000a)
 	tensor3< I1, J2, I3, T_coeff > tmp;
-	t3_coeff_type data = data_;
-	tmp.multiply_frontal( data, u2_pinv );
+	tmp.multiply_frontal( data_, u2_pinv );
 	projection_.multiply_horizontal( tmp, u3_pinv );
 }
 	
 	
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::optimize_mode2( const t3_type& data_, tensor3< J1, I2, J3, T_coeff >& projection_, const u1_type& U1_, const u3_type& U3_ ) const
+VMML_TEMPLATE_CLASSNAME::optimize_mode2( const t3_coeff_type& data_, tensor3< J1, I2, J3, T_coeff >& projection_, const u1_type& U1_, const u3_type& U3_ ) const
 {
 	//compute pseudo inverse for matrices u2,u3
 	u1_type u1_pinv_t ;
@@ -324,20 +324,19 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode2( const t3_type& data_, tensor3< J1, I2, 
 	compute_pseudoinverse<  u3_type > compute_pinv_u3;
 	compute_pinv_u3( U3_, u3_pinv_t );
 	
-	matrix< J1, I1, T_coeff > u1_pinv = transpose( u1_pinv_t );
-	matrix< J3, I3, T_coeff > u3_pinv = transpose( u3_pinv_t );
+	u1_inv_type u1_pinv = transpose( u1_pinv_t );
+	u3_inv_type u3_pinv = transpose( u3_pinv_t );
 	
 	//backward cyclic matricization (after Lathauwer et al., 2000a)
 	tensor3< J1, I2, I3, T_coeff > tmp;
-	t3_coeff_type data = data_;
-	tmp.multiply_lateral( data, u1_pinv );
+	tmp.multiply_lateral( data_, u1_pinv );
 	projection_.multiply_horizontal( tmp, u3_pinv );
 }	
 
 	
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::optimize_mode3( const t3_type& data_, tensor3< J1, J2, I3, T_coeff >& projection_, const u1_type& U1_, const u2_type& U2_ ) const
+VMML_TEMPLATE_CLASSNAME::optimize_mode3( const t3_coeff_type& data_, tensor3< J1, J2, I3, T_coeff >& projection_, const u1_type& U1_, const u2_type& U2_ ) const
 {
 	//compute pseudo inverse for matrices u2,u3
 	u1_type u1_pinv_t ;
@@ -348,13 +347,12 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode3( const t3_type& data_, tensor3< J1, J2, 
 	compute_pseudoinverse<  u2_type > compute_pinv_u2;
 	compute_pinv_u2( U2_, u2_pinv_t );	
 	
-	matrix< J1, I1, T_coeff > u1_pinv = transpose( u1_pinv_t );
-	matrix< J2, I2, T_coeff > u2_pinv = transpose( u2_pinv_t );
+	u1_inv_type u1_pinv = transpose( u1_pinv_t );
+	u2_inv_type u2_pinv = transpose( u2_pinv_t );
 	
 	//backward cyclic matricization (after Lathauwer et al., 2000a)
 	tensor3< J1, I2, I3, T_coeff > tmp;
-	t3_coeff_type data = data_;
-	tmp.multiply_lateral( data, u1_pinv );
+	tmp.multiply_lateral( data_, u1_pinv );
 	projection_.multiply_frontal( tmp, u2_pinv );
 }
 	
@@ -365,6 +363,9 @@ VMML_TEMPLATE_CLASSNAME::hoii( const t3_type& data_ )
 {
 	//intialize basis matrices
 	hosvd( data_ );
+	
+	t3_coeff_type data;
+	data.convert_from_type( data_ );
 		
 	//compute best rank-(J1, J2, J3) approximation (Lathauwer et al., 2000b)
 	t3_type approximated_data;
@@ -384,17 +385,17 @@ VMML_TEMPLATE_CLASSNAME::hoii( const t3_type& data_ )
 		
 		//optimize for mode 1
 		tensor3< I1, J2, J3, T_coeff > projection1; 
-		optimize_mode1( data_, projection1, _u2, _u3);
+		optimize_mode1( data, projection1, _u2, _u3);
 		hosvd_mode1( projection1, _u1 );
 		
 		//optimize for mode 2
 		tensor3< J1, I2, J3, T_coeff > projection2; 
-		optimize_mode2( data_, projection2, _u1, _u3);
+		optimize_mode2( data, projection2, _u1, _u3);
 		hosvd_mode2( projection2, _u2 );
 		
 		//optimize for mode 3
 		tensor3< J1, J2, I3, T_coeff > projection3; 
-		optimize_mode3( data_, projection3, _u1, _u2);
+		optimize_mode3( data, projection3, _u1, _u2);
 		hosvd_mode3( projection3, _u3);
 		
 		set_u1( _u1 );
@@ -712,7 +713,7 @@ VMML_TEMPLATE_CLASSNAME::export_to( std::vector< T_coeff >& data_ ) const
 	
 VMML_TEMPLATE_STRING
 void
-VMML_TEMPLATE_CLASSNAME::import_from( std::vector< T_coeff >& data_ )
+VMML_TEMPLATE_CLASSNAME::import_from( const std::vector< T_coeff >& data_ )
 {
 	size_t i = 0; //iterator over data_
 	

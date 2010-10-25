@@ -534,21 +534,21 @@ tensor3_test::run()
 	} else
 	{
 		std::stringstream error;
-		error << "type conversion - tensor3 type double: " << std::endl << t3_type_a << std::endl
-		<< " tensor3 type uint16_t shoudl be: " << std::endl << t3_type_b_check << std::endl
+		error << "type conversion - tensor3 type float_t: " << std::endl << t3_type_a << std::endl
+		<< " tensor3 type uint16_t should be: " << std::endl << t3_type_b_check << std::endl
 		<< " is: " << t3_type_b << std::endl;
 		log_error( error.str() );
 	}
 	
 	
 	//export
-	tensor3< 2, 3, 4, double >  t3_export_import;
+	tensor3< 2, 3, 4, float_t >  t3_export_import;
 	t3_export_import.fill_increasing_values();
-	std::vector< double > export_data;
+	std::vector< float_t > export_data;
 	t3_export_import.export_to( export_data );
 	
-	double export_data_check[] = { 0, 3, 1, 4, 2, 5, 6, 9, 7, 10, 8, 11, 12, 15, 13, 16, 14, 17, 18, 21, 19, 22, 20, 23 };
-	double precision = 1.0e-1;
+	float_t export_data_check[] = { 0, 3, 1, 4, 2, 5, 6, 9, 7, 10, 8, 11, 12, 15, 13, 16, 14, 17, 18, 21, 19, 22, 20, 23 };
+	float_t precision = 1.0e-1;
 	ok = true;
 	for (int i = 0; i < 24 && ok; ++i )
 	{
@@ -558,8 +558,8 @@ tensor3_test::run()
 	log( "export tensor3", ok  );
 	
 	//import tucker3 from vector
-	std::vector< double > in_data = export_data;
-	tensor3< 2, 3, 4, double >  t3_import_check;
+	std::vector< float_t > in_data = export_data;
+	tensor3< 2, 3, 4, float_t >  t3_import_check;
 	t3_import_check.fill_increasing_values();
 	t3_export_import.zero();
 	t3_export_import.import_from( in_data );

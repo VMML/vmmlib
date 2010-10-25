@@ -190,6 +190,9 @@ public:
 	
 	double frobenius_norm() const;
 	
+	template< typename TT >
+	void convert_from_type( const matrix< M, N, TT >& other );
+	
 	//Khatri-Rao Product: columns must be of same size
     template< size_t O >
     matrix< M*O, N, T > khatri_rao_product( const matrix< O, N, T >& right_ ) const;
@@ -2261,6 +2264,23 @@ matrix< M, N, T >::khatri_rao_product( const matrix< O, N, T >& right_ ) const
 	return khatri_rao;
 }
 	
+	
+template< size_t M, size_t N, typename T  >
+template< typename TT >
+void 
+matrix< M, N, T >::convert_from_type( const matrix< M, N, TT >& other )
+{
+	typedef vmml::matrix< M, N, TT > matrix_tt_type ;
+	typedef typename matrix_tt_type::const_iterator tt_const_iterator;
+	
+	iterator it = begin(), it_end = end();
+    tt_const_iterator other_it = other.begin();
+    for( ; it != it_end; ++it, ++other_it )
+    {
+        *it = static_cast< T >( *other_it );
+    }	
+}
+
 	
 
 } // namespace vmml

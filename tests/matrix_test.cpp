@@ -888,6 +888,31 @@ matrix_test::run()
 	}
 	
 	
+	{
+		//matrix type conversion
+		matrix< 2, 3, float_t > matrix_type_a;
+		matrix< 2, 3, uint16_t > matrix_type_b;
+		matrix< 2, 3, uint16_t > matrix_type_b_check;
+		
+		matrix_type_a.fill(2.4); 
+		matrix_type_b_check.fill(2);
+		matrix_type_b.convert_from_type( matrix_type_a );
+		
+		if ( matrix_type_b_check == matrix_type_b )
+		{	
+			log( "type conversion ", true  );
+		} else
+		{
+			std::stringstream error;
+			error << "type conversion - matrix type float_t: " << std::endl << matrix_type_a << std::endl
+			<< " matrix type uint16_t should be: " << std::endl << matrix_type_b_check << std::endl
+			<< " is: " << matrix_type_b << std::endl;
+			log_error( error.str() );
+		}		
+		
+	}
+	
+	
     return ok;
 }
 

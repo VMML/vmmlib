@@ -62,7 +62,8 @@ namespace vmml
 			}
 			
 			//compute inverse with all the significant inverse singular values
-			matrix< T::COLS, T::ROWS, typename T::value_type > result;
+			matrix< T::COLS, T::ROWS, float_t > result;
+			matrix< T::COLS, T::ROWS, typename T::value_type> pseudoinverse;
 			result.zero();
 			matrix< T::COLS, T::ROWS, float_t > tmp;
 			double sigma_inv = 0;
@@ -85,8 +86,9 @@ namespace vmml
 					tmp *= *it ;
 					result += tmp;
 					
-				}				
-				pseudoinverse_transposed = transpose( result );
+				}
+				pseudoinverse.convert_from_type( result );
+				pseudoinverse_transposed = transpose( pseudoinverse );
 				
 			} else {
 				pseudoinverse_transposed.zero(); //return matrix with zeros

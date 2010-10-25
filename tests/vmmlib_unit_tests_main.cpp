@@ -57,7 +57,10 @@ main( int argc, const char* argv[] )
     run_and_log( lapack_ge_test );
 
 #endif
-
+	
+    vmml::matrix_pseudoinverse_test m_pinv;
+    run_and_log( m_pinv );
+	
     vmml::tensor3_test t3t;
     run_and_log( t3t );
 	
@@ -69,8 +72,5 @@ main( int argc, const char* argv[] )
 	
 	vmml::cp3_tensor_test cp3t;
     run_and_log( cp3t );
-
-    vmml::matrix_pseudoinverse_test m_pinv;
-    run_and_log( m_pinv );
 	
 }

@@ -1115,8 +1115,6 @@ VMML_TEMPLATE_CLASSNAME::convert_from_type( const tensor3< I1, I2, I3, TT >& oth
     {
         *it = static_cast< T >( *other_it );
     }
-	
-	
 }
 
 VMML_TEMPLATE_STRING

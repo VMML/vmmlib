@@ -11,7 +11,7 @@ namespace vmml
 	class tucker3_tensor_test : public unit_test
 		{
 		public:
-			tucker3_tensor_test() : unit_test( "tucker3_tensor (J1xJ2xJ3) x (I1xJ1) x (I2xJ2) x (I3xJ3)" ) {}
+			tucker3_tensor_test() : unit_test( "tucker3_tensor (R1xR2xR3) x (I1xR1) x (I2xR2) x (I3xR3)" ) {}
 			bool run();
 			
 		protected:

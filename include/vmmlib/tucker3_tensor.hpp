@@ -296,6 +296,7 @@ VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::optimize_mode1( const t3_coeff_type& data_, tensor3< I1, R2, R3, T_coeff >& projection_, const u2_type& U2_, const u3_type& U3_ ) const
 {
+#if 0
 	//compute pseudo inverse for matrices u2,u3
 	u2_type u2_pinv_t ;
 	u3_type u3_pinv_t ;
@@ -307,6 +308,10 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode1( const t3_coeff_type& data_, tensor3< I1
 	
 	u2_inv_type u2_pinv = transpose( u2_pinv_t );
 	u3_inv_type u3_pinv = transpose( u3_pinv_t );
+#endif
+	
+	u2_inv_type u2_pinv = transpose( U2_ );
+	u3_inv_type u3_pinv = transpose( U3_ );
 	
 	//backward cyclic matricization (after Lathauwer et al., 2000a)
 	tensor3< I1, R2, I3, T_coeff > tmp;
@@ -319,6 +324,7 @@ VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::optimize_mode2( const t3_coeff_type& data_, tensor3< R1, I2, R3, T_coeff >& projection_, const u1_type& U1_, const u3_type& U3_ ) const
 {
+#if 0
 	//compute pseudo inverse for matrices u2,u3
 	u1_type u1_pinv_t ;
 	u3_type u3_pinv_t ;
@@ -330,6 +336,10 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode2( const t3_coeff_type& data_, tensor3< R1
 	
 	u1_inv_type u1_pinv = transpose( u1_pinv_t );
 	u3_inv_type u3_pinv = transpose( u3_pinv_t );
+#endif
+	
+	u1_inv_type u1_pinv = transpose( U1_ );
+	u3_inv_type u3_pinv = transpose( U3_ );
 	
 	//backward cyclic matricization (after Lathauwer et al., 2000a)
 	tensor3< R1, I2, I3, T_coeff > tmp;
@@ -342,6 +352,7 @@ VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::optimize_mode3( const t3_coeff_type& data_, tensor3< R1, R2, I3, T_coeff >& projection_, const u1_type& U1_, const u2_type& U2_ ) const
 {
+#if 0
 	//compute pseudo inverse for matrices u2,u3
 	u1_type u1_pinv_t ;
 	u2_type u2_pinv_t ;
@@ -353,7 +364,11 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode3( const t3_coeff_type& data_, tensor3< R1
 	
 	u1_inv_type u1_pinv = transpose( u1_pinv_t );
 	u2_inv_type u2_pinv = transpose( u2_pinv_t );
+#endif
 	
+	u1_inv_type u1_pinv = transpose( U1_ );
+	u2_inv_type u2_pinv = transpose( U2_ );
+
 	//backward cyclic matricization (after Lathauwer et al., 2000a)
 	tensor3< R1, I2, I3, T_coeff > tmp;
 	tmp.multiply_lateral( data_, u1_pinv );

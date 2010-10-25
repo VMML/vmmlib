@@ -32,7 +32,12 @@ namespace vmml
 		pseudoinverse_transposed_control.set( data2, data2 + 24);
 		
 		matrix< 6, 4, float > pseudoinverse_transposed;
-		compute_pinv( input, pseudoinverse_transposed );
+                compute_pinv( input, pseudoinverse_transposed );
+
+
+                matrix< 4, 6, float > pseudoinverse = transpose( pseudoinverse_transposed );
+                matrix< 6, 6, float > control;
+                control.multiply( input, pseudoinverse);
 		
 		if ( pseudoinverse_transposed_control.equals( pseudoinverse_transposed, 0.1 ))
 		{	
@@ -43,7 +48,8 @@ namespace vmml
 			error 
 			<< "matrix compute pseudo inverse: " << std::endl
 			<< "inverse matrix (transposed) should be: " << std::endl << pseudoinverse_transposed_control << std::endl
-			<< "inverse matrix (transposed) is: " << std::endl << pseudoinverse_transposed << std::endl;
+			<< "inverse matrix (transposed) is: " << std::endl << pseudoinverse_transposed << std::endl
+			<< "identiy matrix (control) is: " << std::endl << control << std::endl;
 			
 			log_error( error.str() );
 		}

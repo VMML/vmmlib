@@ -101,9 +101,9 @@ public:
 	 */
 	void hosvd( const t3_type& data_ );
 	void hosvd_on_eigs( const t3_type& data_ );
-	void hosvd_mode1( const t3_type& data_, u1_type& U1_ ) const;
-	void hosvd_mode2( const t3_type& data_, u2_type& U2_ ) const;
-	void hosvd_mode3( const t3_type& data_, u3_type& U3_ ) const;
+	void hosvd_mode1( const t3_coeff_type& data_, u1_type& U1_ ) const;
+	void hosvd_mode2( const t3_coeff_type& data_, u2_type& U2_ ) const;
+	void hosvd_mode3( const t3_coeff_type& data_, u3_type& U3_ ) const;
 
 		
 	/*	higher-order orthogonal iteration (HOII) is a truncated HOSVD decompositions, i.e., the HOSVD components are of lower-ranks. An optimal rank-reduction is 
@@ -159,7 +159,7 @@ VMML_TEMPLATE_CLASSNAME::tucker3_tensor( t3_core_type& core, u1_type& U1, u2_typ
 	
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::tucker3_tensor( )
-: _core(0), _u1(0), _u2(0), _u3(0)
+: _core(t3_core_type()), _u1(u1_type()), _u2(u2_type()), _u3(u3_type())
 {
 }
 	
@@ -195,12 +195,10 @@ VMML_TEMPLATE_CLASSNAME::tucker_als( const t3_type& data_ )
 
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::hosvd_mode1( const t3_type& data_, u1_type& U1_ ) const
+VMML_TEMPLATE_CLASSNAME::hosvd_mode1( const t3_coeff_type& data_, u1_type& U1_ ) const
 {
-	t3_coeff_type data;
-	data.convert_from_type( data_ );
 	mode1_matricization_type u; // -> u1
-	data.lateral_matricization( u);
+	data_.lateral_matricization( u);
 		
 	vector< I2*I3, T_coeff > lambdas;
 	lapack_svd< I1, I2*I3, T_coeff > svd;
@@ -213,12 +211,10 @@ VMML_TEMPLATE_CLASSNAME::hosvd_mode1( const t3_type& data_, u1_type& U1_ ) const
 	
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::hosvd_mode2( const t3_type& data_, u2_type& U2_ ) const
+VMML_TEMPLATE_CLASSNAME::hosvd_mode2( const t3_coeff_type& data_, u2_type& U2_ ) const
 {
-	t3_coeff_type data;
-	data.convert_from_type( data_ );
 	mode2_matricization_type u; // -> u2
-	data.frontal_matricization( u);
+	data_.frontal_matricization( u);
 	
 	vector< I1*I3, T_coeff > lambdas;
 	lapack_svd< I2, I1*I3, T_coeff > svd;
@@ -232,12 +228,10 @@ VMML_TEMPLATE_CLASSNAME::hosvd_mode2( const t3_type& data_, u2_type& U2_ ) const
 
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::hosvd_mode3( const t3_type& data_, u3_type& U3_ ) const
+VMML_TEMPLATE_CLASSNAME::hosvd_mode3( const t3_coeff_type& data_, u3_type& U3_ ) const
 {
-	t3_coeff_type data;
-	data.convert_from_type( data_ );
 	mode3_matricization_type u; //-> u3
-	data.horizontal_matricization( u);
+	data_.horizontal_matricization( u);
 	
 	vector< I1*I2, T_coeff > lambdas;
 	lapack_svd< I3, I1*I2, T_coeff > svd;
@@ -252,9 +246,12 @@ VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::hosvd( const t3_type& data_ )
 {	
-	hosvd_mode1( data_, _u1 );
-	hosvd_mode2( data_, _u2 );
-	hosvd_mode3( data_, _u3 );
+	t3_coeff_type data;
+	data.convert_from_type( data_ );
+	
+	hosvd_mode1( data, _u1 );
+	hosvd_mode2( data, _u2 );
+	hosvd_mode3( data, _u3 );
 }
 
 

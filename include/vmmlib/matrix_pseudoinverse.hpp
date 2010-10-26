@@ -42,13 +42,18 @@ namespace vmml
 			matrix< T::ROWS, T::COLS, float_t > U;
 			vector< T::COLS, float_t > sigmas;
 			matrix< T::COLS, T::COLS, float_t > Vt;
-			bool ok = svd.compute( input, U, sigmas, Vt ); 
+			matrix< T::ROWS, T::COLS, float_t > input_data;
+			input_data.convert_from_type( input );
+			
+			bool ok = svd.compute( input_data, U, sigmas, Vt ); 
 						
 			
 			if ( !ok ) {
 				VMMLIB_ERROR( "matrix compute_pseudoinverse - problem with lapack svd.", VMMLIB_HERE );
 			}
-		
+			/*std::cout << "U: " << std::endl << U << std::endl
+			<< " sigmas: " << std::endl << sigmas << std::endl
+			<< " Vt: " << std::endl << Vt << std::endl;*/
 
 			// get the number of significant singular, i.e., values which are above the tolerance value
 			typename vector< T::COLS, float_t >::const_iterator it = sigmas.begin() , it_end = sigmas.end();

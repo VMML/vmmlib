@@ -822,8 +822,8 @@ matrix_test::run()
 			9, 8, 7, 6, 
 			5, 4, 3, 2 };
 		data_2 = test_data;
-		double norm_check = 22.0907220343745223090082;
-		double norm = data_2.frobenius_norm();
+		float_t norm_check = 22.0907220343745223090082;
+		float_t norm = data_2.frobenius_norm();
 		ok = norm == norm_check;
 		if ( ok )
 		{	

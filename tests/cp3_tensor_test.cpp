@@ -16,26 +16,26 @@ namespace vmml
 		//decomposition (hopm test data after lathauwer 2000b)
 		//prepare control data
 		//rank-1 approximation
-		matrix<3, 1, double> u1_rank1;
-		matrix<2, 1, double> u2_rank1;
-		matrix<2, 1, double> u3_rank1;
-		matrix<3, 1, double> u1_rank1_check;
-		matrix<2, 1, double> u2_rank1_check;
-		matrix<2, 1, double> u3_rank1_check;
+		matrix<3, 1, float_t> u1_rank1;
+		matrix<2, 1, float_t> u2_rank1;
+		matrix<2, 1, float_t> u3_rank1;
+		matrix<3, 1, float_t> u1_rank1_check;
+		matrix<2, 1, float_t> u2_rank1_check;
+		matrix<2, 1, float_t> u3_rank1_check;
 		
 		u1_rank1_check.at(0,0) = -0.2515; u1_rank1_check.at(1,0) = 0.6035; u1_rank1_check.at(2,0) = 0.7567;
 		u2_rank1_check.at(0,0) = 0.1344; u2_rank1_check.at(1,0) = 0.9909;
 		u3_rank1_check.at(0,0) = 0.5765; u3_rank1_check.at(1,0) = -0.8171;
 		
-		vector< 1, double> lambda_rank1;
-		vector< 1, double> lambda_rank1_check;
+		vector< 1, float_t> lambda_rank1;
+		vector< 1, float_t> lambda_rank1_check;
 		lambda_rank1_check.at(0)  = 10.1693;
 		
-		tensor3< 3, 2, 2, double> t3_data;
-		double data[] = { 0, 1, 2, 3, 4, 5, -1, 4, -2, -5, 3, -6};
+		tensor3< 3, 2, 2, float_t> t3_data;
+		float_t data[] = { 0, 1, 2, 3, 4, 5, -1, 4, -2, -5, 3, -6};
 		t3_data.set(data, data + 12);
 		
-		cp3_tensor< 3, 2, 2, 1, double, double > cp3_rank1( u1_rank1, u2_rank1, u3_rank1, lambda_rank1 );
+		cp3_tensor< 3, 2, 2, 1, float_t, float_t > cp3_rank1( u1_rank1, u2_rank1, u3_rank1, lambda_rank1 );
 
 		cp3_rank1.cp_als( t3_data );
 		cp3_rank1.get_u1( u1_rank1 );
@@ -43,7 +43,7 @@ namespace vmml
 		cp3_rank1.get_u3( u3_rank1 );
 		cp3_rank1.get_lambdas( lambda_rank1 );
 		
-		double precision = 0.001;
+		float_t precision = 0.001;
 		ok = ( u1_rank1.equals( u1_rank1_check, precision ) && u2_rank1.equals( u2_rank1_check, precision) && u3_rank1.equals( u3_rank1_check, precision) && lambda_rank1 == lambda_rank1_check );
 		
 		if( !ok)

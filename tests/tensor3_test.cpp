@@ -482,10 +482,10 @@ tensor3_test::run()
 	
 	
 	//compute frobenius norm of a tensor3
-	double f_norm_check = 65.75712889109438;
+	float_t f_norm_check = 65.75712889109438;
 	
 	t3.fill_increasing_values();
-	double f_norm = t3.frobenius_norm();
+	float_t f_norm = t3.frobenius_norm();
 	
 	if ( f_norm == f_norm_check )
 	{	
@@ -520,7 +520,7 @@ tensor3_test::run()
 	}
 	
 	//tensor3 type conversion
-	tensor3< 2, 3, 4, double >  t3_type_a;
+	tensor3< 2, 3, 4, float_t >  t3_type_a;
     tensor3< 2, 3, 4, uint16_t >  t3_type_b;
     tensor3< 2, 3, 4, uint16_t >  t3_type_b_check;
 	

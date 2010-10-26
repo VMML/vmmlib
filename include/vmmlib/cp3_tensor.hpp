@@ -86,7 +86,7 @@ namespace vmml
 		
 		void optimize_mode1( const t3_type& data_, u1_type& U1_optimized_, const u2_type& U2_, const u3_type& U3_ ) const;
 		void optimize_mode2( const t3_type& data_, const u1_type& U1_, u2_type& U2_optimized_, const u3_type& U3_ ) const;		
-		double optimize_mode3( const t3_type& data_, const u1_type& U1_, const u2_type& U2_, u3_type& U3_optimized_ ) const;
+		float_t optimize_mode3( const t3_type& data_, const u1_type& U1_, const u2_type& U2_, u3_type& U3_optimized_ ) const;
 		
 	private:
 		vector< R, T_coeff > _lambdas ;
@@ -150,16 +150,16 @@ VMML_TEMPLATE_CLASSNAME::hopm( const t3_type& data_ )
 	//compute best rank-(R) approximation (Lathauwer et al., 2000b)
 	t3_type approximated_data;
 	reconstruct( approximated_data );
-	double max_f_norm = data_.frobenius_norm();
+	float_t max_f_norm = data_.frobenius_norm();
 	//std::cout << "frobenius norm original: " << max_f_norm << std::endl;
 	
-	double f_norm = approximated_data.frobenius_norm();
-	double last_f_norm = f_norm;
-	double improvement = max_f_norm - f_norm;
-	double min_improvement = 0.0001;
+	float_t f_norm = approximated_data.frobenius_norm();
+	float_t last_f_norm = f_norm;
+	float_t improvement = max_f_norm - f_norm;
+	float_t min_improvement = 0.0001;
 	size_t i = 0;
 	size_t max_iterations = 20;
-	double lambda;
+	float_t lambda;
 	
 	//intialize u1-u3
 	//hosvd_mode1( data_, _u1 ); inital guess not needed for u1 since it will be computed in the first optimization step
@@ -278,7 +278,7 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode1( const t3_type& data_, u1_type& U1_optim
 	//std::cout << "u1_ optimized " << std::endl << U1_optimized_ << std::endl;
 	
 	//normalize u with lambda (= norm)
-	double lambda = U1_optimized_.frobenius_norm();
+	float_t lambda = U1_optimized_.frobenius_norm();
 	U1_optimized_ *= (1 / lambda);
 }
 
@@ -298,13 +298,13 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode2( const t3_type& data_, const u1_type& U1
 	
 	
 	//normalize u with lambda (= norm)
-	double lambda = U2_optimized_.frobenius_norm();
+	float_t lambda = U2_optimized_.frobenius_norm();
 	U2_optimized_ *= (1 / lambda);
 }	
 
 
 VMML_TEMPLATE_STRING
-double  
+float_t  
 VMML_TEMPLATE_CLASSNAME::optimize_mode3( const t3_type& data_, const u1_type& U1_, const u2_type& U2_,  u3_type& U3_optimized_ ) const
 {
 	t3_coeff_type data;
@@ -317,7 +317,7 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode3( const t3_type& data_, const u1_type& U1
 	U3_optimized_.multiply( unfolding, u3_krp );
 	
 	//normalize u with lambda (= norm)
-	double lambda = U3_optimized_.frobenius_norm();
+	float_t lambda = U3_optimized_.frobenius_norm();
 	U3_optimized_ *= (1 / lambda);
 	
 	return lambda;

@@ -188,7 +188,7 @@ public:
     void zero();
     void identity();
 	
-	double frobenius_norm() const;
+	float_t frobenius_norm() const;
 	
 	template< typename TT >
 	void convert_from_type( const matrix< M, N, TT >& other );
@@ -2227,10 +2227,10 @@ matrix< M, N, T >::ZERO(
 
 	
 template< size_t M, size_t N, typename T >
-double 
+float_t 
 matrix< M, N, T >::frobenius_norm( ) const
 {
-	double norm = 0.0;
+	float_t norm = 0.0;
 	
 	const_iterator it = begin(), it_end = end(); 
 	for( ; it != it_end; ++it )

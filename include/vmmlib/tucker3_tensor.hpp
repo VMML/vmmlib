@@ -389,13 +389,13 @@ VMML_TEMPLATE_CLASSNAME::hoii( const t3_type& data_ )
 	//compute best rank-(R1, R2, R3) approximation (Lathauwer et al., 2000b)
 	t3_type approximated_data;
 	reconstruct( approximated_data );
-	double f_norm = approximated_data.frobenius_norm();
-	double max_f_norm = data_.frobenius_norm();
+	float_t f_norm = approximated_data.frobenius_norm();
+	float_t max_f_norm = data_.frobenius_norm();
 	//std::cout << "frobenius norm original: " << max_f_norm << std::endl;
 	
-	double last_f_norm = f_norm;
-	double improvement = max_f_norm - f_norm;
-	double min_improvement = 0.1;
+	float_t last_f_norm = f_norm;
+	float_t improvement = max_f_norm - f_norm;
+	float_t min_improvement = 0.1;
 	size_t i = 0;
 	size_t max_iterations = 3;
 	
@@ -486,7 +486,7 @@ VMML_TEMPLATE_CLASSNAME::derive_core( const t3_type& data_, t3_core_type& core_,
 	//		{
 	//			for( size_t R2 = 0; R2 < R2; ++R2 ) 
 	//			{
-	//				double sum_i1_i2_i3 = 0.0;
+	//				float_t sum_i1_i2_i3 = 0.0;
 	//				for( size_t i3 = 0; i3 < I3; ++i3 ) 
 	//				{
 	//					for( size_t i1 = 0; i1 < I1; ++i1 ) 

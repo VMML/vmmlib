@@ -11,32 +11,32 @@ namespace vmml
 	tucker3_tensor_test::run()
 	{
 		bool ok = false;
-		float_t precision = 0.001;
+		double precision = 0.001;
 		
 		//decomposition (hosvd test data after lathauwer 2000a)
 		//prepare control data
-		matrix<3, 3, float_t> u1_hosvd;
-		matrix<3, 3, float_t> u2_hosvd;
-		matrix<3, 3, float_t> u3_hosvd;
-		matrix<3, 3, float_t> u1_hosvd_check;
-		matrix<3, 3, float_t> u2_hosvd_check;
-		matrix<3, 3, float_t> u3_hosvd_check;
-		float_t data_u1_hosvd[] = { -0.1122204303093513, 0.7738508263292329, -0.6233469929427331, 
+		matrix<3, 3, double> u1_hosvd;
+		matrix<3, 3, double> u2_hosvd;
+		matrix<3, 3, double> u3_hosvd;
+		matrix<3, 3, double> u1_hosvd_check;
+		matrix<3, 3, double> u2_hosvd_check;
+		matrix<3, 3, double> u3_hosvd_check;
+		double data_u1_hosvd[] = { -0.1122204303093513, 0.7738508263292329, -0.6233469929427331, 
 			-0.5770542482332139, -0.5614452683822977, -0.5931168562830853, 
 			-0.8089591890924934, 0.293145201565186, 0.5095595364450776};
 		u1_hosvd_check.set( data_u1_hosvd, data_u1_hosvd + 9);
-		float_t data_u2_hosvd[] = { -0.4624061014026708, 0.01022823125054092, 0.8866092604248326,
+		double data_u2_hosvd[] = { -0.4624061014026708, 0.01022823125054092, 0.8866092604248326,
 			-0.8866395226347692, -0.01338403108646822, -0.4622674816746957,
 			0.007138227200902682, -0.9998581154330659, 0.01525761170912346 };
 		u2_hosvd_check.set( data_u2_hosvd, data_u2_hosvd + 9);
-		float_t data_u3_hosvd[] = { -0.6208224807897551, -0.498575577624314, -0.6049808598151153,
+		double data_u3_hosvd[] = { -0.6208224807897551, -0.498575577624314, -0.6049808598151153,
 			0.05741499780009954, -0.7985513947597073, 0.5991820991609654,
 			-0.7818458705996144, 0.3372507425105363, 0.5243843736253236 };
 		u3_hosvd_check.set( data_u3_hosvd, data_u3_hosvd + 9);
 		
-		tensor3<3, 3, 3, float_t> core_hosvd;
-		tensor3<3, 3, 3, float_t> core_hosvd_check;
-		float_t data_core_hosvd[] = {
+		tensor3<3, 3, 3, double> core_hosvd;
+		tensor3<3, 3, 3, double> core_hosvd_check;
+		double data_core_hosvd[] = {
 			-8.708849808134815, 0.1067824570507467, -0.003295465245971164, 
 			0.02524045858192436, 3.196320223337905, 0.2947221348886033, 
 			0.0006229026164024203, -3.010504614719815e-06, -7.999440450397585e-06, 
@@ -50,15 +50,15 @@ namespace vmml
 		core_hosvd_check.set( data_core_hosvd, data_core_hosvd + 27);
 		
 		//do decomposition
-		tensor3< 3, 3, 3, float_t> t3_data_hosvd;
-		float_t data_hosvd[] = { 
+		tensor3< 3, 3, 3, double> t3_data_hosvd;
+		double data_hosvd[] = { 
 			0.9073, 1.7842, 2.1236, 0.8924, 1.7753, -0.6631, 2.1488, 4.2495, 1.8260, 
 			0.7158, 1.6970, -0.0704, -0.4898, -1.5077, 1.9103, 0.3054, 0.3207, 2.1335, 
 			-0.3698, 0.0151, 1.4429, 2.4288, 4.0337, -1.7495, 2.3753, 4.7146, -0.2716
 		};
 		t3_data_hosvd.set(data_hosvd, data_hosvd + 27);
 		
-		tucker3_tensor< 3, 3, 3, 3, 3, 3, float_t, float_t > tuck3_hosvd( core_hosvd, u1_hosvd, u2_hosvd, u3_hosvd );
+		tucker3_tensor< 3, 3, 3, 3, 3, 3, double, double > tuck3_hosvd( core_hosvd, u1_hosvd, u2_hosvd, u3_hosvd );
 		
 		//(1a) derive core tensor (with pseudo inverse)
 		tuck3_hosvd.derive_core( t3_data_hosvd, core_hosvd, u1_hosvd_check, u2_hosvd_check, u3_hosvd_check );
@@ -122,25 +122,25 @@ namespace vmml
 		
 		
 		//(3) higher-order orthogonal iteration (hoii test data after lathauwer 2000b)
-		matrix<3, 3, float_t> u1_hoii;
-		matrix<2, 2, float_t> u2_hoii;
-		matrix<2, 2, float_t> u3_hoii;
-		matrix<3, 3, float_t> u1_hoii_check;
-		matrix<2, 2, float_t> u2_hoii_check;
-		matrix<2, 2, float_t> u3_hoii_check;
-		float_t data_u1_hoii_step1[] = {-0.246452, 0.499323, 0.830625, 0.521727, -0.653918, 0.547898, 0.816738, 0.56839, -0.0993512};
+		matrix<3, 3, double> u1_hoii;
+		matrix<2, 2, double> u2_hoii;
+		matrix<2, 2, double> u3_hoii;
+		matrix<3, 3, double> u1_hoii_check;
+		matrix<2, 2, double> u2_hoii_check;
+		matrix<2, 2, double> u3_hoii_check;
+		double data_u1_hoii_step1[] = {-0.246452, 0.499323, 0.830625, 0.521727, -0.653918, 0.547898, 0.816738, 0.56839, -0.0993512};
 		u1_hoii_check.set( data_u1_hoii_step1, data_u1_hoii_step1 + 9);
-		float_t data_u2_hoii_step1[] = {0.171472, 0.985189, 0.985189, -0.171472};
+		double data_u2_hoii_step1[] = {0.171472, 0.985189, 0.985189, -0.171472};
 		u2_hoii_check.set( data_u2_hoii_step1, data_u2_hoii_step1 + 4);
-		float_t data_u3_hoii_step1[] = {-0.510464, 0.859899, 0.859899, 0.510464};
+		double data_u3_hoii_step1[] = {-0.510464, 0.859899, 0.859899, 0.510464};
 		u3_hoii_check.set( data_u3_hoii_step1, data_u3_hoii_step1 + 4);
 
-		tensor3<3, 2, 2, float_t> core_hoii;
-		tensor3< 3, 2, 2, float_t> t3_data_hoii;
-		float_t data_hoii[] = { 0, 1, 2, 3, 4, 5, -1, 4, -2, -5, 3, -6};
+		tensor3<3, 2, 2, double> core_hoii;
+		tensor3< 3, 2, 2, double> t3_data_hoii;
+		double data_hoii[] = { 0, 1, 2, 3, 4, 5, -1, 4, -2, -5, 3, -6};
 		t3_data_hoii.set(data_hoii, data_hoii + 12);
 		
-		tucker3_tensor< 3, 2, 2, 3, 2, 2, float_t, float_t > tuck3_hoii( core_hoii, u1_hoii, u2_hoii, u3_hoii );
+		tucker3_tensor< 3, 2, 2, 3, 2, 2, double, double > tuck3_hoii( core_hoii, u1_hoii, u2_hoii, u3_hoii );
 		//Step 1
 		tuck3_hoii.hosvd( t3_data_hoii );
 		tuck3_hoii.get_u1( u1_hoii );
@@ -169,25 +169,25 @@ namespace vmml
 		
 		//Step 2
 		
-		matrix<3, 2, float_t> u1_hoii_2;
-		matrix<2, 2, float_t> u2_hoii_2;
-		matrix<2, 1, float_t> u3_hoii_2;
-		matrix<3, 2, float_t> u1_hoii_check_2;
-		matrix<2, 2, float_t> u2_hoii_check_2;
-		matrix<2, 1, float_t> u3_hoii_check_2;
-		float_t data_u1_hoii_step2[] = {-0.2789474111071825, -0.4141266306147141, 0.5983607967045261, -0.7806355076145298, 0.7511009910815755, 0.4680890279285662}; //original from paper (u1): {-0.2789, -0.4141, 0.5984, -0.7806, 0.7511, 0.4681};
+		matrix<3, 2, double> u1_hoii_2;
+		matrix<2, 2, double> u2_hoii_2;
+		matrix<2, 1, double> u3_hoii_2;
+		matrix<3, 2, double> u1_hoii_check_2;
+		matrix<2, 2, double> u2_hoii_check_2;
+		matrix<2, 1, double> u3_hoii_check_2;
+		double data_u1_hoii_step2[] = {-0.2789474111071825, -0.4141266306147141, 0.5983607967045261, -0.7806355076145298, 0.7511009910815755, 0.4680890279285662}; //original from paper (u1): {-0.2789, -0.4141, 0.5984, -0.7806, 0.7511, 0.4681};
 		u1_hoii_check_2.set( data_u1_hoii_step2, data_u1_hoii_step2 + 6);
-		float_t data_u2_hoii_step2[] = {0.09816424894941822, 0.9951702267593203, 0.9951702267593203, -0.09816424894941811};//original in paper (u2): 0.0982, -0.9952, 0.9952, 0.0982};
+		double data_u2_hoii_step2[] = {0.09816424894941822, 0.9951702267593203, 0.9951702267593203, -0.09816424894941811};//original in paper (u2): 0.0982, -0.9952, 0.9952, 0.0982};
 		u2_hoii_check_2.set( data_u2_hoii_step2, data_u2_hoii_step2 + 4);
-		float_t data_u3_hoii_step2[] = {-0.5104644303570166, 0.8598988692516618};//original in paper (u3): {0.5105, -0.8599};
+		double data_u3_hoii_step2[] = {-0.5104644303570166, 0.8598988692516618};//original in paper (u3): {0.5105, -0.8599};
 		u3_hoii_check_2.set( data_u3_hoii_step2, data_u3_hoii_step2 + 2);
 		
-		tensor3<2, 2, 1, float_t> core_hoii_2;
-		tensor3<2, 2, 1, float_t> core_hoii_check_2;
-		float_t data_core_hoii_2[] = { -10.14733447424582, 0.0, 0.0, 2.760705584847321 };
+		tensor3<2, 2, 1, double> core_hoii_2;
+		tensor3<2, 2, 1, double> core_hoii_check_2;
+		double data_core_hoii_2[] = { -10.14733447424582, 0.0, 0.0, 2.760705584847321 };
 		core_hoii_check_2.set( data_core_hoii_2, data_core_hoii_2 + 4);
 		
-		tucker3_tensor< 2, 2, 1, 3, 2, 2, float_t, float_t > tuck3_hoii_2( core_hoii_2, u1_hoii_2, u2_hoii_2, u3_hoii_2 );
+		tucker3_tensor< 2, 2, 1, 3, 2, 2, double, double > tuck3_hoii_2( core_hoii_2, u1_hoii_2, u2_hoii_2, u3_hoii_2 );
 		
 		tuck3_hoii_2.hoii( t3_data_hoii );
 		tuck3_hoii_2.get_u1( u1_hoii_2 );
@@ -217,10 +217,10 @@ namespace vmml
 		}		
 		
 		//export
-		std::vector< float_t > export_data;
+		std::vector< double > export_data;
 		tuck3_hoii_2.export_to( export_data );
 		
-		float_t export_data_check[] = {
+		double export_data_check[] = {
 			-0.2789474111071825,  0.5983607967045261, 0.7511009910815755, -0.4141266306147141, -0.7806355076145298, 0.4680890279285662,
 			0.09816424894941822, 0.9951702267593203, 0.9951702267593203, -0.09816424894941811,
 			-0.5104644303570166, 0.8598988692516618,
@@ -235,13 +235,13 @@ namespace vmml
 		log( "export tucker3", ok  );
 		
 		//import tucker3 from vector
-		std::vector< float_t > in_data = export_data;
+		std::vector< double > in_data = export_data;
 				
-		matrix<3, 2, float_t> u1_imported;
-		matrix<2, 2, float_t> u2_imported;
-		matrix<2, 1, float_t> u3_imported;
-		tensor3<2, 2, 1, float_t> core_imported;
-		tucker3_tensor< 2, 2, 1, 3, 2, 2, float_t, float_t > tuck3_import( core_imported, u1_imported, u2_imported, u3_imported );
+		matrix<3, 2, double> u1_imported;
+		matrix<2, 2, double> u2_imported;
+		matrix<2, 1, double> u3_imported;
+		tensor3<2, 2, 1, double> core_imported;
+		tucker3_tensor< 2, 2, 1, 3, 2, 2, double, double > tuck3_import( core_imported, u1_imported, u2_imported, u3_imported );
 		
 		tuck3_import.import_from( in_data );
 		
@@ -319,7 +319,7 @@ namespace vmml
 		u1_red.fill(2);
 		u2_red.fill(3);
 		u3_red.fill(1);
-		float_t data[] = { 0, 1, 6, 7, 12, 13 };
+		double data[] = { 0, 1, 6, 7, 12, 13 };
 		core_red.set(data, data+6);
 		
 		tuck3_red.get_u1( u1_red2 ); tuck3_red.get_u2( u2_red2 ); tuck3_red.get_u3( u3_red2 ); tuck3_red.get_core( core_red2 );

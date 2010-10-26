@@ -445,7 +445,8 @@ VMML_TEMPLATE_CLASSNAME::derive_core_orthogonal_bases( const t3_type& data_, t3_
 	matrix< R2, I2, T_coeff > u2_inv = transpose( U2_ );
 	matrix< R3, I3, T_coeff > u3_inv = transpose( U3_ );
 	
-	t3_coeff_type data = data_;
+	t3_coeff_type data;
+	data.convert_from_type( data_ );
 	core_.full_tensor3_matrix_multiplication( data, u1_inv, u2_inv, u3_inv );
 }
 	
@@ -474,7 +475,9 @@ VMML_TEMPLATE_CLASSNAME::derive_core( const t3_type& data_, t3_core_type& core_,
 	matrix< R2, I2, T_coeff > u2_pinv = transpose( u2_pinv_t );
 	matrix< R3, I3, T_coeff > u3_pinv = transpose( u3_pinv_t );
 		
-	core_.full_tensor3_matrix_multiplication( data_, u1_pinv, u2_pinv, u3_pinv );
+	t3_coeff_type data;
+	data.convert_from_type( data_ );
+	core_.full_tensor3_matrix_multiplication( data, u1_pinv, u2_pinv, u3_pinv );
 
 
 	//previous version of compute core	

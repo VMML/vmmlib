@@ -1120,8 +1120,7 @@ VMML_TEMPLATE_CLASSNAME::convert_from_type( const tensor3< I1, I2, I3, TT >& oth
 VMML_TEMPLATE_STRING
 void
 VMML_TEMPLATE_CLASSNAME::export_to( std::vector< T >& data_ ) const
-{
-
+{	
 	const_iterator  it = begin(),
 	it_end = end();
 	for( ; it != it_end; ++it )
@@ -1136,12 +1135,17 @@ void
 VMML_TEMPLATE_CLASSNAME::import_from( const std::vector< T >& data_ )
 {
 	size_t i = 0; //iterator over data_
-
+	size_t input_size = data_.size();
+	
 	iterator  it = begin(),
 	it_end = end();
 	for( ; it != it_end; ++it, ++i )
-	{
-		*it = data_.at(i);
+	{		
+		if ( i >= input_size) 
+			*it = static_cast<T> (0);
+		else 
+			*it = data_.at( i );
+		
 	}
 	
 }	

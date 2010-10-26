@@ -66,6 +66,7 @@ public:
 	typedef matrix< I2, I1*I3, T_coeff > mode2_matricization_type;
 	typedef matrix< I3, I1*I2, T_coeff > mode3_matricization_type;
 
+	static const size_t SIZE = R1*R2*R3 + I1*R1 + I2*R2 + I3*R3;
 		
 	void set_core( const t3_core_type& core )  { _core = core; } ;
 	void set_u1( const u1_type& U1 ) { _u1 = U1; } ;
@@ -106,14 +107,14 @@ public:
 	void hosvd_mode3( const t3_coeff_type& data_, u3_type& U3_ ) const;
 
 		
-	/*	higher-order orthogonal iteration (HOII) is a truncated HOSVD decompositions, i.e., the HOSVD components are of lower-ranks. An optimal rank-reduction is 
+	/*	higher-order orthogonal iteration (HOOI) is a truncated HOSVD decompositions, i.e., the HOSVD components are of lower-ranks. An optimal rank-reduction is 
 		performed with an alternating least-squares (ALS) algorithm, which minimizes the error between the approximated and orignal tensor based on the Frobenius norm
 		see: De Lathauwer et al, 2000b; On the best rank-1 and rank-(RRR) approximation of higher-order tensors.
-		the HOII can be computed based on (a) n-mode PCA, i.e., an eigenvalue decomposition on the covariance matrix of every mode's matriciziation, and 
+		the HOOI can be computed based on (a) n-mode PCA, i.e., an eigenvalue decomposition on the covariance matrix of every mode's matriciziation, and 
 		(b) by performing a 2D SVD on the matricization of every mode. Matrix matricization means that a tensor I1xI2xI3 is unfolded/sliced into one matrix
 		with the dimensions I1xI2I3, which corresponds to a matrizitation alonge mode I1.
 	 */
-	void hoii( const t3_type& data_ );
+	void hooi( const t3_type& data_ );
 		
 	void optimize_mode1( const t3_coeff_type& data_, tensor3< I1, R2, R3, T_coeff >& projection_, const u2_type& U2_, const u3_type& U3_ ) const;
 	void optimize_mode2( const t3_coeff_type& data_, tensor3< R1, I2, R3, T_coeff >& projection_, const u1_type& U1_, const u3_type& U3_ ) const;		
@@ -186,7 +187,7 @@ VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::tucker_als( const t3_type& data_ )
 {
-	hoii( data_ );
+	hooi( data_ );
 	
 	//derive core
 	derive_core_orthogonal_bases( data_, _core, _u1, _u2, _u3 );
@@ -375,7 +376,7 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode3( const t3_coeff_type& data_, tensor3< R1
 	
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::hoii( const t3_type& data_ )
+VMML_TEMPLATE_CLASSNAME::hooi( const t3_type& data_ )
 {
 	//intialize basis matrices
 	hosvd( data_ );
@@ -732,6 +733,10 @@ void
 VMML_TEMPLATE_CLASSNAME::import_from( const std::vector< T_coeff >& data_ )
 {
 	size_t i = 0; //iterator over data_
+	size_t data_size = (size_t) data_.size();
+	
+    if ( data_size != SIZE  )
+        VMMLIB_ERROR( "import_from: the input data must have the size R1xR2xR3 + R1xI1 + R2xI2 + R3xI3 ", VMMLIB_HERE );
 	
 	u1_iterator  it = _u1.begin(),
 	it_end = _u1.end();

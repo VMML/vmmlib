@@ -121,47 +121,47 @@ namespace vmml
 		}
 		
 		
-		//(3) higher-order orthogonal iteration (hoii test data after lathauwer 2000b)
-		matrix<3, 3, double> u1_hoii;
-		matrix<2, 2, double> u2_hoii;
-		matrix<2, 2, double> u3_hoii;
-		matrix<3, 3, double> u1_hoii_check;
-		matrix<2, 2, double> u2_hoii_check;
-		matrix<2, 2, double> u3_hoii_check;
-		double data_u1_hoii_step1[] = {-0.246452, 0.499323, 0.830625, 0.521727, -0.653918, 0.547898, 0.816738, 0.56839, -0.0993512};
-		u1_hoii_check.set( data_u1_hoii_step1, data_u1_hoii_step1 + 9);
-		double data_u2_hoii_step1[] = {0.171472, 0.985189, 0.985189, -0.171472};
-		u2_hoii_check.set( data_u2_hoii_step1, data_u2_hoii_step1 + 4);
-		double data_u3_hoii_step1[] = {-0.510464, 0.859899, 0.859899, 0.510464};
-		u3_hoii_check.set( data_u3_hoii_step1, data_u3_hoii_step1 + 4);
+		//(3) higher-order orthogonal iteration (hooi test data after lathauwer 2000b)
+		matrix<3, 3, double> u1_hooi;
+		matrix<2, 2, double> u2_hooi;
+		matrix<2, 2, double> u3_hooi;
+		matrix<3, 3, double> u1_hooi_check;
+		matrix<2, 2, double> u2_hooi_check;
+		matrix<2, 2, double> u3_hooi_check;
+		double data_u1_hooi_step1[] = {-0.246452, 0.499323, 0.830625, 0.521727, -0.653918, 0.547898, 0.816738, 0.56839, -0.0993512};
+		u1_hooi_check.set( data_u1_hooi_step1, data_u1_hooi_step1 + 9);
+		double data_u2_hooi_step1[] = {0.171472, 0.985189, 0.985189, -0.171472};
+		u2_hooi_check.set( data_u2_hooi_step1, data_u2_hooi_step1 + 4);
+		double data_u3_hooi_step1[] = {-0.510464, 0.859899, 0.859899, 0.510464};
+		u3_hooi_check.set( data_u3_hooi_step1, data_u3_hooi_step1 + 4);
 
-		tensor3<3, 2, 2, double> core_hoii;
-		tensor3< 3, 2, 2, double> t3_data_hoii;
-		double data_hoii[] = { 0, 1, 2, 3, 4, 5, -1, 4, -2, -5, 3, -6};
-		t3_data_hoii.set(data_hoii, data_hoii + 12);
+		tensor3<3, 2, 2, double> core_hooi;
+		tensor3< 3, 2, 2, double> t3_data_hooi;
+		double data_hooi[] = { 0, 1, 2, 3, 4, 5, -1, 4, -2, -5, 3, -6};
+		t3_data_hooi.set(data_hooi, data_hooi + 12);
 		
-		tucker3_tensor< 3, 2, 2, 3, 2, 2, double, double > tuck3_hoii( core_hoii, u1_hoii, u2_hoii, u3_hoii );
+		tucker3_tensor< 3, 2, 2, 3, 2, 2, double, double > tuck3_hooi( core_hooi, u1_hooi, u2_hooi, u3_hooi );
 		//Step 1
-		tuck3_hoii.hosvd( t3_data_hoii );
-		tuck3_hoii.get_u1( u1_hoii );
-		tuck3_hoii.get_u2( u2_hoii );
-		tuck3_hoii.get_u3( u3_hoii );
-		tuck3_hoii.get_core( core_hoii);
+		tuck3_hooi.hosvd( t3_data_hooi );
+		tuck3_hooi.get_u1( u1_hooi );
+		tuck3_hooi.get_u2( u2_hooi );
+		tuck3_hooi.get_u3( u3_hooi );
+		tuck3_hooi.get_core( core_hooi);
 		
-		if ( u1_hoii.equals( u1_hoii_check, precision ) && u2_hoii.equals( u2_hoii_check, precision ) && u3_hoii.equals( u3_hoii_check, precision ))
+		if ( u1_hooi.equals( u1_hooi_check, precision ) && u2_hooi.equals( u2_hooi_check, precision ) && u3_hooi.equals( u3_hooi_check, precision ))
 		{	
-			log( "HOII (step 1) initalize basis matrices by HOSVD U1, U2, U3", true  );
+			log( "HOOI (step 1) initalize basis matrices by HOSVD U1, U2, U3", true  );
 		} else
 		{
 			std::stringstream error;
 			error 
-			<< "HOII (step 1): " << std::endl
-			<< "U1 should be: " << std::endl << u1_hoii_check << std::endl
-			<< "U1 is: " << std::endl << u1_hoii << std::endl
-			<< "U2 should be: " << std::endl << u2_hoii_check << std::endl
-			<< "U2 is: " << std::endl << u2_hoii << std::endl
-			<< "U3 should be: " << std::endl << u3_hoii_check << std::endl
-			<< "U3 is: " << std::endl << u3_hoii << std::endl;
+			<< "hooi (step 1): " << std::endl
+			<< "U1 should be: " << std::endl << u1_hooi_check << std::endl
+			<< "U1 is: " << std::endl << u1_hooi << std::endl
+			<< "U2 should be: " << std::endl << u2_hooi_check << std::endl
+			<< "U2 is: " << std::endl << u2_hooi << std::endl
+			<< "U3 should be: " << std::endl << u3_hooi_check << std::endl
+			<< "U3 is: " << std::endl << u3_hooi << std::endl;
 			
 			
 			log_error( error.str() );
@@ -169,48 +169,48 @@ namespace vmml
 		
 		//Step 2
 		
-		matrix<3, 2, double> u1_hoii_2;
-		matrix<2, 2, double> u2_hoii_2;
-		matrix<2, 1, double> u3_hoii_2;
-		matrix<3, 2, double> u1_hoii_check_2;
-		matrix<2, 2, double> u2_hoii_check_2;
-		matrix<2, 1, double> u3_hoii_check_2;
-		double data_u1_hoii_step2[] = {-0.2789474111071825, -0.4141266306147141, 0.5983607967045261, -0.7806355076145298, 0.7511009910815755, 0.4680890279285662}; //original from paper (u1): {-0.2789, -0.4141, 0.5984, -0.7806, 0.7511, 0.4681};
-		u1_hoii_check_2.set( data_u1_hoii_step2, data_u1_hoii_step2 + 6);
-		double data_u2_hoii_step2[] = {0.09816424894941822, 0.9951702267593203, 0.9951702267593203, -0.09816424894941811};//original in paper (u2): 0.0982, -0.9952, 0.9952, 0.0982};
-		u2_hoii_check_2.set( data_u2_hoii_step2, data_u2_hoii_step2 + 4);
-		double data_u3_hoii_step2[] = {-0.5104644303570166, 0.8598988692516618};//original in paper (u3): {0.5105, -0.8599};
-		u3_hoii_check_2.set( data_u3_hoii_step2, data_u3_hoii_step2 + 2);
+		matrix<3, 2, double> u1_hooi_2;
+		matrix<2, 2, double> u2_hooi_2;
+		matrix<2, 1, double> u3_hooi_2;
+		matrix<3, 2, double> u1_hooi_check_2;
+		matrix<2, 2, double> u2_hooi_check_2;
+		matrix<2, 1, double> u3_hooi_check_2;
+		double data_u1_hooi_step2[] = {-0.2789474111071825, -0.4141266306147141, 0.5983607967045261, -0.7806355076145298, 0.7511009910815755, 0.4680890279285662}; //original from paper (u1): {-0.2789, -0.4141, 0.5984, -0.7806, 0.7511, 0.4681};
+		u1_hooi_check_2.set( data_u1_hooi_step2, data_u1_hooi_step2 + 6);
+		double data_u2_hooi_step2[] = {0.09816424894941822, 0.9951702267593203, 0.9951702267593203, -0.09816424894941811};//original in paper (u2): 0.0982, -0.9952, 0.9952, 0.0982};
+		u2_hooi_check_2.set( data_u2_hooi_step2, data_u2_hooi_step2 + 4);
+		double data_u3_hooi_step2[] = {-0.5104644303570166, 0.8598988692516618};//original in paper (u3): {0.5105, -0.8599};
+		u3_hooi_check_2.set( data_u3_hooi_step2, data_u3_hooi_step2 + 2);
 		
-		tensor3<2, 2, 1, double> core_hoii_2;
-		tensor3<2, 2, 1, double> core_hoii_check_2;
-		double data_core_hoii_2[] = { -10.14733447424582, 0.0, 0.0, 2.760705584847321 };
-		core_hoii_check_2.set( data_core_hoii_2, data_core_hoii_2 + 4);
+		tensor3<2, 2, 1, double> core_hooi_2;
+		tensor3<2, 2, 1, double> core_hooi_check_2;
+		double data_core_hooi_2[] = { -10.14733447424582, 0.0, 0.0, 2.760705584847321 };
+		core_hooi_check_2.set( data_core_hooi_2, data_core_hooi_2 + 4);
 		
-		tucker3_tensor< 2, 2, 1, 3, 2, 2, double, double > tuck3_hoii_2( core_hoii_2, u1_hoii_2, u2_hoii_2, u3_hoii_2 );
+		tucker3_tensor< 2, 2, 1, 3, 2, 2, double, double > tuck3_hooi_2( core_hooi_2, u1_hooi_2, u2_hooi_2, u3_hooi_2 );
 		
-		tuck3_hoii_2.hoii( t3_data_hoii );
-		tuck3_hoii_2.get_u1( u1_hoii_2 );
-		tuck3_hoii_2.get_u2( u2_hoii_2 );
-		tuck3_hoii_2.get_u3( u3_hoii_2 );
-		tuck3_hoii_2.get_core( core_hoii_2 );
+		tuck3_hooi_2.hooi( t3_data_hooi );
+		tuck3_hooi_2.get_u1( u1_hooi_2 );
+		tuck3_hooi_2.get_u2( u2_hooi_2 );
+		tuck3_hooi_2.get_u3( u3_hooi_2 );
+		tuck3_hooi_2.get_core( core_hooi_2 );
 		
-		if ( u1_hoii_2.equals( u1_hoii_check_2, precision ) && u2_hoii_2.equals( u2_hoii_check_2, precision ) && u3_hoii_2.equals( u3_hoii_check_2, precision ) && core_hoii_2.equals( core_hoii_check_2, precision))
+		if ( u1_hooi_2.equals( u1_hooi_check_2, precision ) && u2_hooi_2.equals( u2_hooi_check_2, precision ) && u3_hooi_2.equals( u3_hooi_check_2, precision ) && core_hooi_2.equals( core_hooi_check_2, precision))
 		{	
-			log( "HOII (step 2) rank-(2,2,1) approximation" , true  );
+			log( "HOOI (step 2) rank-(2,2,1) approximation" , true  );
 		} else
 		{
 			std::stringstream error;
 			error 
-			<< "HOII (step 2) rank-(2,2,1) approximation: " << std::setprecision(16) << std::endl
-			<< "U1 should be: " << std::endl << u1_hoii_check_2 << std::endl
-			<< "U1 is: " << std::endl << u1_hoii_2 << std::endl
-			<< "U2 should be: " << std::endl << u2_hoii_check_2 << std::endl
-			<< "U2 is: " << std::endl << u2_hoii_2 << std::endl
-			<< "U3 should be: " << std::endl << u3_hoii_check_2 << std::endl
-			<< "U3 is: " << std::endl << u3_hoii_2 << std::endl
-			<< "core should be: " << std::endl << core_hoii_check_2 << std::endl
-			<< "core is: " << std::endl << core_hoii_2 << std::endl;
+			<< "HOOI (step 2) rank-(2,2,1) approximation: " << std::setprecision(16) << std::endl
+			<< "U1 should be: " << std::endl << u1_hooi_check_2 << std::endl
+			<< "U1 is: " << std::endl << u1_hooi_2 << std::endl
+			<< "U2 should be: " << std::endl << u2_hooi_check_2 << std::endl
+			<< "U2 is: " << std::endl << u2_hooi_2 << std::endl
+			<< "U3 should be: " << std::endl << u3_hooi_check_2 << std::endl
+			<< "U3 is: " << std::endl << u3_hooi_2 << std::endl
+			<< "core should be: " << std::endl << core_hooi_check_2 << std::endl
+			<< "core is: " << std::endl << core_hooi_2 << std::endl;
 			
 			
 			log_error( error.str() );
@@ -218,7 +218,7 @@ namespace vmml
 		
 		//export
 		std::vector< double > export_data;
-		tuck3_hoii_2.export_to( export_data );
+		tuck3_hooi_2.export_to( export_data );
 		
 		double export_data_check[] = {
 			-0.2789474111071825,  0.5983607967045261, 0.7511009910815755, -0.4141266306147141, -0.7806355076145298, 0.4680890279285662,
@@ -247,7 +247,7 @@ namespace vmml
 		
 		tuck3_import.get_core( core_imported ); tuck3_import.get_u1( u1_imported  ); tuck3_import.get_u2( u2_imported ); tuck3_import.get_u3( u3_imported );
 		
-		if ( u1_imported.equals( u1_hoii_check_2, precision ) && u2_imported.equals( u2_hoii_check_2, precision ) && u3_imported.equals( u3_hoii_check_2, precision ) && core_hoii_2.equals( core_hoii_check_2, precision))
+		if ( u1_imported.equals( u1_hooi_check_2, precision ) && u2_imported.equals( u2_hooi_check_2, precision ) && u3_imported.equals( u3_hooi_check_2, precision ) && core_hooi_2.equals( core_hooi_check_2, precision))
 		{	
 			log( "import tucker3" , true  );
 		} else
@@ -255,13 +255,13 @@ namespace vmml
 			std::stringstream error;
 			error 
 			<< "import tucker3: " << std::endl
-			<< "U1 should be: " << std::endl << u1_hoii_check_2 << std::endl
+			<< "U1 should be: " << std::endl << u1_hooi_check_2 << std::endl
 			<< "U1 is: " << std::endl << u1_imported << std::endl
-			<< "U2 should be: " << std::endl << u2_hoii_check_2 << std::endl
+			<< "U2 should be: " << std::endl << u2_hooi_check_2 << std::endl
 			<< "U2 is: " << std::endl << u2_imported << std::endl
-			<< "U3 should be: " << std::endl << u3_hoii_check_2 << std::endl
+			<< "U3 should be: " << std::endl << u3_hooi_check_2 << std::endl
 			<< "U3 is: " << std::endl << u3_imported << std::endl
-			<< "core should be: " << std::endl << core_hoii_check_2 << std::endl
+			<< "core should be: " << std::endl << core_hooi_check_2 << std::endl
 			<< "core is: " << std::endl << core_imported << std::endl;
 			
 			

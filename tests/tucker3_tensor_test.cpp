@@ -217,7 +217,7 @@ namespace vmml
 		}		
 		
 		//export
-		std::vector< double > export_data;
+		std::vector< float > export_data;
 		tuck3_hooi_2.export_to( export_data );
 		
 		double export_data_check[] = {
@@ -229,13 +229,14 @@ namespace vmml
 		ok = true;
 		for (int i = 0; i < 16 && ok; ++i )
 		{
-			ok = (abs(export_data_check[i]) - abs(export_data[i])) < 1.0e-8;
+                    //std::cout << abs(export_data_check[i]) - abs(export_data[i]) << std::endl;
+                    ok = (abs(export_data_check[i]) - abs(export_data[i])) < 1.0e-6;
 		}
 
 		log( "export tucker3", ok  );
 		
 		//import tucker3 from vector
-		std::vector< double > in_data = export_data;
+		std::vector< float > in_data = export_data;
 				
 		matrix<3, 2, double> u1_imported;
 		matrix<2, 2, double> u2_imported;

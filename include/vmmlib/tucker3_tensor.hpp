@@ -30,8 +30,8 @@ namespace vmml
 	class tucker3_tensor
 	{
 public:    
-        tucker3_tensor( tensor3< R1, R2, R3, T_coeff >& core, matrix< I1, R1, T_coeff >& U1, matrix< I2, R2, T_coeff >& U2, matrix< I3, R3, T_coeff >& U3 );
-        tucker3_tensor( tensor3< R1, R2, R3, T_coeff >& core );
+	tucker3_tensor( tensor3< R1, R2, R3, T_coeff >& core, matrix< I1, R1, T_coeff >& U1, matrix< I2, R2, T_coeff >& U2, matrix< I3, R3, T_coeff >& U3 );
+    tucker3_tensor( tensor3< R1, R2, R3, T_coeff >& core );
 	tucker3_tensor();
 
 	typedef tensor3< I1, I2, I3, T_value > t3_type;
@@ -74,13 +74,15 @@ public:
 	void set_u2( const u2_type& U2 ) { _u2 = U2; } ;
 	void set_u3( const u3_type& U3 ) { _u3 = U3; } ;
 	
-        void get_core( t3_core_type& data_ ) const { data_ = _core; } ;
+	void get_core( t3_core_type& data_ ) const { data_ = _core; } ;
 	void get_u1( u1_type& U1 ) const { U1 = _u1; } ;
 	void get_u2( u2_type& U2 ) const { U2 = _u2; } ;
 	void get_u3( u3_type& U3 ) const { U3 = _u3; } ;
 		
-	void export_to( std::vector< float >& data_ ) const;
-	void import_from( const std::vector< float >& data_ );
+	template< typename T >
+	void export_to( std::vector< T >& data_ ) const;
+	template< typename T >
+	void import_from( const std::vector< T >& data_ );
 	
 	void reconstruct( t3_type& data_ ) const;
 	void decompose( const t3_type& data_ ); 
@@ -90,7 +92,7 @@ public:
 	   where x_1 ... x_3 are n-mode products and U1_pinv ... U3_pinv are inverted basis matrices
 	   the inversion is done with a matrix pseudoinverse computation
 	 */
-        void derive_core( const t3_type& data_, t3_core_type& core_, const u1_type& U1_, const u2_type& U2_, const u3_type& U3_ );
+    void derive_core( const t3_type& data_, t3_core_type& core_, const u1_type& U1_, const u2_type& U2_, const u3_type& U3_ );
 	//faster: but only if basis matrices are orthogonal
 	void derive_core_orthogonal_bases( const t3_type& data_, t3_core_type& core_, const u1_type& U1_, const u2_type& U2_, const u3_type& U3_ );
 
@@ -720,43 +722,45 @@ VMML_TEMPLATE_CLASSNAME::region_of_interest( const tucker3_tensor< R1, R2, R3, K
 	
 	
 VMML_TEMPLATE_STRING
+template< typename T >
 void
-VMML_TEMPLATE_CLASSNAME::export_to( std::vector< float >& data_ ) const
+VMML_TEMPLATE_CLASSNAME::export_to( std::vector< T >& data_ ) const
 {
     data_.clear();
     u1_const_iterator  it = _u1.begin(),
     it_end = _u1.end();
     for( ; it != it_end; ++it )
     {
-        data_.push_back( static_cast< float >( *it) );
+        data_.push_back( static_cast< T >( *it) );
     }
     
     u2_const_iterator  u2_it = _u2.begin(),
     u2_it_end = _u2.end();
     for( ; u2_it != u2_it_end; ++u2_it )
     {
-        data_.push_back(static_cast< float >(*u2_it) );
+        data_.push_back(static_cast< T >(*u2_it) );
     }
 
     u3_const_iterator  u3_it = _u3.begin(),
     u3_it_end = _u3.end();
     for( ; u3_it != u3_it_end; ++u3_it )
     {
-        data_.push_back(static_cast< float >( *u3_it) );
+        data_.push_back(static_cast< T >( *u3_it) );
     }
     
     t3_core_const_iterator  it_core = _core.begin(),
     it_core_end = _core.end();
     for( ; it_core != it_core_end; ++it_core )
     {
-        data_.push_back(static_cast< float >( *it_core) );
+        data_.push_back(static_cast< T >( *it_core) );
     }
 }
 	
 	
 VMML_TEMPLATE_STRING
+template< typename T >
 void
-VMML_TEMPLATE_CLASSNAME::import_from( const std::vector< float >& data_ )
+VMML_TEMPLATE_CLASSNAME::import_from( const std::vector< T >& data_ )
 {
     size_t i = 0; //iterator over data_
     size_t data_size = (size_t) data_.size();
@@ -768,28 +772,28 @@ VMML_TEMPLATE_CLASSNAME::import_from( const std::vector< float >& data_ )
     it_end = _u1.end();
     for( ; it != it_end; ++it, ++i )
     {
-            *it = data_.at(i);
+            *it = static_cast< T >( data_.at(i));
     }
     
     u2_iterator  u2_it = _u2.begin(),
     u2_it_end = _u2.end();
     for( ; u2_it != u2_it_end; ++u2_it, ++i )
     {
-            *u2_it = data_.at(i);
+            *u2_it = static_cast< T >( data_.at(i));
     }
     
     u3_iterator  u3_it = _u3.begin(),
     u3_it_end = _u3.end();
     for( ; u3_it != u3_it_end; ++u3_it, ++i )
     {
-            *u3_it = data_.at(i);
+            *u3_it = static_cast< T >( data_.at(i));
     }
     
     t3_core_iterator  it_core = _core.begin(),
     it_core_end = _core.end();
     for( ; it_core != it_core_end; ++it_core, ++i )
     {
-            *it_core = data_.at(i);
+            *it_core = static_cast< T >( data_.at(i));
     }
 }
 

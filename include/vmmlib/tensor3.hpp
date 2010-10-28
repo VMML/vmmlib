@@ -159,7 +159,7 @@ public:
     
     
     //error computation between two tensor3
-    float_t frobenius_norm( ) const;
+    double frobenius_norm( ) const;
     
     template< typename TT >
     void convert_from_type( const tensor3< I1, I2, I3, TT >& other );
@@ -540,7 +540,7 @@ void
 VMML_TEMPLATE_CLASSNAME::
 fill_random( )
 {
-	float_t fillValue = 0.0f;
+	double fillValue = 0.0f;
 	srand(time(NULL));
 	for( size_t i3 = 0; i3 < I3; ++i3 )
 	{
@@ -562,7 +562,7 @@ void
 VMML_TEMPLATE_CLASSNAME::
 fill_random_signed( )
 {
-	float_t fillValue = 0.0f;
+	double fillValue = 0.0f;
 	srand(time(NULL));
 	for( size_t i3 = 0; i3 < I3; ++i3 )
 	{
@@ -587,7 +587,7 @@ void
 VMML_TEMPLATE_CLASSNAME::
 fill_increasing_values( )
 {
-	float_t fillValue = 0.0f;
+	double fillValue = 0.0f;
 	for( size_t i3 = 0; i3 < I3; ++i3 )
 	{
 		for( size_t i1 = 0; i1 < I1; ++i1 )
@@ -1085,10 +1085,10 @@ VMML_TEMPLATE_CLASSNAME::negate() const
 
 
 VMML_TEMPLATE_STRING
-float_t 
+double 
 VMML_TEMPLATE_CLASSNAME::frobenius_norm( ) const
 {
-    float_t f_norm = 0.0;
+    double f_norm = 0.0;
     const_iterator it = begin(), it_end = end(); 
     for( ; it != it_end; ++it )
          f_norm += *it * *it;

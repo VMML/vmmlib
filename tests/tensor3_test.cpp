@@ -410,17 +410,17 @@ tensor3_test::run()
 	matrix<5, 4, uint16_t> u3;
 	u3.fill(1);
 	tensor3<2, 3, 5, uint16_t> t3_jji;
-	t3_jji.multiply_horizontal(t3, u3 );
+	t3_jji.multiply_horizontal_bwd(t3, u3 );
 	
 	tensor3<6, 3, 5, uint16_t> t3_iji;
 	matrix<6, 2, uint16_t> u1;
 	u1.fill(2);
-	t3_iji.multiply_lateral(t3_jji, u1 );
+	t3_iji.multiply_lateral_bwd(t3_jji, u1 );
 
 	tensor3<6, 7, 5, uint16_t> t3_iii;
 	matrix<7, 3, uint16_t> u2;
 	u2.fill(3);
-	t3_iii.multiply_frontal(t3_iji, u2 );
+	t3_iii.multiply_frontal_bwd(t3_iji, u2 );
 	 
 	
 	t3.fill_increasing_values();
@@ -449,9 +449,9 @@ tensor3_test::run()
 	matrix< 2, 12, uint16_t> m_lateral;
 	matrix< 3, 8, uint16_t> m_frontal;
 	
-	t3.horizontal_matricization( m_horizontal);
-	t3.lateral_matricization( m_lateral);
-	t3.frontal_matricization(  m_frontal);
+	t3.horizontal_matricization_bwd( m_horizontal);
+	t3.lateral_matricization_bwd( m_lateral);
+	t3.frontal_matricization_bwd(  m_frontal);
 	
 	matrix< 4, 6, uint16_t> m_horizontal_test;
 	uint16_t data5[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 };

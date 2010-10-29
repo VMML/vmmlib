@@ -33,7 +33,7 @@ public:
     
 	typedef typename matrix< T::ROWS, T::COLS, typename T::value_type >::iterator matrix_iterator;
     
-    typedef typename T::slice_type_frontal  slice_type;
+    typedef typename T::slice_type_frontal_fwd  slice_type;
 	
 	tensor3_iterator() : _tensor3( 0 ), _matrix_index( 0 ) {};
 	
@@ -126,7 +126,7 @@ public:
     
 	typedef typename matrix< T::ROWS, T::COLS, typename T::value_type >::const_iterator matrix_iterator;
     
-    typedef typename T::slice_type_frontal  slice_type;
+    typedef typename T::slice_type_frontal_fwd  slice_type;
 	
 	tensor3_const_iterator() : _tensor3( 0 ), _matrix_index( 0 ) {};
 	

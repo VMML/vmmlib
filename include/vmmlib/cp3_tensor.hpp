@@ -25,6 +25,8 @@
 #include <vmmlib/lapack_svd.hpp>
 #include <vmmlib/matrix_pseudoinverse.hpp>
 
+//TODO allocate data with new
+
 namespace vmml
 {
 	
@@ -229,7 +231,7 @@ VMML_TEMPLATE_CLASSNAME::hosvd_mode2( const t3_type& data_, u2_type& U2_ ) const
 	t3_coeff_type data;
 	data.convert_from_type( data_ );
 	mode2_matricization_type u; // -> u2
-	data.frontal_matricization( u );
+	data.frontal_matricization_bwd( u );
 	
 	vector< I1*I3, T_coeff > lambdas;
 	lapack_svd< I2, I1*I3, T_coeff > svd;
@@ -248,7 +250,7 @@ VMML_TEMPLATE_CLASSNAME::hosvd_mode3( const t3_type& data_, u3_type& U3_ ) const
 	t3_coeff_type data;
 	data.convert_from_type( data_ );
 	mode3_matricization_type u; //-> u3
-	data.horizontal_matricization( u );
+	data.horizontal_matricization_bwd( u );
 	
 	vector< I1*I2, T_coeff > lambdas;
 	lapack_svd< I3, I1*I2, T_coeff > svd;
@@ -267,7 +269,7 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode1( const t3_type& data_, u1_type& U1_optim
 	t3_coeff_type data;
 	data.convert_from_type( data_ );
 	mode1_matricization_type unfolding; // -> u1
-	data.lateral_matricization( unfolding );
+	data.lateral_matricization_bwd( unfolding );
 	
 	matrix< I2*I3, R, T_coeff> u1_krp;
 	u1_krp = U2_.khatri_rao_product( U3_ );	
@@ -290,7 +292,7 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode2( const t3_type& data_, const u1_type& U1
 	t3_coeff_type data;
 	data.convert_from_type( data_ );
 	mode2_matricization_type unfolding; // -> u2
-	data.frontal_matricization( unfolding );
+	data.frontal_matricization_bwd( unfolding );
 	
 	matrix< I1*I3, R, T_coeff> u2_krp;
 	u2_krp = U1_.khatri_rao_product( U3_ );
@@ -310,7 +312,7 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode3( const t3_type& data_, const u1_type& U1
 	t3_coeff_type data;
 	data.convert_from_type( data_ );
 	mode3_matricization_type unfolding; //-> u3
-	data.horizontal_matricization( unfolding);
+	data.horizontal_matricization_bwd( unfolding);
 	
 	matrix< I1*I2, R, T_coeff> u3_krp;
 	u3_krp = U1_.khatri_rao_product( U2_ );

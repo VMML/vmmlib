@@ -216,7 +216,7 @@ VMML_TEMPLATE_CLASSNAME::tucker_als( const t3_type& data_ )
      hooi( data_ );
      
      //derive core
-     derive_core_orthogonal_bases( data_, _core, _u1, _u2, _u3 );
+     derive_core_orthogonal_bases( data_, *_core, *_u1, *_u2, *_u3 );
 }
 
 

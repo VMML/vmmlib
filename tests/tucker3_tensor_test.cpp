@@ -189,7 +189,7 @@ namespace vmml
 		
 		tucker3_tensor< 2, 2, 1, 3, 2, 2, double, double > tuck3_hooi_2( core_hooi_2, u1_hooi_2, u2_hooi_2, u3_hooi_2 );
 		
-		tuck3_hooi_2.hooi( t3_data_hooi );
+		tuck3_hooi_2.tucker_als( t3_data_hooi );
 		tuck3_hooi_2.get_u1( u1_hooi_2 );
 		tuck3_hooi_2.get_u2( u2_hooi_2 );
 		tuck3_hooi_2.get_u3( u3_hooi_2 );

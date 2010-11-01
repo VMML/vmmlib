@@ -176,8 +176,9 @@ public:
     void frontal_matricization_bwd( frontal_matricization_bwd_type& matricization) const;
     
     
-    //error computation between two tensor3
+    //error computation 
     double frobenius_norm( ) const;
+    double rmse( const tensor3< I1, I2, I3, T >& other ) const; //root mean-squared error
     
     template< typename TT >
     void convert_from_type( const tensor3< I1, I2, I3, TT >& other );
@@ -1220,6 +1221,22 @@ VMML_TEMPLATE_CLASSNAME::frobenius_norm( ) const
     return sqrt(f_norm);
 }
 
+VMML_TEMPLATE_STRING
+double 
+VMML_TEMPLATE_CLASSNAME::rmse( const tensor3< I1, I2, I3, T >& other ) const
+{
+	double mse = 0.0;
+	double diff = 0.0;
+	const_iterator it = begin(), it_end = end(); 
+	const_iterator other_it = other.begin(), other_it_end = other.end(); 
+	for( ; it != it_end; ++it, ++other_it ){
+		diff = abs( *it ) - abs( *other_it );
+		mse += diff * diff;
+	}
+	
+	return sqrt(mse/size());
+}	
+	
 VMML_TEMPLATE_STRING
 template< typename TT >
 void

@@ -560,10 +560,10 @@ tensor3_test::run()
 	
 	
 	//compute frobenius norm of a tensor3
-	float_t f_norm_check = 65.75712889109438;
+	double f_norm_check = 65.75712889109438;
 	
 	t3.fill_increasing_values();
-	float_t f_norm = t3.frobenius_norm();
+	double f_norm = t3.frobenius_norm();
 	
 	if ( f_norm == f_norm_check )
 	{	
@@ -575,6 +575,27 @@ tensor3_test::run()
 		<< "compute frobenius norm: should be: " << f_norm_check << " is: " << f_norm << std::endl;
 		log_error( error.str() );
 	}
+
+	//compute rmse between two tensor3
+	double rmse_check = 2.041241452319315;
+	
+	t3.fill_increasing_values();
+	t3_tmp.fill_increasing_values();
+	t3_tmp.at(1,1,1) = 0;
+	
+	double rmse = t3.rmse( t3_tmp );
+		
+	if ( rmse == rmse_check )
+	{	
+		log( "compute RMSE ", true  );
+	} else
+	{
+		std::stringstream error;
+		error 
+		<< "compute RMSE: should be: " << rmse_check << " is: " << std::setprecision(16) << rmse << std::endl;
+		log_error( error.str() );
+	}
+	
 	
 	//set diagonal values in a cubic tensor3, i.e., R=I1, R=I2, R=I3
 	tensor3< 3, 3, 3, uint16_t >  t3_diag;
@@ -598,7 +619,7 @@ tensor3_test::run()
 	}
 	
 	//tensor3 type conversion
-	tensor3< 2, 3, 4, float_t >  t3_type_a;
+	tensor3< 2, 3, 4, double >  t3_type_a;
     tensor3< 2, 3, 4, uint16_t >  t3_type_b;
     tensor3< 2, 3, 4, uint16_t >  t3_type_b_check;
 	
@@ -612,7 +633,7 @@ tensor3_test::run()
 	} else
 	{
 		std::stringstream error;
-		error << "type conversion - tensor3 type float_t: " << std::endl << t3_type_a << std::endl
+		error << "type conversion - tensor3 type double: " << std::endl << t3_type_a << std::endl
 		<< " tensor3 type uint16_t should be: " << std::endl << t3_type_b_check << std::endl
 		<< " is: " << t3_type_b << std::endl;
 		log_error( error.str() );
@@ -620,13 +641,13 @@ tensor3_test::run()
 	
 	
 	//export
-	tensor3< 2, 3, 4, float_t >  t3_export_import;
+	tensor3< 2, 3, 4, double >  t3_export_import;
 	t3_export_import.fill_increasing_values();
-	std::vector< float_t > export_data;
+	std::vector< double > export_data;
 	t3_export_import.export_to( export_data );
 	
-	float_t export_data_check[] = { 0, 3, 1, 4, 2, 5, 6, 9, 7, 10, 8, 11, 12, 15, 13, 16, 14, 17, 18, 21, 19, 22, 20, 23 };
-	float_t precision = 1.0e-1;
+	double export_data_check[] = { 0, 3, 1, 4, 2, 5, 6, 9, 7, 10, 8, 11, 12, 15, 13, 16, 14, 17, 18, 21, 19, 22, 20, 23 };
+	double precision = 1.0e-1;
 	ok = true;
 	for (int i = 0; i < 24 && ok; ++i )
 	{
@@ -636,8 +657,8 @@ tensor3_test::run()
 	log( "export tensor3", ok  );
 	
 	//import tucker3 from vector
-	std::vector< float_t > in_data = export_data;
-	tensor3< 2, 3, 4, float_t >  t3_import_check;
+	std::vector< double > in_data = export_data;
+	tensor3< 2, 3, 4, double >  t3_import_check;
 	t3_import_check.fill_increasing_values();
 	t3_export_import.zero();
 	t3_export_import.import_from( in_data );

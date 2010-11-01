@@ -42,7 +42,7 @@ public:
         if ( begin_ )
         {
             _matrix_index       = 0;
-            slice_type& slice_  = _tensor3->get_frontal_slice( _matrix_index );
+            slice_type& slice_  = _tensor3->get_frontal_slice_fwd( _matrix_index );
             
             _matrix_it          = slice_.begin();
             _matrix_it_end      = slice_.end();
@@ -50,7 +50,7 @@ public:
         else
         {
             _matrix_index       = T::SLICES - 1;
-            slice_type& slice_  = _tensor3->get_frontal_slice( _matrix_index );
+            slice_type& slice_  = _tensor3->get_frontal_slice_fwd( _matrix_index );
 
             _matrix_it          = slice_.end();
             _matrix_it_end      = slice_.begin();
@@ -96,8 +96,8 @@ public:
             ++_matrix_index;
             //slice_type& slice_  = _tensor3->get_frontal_slice( _matrix_index );
 
-            _matrix_it = _tensor3->get_frontal_slice( _matrix_index ).begin();
-            _matrix_it_end	= _tensor3->get_frontal_slice( _matrix_index ).end();
+            _matrix_it = _tensor3->get_frontal_slice_fwd( _matrix_index ).begin();
+            _matrix_it_end	= _tensor3->get_frontal_slice_fwd( _matrix_index ).end();
 		}
 	}
 	
@@ -135,7 +135,7 @@ public:
         if ( begin_ )
         {
             _matrix_index       = 0;
-            const slice_type& slice_  = _tensor3->get_frontal_slice( _matrix_index );
+            const slice_type& slice_  = _tensor3->get_frontal_slice_fwd( _matrix_index );
             
             _matrix_it          = slice_.begin();
             _matrix_it_end      = slice_.end();
@@ -143,7 +143,7 @@ public:
         else
         {
             _matrix_index       = T::SLICES - 1;
-            const slice_type& slice_  = _tensor3->get_frontal_slice( _matrix_index );
+            const slice_type& slice_  = _tensor3->get_frontal_slice_fwd( _matrix_index );
 
             _matrix_it          = slice_.end();
             _matrix_it_end      = slice_.begin();
@@ -182,8 +182,8 @@ public:
             ++_matrix_index;
             //const slice_type& slice_  = _tensor3->get_frontal_slice( _matrix_index );
 
-            _matrix_it = _tensor3->get_frontal_slice( _matrix_index ).begin();
-            _matrix_it_end	= _tensor3->get_frontal_slice( _matrix_index ).end();
+            _matrix_it = _tensor3->get_frontal_slice_fwd( _matrix_index ).begin();
+            _matrix_it_end	= _tensor3->get_frontal_slice_fwd( _matrix_index ).end();
 		}
 	}
 	

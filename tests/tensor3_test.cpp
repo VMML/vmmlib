@@ -332,25 +332,52 @@ tensor3_test::run()
 	matrix< 2, 3, uint16_t > test_mat_frontal;
 	uint16_t data2[] = { 13, 14, 15, 16, 17, 3 };
 	test_mat_frontal.set(data2, data2 + 6);
-	t3.get_frontal_slice( 2, mat_frontal );
+	t3.get_frontal_slice_fwd( 2, mat_frontal );
 
 	matrix< 2, 3, uint16_t > mat_frontal_2;
 	matrix< 2, 3, uint16_t > test_mat_frontal_2;
 	test_mat_frontal_2.fill(7);
-	t3.set_frontal_slice( 2, test_mat_frontal_2);
-	t3.get_frontal_slice( 2, mat_frontal_2);
+	t3.set_frontal_slice_fwd( 2, test_mat_frontal_2);
+	t3.get_frontal_slice_fwd( 2, mat_frontal_2);
 
 	if (mat_frontal == test_mat_frontal && mat_frontal_2 == test_mat_frontal_2)
 	{	
-		log( "get/set_frontal_slice()", true  );
+		log( "get/set_frontal_slice_fwd() (I2xI1)", true  );
 	} else
 	{
 		std::stringstream error;
 		error 
-		     << "after get_frontal_slice at i3 = 2: " << mat_frontal << std::endl
-		     << "after set_frontal_slice after i3 = 2: " << mat_frontal_2 << std::endl;
+		     << "after get_frontal_slice_fwd at i3 = 2: " << mat_frontal << std::endl
+		     << "after set_frontal_slice_fwd after i3 = 2: " << mat_frontal_2 << std::endl;
 		log_error( error.str() );
 	}
+
+	
+	t3.set_frontal_slice_fwd( 2, test_mat_frontal);
+	matrix< 3, 2, uint16_t > mat_frontal_bwd = transpose( mat_frontal );
+	matrix< 3, 2, uint16_t > test_mat_frontal_bwd  = transpose( test_mat_frontal );
+	t3.get_frontal_slice_bwd( 2, mat_frontal_bwd );
+	
+	matrix< 3, 2, uint16_t > mat_frontal_2_bwd  = transpose ( mat_frontal );;
+	matrix< 3, 2, uint16_t > test_mat_frontal_2_bwd = transpose( test_mat_frontal_2 );
+	t3.set_frontal_slice_bwd( 2, test_mat_frontal_2_bwd);
+	t3.get_frontal_slice_bwd( 2, mat_frontal_2_bwd);
+	
+	
+	if (mat_frontal_bwd == test_mat_frontal_bwd && mat_frontal_2_bwd == test_mat_frontal_2_bwd)
+	{	
+		log( "get/set_frontal_slice_bwd() (I1xI2)", true  );
+	} else
+	{
+		std::stringstream error;
+		error 
+		<< "after get_frontal_slice_bwd at i3 = 2 is: " << mat_frontal_bwd << std::endl
+		<< "after get_frontal_slice_bwd at i3 = 2 should be: " << test_mat_frontal_bwd << std::endl
+		<< "after set_frontal_slice_bwd after i3 = 2 is: " << mat_frontal_2_bwd << std::endl
+		<< "after set_frontal_slice_bwd after i3 = 2 should be: " << test_mat_frontal_2_bwd << std::endl;
+		log_error( error.str() );
+	}
+	
 	
 	
 	//lateral slice
@@ -358,25 +385,51 @@ tensor3_test::run()
 	matrix< 2, 4, uint16_t > test_mat_lateral;
 	uint16_t data3[] = { 1, 7, 7, 19, 4, 10, 7, 1 };
 	test_mat_lateral.set(data3, data3 + 8);
-	t3.get_lateral_slice( 0, mat_lateral );
+	t3.get_lateral_slice_bwd( 0, mat_lateral );
 	
 	matrix< 2, 4, uint16_t > mat_lateral_2;
 	matrix< 2, 4, uint16_t > test_mat_lateral_2;
 	test_mat_lateral_2.fill(6);
-	t3.set_lateral_slice( 0, test_mat_lateral_2 );
-	t3.get_lateral_slice( 0, mat_lateral_2 );
+	t3.set_lateral_slice_bwd( 0, test_mat_lateral_2 );
+	t3.get_lateral_slice_bwd( 0, mat_lateral_2 );
 	
 	if (mat_lateral == test_mat_lateral && mat_lateral_2 == test_mat_lateral_2)
 	{	
-		log( "get/set_lateral_slice()", true  );
+		log( "get/set_lateral_slice_bwd() (I1xI3)", true  );
 	} else
 	{
 		std::stringstream error;
 		error 
-		<< "after get_lateral_slice i2 = 0: " << mat_frontal << std::endl
-		<< "after set_lateral_slice i2 = 0: " << mat_frontal_2 << std::endl;
+		<< "after get_lateral_slice_bwd i2 = 0: " << mat_lateral << std::endl
+		<< "after set_lateral_slice_bwd i2 = 0: " << mat_lateral_2 << std::endl;
 		log_error( error.str() );
 	}
+	
+	
+	t3.set_lateral_slice_bwd( 0, test_mat_lateral );
+	matrix< 4, 2, uint16_t > mat_lateral_fwd = transpose( mat_lateral );
+	matrix< 4, 2, uint16_t > test_mat_lateral_fwd  = transpose( test_mat_lateral );
+	t3.get_lateral_slice_fwd( 0, mat_lateral_fwd );
+	
+	matrix< 4, 2, uint16_t > mat_lateral_2_fwd = transpose( mat_lateral_2 );
+	matrix< 4, 2, uint16_t > test_mat_lateral_2_fwd  = transpose( test_mat_lateral_2 );
+	t3.set_lateral_slice_fwd( 0, test_mat_lateral_2_fwd );
+	t3.get_lateral_slice_fwd( 0, mat_lateral_2_fwd );
+
+	if (mat_lateral_fwd == test_mat_lateral_fwd && mat_lateral_2_fwd == test_mat_lateral_2_fwd)
+	{	
+		log( "get/set_lateral_slice_fwd() (I3xI1)", true  );
+	} else
+	{
+		std::stringstream error;
+		error 
+		<< "after get_lateral_slice_fwd i2 = 0 is: " << mat_lateral_fwd << std::endl
+		<< "after get_lateral_slice_fwd i2 = 0 should be: " << test_mat_lateral_fwd << std::endl
+		<< "after set_lateral_slice_fwd i2 = 0 is: " << mat_lateral_2_fwd << std::endl
+		<< "after set_lateral_slice_fwd i2 = 0 should be: " << test_mat_lateral_2_fwd << std::endl;
+		log_error( error.str() );
+	}
+
 	
 	//horizontal slice
 	matrix< 3, 4, uint16_t > mat_horizontal;
@@ -384,23 +437,47 @@ tensor3_test::run()
 	//uint16_t data4[] = { 6, 5, 3, 6, 11, 3, 6, 7, 7, 6, 1, 3 };
 	uint16_t data4[] = { 6, 6, 6, 6, 5, 11, 7, 1, 3, 3, 7, 3 };
 	test_mat_horizontal.set(data4, data4 + 12);
-	t3.get_horizontal_slice( 1, mat_horizontal );
+	t3.get_horizontal_slice_fwd( 1, mat_horizontal );
 	
 	matrix< 3, 4, uint16_t > mat_horizontal_2;
 	matrix< 3, 4, uint16_t > test_mat_horizontal_2;
 	test_mat_lateral_2.fill(5);
-	t3.set_horizontal_slice( 1, test_mat_horizontal_2 );
-	t3.get_horizontal_slice( 1, mat_horizontal_2 );
+	t3.set_horizontal_slice_fwd( 1, test_mat_horizontal_2 );
+	t3.get_horizontal_slice_fwd( 1, mat_horizontal_2 );
 	
 	if (mat_horizontal == test_mat_horizontal &&  mat_horizontal_2 == test_mat_horizontal_2 )
 	{	
-		log( "get/set_horizontal_slice()", true  );
+		log( "get/set_horizontal_slice_fwd() (I2xI3)", true  );
 	} else
 	{
 		std::stringstream error;
 		error 
-		<< "after get_horizontal_slice at i1 = 0: " << mat_horizontal << std::endl
-		<< "after set_horizontal_slice at i1 = 0: " << mat_horizontal_2 << std::endl;
+		<< "after get_horizontal_slice_fwd at i1 = 0: " << mat_horizontal << std::endl
+		<< "after set_horizontal_slice_fwd at i1 = 0: " << mat_horizontal_2 << std::endl;
+		log_error( error.str() );
+	}
+	
+	t3.get_horizontal_slice_fwd( 1, test_mat_horizontal );
+	matrix< 4, 3, uint16_t > mat_horizontal_bwd  = transpose( mat_horizontal );
+	matrix< 4, 3, uint16_t > test_mat_horizontal_bwd = transpose( test_mat_horizontal );
+	t3.get_horizontal_slice_bwd( 1, mat_horizontal_bwd );
+	
+	matrix< 4, 3, uint16_t > mat_horizontal_2_bwd  = transpose( mat_horizontal_2 );
+	matrix< 4, 3, uint16_t > test_mat_horizontal_2_bwd = transpose( test_mat_horizontal_2 );
+	t3.set_horizontal_slice_bwd( 1, test_mat_horizontal_2_bwd );
+	t3.get_horizontal_slice_bwd( 1, mat_horizontal_2_bwd );
+
+	if (mat_horizontal_bwd == test_mat_horizontal_bwd &&  mat_horizontal_2_bwd == test_mat_horizontal_2_bwd )
+	{	
+		log( "get/set_horizontal_slice_bwd() (I3xI2)", true  );
+	} else
+	{
+		std::stringstream error;
+		error 
+		<< "after get_horizontal_slice_bwd at i1 = 0 is: " << mat_horizontal_bwd << std::endl
+		<< "after get_horizontal_slice_bwd at i1 = 0 should be: " << test_mat_horizontal_bwd << std::endl
+		<< "after set_horizontal_slice_bwd at i1 = 0 is: " << mat_horizontal_2_bwd << std::endl
+		<< "after set_horizontal_slice_bwd at i1 = 0 should be: " << test_mat_horizontal_2_bwd << std::endl;
 		log_error( error.str() );
 	}
 	
@@ -465,11 +542,12 @@ tensor3_test::run()
 	
 	if ( m_horizontal_test == m_horizontal && m_lateral_test == m_lateral && m_frontal_test == m_frontal )
 	{	
-		log( "matricization along all modes", true  );
+		log( "backward matricization along all modes", true  );
 	} else
 	{
 		std::stringstream error;
 		error 
+		<< "backward matricization: " << std::endl
 		<< "matricization_horizontal should be: " << std::endl << m_horizontal_test << std::endl
 		<< "matricization_horizontal is: " << std::endl << m_horizontal << std::endl
 		<< "matricization_lateral should be: " << std::endl << m_lateral_test << std::endl

@@ -106,16 +106,24 @@ public:
     inline void set_column( size_t i2, size_t i3, const vector< I1, T >& data ); // same as set_I1_vector
     inline void set_tube( size_t i1, size_t i2, const vector< I3, T >& data ); // same as set_I3_vector
 
-    inline void get_frontal_slice( size_t i3, slice_type_frontal_fwd& data ) const;  
-    inline void get_lateral_slice( size_t i2, slice_type_lateral_bwd& data ) const; 
-    inline void get_horizontal_slice( size_t i1, matrix< I2, I3, T >& data ) const;
+    inline void get_frontal_slice_fwd( size_t i3, slice_type_frontal_fwd& data ) const;  
+    inline void get_lateral_slice_bwd( size_t i2, slice_type_lateral_bwd& data ) const; 
+    inline void get_horizontal_slice_fwd( size_t i1, slice_type_horizontal_fwd& data ) const;
+	
+    inline void get_frontal_slice_bwd( size_t i3, slice_type_frontal_bwd& data ) const;  
+    inline void get_lateral_slice_fwd( size_t i2, slice_type_lateral_fwd& data ) const; 
+    inline void get_horizontal_slice_bwd( size_t i1, slice_type_horizontal_bwd& data ) const;
     
-    inline void set_frontal_slice( size_t i3, const slice_type_frontal_fwd& data ); 
-    inline void set_lateral_slice( size_t i2, const slice_type_lateral_bwd& data ); 
-    inline void set_horizontal_slice( size_t i1, const matrix< I2, I3, T >& data );
-
-    inline slice_type_frontal_fwd& get_frontal_slice( size_t index );
-    inline const slice_type_frontal_fwd& get_frontal_slice( size_t index ) const;
+    inline void set_frontal_slice_fwd( size_t i3, const slice_type_frontal_fwd& data ); 
+    inline void set_lateral_slice_bwd( size_t i2, const slice_type_lateral_bwd& data ); 
+    inline void set_horizontal_slice_fwd( size_t i1, const slice_type_horizontal_fwd& data );
+	
+    inline void set_frontal_slice_bwd( size_t i3, const slice_type_frontal_bwd& data ); 
+    inline void set_lateral_slice_fwd( size_t i2, const slice_type_lateral_fwd& data ); 
+    inline void set_horizontal_slice_bwd( size_t i1, const slice_type_horizontal_bwd& data );
+	
+    inline slice_type_frontal_fwd& get_frontal_slice_fwd( size_t index );
+    inline const slice_type_frontal_fwd& get_frontal_slice_fwd( size_t index ) const;
 	
 	// sets all elements to fill_value
     void operator=( T fill_value ); //@SUS: todo
@@ -151,13 +159,13 @@ public:
 	
     //tensor times matrix multiplication along different modes
     template< size_t J1, size_t J2, size_t J3 > 
-    void multiply_horizontal_bwd( const tensor3< J1, J2, J3, T >& core, const matrix< I3, J3, T >& U3 ); //output: tensor3< J1, J2, I3, T >  
+    void multiply_horizontal_bwd( const tensor3< J1, J2, J3, T >& other, const matrix< I3, J3, T >& other_slice_ ); //output: tensor3< J1, J2, I3, T >  
 	
     template< size_t J1, size_t J2, size_t J3 > 
-    void multiply_lateral_bwd( const tensor3< J1, J2, J3, T >& core, const matrix< I1, J1, T >& U1 ); //output: tensor3< I1, J2, J3, T > 
+    void multiply_lateral_bwd( const tensor3< J1, J2, J3, T >& other, const matrix< I1, J1, T >& other_slice_ ); //output: tensor3< I1, J2, J3, T > 
 	
     template< size_t J1, size_t J2, size_t J3 > 
-    void multiply_frontal_bwd( const tensor3< J1, J2, J3, T >& core, const matrix< I2, J2, T >& U2 ); //output: tensor3< J1, I2, J3, T >
+    void multiply_frontal_bwd( const tensor3< J1, J2, J3, T >& other, const matrix< I2, J2, T >& other_slice_ ); //output: tensor3< J1, I2, J3, T >
     
     //backward cyclic matricization (after Lathauwer et al., 2000a)
     template< size_t J1, size_t J2, size_t J3 > 
@@ -419,11 +427,11 @@ set_tube( size_t i1, size_t i2, const vector< I3, T >& data )
 VMML_TEMPLATE_STRING
 inline typename VMML_TEMPLATE_CLASSNAME::slice_type_frontal_fwd& 
 VMML_TEMPLATE_CLASSNAME::
-get_frontal_slice( size_t index )
+get_frontal_slice_fwd( size_t index )
 {
 #ifdef VMMLIB_SAFE_ACCESSORS
     if ( index >= I3 )
-        VMMLIB_ERROR( "get_frontal_slice() - index out of bounds.", VMMLIB_HERE );
+        VMMLIB_ERROR( "get_frontal_slice_fwd() - index out of bounds.", VMMLIB_HERE );
 #endif
 	return array[ index ];
 }
@@ -432,11 +440,11 @@ get_frontal_slice( size_t index )
 VMML_TEMPLATE_STRING
 inline const typename VMML_TEMPLATE_CLASSNAME::slice_type_frontal_fwd& 
 VMML_TEMPLATE_CLASSNAME::
-get_frontal_slice( size_t index ) const
+get_frontal_slice_fwd( size_t index ) const
 {
 #ifdef VMMLIB_SAFE_ACCESSORS
     if ( index >= I3 )
-        VMMLIB_ERROR( "get_frontal_slice() - index out of bounds.", VMMLIB_HERE );
+        VMMLIB_ERROR( "get_frontal_slice_fwd() - index out of bounds.", VMMLIB_HERE );
 #endif
 	return array[ index ];
 }
@@ -444,11 +452,11 @@ get_frontal_slice( size_t index ) const
 VMML_TEMPLATE_STRING
 inline void 
 VMML_TEMPLATE_CLASSNAME::
-get_frontal_slice( size_t i3, slice_type_frontal_fwd& data ) const
+get_frontal_slice_fwd( size_t i3, slice_type_frontal_fwd& data ) const
 {
 #ifdef VMMLIB_SAFE_ACCESSORS
     if ( i3 >= I3 )
-        VMMLIB_ERROR( "get_frontal_slice() - index out of bounds.", VMMLIB_HERE );
+        VMMLIB_ERROR( "get_frontal_slice_fwd() - index out of bounds.", VMMLIB_HERE );
 #endif
 	
 	data = array[ i3 ];
@@ -458,11 +466,11 @@ get_frontal_slice( size_t i3, slice_type_frontal_fwd& data ) const
 VMML_TEMPLATE_STRING
 inline void 
 VMML_TEMPLATE_CLASSNAME::
-get_lateral_slice( size_t i2, slice_type_lateral_bwd& data ) const
+get_lateral_slice_bwd( size_t i2, slice_type_lateral_bwd& data ) const
 {
 #ifdef VMMLIB_SAFE_ACCESSORS
     if ( i2 >= I2 )
-        VMMLIB_ERROR( "get_lateral_slice() - index out of bounds.", VMMLIB_HERE );
+        VMMLIB_ERROR( "get_lateral_slice_bwd() - index out of bounds.", VMMLIB_HERE );
 #endif
 	for( size_t i3 = 0; i3 < I3; ++i3 )
 	{
@@ -473,11 +481,11 @@ get_lateral_slice( size_t i2, slice_type_lateral_bwd& data ) const
 VMML_TEMPLATE_STRING
 inline void 
 VMML_TEMPLATE_CLASSNAME::
-get_horizontal_slice( size_t i1, matrix< I2, I3, T >& data ) const
+get_horizontal_slice_fwd( size_t i1, slice_type_horizontal_fwd& data ) const
 {
 #ifdef VMMLIB_SAFE_ACCESSORS
     if ( i1 >= I1 )
-        VMMLIB_ERROR( "get_horizontal_slice() - index out of bounds.", VMMLIB_HERE );
+        VMMLIB_ERROR( "get_horizontal_slice_fwd() - index out of bounds.", VMMLIB_HERE );
 #endif
 	for( size_t i3 = 0; i3 < I3; ++i3 )
 	{
@@ -485,15 +493,70 @@ get_horizontal_slice( size_t i1, matrix< I2, I3, T >& data ) const
 	}
 }
 
+VMML_TEMPLATE_STRING
+inline void 
+VMML_TEMPLATE_CLASSNAME::
+get_frontal_slice_bwd( size_t i3, slice_type_frontal_bwd& data ) const
+{
+#ifdef VMMLIB_SAFE_ACCESSORS
+	if ( i3 >= I3 )
+		VMMLIB_ERROR( "get_frontal_slice_bwd() - index out of bounds.", VMMLIB_HERE );
+#endif
+	
+	slice_type_frontal_fwd* data_t = new slice_type_frontal_fwd();
+	*data_t = array[ i3 ];
+	data = transpose( *data_t );
+	delete data_t;
+}
+
 
 VMML_TEMPLATE_STRING
 inline void 
 VMML_TEMPLATE_CLASSNAME::
-set_frontal_slice( size_t i3, const slice_type_frontal_fwd& data )
+get_lateral_slice_fwd( size_t i2, slice_type_lateral_fwd& data ) const
+{
+#ifdef VMMLIB_SAFE_ACCESSORS
+	if ( i2 >= I2 )
+		VMMLIB_ERROR( "get_lateral_slice_fwd() - index out of bounds.", VMMLIB_HERE );
+#endif
+	slice_type_lateral_bwd* data_t = new slice_type_lateral_bwd();
+	for( size_t i3 = 0; i3 < I3; ++i3 )
+	{
+		data_t->set_column( i3, array[ i3 ].get_column( i2 ));
+	}
+	data = transpose( *data_t );
+	delete data_t;
+}
+
+VMML_TEMPLATE_STRING
+inline void 
+VMML_TEMPLATE_CLASSNAME::
+get_horizontal_slice_bwd( size_t i1, slice_type_horizontal_bwd& data ) const
+{
+#ifdef VMMLIB_SAFE_ACCESSORS
+	if ( i1 >= I1 )
+		VMMLIB_ERROR( "get_horizontal_slice_fwd() - index out of bounds.", VMMLIB_HERE );
+#endif
+	slice_type_horizontal_fwd* data_t = new slice_type_horizontal_fwd();
+	for( size_t i3 = 0; i3 < I3; ++i3 )
+	{
+		data_t->set_column( i3, array[ i3 ].get_row( i1 )); //or for every i2 get/set column
+	}
+	data = transpose( *data_t );
+	delete data_t;
+}
+	
+	
+	
+//setter
+VMML_TEMPLATE_STRING
+inline void 
+VMML_TEMPLATE_CLASSNAME::
+set_frontal_slice_fwd( size_t i3, const slice_type_frontal_fwd& data )
 {
 #ifdef VMMLIB_SAFE_ACCESSORS
     if ( i3 >= I3 )
-        VMMLIB_ERROR( "set_frontal_slice() - index out of bounds.", VMMLIB_HERE );
+        VMMLIB_ERROR( "set_frontal_slice_fwd() - index out of bounds.", VMMLIB_HERE );
 #endif
 	
 	array[ i3 ] = data;
@@ -502,11 +565,11 @@ set_frontal_slice( size_t i3, const slice_type_frontal_fwd& data )
 VMML_TEMPLATE_STRING
 inline void 
 VMML_TEMPLATE_CLASSNAME::
-set_lateral_slice( size_t i2, const slice_type_lateral_bwd& data )
+set_lateral_slice_bwd( size_t i2, const slice_type_lateral_bwd& data )
 {
 #ifdef VMMLIB_SAFE_ACCESSORS
     if ( i2 >= I2 )
-        VMMLIB_ERROR( "set_lateral_slice() - index out of bounds.", VMMLIB_HERE );
+        VMMLIB_ERROR( "set_lateral_slice_bwd() - index out of bounds.", VMMLIB_HERE );
 #endif
 	
 	for( size_t i3 = 0; i3 < I3; ++i3 )
@@ -518,11 +581,11 @@ set_lateral_slice( size_t i2, const slice_type_lateral_bwd& data )
 VMML_TEMPLATE_STRING
 inline void 
 VMML_TEMPLATE_CLASSNAME::
-set_horizontal_slice( size_t i1, const matrix< I2, I3, T >& data )
+set_horizontal_slice_fwd( size_t i1, const slice_type_horizontal_fwd& data )
 {
 #ifdef VMMLIB_SAFE_ACCESSORS
     if ( i1 >= I1 )
-        VMMLIB_ERROR( "set_horizontal_slice() - index out of bounds.", VMMLIB_HERE );
+        VMMLIB_ERROR( "set_horizontal_slice_fwd() - index out of bounds.", VMMLIB_HERE );
 #endif
 	
 	for( size_t i3 = 0; i3 < I3; ++i3 )
@@ -531,8 +594,63 @@ set_horizontal_slice( size_t i1, const matrix< I2, I3, T >& data )
 	}
 	
 }
+	
+VMML_TEMPLATE_STRING
+inline void 
+VMML_TEMPLATE_CLASSNAME::
+set_frontal_slice_bwd( size_t i3, const slice_type_frontal_bwd& data )
+{
+#ifdef VMMLIB_SAFE_ACCESSORS
+	if ( i3 >= I3 )
+		VMMLIB_ERROR( "set_frontal_slice_bwd() - index out of bounds.", VMMLIB_HERE );
+#endif
+	slice_type_frontal_fwd* data_t  = new slice_type_frontal_fwd();
+	*data_t = transpose( data );
+	array[ i3 ] = *data_t;
+	delete data_t;
+}
+
+VMML_TEMPLATE_STRING
+inline void 
+VMML_TEMPLATE_CLASSNAME::
+set_lateral_slice_fwd( size_t i2, const slice_type_lateral_fwd& data )
+{
+#ifdef VMMLIB_SAFE_ACCESSORS
+	if ( i2 >= I2 )
+		VMMLIB_ERROR( "set_lateral_slice_fwd() - index out of bounds.", VMMLIB_HERE );
+#endif
+	slice_type_lateral_bwd* data_t = new slice_type_lateral_bwd();
+	*data_t = transpose( data );
+	for( size_t i3 = 0; i3 < I3; ++i3 )
+	{
+		array[ i3 ].set_column(i2, data_t->get_column( i3 ));
+	}
+	
+	delete data_t;
+}
+
+VMML_TEMPLATE_STRING
+inline void 
+VMML_TEMPLATE_CLASSNAME::
+set_horizontal_slice_bwd( size_t i1, const slice_type_horizontal_bwd& data )
+{
+#ifdef VMMLIB_SAFE_ACCESSORS
+	if ( i1 >= I1 )
+		VMMLIB_ERROR( "set_horizontal_slice_bwd() - index out of bounds.", VMMLIB_HERE );
+#endif
+	slice_type_horizontal_fwd* data_t = new slice_type_horizontal_fwd();
+	*data_t = transpose( data );
+	
+	for( size_t i3 = 0; i3 < I3; ++i3 )
+	{
+		array[ i3 ].set_row( i1, data_t->get_column( i3 ));
+	}
+	delete data_t;
+}
 
 
+	
+//fill
 VMML_TEMPLATE_STRING
 void
 VMML_TEMPLATE_CLASSNAME::
@@ -924,100 +1042,90 @@ VMML_TEMPLATE_CLASSNAME::operator-=( T scalar )
 VMML_TEMPLATE_STRING
 template< size_t J1, size_t J2, size_t J3 > 
 void
-VMML_TEMPLATE_CLASSNAME::multiply_horizontal_bwd( const tensor3< J1, J2, J3, T >& core, const matrix< I3, J3, T >& U3 )
+VMML_TEMPLATE_CLASSNAME::multiply_horizontal_bwd( const tensor3< J1, J2, J3, T >& other, const matrix< I3, J3, T >& other_slice_ )
 {
-     matrix< J2, J3, T>* slice = new matrix< J2, J3, T>();
-     matrix< J3, J2, T>* slice_t = new matrix< J3, J2, T>();
-     matrix< I3, J2, T>* slice_new = new matrix< I3, J2, T>();
-     matrix< J2, I3, T>* slice_new_t = new matrix< J2, I3, T>();
-     for (size_t i1 = 0; i1 < J1; ++i1)
-     {
-         core.get_horizontal_slice( i1, *slice );
-         slice->transpose_to( *slice_t );
-         slice_new->multiply( U3, *slice_t );
-         slice_new->transpose_to( *slice_new_t );
-         set_horizontal_slice( i1, *slice_new_t );		
-     }
+	matrix< J3, J2, T>* slice = new matrix< J3, J2, T>();
+	matrix< I3, J2, T>* slice_new = new matrix< I3, J2, T>();
+	for (size_t i1 = 0; i1 < J1; ++i1)
+	{
+		other.get_horizontal_slice_bwd( i1, *slice );
+		slice_new->multiply( other_slice_, *slice );
+		set_horizontal_slice_bwd( i1, *slice_new );		
+	}
 	
-	delete slice, slice_t, slice_new, slice_new_t;
+	delete slice, slice_new;
 }
 
 VMML_TEMPLATE_STRING
 template< size_t J1, size_t J2, size_t J3 > 
 void
-VMML_TEMPLATE_CLASSNAME::multiply_lateral_bwd( const tensor3< J1, J2, J3, T >& core, const matrix< I1, J1, T >& U1 )
+VMML_TEMPLATE_CLASSNAME::multiply_lateral_bwd( const tensor3< J1, J2, J3, T >& other, const matrix< I1, J1, T >& other_slice_ )
 {
-     matrix< J1, J3, T>* slice = new matrix< J1, J3, T>();
-     matrix< I1, J3, T>* slice_new = new matrix< I1, J3, T>();
-     for ( size_t i2 = 0; i2 < J2; ++i2 )
-     {
-         core.get_lateral_slice( i2, *slice );
-         slice_new->multiply( U1, *slice );
-         set_lateral_slice( i2, *slice_new );		
-     }
+	matrix< J1, J3, T>* slice = new matrix< J1, J3, T>();
+	matrix< I1, J3, T>* slice_new = new matrix< I1, J3, T>();
+	for ( size_t i2 = 0; i2 < J2; ++i2 )
+	{
+		other.get_lateral_slice_bwd( i2, *slice );
+		slice_new->multiply( other_slice_, *slice );
+		set_lateral_slice_bwd( i2, *slice_new );		
+	}
 	delete slice, slice_new;
  }
  
  
- VMML_TEMPLATE_STRING
- template< size_t J1, size_t J2, size_t J3 > 
- void
- VMML_TEMPLATE_CLASSNAME::multiply_frontal_bwd( const tensor3< J1, J2, J3, T >& core, const matrix< I2, J2, T >& U2 )
- {
-     matrix< J1, J2, T>* slice = new matrix< J1, J2, T>();
-     matrix< J2, J1, T>* slice_t = new matrix< J2, J1, T>();
-     matrix< I2, J1, T>* slice_new = new matrix< I2, J1, T>();
-     matrix< J1, I2, T>* slice_new_t = new matrix< J1, I2, T>();
-     for ( size_t i3 = 0; i3 < J3; ++i3 )
-     {
-         core.get_frontal_slice( i3, *slice ); 
-         slice->transpose_to( *slice_t );
-         slice_new->multiply( U2, *slice_t );
-         slice_new->transpose_to( *slice_new_t );
-         set_frontal_slice( i3, *slice_new_t );		
-     }
-	 delete slice, slice_t, slice_new, slice_new_t;
+VMML_TEMPLATE_STRING
+template< size_t J1, size_t J2, size_t J3 > 
+void
+VMML_TEMPLATE_CLASSNAME::multiply_frontal_bwd( const tensor3< J1, J2, J3, T >& other, const matrix< I2, J2, T >& other_slice_ )
+{
+	 matrix< J2, J1, T>* slice = new matrix< J2, J1, T>();
+	 matrix< I2, J1, T>* slice_new = new matrix< I2, J1, T>();
+	 for ( size_t i3 = 0; i3 < J3; ++i3 )
+	 {
+		 other.get_frontal_slice_bwd( i3, *slice ); 
+		 slice_new->multiply( other_slice_, *slice );
+		 set_frontal_slice_bwd( i3, *slice_new );		
+	 }
+	 delete slice, slice_new;
 }
  
  
  
- VMML_TEMPLATE_STRING
- template< size_t J1, size_t J2, size_t J3 > 
- void
- VMML_TEMPLATE_CLASSNAME::full_tensor3_matrix_multiplication(  const tensor3< J1, J2, J3, T >& core, 
-                                                               const matrix< I1, J1, T >& U1, 
-                                                               const matrix< I2, J2, T >& U2, 
-                                                               const matrix< I3, J3, T >& U3 )
- {
-     tensor3< I1, J2, J3, T>* t3_result_1 = new  tensor3< I1, J2, J3, T>();
-     tensor3< I1, I2, J3, T>* t3_result_2 = new tensor3< I1, I2, J3, T>();
-     
-     //backward cyclic matricization (after Lathauwer et al., 2000a)
-     t3_result_1->multiply_lateral_bwd( core, U1 );
-     t3_result_2->multiply_frontal_bwd( *t3_result_1, U2 );
-     multiply_horizontal_bwd( *t3_result_2, U3 );
-	 
-	 delete t3_result_1, t3_result_2;
- }
+VMML_TEMPLATE_STRING
+template< size_t J1, size_t J2, size_t J3 > 
+void
+VMML_TEMPLATE_CLASSNAME::full_tensor3_matrix_multiplication(  const tensor3< J1, J2, J3, T >& core, 
+														   const matrix< I1, J1, T >& U1, 
+														   const matrix< I2, J2, T >& U2, 
+														   const matrix< I3, J3, T >& U3 )
+{
+ tensor3< I1, J2, J3, T>* t3_result_1 = new  tensor3< I1, J2, J3, T>();
+ tensor3< I1, I2, J3, T>* t3_result_2 = new tensor3< I1, I2, J3, T>();
  
- VMML_TEMPLATE_STRING
- void 
- VMML_TEMPLATE_CLASSNAME::horizontal_matricization_bwd( horizontal_matricization_bwd_type& matricization) const
- {
-     slice_type_horizontal_fwd* horizontal_slice = new slice_type_horizontal_fwd();
-     slice_type_horizontal_bwd* horizontal_slice_t = new slice_type_horizontal_bwd();
-     for( size_t i = 0; i < I1; ++i )
-     {
-             get_horizontal_slice(i, *horizontal_slice );
-             horizontal_slice->transpose_to( *horizontal_slice_t );
-             for( size_t col = 0; col < I2; ++col )
-             {
-                     matricization.set_column( i*I2+col,  horizontal_slice_t->get_column(col));
-             } 
-     }
-	 delete horizontal_slice, horizontal_slice_t;
- }
+ //backward cyclic matricization (after Lathauwer et al., 2000a)
+ t3_result_1->multiply_lateral_bwd( core, U1 );
+ t3_result_2->multiply_frontal_bwd( *t3_result_1, U2 );
+ multiply_horizontal_bwd( *t3_result_2, U3 );
  
+ delete t3_result_1, t3_result_2;
+}
+
+VMML_TEMPLATE_STRING
+void 
+VMML_TEMPLATE_CLASSNAME::horizontal_matricization_bwd( horizontal_matricization_bwd_type& matricization) const
+{
+	slice_type_horizontal_bwd* horizontal_slice = new slice_type_horizontal_bwd();
+	for( size_t i = 0; i < I1; ++i )
+	{
+		get_horizontal_slice_bwd(i, *horizontal_slice );
+		for( size_t col = 0; col < I2; ++col )
+		{
+			matricization.set_column( i*I2+col,  horizontal_slice->get_column(col));
+		} 
+	}
+	delete horizontal_slice;
+}
+
 VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::lateral_matricization_bwd( lateral_matricization_bwd_type& matricization) const
@@ -1025,7 +1133,7 @@ VMML_TEMPLATE_CLASSNAME::lateral_matricization_bwd( lateral_matricization_bwd_ty
 	slice_type_lateral_bwd* lateral_slice = new slice_type_lateral_bwd();
 	for( size_t i = 0; i < I2; ++i )
 	{
-		get_lateral_slice(i, *lateral_slice );
+		get_lateral_slice_bwd(i, *lateral_slice );
 		for( size_t col = 0; col < I3; ++col )
 		{
 			matricization.set_column( i*I3+col,  lateral_slice->get_column(col));
@@ -1039,18 +1147,16 @@ VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::frontal_matricization_bwd( frontal_matricization_bwd_type& matricization) const
 {
-	slice_type_frontal_fwd* frontal_slice = new slice_type_frontal_fwd();
-	slice_type_frontal_bwd* frontal_slice_t = new slice_type_frontal_bwd();
+	slice_type_frontal_bwd* frontal_slice = new slice_type_frontal_bwd();
 	for( size_t i = 0; i < I3; ++i )
 	{
-		get_frontal_slice(i, *frontal_slice );
-		frontal_slice->transpose_to( *frontal_slice_t );
+		get_frontal_slice_bwd(i, *frontal_slice );
 		for( size_t col = 0; col < I1; ++col )
 		{
-			matricization.set_column( i*I1+col, frontal_slice_t->get_column(col));
+			matricization.set_column( i*I1+col, frontal_slice->get_column(col));
 		} 
 	}
-	delete frontal_slice, frontal_slice_t;
+	delete frontal_slice;
 }
 
 

@@ -34,7 +34,7 @@ namespace vmml
         
         for( size_t index = 0; index < 4; ++index )
         {
-            matrix< 2, 3, uint16_t >& m = t3.get_frontal_slice( index );
+            matrix< 2, 3, uint16_t >& m = t3.get_frontal_slice_fwd( index );
             
             tensor3< 2, 3, 4, uint16_t >::matrix_iterator 
                 it      = m.begin(),

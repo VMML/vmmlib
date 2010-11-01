@@ -29,10 +29,6 @@ namespace vmml
 	class tucker3_tensor
 	{
 public:    
-	tucker3_tensor( tensor3< R1, R2, R3, T_coeff >& core, matrix< I1, R1, T_coeff >& U1, matrix< I2, R2, T_coeff >& U2, matrix< I3, R3, T_coeff >& U3 );
-    tucker3_tensor( tensor3< R1, R2, R3, T_coeff >& core );
-	tucker3_tensor();
-
 	typedef tensor3< I1, I2, I3, T_value > t3_type;
 	typedef typename t3_type::iterator t3_iterator;
 	typedef typename t3_type::const_iterator t3_const_iterator;
@@ -68,15 +64,21 @@ public:
 
 	static const size_t SIZE = R1*R2*R3 + I1*R1 + I2*R2 + I3*R3;
 		
-	void set_core( const t3_core_type& core )  { _core = core; } ;
-	void set_u1( const u1_type& U1 ) { _u1 = U1; } ;
-	void set_u2( const u2_type& U2 ) { _u2 = U2; } ;
-	void set_u3( const u3_type& U3 ) { _u3 = U3; } ;
+	tucker3_tensor();
+	tucker3_tensor( t3_core_type& core );
+	tucker3_tensor( t3_core_type& core, u1_type& U1, u2_type& U2, u3_type& U3 );
+	~tucker3_tensor();
+		
+
+	void set_core( const t3_core_type& core )  { _core =  new t3_core_type(core); } ;
+	void set_u1( const u1_type& U1 ) { _u1 = new u1_type(U1); } ;
+	void set_u2( const u2_type& U2 ) { _u2 = new u2_type(U2); } ;
+	void set_u3( const u3_type& U3 ) { _u3 = new u3_type(U3); } ;
 	
-	void get_core( t3_core_type& data_ ) const { data_ = _core; } ;
-	void get_u1( u1_type& U1 ) const { U1 = _u1; } ;
-	void get_u2( u2_type& U2 ) const { U2 = _u2; } ;
-	void get_u3( u3_type& U3 ) const { U3 = _u3; } ;
+	void get_core( t3_core_type& data_ ) const { data_ = *_core; } ;
+	void get_u1( u1_type& U1 ) const { U1 = *_u1; } ;
+	void get_u2( u2_type& U2 ) const { U2 = *_u2; } ;
+	void get_u3( u3_type& U3 ) const { U3 = *_u3; } ;
 		
 	template< typename T >
 	void export_to( std::vector< T >& data_ ) const;
@@ -142,10 +144,10 @@ public:
 	
 	
 private:
-        t3_core_type _core ;
-        u1_type _u1 ;
-        u2_type _u2 ;
-        u3_type _u3 ;
+        t3_core_type* _core ;
+        u1_type* _u1 ;
+        u2_type* _u2 ;
+        u3_type* _u3 ;
 	
 }; // class tucker3_tensor
 
@@ -155,29 +157,38 @@ private:
 
 
 VMML_TEMPLATE_STRING
-VMML_TEMPLATE_CLASSNAME::tucker3_tensor( t3_core_type& core, u1_type& U1, u2_type& U2, u3_type& U3 )
-: _core(core), _u1(U1), _u2(U2), _u3(U3)
-{	
-}
-
-VMML_TEMPLATE_STRING
-VMML_TEMPLATE_CLASSNAME::tucker3_tensor( t3_core_type& core )
-: _core( core ), _u1(u1_type()), _u2(u2_type()), _u3(u3_type())
+VMML_TEMPLATE_CLASSNAME::tucker3_tensor( )
 {
-    _u1.zero();
-    _u2.zero();
-    _u3.zero();
+	_core = new t3_core_type();
+	_u1 = new u1_type();
+	_u2 = new u2_type();
+	_u3 = new u3_type();	
 }
 	
 VMML_TEMPLATE_STRING
-VMML_TEMPLATE_CLASSNAME::tucker3_tensor( )
-: _core(t3_core_type()), _u1(u1_type()), _u2(u2_type()), _u3(u3_type())
+VMML_TEMPLATE_CLASSNAME::tucker3_tensor( t3_core_type& core )
 {
-    _core.zero();
-    _u1.zero();
-    _u2.zero();
-    _u3.zero();
+	set_core( core );
+	_u1 = new u1_type();
+	_u2 = new u2_type();
+	_u3 = new u3_type();	
 }
+
+VMML_TEMPLATE_STRING
+VMML_TEMPLATE_CLASSNAME::tucker3_tensor( t3_core_type& core, u1_type& U1, u2_type& U2, u3_type& U3 )
+{
+	set_core( core );
+	set_u1( U1 );
+	set_u2( U2 );
+	set_u3( U3 );
+}
+	
+VMML_TEMPLATE_STRING
+VMML_TEMPLATE_CLASSNAME::~tucker3_tensor( )
+{
+	delete _core, _u1, _u2, _u3;
+}
+	
 	
 VMML_TEMPLATE_STRING
 void 
@@ -185,7 +196,7 @@ VMML_TEMPLATE_CLASSNAME::reconstruct( t3_type& data_ ) const
 {
     t3_coeff_type* data = new t3_coeff_type();
     data->convert_from_type( data_ );
-    data->full_tensor3_matrix_multiplication( _core, _u1, _u2, _u3 );
+    data->full_tensor3_matrix_multiplication( *_core, *_u1, *_u2, *_u3 );
     data_.convert_from_type( *data );
 	delete data;
 }
@@ -271,9 +282,9 @@ VMML_TEMPLATE_CLASSNAME::hosvd( const t3_type& data_ )
      t3_coeff_type* data = new t3_coeff_type();
      data->convert_from_type( data_ );
      
-     hosvd_mode1( *data, _u1 );
-     hosvd_mode2( *data, _u2 );
-     hosvd_mode3( *data, _u3 );
+     hosvd_mode1( *data, *_u1 );
+     hosvd_mode2( *data, *_u2 );
+     hosvd_mode3( *data, *_u3 );
 	
 	delete data;
 }
@@ -442,22 +453,22 @@ VMML_TEMPLATE_CLASSNAME::hooi( const t3_type& data_ )
      {
              
              //optimize for mode 1
-             optimize_mode1( *data, *projection1, _u2, _u3);
-             hosvd_mode1( *projection1, _u1 );
+             optimize_mode1( *data, *projection1, *_u2, *_u3);
+             hosvd_mode1( *projection1, *_u1 );
              
              //optimize for mode 2
-             optimize_mode2( *data, *projection2, _u1, _u3);
-             hosvd_mode2( *projection2, _u2 );
+             optimize_mode2( *data, *projection2, *_u1, *_u3);
+             hosvd_mode2( *projection2, *_u2 );
              
              //optimize for mode 3
-             optimize_mode3( *data, *projection3, _u1, _u2);
-             hosvd_mode3( *projection3, _u3);
+             optimize_mode3( *data, *projection3, *_u1, *_u2);
+             hosvd_mode3( *projection3, *_u3);
              
-             set_u1( _u1 );
-             set_u2( _u2 );
-             set_u3( _u3 );
-             derive_core_orthogonal_bases(data_, _core, _u1, _u2, _u3);
-             set_core( _core );
+             set_u1( *_u1 );
+             set_u2( *_u2 );
+             set_u3( *_u3 );
+             derive_core_orthogonal_bases(data_, *_core, *_u1, *_u2, *_u3);
+             set_core( *_core );
              
              reconstruct( *approximated_data );
              f_norm = approximated_data->frobenius_norm();
@@ -471,7 +482,7 @@ VMML_TEMPLATE_CLASSNAME::hooi( const t3_type& data_ )
      
      //std::cout << "number of iterations: " << i << std::endl;
      
-     derive_core_orthogonal_bases(data_, _core, _u1, _u2, _u3);
+     derive_core_orthogonal_bases(data_, *_core, *_u1, *_u2, *_u3);
 	
 	delete data, approximated_data, projection1, projection2, projection3;
 
@@ -583,21 +594,21 @@ VMML_TEMPLATE_CLASSNAME::reduce_ranks( const tucker3_tensor< K1, K2, K3, I1, I2,
      other.get_u1( *u1);
      for( size_t r1 = 0; r1 < R1; ++r1 ) 
      {
-             _u1.set_column( r1, u1->get_column( r1 ));
+             _u1->set_column( r1, u1->get_column( r1 ));
      }
      
      matrix< I2, K2, T_coeff >* u2 = new matrix< I2, K2, T_coeff >();
      other.get_u2( *u2 );
      for( size_t r2 = 0; r2 < R2; ++r2) 
      {
-             _u2.set_column( r2, u2->get_column( r2 ));
+             _u2->set_column( r2, u2->get_column( r2 ));
      }
      
      matrix< I3, K3, T_coeff >* u3 = new matrix< I3, K3, T_coeff >();
      other.get_u3( *u3 );
      for( size_t r3 = 0; r3 < R3; ++r3) 
      {
-             _u3.set_column( r3, u3->get_column( r3 ));
+             _u3->set_column( r3, u3->get_column( r3 ));
      }
      
      //reduce core
@@ -610,7 +621,7 @@ VMML_TEMPLATE_CLASSNAME::reduce_ranks( const tucker3_tensor< K1, K2, K3, I1, I2,
           {
               for( size_t r2 = 0; r2 < R2; ++r2 ) 
               {
-                      _core.at( r1, r2, r3 ) = other_core->at( r1, r2, r3 );
+                      _core->at( r1, r2, r3 ) = other_core->at( r1, r2, r3 );
               }
           }
      }
@@ -634,24 +645,24 @@ VMML_TEMPLATE_CLASSNAME::subsampling( const tucker3_tensor< R1, R2, R3, K1, K2, 
      other.get_u1( *u1 );
      for( size_t i1 = 0, i = 0; i1 < K1; i1 += factor, ++i ) 
      {
-             _u1.set_row( i, u1->get_row( i1 ));
+             _u1->set_row( i, u1->get_row( i1 ));
      }
      
      matrix< K2, R2, T_coeff >* u2 = new matrix< K2, R2, T_coeff >();
      other.get_u2( *u2 );
      for( size_t i2 = 0,  i = 0; i2 < K2; i2 += factor, ++i) 
      {
-             _u2.set_row( i, u2->get_row( i2 ));
+             _u2->set_row( i, u2->get_row( i2 ));
      }
      
      matrix< K3, R3, T_coeff >* u3 = new matrix< K3, R3, T_coeff >() ;
      other.get_u3( *u3 );
      for( size_t i3 = 0,  i = 0; i3 < K3; i3 += factor, ++i) 
      {
-             _u3.set_row( i, u3->get_row( i3 ));
+             _u3->set_row( i, u3->get_row( i3 ));
      }
      
-     other.get_core(_core );
+     other.get_core( *_core );
 	
 	delete u1, u2, u3;
 }
@@ -678,7 +689,7 @@ VMML_TEMPLATE_CLASSNAME::subsampling_on_average( const tucker3_tensor< R1, R2, R
                     tmp_row += u1->get_row( j );
 
             tmp_row /= num_items_averaged;
-            _u1.set_row( i, tmp_row);
+            _u1->set_row( i, tmp_row);
     }
     
     matrix< K2, R2, T_coeff >* u2 = new matrix< K2, R2, T_coeff >();
@@ -691,7 +702,7 @@ VMML_TEMPLATE_CLASSNAME::subsampling_on_average( const tucker3_tensor< R1, R2, R
                     tmp_row += u2->get_row( j );
 
             tmp_row /= num_items_averaged;
-            _u2.set_row( i, u2->get_row( i2 ));
+            _u2->set_row( i, u2->get_row( i2 ));
     }
     
     matrix< K3, R3, T_coeff >* u3  = new matrix< K3, R3, T_coeff >();
@@ -704,10 +715,10 @@ VMML_TEMPLATE_CLASSNAME::subsampling_on_average( const tucker3_tensor< R1, R2, R
                     tmp_row += u3->get_row( j );
             
             tmp_row /= num_items_averaged;
-            _u3.set_row( i, u3->get_row( i3 ));
+            _u3->set_row( i, u3->get_row( i3 ));
     }
     
-     other.get_core( _core );
+     other.get_core( *_core );
 	delete u1, u2, u3;
 }
 
@@ -737,24 +748,24 @@ VMML_TEMPLATE_CLASSNAME::region_of_interest( const tucker3_tensor< R1, R2, R3, K
     other.get_u1( *u1 );
     for( size_t i1 = start_index1,  i = 0; i1 < end_index1; ++i1, ++i ) 
     {
-            _u1.set_row( i, u1->get_row( i1 ));
+            _u1->set_row( i, u1->get_row( i1 ));
     }
     
     matrix< K2, R2, T_coeff>* u2 = new matrix< K2, R2, T_coeff>();
     other.get_u2( *u2 );
     for( size_t i2 = start_index2,  i = 0; i2 < end_index2; ++i2, ++i) 
     {
-            _u2.set_row( i, u2->get_row( i2 ));
+            _u2->set_row( i, u2->get_row( i2 ));
     }
     
     matrix< K3, R3, T_coeff >* u3  = new matrix< K3, R3, T_coeff>();
     other.get_u3( *u3 );
     for( size_t i3 = start_index3,  i = 0; i3 < end_index3; ++i3, ++i) 
     {
-            _u3.set_row( i, u3->get_row( i3 ));
+            _u3->set_row( i, u3->get_row( i3 ));
     }
     
-    other.get_core( _core );
+    other.get_core( *_core );
 	
 	delete u1, u2, u3;
 }
@@ -766,29 +777,29 @@ void
 VMML_TEMPLATE_CLASSNAME::export_to( std::vector< T >& data_ ) const
 {
     data_.clear();
-    u1_const_iterator  it = _u1.begin(),
-    it_end = _u1.end();
+    u1_const_iterator  it = _u1->begin(),
+    it_end = _u1->end();
     for( ; it != it_end; ++it )
     {
         data_.push_back( static_cast< T >( *it) );
     }
     
-    u2_const_iterator  u2_it = _u2.begin(),
-    u2_it_end = _u2.end();
+    u2_const_iterator  u2_it = _u2->begin(),
+    u2_it_end = _u2->end();
     for( ; u2_it != u2_it_end; ++u2_it )
     {
         data_.push_back(static_cast< T >(*u2_it) );
     }
 
-    u3_const_iterator  u3_it = _u3.begin(),
-    u3_it_end = _u3.end();
+    u3_const_iterator  u3_it = _u3->begin(),
+    u3_it_end = _u3->end();
     for( ; u3_it != u3_it_end; ++u3_it )
     {
         data_.push_back(static_cast< T >( *u3_it) );
     }
     
-    t3_core_const_iterator  it_core = _core.begin(),
-    it_core_end = _core.end();
+    t3_core_iterator  it_core = _core->begin(),
+    it_core_end = _core->end();
     for( ; it_core != it_core_end; ++it_core )
     {
         data_.push_back(static_cast< T >( *it_core) );
@@ -807,29 +818,29 @@ VMML_TEMPLATE_CLASSNAME::import_from( const std::vector< T >& data_ )
     if ( data_size != SIZE  )
         VMMLIB_ERROR( "import_from: the input data must have the size R1xR2xR3 + R1xI1 + R2xI2 + R3xI3 ", VMMLIB_HERE );
 	
-    u1_iterator  it = _u1.begin(),
-    it_end = _u1.end();
+    u1_iterator  it = _u1->begin(),
+    it_end = _u1->end();
     for( ; it != it_end; ++it, ++i )
     {
             *it = static_cast< T >( data_.at(i));
     }
     
-    u2_iterator  u2_it = _u2.begin(),
-    u2_it_end = _u2.end();
+    u2_iterator  u2_it = _u2->begin(),
+    u2_it_end = _u2->end();
     for( ; u2_it != u2_it_end; ++u2_it, ++i )
     {
             *u2_it = static_cast< T >( data_.at(i));
     }
     
-    u3_iterator  u3_it = _u3.begin(),
-    u3_it_end = _u3.end();
+    u3_iterator  u3_it = _u3->begin(),
+    u3_it_end = _u3->end();
     for( ; u3_it != u3_it_end; ++u3_it, ++i )
     {
             *u3_it = static_cast< T >( data_.at(i));
     }
     
-    t3_core_iterator  it_core = _core.begin(),
-    it_core_end = _core.end();
+    t3_core_iterator  it_core = _core->begin(),
+    it_core_end = _core->end();
     for( ; it_core != it_core_end; ++it_core, ++i )
     {
             *it_core = static_cast< T >( data_.at(i));

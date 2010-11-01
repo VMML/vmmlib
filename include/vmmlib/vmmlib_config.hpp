@@ -11,6 +11,7 @@
 // use vec[2] as before, but things like glVertex3fv( vec )
 // will not work anymore.
 //#define VMMLIB_NO_CONVERSION_OPERATORS
+//#define VMMLIB_DONT_FORCE_ALIGNMENT
 
 #ifndef VMMLIB_CUSTOM_CONFIG
 #  ifndef NDEBUG

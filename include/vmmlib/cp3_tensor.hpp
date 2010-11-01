@@ -33,10 +33,7 @@ namespace vmml
 	template< size_t I1, size_t I2, size_t I3, size_t R, typename T_value = float, typename T_coeff = float >
 	class cp3_tensor
 	{
-	public:    
-		cp3_tensor( matrix< I1, R, T_coeff >& U1, matrix< I2, R, T_coeff >& U2, matrix< I3, R, T_coeff >& U3, vector< R, T_coeff >& lambdas_ );
-		cp3_tensor();
-		
+	public:    		
 		typedef tensor3< I1, I2, I3, T_value > t3_type;
 		typedef typename t3_type::iterator t3_iterator;
 		typedef typename t3_type::const_iterator t3_const_iterator;
@@ -61,15 +58,19 @@ namespace vmml
 		typedef matrix< I2, I1*I3, T_coeff > mode2_matricization_type;
 		typedef matrix< I3, I1*I2, T_coeff > mode3_matricization_type;		
 
-		void set_lambdas( const vector< R, T_coeff >& lambdas_ )  { _lambdas = lambdas_; } ;
-		void set_u1( const u1_type& U1 ) { _u1 = U1; } ;
-		void set_u2( const u2_type& U2 ) { _u2 = U2; } ;
-		void set_u3( const u3_type& U3 ) { _u3 = U3; } ;
+		cp3_tensor(  u1_type& U1, u2_type& U2, u3_type& U3, vector< R, T_coeff >& lambdas_ );
+		cp3_tensor();
+		~cp3_tensor();
 		
-		void get_lambdas( vector< R, T_coeff >& data_ ) const { data_  = _lambdas; } ;
-		void get_u1( u1_type& U1 ) const { U1 = _u1; } ;
-		void get_u2( u2_type& U2 ) const { U2 = _u2; } ;
-		void get_u3( u3_type& U3 ) const { U3 = _u3; } ;
+		void set_lambdas( const vector< R, T_coeff >& lambdas_ )  { _lambdas = new vector< R, T_coeff >(lambdas_); } ;
+		void set_u1( const u1_type& U1 ) { _u1 = new u1_type( U1 ); } ;
+		void set_u2( const u2_type& U2 ) { _u2 = new u2_type( U2 ); } ;
+		void set_u3( const u3_type& U3 ) { _u3 = new u3_type( U3 ); } ;
+		
+		void get_lambdas( vector< R, T_coeff >& data_ ) const { data_  = *_lambdas; } ;
+		void get_u1( u1_type& U1 ) const { U1 = *_u1; } ;
+		void get_u2( u2_type& U2 ) const { U2 = *_u2; } ;
+		void get_u3( u3_type& U3 ) const { U3 = *_u3; } ;
 		
 		void export_to( std::vector< T_coeff >& data_ ) const;
 		void import_from( std::vector< T_coeff >& data_ );	
@@ -91,10 +92,10 @@ namespace vmml
 		float_t optimize_mode3( const t3_type& data_, const u1_type& U1_, const u2_type& U2_, u3_type& U3_optimized_ ) const;
 		
 	private:
-		vector< R, T_coeff > _lambdas ;
-		u1_type _u1 ;
-		u2_type _u2 ;
-		u3_type _u3 ;
+		vector< R, T_coeff >* _lambdas ;
+		u1_type* _u1 ;
+		u2_type* _u2 ;
+		u3_type* _u3 ;
 		
 	}; // class cp3_tensor
 	
@@ -105,27 +106,38 @@ namespace vmml
 	
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::cp3_tensor( u1_type& U1, u2_type& U2, u3_type& U3, vector< R, T_coeff >& lambdas_ )
-: _lambdas(lambdas_), _u1(U1), _u2(U2), _u3(U3)
 {
+	set_lambdas(lambdas_);
+	set_u1( U1);
+	set_u2( U2);
+	set_u3( U3);
 }
 
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::cp3_tensor()
-: _lambdas(0), _u1(0), _u2(0), _u3(0)
 {
+	_lambdas = new vector< R, T_coeff>();
+	_u1 = new u1_type();
+	_u2 = new u2_type();
+	_u3 = new u3_type();
 }
 	
+VMML_TEMPLATE_STRING
+VMML_TEMPLATE_CLASSNAME::~cp3_tensor()
+{
+	delete _u1, _u2, _u3, _lambdas;
+}
 	
 VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::reconstruct( t3_type& data_ ) const
 {
 	tensor3< R, R, R, T_coeff > core_diag;
-	core_diag.diag( _lambdas );
+	core_diag.diag( *_lambdas );
 	
 	t3_coeff_type data;
 	data.convert_from_type( data_ );
-	data.full_tensor3_matrix_multiplication( core_diag, _u1, _u2, _u3 );
+	data.full_tensor3_matrix_multiplication( core_diag, *_u1, *_u2, *_u3 );
 	data_.convert_from_type( data );
 }
 
@@ -165,8 +177,8 @@ VMML_TEMPLATE_CLASSNAME::hopm( const t3_type& data_ )
 	
 	//intialize u1-u3
 	//hosvd_mode1( data_, _u1 ); inital guess not needed for u1 since it will be computed in the first optimization step
-	hosvd_mode2( data_, _u2 );
-	hosvd_mode3( data_, _u3 );
+	hosvd_mode2( data_, *_u2 );
+	hosvd_mode3( data_, *_u3 );
 	
 	//std::cout << "initial u2: " << std::endl << _u2 << std::endl;
 	//std::cout << "initial u3: " << std::endl << _u3 << std::endl;
@@ -177,21 +189,21 @@ VMML_TEMPLATE_CLASSNAME::hopm( const t3_type& data_ )
 	{
 		
 		//optimize u1
-		optimize_mode1( data_, _u1, _u2, _u3);
+		optimize_mode1( data_, *_u1, *_u2, *_u3);
 		//std::cout << std::endl << " *** iteration: " << i << std::endl << " new u1: " << std::endl << _u1 << std::endl;
 
 		//optimize u1
-		optimize_mode2( data_, _u1, _u2, _u3);
+		optimize_mode2( data_, *_u1, *_u2, *_u3);
 		//std::cout << " new u2: " << std::endl << _u2 << std::endl;
 
 		//optimize u1
-		lambda = optimize_mode3( data_, _u1, _u2, _u3);
+		lambda = optimize_mode3( data_, *_u1, *_u2, *_u3);
 		//std::cout << " new u3: " << std::endl << _u3 <<  std::endl;
 		
 		
-		set_u1(_u1); set_u2(_u2); set_u3(_u3);
-		_lambdas.at(0) = lambda; //TODO: for all lambdas/ranks
-		set_lambdas( _lambdas );
+		set_u1( *_u1 ); set_u2( *_u2 ); set_u3( *_u3 );
+		_lambdas->at(0) = lambda; //TODO: for all lambdas/ranks
+		set_lambdas( *_lambdas );
 		
 		reconstruct( approximated_data );
 		f_norm = approximated_data.frobenius_norm();

@@ -114,6 +114,12 @@ public:
 	void hosvd_from_optimized_mode2( const tensor3< R1, I2, R3, T_coeff >& data_, u2_type& U2_ ) const;
 	void hosvd_from_optimized_mode3( const tensor3< R1, R2, I3, T_coeff >& data_, u3_type& U3_ ) const;
 		
+	template< size_t J1, size_t J2, size_t J3, typename T >
+		void hosvd_mode1_( const tensor3<J1, J2, J3, T>& data_, matrix<J1, R1, T>& U1_ ) const;
+	template< size_t J1, size_t J2, size_t J3, typename T >
+		void hosvd_mode2_( const tensor3<J1, J2, J3, T>& data_, matrix<J2, R2, T>& U2_ ) const;
+	template< size_t J1, size_t J2, size_t J3, typename T >
+		void hosvd_mode3_( const tensor3<J1, J2, J3, T>& data_, matrix<J3, R3, T>& U3_ ) const;
 		
 		
 	/*	higher-order orthogonal iteration (HOOI) is a truncated HOSVD decompositions, i.e., the HOSVD components are of lower-ranks. An optimal rank-reduction is 
@@ -231,9 +237,9 @@ VMML_TEMPLATE_CLASSNAME::hosvd( const t3_type& data_ )
 	t3_coeff_type* data = new t3_coeff_type();
 	data->convert_from_type( data_ );
 	
-	hosvd_mode1( *data, *_u1 );
-	hosvd_mode2( *data, *_u2 );
-	hosvd_mode3( *data, *_u3 );
+	hosvd_mode1_( *data, *_u1 );
+	hosvd_mode2_( *data, *_u2 );
+	hosvd_mode3_( *data, *_u3 );
 	
 	derive_core_orthogonal_bases( data_, *_core, *_u1, *_u2, *_u3 );
 	
@@ -272,15 +278,15 @@ VMML_TEMPLATE_CLASSNAME::hooi( const t3_type& data_ )
 		
 		//optimize for mode 1
 		optimize_mode1( *data, *projection1, *_u2, *_u3);
-		hosvd_from_optimized_mode1( *projection1, *_u1 );
+		hosvd_mode1_( *projection1, *_u1 );
 		
 		//optimize for mode 2
 		optimize_mode2( *data, *projection2, *_u1, *_u3);
-		hosvd_from_optimized_mode2( *projection2, *_u2 );
+		hosvd_mode2_( *projection2, *_u2 );
 		
 		//optimize for mode 3
 		optimize_mode3( *data, *projection3, *_u1, *_u2);
-		hosvd_from_optimized_mode3( *projection3, *_u3);
+		hosvd_mode3_( *projection3, *_u3);
 		
 		set_u1( *_u1 );
 		set_u2( *_u2 );
@@ -315,6 +321,67 @@ VMML_TEMPLATE_CLASSNAME::hooi( const t3_type& data_ )
 	
 	
 
+VMML_TEMPLATE_STRING
+template< size_t J1, size_t J2, size_t J3, typename T>
+void 
+VMML_TEMPLATE_CLASSNAME::hosvd_mode1_( const tensor3<J1, J2, J3, T>& data_, matrix<J1, R1, T>& U1_ ) const
+{
+	matrix< J1, J2*J3, T>* u = new matrix< J1, J2*J3, T>(); // -> u1
+	data_.lateral_matricization_bwd( *u );
+	
+	vector< J2*J3, T >* lambdas  = new vector< J2*J3, T >();
+	lapack_svd< J1, J2*J3, T >* svd = new lapack_svd< J1, J2*J3, T >();
+	if( svd->compute_and_overwrite_input( *u, *lambdas ))
+		u->get_sub_matrix( U1_ );
+	else 
+		U1_.zero();
+	
+	delete u, lambdas, svd;
+}	
+	
+	
+VMML_TEMPLATE_STRING
+template< size_t J1, size_t J2, size_t J3, typename T>
+void 
+VMML_TEMPLATE_CLASSNAME::hosvd_mode2_( const tensor3<J1, J2, J3, T>& data_, matrix<J2, R2, T>& U2_ ) const
+{
+	matrix< J2, J1*J3, T>* u = new matrix< J2, J1*J3, T>(); // -> u1
+	data_.frontal_matricization_bwd( *u );
+	
+	vector< J1*J3, T >* lambdas  = new vector< J1*J3, T >();
+	lapack_svd< J2, J1*J3, T >* svd = new lapack_svd< J2, J1*J3, T >();
+	if( svd->compute_and_overwrite_input( *u, *lambdas ))
+		u->get_sub_matrix( U2_ );
+	else 
+		U2_.zero();
+	delete u, lambdas, svd;
+}
+
+
+
+VMML_TEMPLATE_STRING
+template< size_t J1, size_t J2, size_t J3, typename T>
+void 
+VMML_TEMPLATE_CLASSNAME::hosvd_mode3_( const tensor3<J1, J2, J3, T>& data_, matrix<J3, R3, T>& U3_  ) const
+{
+	matrix< J3, J1*J2, T>* u = new matrix< J3, J1*J2, T>(); // -> u1
+	data_.horizontal_matricization_bwd( *u );
+	
+	vector< J1*J2, T>* lambdas  = new vector<  J1*J2, T >();
+	lapack_svd< J3, J1*J2, T >* svd = new lapack_svd<  J3, J1*J2, T >();
+	if( svd->compute_and_overwrite_input( *u, *lambdas ))
+		u->get_sub_matrix( U3_ );
+	else 
+		U3_.zero();
+	
+	delete u, lambdas, svd;
+}
+
+	
+	
+	
+	
+	
 VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::hosvd_mode1( const t3_coeff_type& data_, u1_type& U1_ ) const

@@ -235,6 +235,8 @@ VMML_TEMPLATE_CLASSNAME::hosvd( const t3_type& data_ )
 	hosvd_mode2( *data, *_u2 );
 	hosvd_mode3( *data, *_u3 );
 	
+	derive_core_orthogonal_bases( data_, *_core, *_u1, *_u2, *_u3 );
+	
 	delete data;
 }
 

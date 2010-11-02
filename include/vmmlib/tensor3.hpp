@@ -905,7 +905,7 @@ VMML_TEMPLATE_CLASSNAME::get_initialized_tensor3()
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::tensor3()
 {
-    // no initialization for performance reasons.
+	zero();
 }
 
 

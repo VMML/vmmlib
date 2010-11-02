@@ -110,6 +110,11 @@ public:
 	void hosvd_mode2( const t3_coeff_type& data_, u2_type& U2_ ) const;
 	void hosvd_mode3( const t3_coeff_type& data_, u3_type& U3_ ) const;
 
+	void hosvd_from_optimized_mode1( const tensor3< I1, R2, R3, T_coeff >& data_, u1_type& U1_ ) const;
+	void hosvd_from_optimized_mode2( const tensor3< R1, I2, R3, T_coeff >& data_, u2_type& U2_ ) const;
+	void hosvd_from_optimized_mode3( const tensor3< R1, R2, I3, T_coeff >& data_, u3_type& U3_ ) const;
+		
+		
 		
 	/*	higher-order orthogonal iteration (HOOI) is a truncated HOSVD decompositions, i.e., the HOSVD components are of lower-ranks. An optimal rank-reduction is 
 		performed with an alternating least-squares (ALS) algorithm, which minimizes the error between the approximated and orignal tensor based on the Frobenius norm
@@ -219,6 +224,94 @@ VMML_TEMPLATE_CLASSNAME::tucker_als( const t3_type& data_ )
      derive_core_orthogonal_bases( data_, *_core, *_u1, *_u2, *_u3 );
 }
 
+VMML_TEMPLATE_STRING
+void 
+VMML_TEMPLATE_CLASSNAME::hosvd( const t3_type& data_ )
+{	
+	t3_coeff_type* data = new t3_coeff_type();
+	data->convert_from_type( data_ );
+	
+	hosvd_mode1( *data, *_u1 );
+	hosvd_mode2( *data, *_u2 );
+	hosvd_mode3( *data, *_u3 );
+	
+	delete data;
+}
+
+VMML_TEMPLATE_STRING
+void 
+VMML_TEMPLATE_CLASSNAME::hooi( const t3_type& data_ )
+{
+	//intialize basis matrices
+	hosvd( data_ );
+	
+	t3_coeff_type* data = new t3_coeff_type();
+	data->convert_from_type( data_ );
+	
+	//compute best rank-(R1, R2, R3) approximation (Lathauwer et al., 2000b)
+	t3_type* approximated_data =  new t3_type();
+	reconstruct( *approximated_data );
+	float_t f_norm = approximated_data->frobenius_norm();
+	float_t max_f_norm = data_.frobenius_norm();
+	//std::cout << "frobenius norm original: " << max_f_norm << std::endl;
+	
+	float_t last_f_norm = f_norm;
+	float_t improvement = max_f_norm - f_norm;
+	float_t min_improvement = 0.1;
+	size_t i = 0;
+	size_t max_iterations = 3;
+	
+	tensor3< I1, R2, R3, T_coeff >* projection1 = new tensor3< I1, R2, R3, T_coeff >(); 
+	tensor3< R1, I2, R3, T_coeff >* projection2 = new tensor3< R1, I2, R3, T_coeff >(); 
+	tensor3< R1, R2, I3, T_coeff >* projection3 = new tensor3< R1, R2, I3, T_coeff >(); 
+	
+	while( (improvement > min_improvement) && (i < max_iterations) )
+	{
+		
+		//optimize for mode 1
+		optimize_mode1( *data, *projection1, *_u2, *_u3);
+		hosvd_from_optimized_mode1( *projection1, *_u1 );
+		
+		//optimize for mode 2
+		optimize_mode2( *data, *projection2, *_u1, *_u3);
+		hosvd_from_optimized_mode2( *projection2, *_u2 );
+		
+		//optimize for mode 3
+		optimize_mode3( *data, *projection3, *_u1, *_u2);
+		hosvd_from_optimized_mode3( *projection3, *_u3);
+		
+		set_u1( *_u1 );
+		set_u2( *_u2 );
+		set_u3( *_u3 );
+		derive_core_orthogonal_bases(data_, *_core, *_u1, *_u2, *_u3);
+		set_core( *_core );
+		
+		reconstruct( *approximated_data );
+		f_norm = approximated_data->frobenius_norm();
+		improvement = f_norm - last_f_norm;
+		last_f_norm = f_norm;
+		
+		//std::cout << "iteration '" << i << "': frobenius norm: " << std::setprecision(8) << f_norm << ", improvement: " << improvement << std::endl;
+		
+		++i;
+	}
+	
+	//std::cout << "number of iterations: " << i << std::endl;
+	
+	derive_core_orthogonal_bases(data_, *_core, *_u1, *_u2, *_u3);
+	
+	delete data, approximated_data, projection1, projection2, projection3;
+	
+#if 0
+	std::cout  << "tucker3 export_to: " << std::endl
+	<< "u1: " << std::endl << _u1 << std::endl
+	<< "u2: " << std::endl << _u2 << std::endl
+	<< "u3: " << std::endl << _u3 << std::endl
+	<< "core: " << std::endl << _core << std::endl;
+#endif
+}	
+	
+	
 
 VMML_TEMPLATE_STRING
 void 
@@ -275,55 +368,63 @@ VMML_TEMPLATE_CLASSNAME::hosvd_mode3( const t3_coeff_type& data_, u3_type& U3_ )
 }
 
 
-VMML_TEMPLATE_STRING
-void 
-VMML_TEMPLATE_CLASSNAME::hosvd( const t3_type& data_ )
-{	
-     t3_coeff_type* data = new t3_coeff_type();
-     data->convert_from_type( data_ );
-     
-     hosvd_mode1( *data, *_u1 );
-     hosvd_mode2( *data, *_u2 );
-     hosvd_mode3( *data, *_u3 );
-	
-	delete data;
-}
-
 
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::hosvd_on_eigs( const t3_type& data_ )
+VMML_TEMPLATE_CLASSNAME::hosvd_from_optimized_mode1( const tensor3< I1, R2, R3, T_coeff >& data_, u1_type& U1_ ) const
 {
-     //matricization along each mode (backward matricization after Lathauwer et al. 2000a)
-     mode1_matricization_type* m_lateral = new mode1_matricization_type(); // -> u1
-     mode2_matricization_type* m_frontal = new mode2_matricization_type(); // -> u2
-     mode3_matricization_type* m_horizontal = new mode3_matricization_type(); //-> u3
-     data_.lateral_matricization( *m_lateral);
-     data_.frontal_matricization( *m_frontal);
-     data_.horizontal_matricization( *m_horizontal);
-     
-     //std::cout << "tensor input for tucker, method1: " << std::endl << tensor_ << std::endl;
-     
-     //2-mode PCA for each matricization A_n: (1) covariance matrix, (2) SVD
-     //covariance matrix S_n for each matrizitation A_n
-     matrix< I1, I1, T_coeff >* s1  = new matrix< I1, I1, T_coeff >();
-     matrix< I2, I2, T_coeff >* s2 = new matrix< I2, I2, T_coeff >();
-     matrix< I3, I3, T_coeff >* s3  = new matrix< I3, I3, T_coeff >();
-     
-     s1->multiply( *m_lateral, transpose( *m_lateral));
-     s2->multiply( *m_frontal, transpose( *m_frontal));
-     s3->multiply( *m_horizontal, transpose( *m_horizontal));
-     
-     /*std::cout << "covariance matrix s1: " << std::endl << s1 << std::endl 
-      << "covariance matrix s2: " << s2 << std::endl
-      << "covariance matrix s3: " << s3 << std::endl;*/
-     
-     //eigenvalue decomposition for each covariance matrix
-     
-	delete m_frontal, m_lateral, m_horizontal, s1, s2, s3;
+	matrix< I1, R2*R3, T_coeff >* u = new matrix< I1, R2*R3, T_coeff >(); // -> u1
+	data_.lateral_matricization_bwd( *u );
+	
+	//std::cout << "lateral unfolding, mode 1: " << u << std::endl;
+	vector< R2*R3, T_coeff >* lambdas  = new vector< R2*R3, T_coeff >();
+	lapack_svd< I1, R2*R3, T_coeff >* svd = new lapack_svd< I1, R2*R3, T_coeff >();
+	if( svd->compute_and_overwrite_input( *u, *lambdas ))
+		u->get_sub_matrix( U1_ );
+	else 
+		U1_.zero();
+	
+	delete u, lambdas, svd;
 }
 
+
+VMML_TEMPLATE_STRING
+void 
+VMML_TEMPLATE_CLASSNAME::hosvd_from_optimized_mode2( const tensor3< R1, I2, R3, T_coeff >& data_, u2_type& U2_ ) const
+{
+	matrix< I2, R1*R3, T_coeff >* u  = new matrix< I2, R1*R3, T_coeff >(); // -> u2
+	data_.frontal_matricization_bwd( *u );
 	
+	vector< R1*R3, T_coeff >* lambdas  = new  vector< R1*R3, T_coeff>();
+	lapack_svd< I2, R1*R3, T_coeff >* svd = new lapack_svd< I2, R1*R3, T_coeff >();
+	if( svd->compute_and_overwrite_input( *u, *lambdas ))
+		u->get_sub_matrix( U2_ );
+	else 
+		U2_.zero();
+	delete u, lambdas, svd;
+}
+
+
+
+VMML_TEMPLATE_STRING
+void 
+VMML_TEMPLATE_CLASSNAME::hosvd_from_optimized_mode3( const tensor3< R1, R2, I3, T_coeff >& data_, u3_type& U3_ ) const
+{
+	matrix< I3, R1*R2, T_coeff >* u = new matrix< I3, R1*R2, T_coeff >(); //-> u3
+	data_.horizontal_matricization_bwd( *u );
+	
+	vector< R1*R2, T_coeff >* lambdas = new vector< R1*R2, T_coeff >();
+	lapack_svd< I3, R1*R2, T_coeff >*  svd  = new lapack_svd< I3, R1*R2, T_coeff >();
+	if( svd->compute_and_overwrite_input( *u, *lambdas ))
+		u->get_sub_matrix( U3_ );
+	else 
+		U3_.zero();
+	
+	delete u, lambdas, svd;
+}
+
+
+		
 VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::optimize_mode1( const t3_coeff_type& data_, tensor3< I1, R2, R3, T_coeff >& projection_, const u2_type& U2_, const u3_type& U3_ ) const
@@ -421,79 +522,6 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode3( const t3_coeff_type& data_, tensor3< R1
 	delete u1_pinv, u2_pinv, tmp;
 }
      
-     
-VMML_TEMPLATE_STRING
-void 
-VMML_TEMPLATE_CLASSNAME::hooi( const t3_type& data_ )
-{
-     //intialize basis matrices
-     hosvd( data_ );
-     
-     t3_coeff_type* data = new t3_coeff_type();
-     data->convert_from_type( data_ );
-             
-     //compute best rank-(R1, R2, R3) approximation (Lathauwer et al., 2000b)
-     t3_type* approximated_data =  new t3_type();
-     reconstruct( *approximated_data );
-     float_t f_norm = approximated_data->frobenius_norm();
-     float_t max_f_norm = data_.frobenius_norm();
-     //std::cout << "frobenius norm original: " << max_f_norm << std::endl;
-     
-     float_t last_f_norm = f_norm;
-     float_t improvement = max_f_norm - f_norm;
-     float_t min_improvement = 0.1;
-     size_t i = 0;
-     size_t max_iterations = 3;
-     
-	tensor3< I1, R2, R3, T_coeff >* projection1 = new tensor3< I1, R2, R3, T_coeff >(); 
-	tensor3< R1, I2, R3, T_coeff >* projection2 = new tensor3< R1, I2, R3, T_coeff >(); 
-	tensor3< R1, R2, I3, T_coeff >* projection3 = new tensor3< R1, R2, I3, T_coeff >(); 
-	
-     while( improvement > min_improvement && i < max_iterations )
-     {
-             
-             //optimize for mode 1
-             optimize_mode1( *data, *projection1, *_u2, *_u3);
-             hosvd_mode1( *projection1, *_u1 );
-             
-             //optimize for mode 2
-             optimize_mode2( *data, *projection2, *_u1, *_u3);
-             hosvd_mode2( *projection2, *_u2 );
-             
-             //optimize for mode 3
-             optimize_mode3( *data, *projection3, *_u1, *_u2);
-             hosvd_mode3( *projection3, *_u3);
-             
-             set_u1( *_u1 );
-             set_u2( *_u2 );
-             set_u3( *_u3 );
-             derive_core_orthogonal_bases(data_, *_core, *_u1, *_u2, *_u3);
-             set_core( *_core );
-             
-             reconstruct( *approximated_data );
-             f_norm = approximated_data->frobenius_norm();
-             improvement = f_norm - last_f_norm;
-             last_f_norm = f_norm;
-             
-             //std::cout << "iteration '" << i << "': frobenius norm: " << std::setprecision(8) << f_norm << ", improvement: " << improvement << std::endl;
-             
-             ++i;
-     }
-     
-     //std::cout << "number of iterations: " << i << std::endl;
-     
-     derive_core_orthogonal_bases(data_, *_core, *_u1, *_u2, *_u3);
-	
-	delete data, approximated_data, projection1, projection2, projection3;
-
-#if 0
-     std::cout  << "tucker3 export_to: " << std::endl
-                << "u1: " << std::endl << _u1 << std::endl
-                << "u2: " << std::endl << _u2 << std::endl
-                << "u3: " << std::endl << _u3 << std::endl
-                << "core: " << std::endl << _core << std::endl;
-#endif
-}	
 
 VMML_TEMPLATE_STRING
 void 
@@ -847,6 +875,39 @@ VMML_TEMPLATE_CLASSNAME::import_from( const std::vector< T >& data_ )
     }
 }
 
+	
+VMML_TEMPLATE_STRING
+void 
+VMML_TEMPLATE_CLASSNAME::hosvd_on_eigs( const t3_type& data_ )
+{
+	//matricization along each mode (backward matricization after Lathauwer et al. 2000a)
+	mode1_matricization_type* m_lateral = new mode1_matricization_type(); // -> u1
+	mode2_matricization_type* m_frontal = new mode2_matricization_type(); // -> u2
+	mode3_matricization_type* m_horizontal = new mode3_matricization_type(); //-> u3
+	data_.lateral_matricization( *m_lateral);
+	data_.frontal_matricization( *m_frontal);
+	data_.horizontal_matricization( *m_horizontal);
+	
+	//std::cout << "tensor input for tucker, method1: " << std::endl << tensor_ << std::endl;
+	
+	//2-mode PCA for each matricization A_n: (1) covariance matrix, (2) SVD
+	//covariance matrix S_n for each matrizitation A_n
+	matrix< I1, I1, T_coeff >* s1  = new matrix< I1, I1, T_coeff >();
+	matrix< I2, I2, T_coeff >* s2 = new matrix< I2, I2, T_coeff >();
+	matrix< I3, I3, T_coeff >* s3  = new matrix< I3, I3, T_coeff >();
+	
+	s1->multiply( *m_lateral, transpose( *m_lateral));
+	s2->multiply( *m_frontal, transpose( *m_frontal));
+	s3->multiply( *m_horizontal, transpose( *m_horizontal));
+	
+	/*std::cout << "covariance matrix s1: " << std::endl << s1 << std::endl 
+	 << "covariance matrix s2: " << s2 << std::endl
+	 << "covariance matrix s3: " << s3 << std::endl;*/
+	
+	//eigenvalue decomposition for each covariance matrix
+	
+	delete m_frontal, m_lateral, m_horizontal, s1, s2, s3;
+}
 
 #undef VMML_TEMPLATE_STRING
 #undef VMML_TEMPLATE_CLASSNAME

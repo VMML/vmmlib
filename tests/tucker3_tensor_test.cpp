@@ -175,16 +175,16 @@ namespace vmml
 		matrix<3, 2, double> u1_hooi_check_2;
 		matrix<2, 2, double> u2_hooi_check_2;
 		matrix<2, 1, double> u3_hooi_check_2;
-		double data_u1_hooi_step2[] = {-0.2789474111071825, -0.4141266306147141, 0.5983607967045261, -0.7806355076145298, 0.7511009910815755, 0.4680890279285662}; //original from paper (u1): {-0.2789, -0.4141, 0.5984, -0.7806, 0.7511, 0.4681};
+		double data_u1_hooi_step2[] = { -0.2789474111071824, -0.4141266306147135, 0.5983607967045262, -0.7806355076145295, 0.7511009910815754, 0.4680890279285661}; //original from paper (u1): {-0.2789, -0.4141, 0.5984, -0.7806, 0.7511, 0.4681};
 		u1_hooi_check_2.set( data_u1_hooi_step2, data_u1_hooi_step2 + 6);
-		double data_u2_hooi_step2[] = {0.09816424894941822, 0.9951702267593203, 0.9951702267593203, -0.09816424894941811};//original in paper (u2): 0.0982, -0.9952, 0.9952, 0.0982};
+		double data_u2_hooi_step2[] = { -0.09816424894941811, -0.9951702267593202, -0.9951702267593202, 0.098164248949418}; //original in paper (u2): 0.0982, -0.9952, 0.9952, 0.0982};
 		u2_hooi_check_2.set( data_u2_hooi_step2, data_u2_hooi_step2 + 4);
-		double data_u3_hooi_step2[] = {-0.5104644303570166, 0.8598988692516618};//original in paper (u3): {0.5105, -0.8599};
+		double data_u3_hooi_step2[] = {-0.5104644303570166, 0.8598988692516616};//original in paper (u3): {0.5105, -0.8599};
 		u3_hooi_check_2.set( data_u3_hooi_step2, data_u3_hooi_step2 + 2);
 		
 		tensor3<2, 2, 1, double> core_hooi_2;
 		tensor3<2, 2, 1, double> core_hooi_check_2;
-		double data_core_hooi_2[] = { -10.14733447424582, 0.0, 0.0, 2.760705584847321 };
+		double data_core_hooi_2[] = { 10.14733447424582, 0.0, 0.0, -2.760705584847321 };
 		core_hooi_check_2.set( data_core_hooi_2, data_core_hooi_2 + 4);
 		
 		tucker3_tensor< 2, 2, 1, 3, 2, 2, double, double > tuck3_hooi_2( core_hooi_2, u1_hooi_2, u2_hooi_2, u3_hooi_2 );

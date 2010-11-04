@@ -25,7 +25,7 @@
 namespace vmml
 {
 	
-	template< size_t R1, size_t R2, size_t R3, size_t I1, size_t I2, size_t I3, typename T_value = float, typename T_coeff = float >
+	template< size_t R1, size_t R2, size_t R3, size_t I1, size_t I2, size_t I3, typename T_value = uint8_t, typename T_coeff = double >
 	class tucker3_tensor
 	{
 public:    
@@ -202,9 +202,16 @@ void
 VMML_TEMPLATE_CLASSNAME::reconstruct( t3_type& data_ ) const
 {
     t3_coeff_type* data = new t3_coeff_type();
-    data->convert_from_type( data_ );
+    data->cast_from_type( data_ );
     data->full_tensor3_matrix_multiplication( *_core, *_u1, *_u2, *_u3 );
-    data_.convert_from_type( *data );
+	
+	//convert reconstructed data, which is in type T_coeff (double, float) to T_value (uint8 or uint16)
+	if( (sizeof(T_value) == sizeof(uint8_t)) || (sizeof(T_value) == sizeof(uint16_t)) ){
+		data_.float_t_to_uint_t( *data );
+	} else {
+		data_.cast_from_type( *data );
+	}
+	
 	delete data;
 }
 
@@ -229,7 +236,7 @@ void
 VMML_TEMPLATE_CLASSNAME::hosvd( const t3_type& data_ )
 {	
 	t3_coeff_type* data = new t3_coeff_type();
-	data->convert_from_type( data_ );
+	data->cast_from_type( data_ );
 	
 #if 1	
 	hosvd_mode1( *data, *_u1 );
@@ -261,7 +268,6 @@ VMML_TEMPLATE_CLASSNAME::fill_random_2d( int seed, matrix< M, N, T_coeff >& u)
 		{
 			fillValue = rand();
 			fillValue /= RAND_MAX;
-			//fillValue *= std::numeric_limits< double >::max();
 			u.at( row, col ) = -1.0 + 2.0 * static_cast< double >( fillValue )  ;
 		}
 	}
@@ -275,7 +281,7 @@ VMML_TEMPLATE_CLASSNAME::hooi( const t3_type& data_ )
 	hosvd( data_ );
 	
 	t3_coeff_type* data = new t3_coeff_type();
-	data->convert_from_type( data_ );
+	data->cast_from_type( data_ );
 	
 	//compute best rank-(R1, R2, R3) approximation (Lathauwer et al., 2000b)
 	t3_type* approximated_data =  new t3_type();
@@ -526,7 +532,7 @@ VMML_TEMPLATE_CLASSNAME::derive_core_orthogonal_bases( const t3_type& data_, t3_
 	*u3_inv = transpose( U3_ );
      
      t3_coeff_type* data  = new t3_coeff_type();
-     data->convert_from_type( data_ );
+     data->cast_from_type( data_ );
      core_.full_tensor3_matrix_multiplication( *data, *u1_inv, *u2_inv, *u3_inv );
 	
 	delete u1_inv, u2_inv, u3_inv, data; 
@@ -562,7 +568,7 @@ VMML_TEMPLATE_CLASSNAME::derive_core( const t3_type& data_, t3_core_type& core_,
 	*u3_pinv = transpose( u3_pinv_t );
 	
 	t3_coeff_type* data = new t3_coeff_type();
-	data->convert_from_type( data_ );
+	data->cast_from_type( data_ );
 	core_.full_tensor3_matrix_multiplication( *data, *u1_pinv, *u2_pinv, *u3_pinv );
 	
 	delete u1_pinv, u2_pinv, u3_pinv, data; 

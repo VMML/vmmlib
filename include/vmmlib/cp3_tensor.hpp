@@ -136,9 +136,13 @@ VMML_TEMPLATE_CLASSNAME::reconstruct( t3_type& data_ ) const
 	core_diag.diag( *_lambdas );
 	
 	t3_coeff_type data;
-	data.convert_from_type( data_ );
+	data.cast_from_type( data_ );
 	data.full_tensor3_matrix_multiplication( core_diag, *_u1, *_u2, *_u3 );
-	data_.convert_from_type( data );
+	if( (sizeof(T_value) == sizeof(uint8_t)) || (sizeof(T_value) == sizeof(uint16_t)) ){
+		data_.float_t_to_uint_t( data );
+	} else {
+		data_.cast_from_type( data );
+	}
 }
 
 
@@ -223,7 +227,7 @@ void
 VMML_TEMPLATE_CLASSNAME::hosvd_mode1( const t3_type& data_, u1_type& U1_ ) const
 {
 	t3_coeff_type data;
-	data.convert_from_type( data_ );
+	data.cast_from_type( data_ );
 	mode1_matricization_type u; // -> u1
 	data.lateral_matricization( u);
 		
@@ -241,7 +245,7 @@ void
 VMML_TEMPLATE_CLASSNAME::hosvd_mode2( const t3_type& data_, u2_type& U2_ ) const
 {
 	t3_coeff_type data;
-	data.convert_from_type( data_ );
+	data.cast_from_type( data_ );
 	mode2_matricization_type u; // -> u2
 	data.frontal_matricization_bwd( u );
 	
@@ -260,7 +264,7 @@ void
 VMML_TEMPLATE_CLASSNAME::hosvd_mode3( const t3_type& data_, u3_type& U3_ ) const
 {
 	t3_coeff_type data;
-	data.convert_from_type( data_ );
+	data.cast_from_type( data_ );
 	mode3_matricization_type u; //-> u3
 	data.horizontal_matricization_bwd( u );
 	
@@ -279,7 +283,7 @@ void
 VMML_TEMPLATE_CLASSNAME::optimize_mode1( const t3_type& data_, u1_type& U1_optimized_, const u2_type& U2_, const u3_type& U3_ ) const
 {	
 	t3_coeff_type data;
-	data.convert_from_type( data_ );
+	data.cast_from_type( data_ );
 	mode1_matricization_type unfolding; // -> u1
 	data.lateral_matricization_bwd( unfolding );
 	
@@ -302,7 +306,7 @@ void
 VMML_TEMPLATE_CLASSNAME::optimize_mode2( const t3_type& data_, const u1_type& U1_, u2_type& U2_optimized_, const u3_type& U3_ ) const
 {
 	t3_coeff_type data;
-	data.convert_from_type( data_ );
+	data.cast_from_type( data_ );
 	mode2_matricization_type unfolding; // -> u2
 	data.frontal_matricization_bwd( unfolding );
 	
@@ -322,7 +326,7 @@ float_t
 VMML_TEMPLATE_CLASSNAME::optimize_mode3( const t3_type& data_, const u1_type& U1_, const u2_type& U2_,  u3_type& U3_optimized_ ) const
 {
 	t3_coeff_type data;
-	data.convert_from_type( data_ );
+	data.cast_from_type( data_ );
 	mode3_matricization_type unfolding; //-> u3
 	data.horizontal_matricization_bwd( unfolding);
 	

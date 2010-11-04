@@ -181,8 +181,11 @@ public:
     double rmse( const tensor3< I1, I2, I3, T >& other ) const; //root mean-squared error
     
     template< typename TT >
-    void convert_from_type( const tensor3< I1, I2, I3, TT >& other );
-
+    void cast_from_type( const tensor3< I1, I2, I3, TT >& other );
+	
+    template< typename TT >
+    void float_t_to_uint_t( const tensor3< I1, I2, I3, TT >& other );
+	
     void export_to( std::vector< T >& data_ ) const ;
     void import_from( const std::vector< T >& data_ ) ;
     
@@ -1240,7 +1243,7 @@ VMML_TEMPLATE_CLASSNAME::rmse( const tensor3< I1, I2, I3, T >& other ) const
 VMML_TEMPLATE_STRING
 template< typename TT >
 void
-VMML_TEMPLATE_CLASSNAME::convert_from_type( const tensor3< I1, I2, I3, TT >& other )
+VMML_TEMPLATE_CLASSNAME::cast_from_type( const tensor3< I1, I2, I3, TT >& other )
 {
     typedef tensor3< I1, I2, I3, TT > t3_tt_type ;
     typedef typename t3_tt_type::const_iterator tt_const_iterator;
@@ -1252,6 +1255,31 @@ VMML_TEMPLATE_CLASSNAME::convert_from_type( const tensor3< I1, I2, I3, TT >& oth
         *it = static_cast< T >( *other_it );
     }
 }
+
+VMML_TEMPLATE_STRING
+template< typename TT >
+void
+VMML_TEMPLATE_CLASSNAME::float_t_to_uint_t( const tensor3< I1, I2, I3, TT >& other )
+{
+	typedef tensor3< I1, I2, I3, TT > t3_tt_type ;
+	typedef typename t3_tt_type::const_iterator tt_const_iterator;
+	
+	iterator it = begin(), it_end = end();
+	tt_const_iterator other_it = other.begin();
+	for( ; it != it_end; ++it, ++other_it )
+	{
+		if( sizeof(T) == sizeof(uint8_t) ) {
+			*it = uint8_t( std::min( std::max(int(0), int( *other_it + 0.5)), int(std::numeric_limits< T >::max()) ));
+		} else if( sizeof(T) == sizeof(uint16_t)) {
+			*it = uint16_t( std::min( std::max(int(0), int( *other_it + 0.5)), int(std::numeric_limits< T >::max()) ));			
+		} else {
+			std::cout << "Warning: use a different type as target (uint8 or uint16). No converstion done.\n" << std::endl;
+			*this = other;
+			return;
+		}
+
+	}
+}	
 
 VMML_TEMPLATE_STRING
 void

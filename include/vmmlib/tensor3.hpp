@@ -14,7 +14,6 @@
 #include <vmmlib/matrix.hpp>
 #include <vmmlib/tensor3_iterator.hpp>
 #include <vmmlib/enable_if.hpp>
-#include <stdint.h>
 
 namespace vmml
 {
@@ -1265,7 +1264,7 @@ VMML_TEMPLATE_CLASSNAME::float_t_to_uint_t( const tensor3< I1, I2, I3, TT >& oth
 	typedef tensor3< I1, I2, I3, TT > t3_tt_type ;
 	typedef typename t3_tt_type::const_iterator tt_const_iterator;
 	
-	if( sizeof(T) == sizeof(uint8_t) || sizeof(T) == sizeof(uint16_t)) {
+	if( sizeof(T) == 1 || sizeof(T) == 2) {
 		iterator it = begin(), it_end = end();
 		tt_const_iterator other_it = other.begin();
 		for( ; it != it_end; ++it, ++other_it )

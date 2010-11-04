@@ -206,7 +206,7 @@ VMML_TEMPLATE_CLASSNAME::reconstruct( t3_type& data_ ) const
     data->full_tensor3_matrix_multiplication( *_core, *_u1, *_u2, *_u3 );
 	
 	//convert reconstructed data, which is in type T_coeff (double, float) to T_value (uint8 or uint16)
-	if( (sizeof(T_value) == sizeof(uint8_t)) || (sizeof(T_value) == sizeof(uint16_t)) ){
+	if( (sizeof(T_value) == 1) || (sizeof(T_value) == 2) ){
 		data_.float_t_to_uint_t( *data );
 	} else {
 		data_.cast_from( *data );

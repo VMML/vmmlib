@@ -625,7 +625,7 @@ tensor3_test::run()
 		
 		t3_type_a.fill(2.4); 
 		t3_type_b_check.fill(2);
-		t3_type_b.cast_from_type( t3_type_a );
+		t3_type_b.cast_from( t3_type_a );
 		
 		if (t3_type_b_check == t3_type_b )
 		{	
@@ -642,8 +642,8 @@ tensor3_test::run()
 	{
 		//tensor3: from float_t to uint_t
 		tensor3< 2, 3, 4, double >  t3_type_a;
-		tensor3< 2, 3, 4, uint16_t >  t3_type_b;
-		tensor3< 2, 3, 4, uint16_t >  t3_type_b_check;
+		tensor3< 2, 3, 4, uint8_t >  t3_type_b;
+		tensor3< 2, 3, 4, uint8_t >  t3_type_b_check;
 		
 		t3_type_a.fill(2.4); 
 		t3_type_a.at(0,0,0) = 2.67; 
@@ -660,7 +660,7 @@ tensor3_test::run()
 		{
 			std::stringstream error;
 			error << "from float_t to uint_t - tensor3 type double: " << std::endl << t3_type_a << std::endl
-			<< " tensor3 type uint16_t should be: " << std::endl << t3_type_b_check << std::endl
+			<< " tensor3 type uint8_t should be: " << std::endl << t3_type_b_check << std::endl
 			<< " is: " << t3_type_b << std::endl;
 			log_error( error.str() );
 		}

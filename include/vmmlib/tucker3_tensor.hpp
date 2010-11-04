@@ -166,19 +166,19 @@ private:
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::tucker3_tensor( )
 {
-	_core = new t3_core_type(); _core.zero();
-	_u1 = new u1_type(); _u1.zero();
-	_u2 = new u2_type(); _u2.zero();
-	_u3 = new u3_type(); _u3.zero();	 
+	_core = new t3_core_type(); _core->zero();
+	_u1 = new u1_type(); _u1->zero();
+	_u2 = new u2_type(); _u2->zero();
+	_u3 = new u3_type(); _u3->zero();	 
 }
 	
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::tucker3_tensor( t3_core_type& core )
 {
 	set_core( core );
-	_u1 = new u1_type(); _u1.zero();
-	_u2 = new u2_type(); _u2.zero();
-	_u3 = new u3_type(); _u3.zero();	
+	_u1 = new u1_type(); _u1->zero();
+	_u2 = new u2_type(); _u2->zero();
+	_u3 = new u3_type(); _u3->zero();	
 }
 
 VMML_TEMPLATE_STRING
@@ -202,14 +202,14 @@ void
 VMML_TEMPLATE_CLASSNAME::reconstruct( t3_type& data_ ) const
 {
     t3_coeff_type* data = new t3_coeff_type();
-    data->cast_from_type( data_ );
+    data->cast_from( data_ );
     data->full_tensor3_matrix_multiplication( *_core, *_u1, *_u2, *_u3 );
 	
 	//convert reconstructed data, which is in type T_coeff (double, float) to T_value (uint8 or uint16)
 	if( (sizeof(T_value) == sizeof(uint8_t)) || (sizeof(T_value) == sizeof(uint16_t)) ){
 		data_.float_t_to_uint_t( *data );
 	} else {
-		data_.cast_from_type( *data );
+		data_.cast_from( *data );
 	}
 	
 	delete data;
@@ -236,7 +236,7 @@ void
 VMML_TEMPLATE_CLASSNAME::hosvd( const t3_type& data_ )
 {	
 	t3_coeff_type* data = new t3_coeff_type();
-	data->cast_from_type( data_ );
+	data->cast_from( data_ );
 	
 #if 1	
 	hosvd_mode1( *data, *_u1 );
@@ -250,6 +250,7 @@ VMML_TEMPLATE_CLASSNAME::hosvd( const t3_type& data_ )
 #endif
 	
 	derive_core_orthogonal_bases(data_, *_core, *_u1, *_u2, *_u3 );
+	set_core( *_core); set_u1( *_u1 ); set_u2( *_u2 ); set_u3( *_u3 ); 	
 	
 	delete data;
 }
@@ -281,7 +282,7 @@ VMML_TEMPLATE_CLASSNAME::hooi( const t3_type& data_ )
 	hosvd( data_ );
 	
 	t3_coeff_type* data = new t3_coeff_type();
-	data->cast_from_type( data_ );
+	data->cast_from( data_ );
 	
 	//compute best rank-(R1, R2, R3) approximation (Lathauwer et al., 2000b)
 	t3_type* approximated_data =  new t3_type();
@@ -532,7 +533,7 @@ VMML_TEMPLATE_CLASSNAME::derive_core_orthogonal_bases( const t3_type& data_, t3_
 	*u3_inv = transpose( U3_ );
      
      t3_coeff_type* data  = new t3_coeff_type();
-     data->cast_from_type( data_ );
+     data->cast_from( data_ );
      core_.full_tensor3_matrix_multiplication( *data, *u1_inv, *u2_inv, *u3_inv );
 	
 	delete u1_inv, u2_inv, u3_inv, data; 
@@ -568,7 +569,7 @@ VMML_TEMPLATE_CLASSNAME::derive_core( const t3_type& data_, t3_core_type& core_,
 	*u3_pinv = transpose( u3_pinv_t );
 	
 	t3_coeff_type* data = new t3_coeff_type();
-	data->cast_from_type( data_ );
+	data->cast_from( data_ );
 	core_.full_tensor3_matrix_multiplication( *data, *u1_pinv, *u2_pinv, *u3_pinv );
 	
 	delete u1_pinv, u2_pinv, u3_pinv, data; 

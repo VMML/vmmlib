@@ -107,8 +107,8 @@ public:
 	void hosvd( const t3_type& data_ );
 	void hosvd_on_eigs( const t3_type& data_ );
 		
-	template<size_t M, size_t N>
-		void fill_random_2d(int seed, matrix< M, N, double >& u);
+	template< size_t M, size_t N >
+		void fill_random_2d( int seed, matrix< M, N, T_coeff >& u );
 		
 	template< size_t J1, size_t J2, size_t J3, typename T >
 		void hosvd_mode1( const tensor3<J1, J2, J3, T>& data_, matrix<J1, R1, T>& U1_ ) const;
@@ -166,19 +166,19 @@ private:
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::tucker3_tensor( )
 {
-	_core = new t3_core_type();
-	_u1 = new u1_type();
-	_u2 = new u2_type();
-	_u3 = new u3_type();	
+	_core = new t3_core_type(); _core.zero();
+	_u1 = new u1_type(); _u1.zero();
+	_u2 = new u2_type(); _u2.zero();
+	_u3 = new u3_type(); _u3.zero();	 
 }
 	
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::tucker3_tensor( t3_core_type& core )
 {
 	set_core( core );
-	_u1 = new u1_type();
-	_u2 = new u2_type();
-	_u3 = new u3_type();	
+	_u1 = new u1_type(); _u1.zero();
+	_u2 = new u2_type(); _u2.zero();
+	_u3 = new u3_type(); _u3.zero();	
 }
 
 VMML_TEMPLATE_STRING
@@ -221,9 +221,6 @@ void
 VMML_TEMPLATE_CLASSNAME::tucker_als( const t3_type& data_ )
 {
      hooi( data_ );
-     
-     //derive core
-     //derive_core_orthogonal_bases( data_, *_core, *_u1, *_u2, *_u3 );
 }
 
 
@@ -252,20 +249,20 @@ VMML_TEMPLATE_CLASSNAME::hosvd( const t3_type& data_ )
 
 
 VMML_TEMPLATE_STRING
-template<size_t M, size_t N>
+template< size_t M, size_t N >
 void 
-VMML_TEMPLATE_CLASSNAME::fill_random_2d(int seed, matrix< M, N, double >& u)
+VMML_TEMPLATE_CLASSNAME::fill_random_2d( int seed, matrix< M, N, T_coeff >& u)
 {
 	double fillValue = 0.0f;
 	srand(seed);
-	for( size_t i1 = 0; i1 < M; ++i1 )
+	for( size_t row = 0; row < M; ++row )
 	{
-		for( size_t i2 = 0; i2 < N; ++i2 )
+		for( size_t col = 0; col < N; ++col )
 		{
 			fillValue = rand();
 			fillValue /= RAND_MAX;
 			//fillValue *= std::numeric_limits< double >::max();
-			u.at( i1, i2 ) = -1.0 + 2.0 * static_cast< double >( fillValue )  ;
+			u.at( row, col ) = -1.0 + 2.0 * static_cast< double >( fillValue )  ;
 		}
 	}
 }	
@@ -283,37 +280,36 @@ VMML_TEMPLATE_CLASSNAME::hooi( const t3_type& data_ )
 	//compute best rank-(R1, R2, R3) approximation (Lathauwer et al., 2000b)
 	t3_type* approximated_data =  new t3_type();
 	reconstruct( *approximated_data );
+	
 	double f_norm = approximated_data->frobenius_norm();
 	double max_f_norm = data->frobenius_norm();
-	std::cout << "tucker3:HOOI (tucker_als) " << std::endl << "frobenius norm original: " << max_f_norm << std::endl;
-	
 	double normresidual  = sqrt( (max_f_norm * max_f_norm) - (f_norm * f_norm));
 	double fit = 1 - (normresidual / max_f_norm);
 	double fitchange = fit;
 	double fitold = fit;
-	std::cout << "initial fit: " << fit << std::endl;
-
 	double fitchange_tolerance = 1.0e-4;
-	size_t i = 0;
-	size_t max_iterations = 10;
 	
 	tensor3< I1, R2, R3, T_coeff >* projection1 = new tensor3< I1, R2, R3, T_coeff >(); 
 	tensor3< R1, I2, R3, T_coeff >* projection2 = new tensor3< R1, I2, R3, T_coeff >(); 
 	tensor3< R1, R2, I3, T_coeff >* projection3 = new tensor3< R1, R2, I3, T_coeff >(); 
 	
+	std::cout << "Tucker ALS: HOOI (for tensor3) " << std::endl 
+		<< "initial fit: " << fit  << ", "
+		<< "frobenius norm original: " << max_f_norm << std::endl;
+	
+	size_t i = 0;
+	size_t max_iterations = 10;
 	while( (fitchange >= fitchange_tolerance) && (i < max_iterations) )
 	{
 		fitold = fit;
 		//optimize for mode 1
 		optimize_mode1( *data, *projection1, *_u2, *_u3);
 		hosvd_mode1( *projection1, *_u1 );
-		//*_u1 *= 1/(double(_u1->frobenius_norm()));
 		set_u1( *_u1 );
 
 		//optimize for mode 2
 		optimize_mode2( *data, *projection2, *_u1, *_u3);
 		hosvd_mode2( *projection2, *_u2 );
-		//*_u2 *= 1/(double(_u2->frobenius_norm()));
 		set_u2( *_u2 );
 		
 		//optimize for mode 3
@@ -329,14 +325,18 @@ VMML_TEMPLATE_CLASSNAME::hooi( const t3_type& data_ )
 		fit = 1 - (normresidual / max_f_norm);
 		fitchange = fabs(fitold - fit);
 
-		std::cout << "iteration '" << i << "', fit: " << fit << ", fitdelta: " << fitchange << ", frobenius norm: " << f_norm << std::endl;		
+		std::cout << "iteration '" << i << "', fit: " << fit 
+			<< ", fitdelta: " << fitchange 
+			<< ", frobenius norm: " << f_norm << std::endl;		
 
 		++i;
 	}
+	std::cout << std::endl;
+	
 	approximated_data->zero();		
 	reconstruct( *approximated_data );
 	f_norm = approximated_data->frobenius_norm();
-	std::cout << "frobenius norm reco: " << f_norm << std::endl << std::endl;
+	//std::cout << "frobenius norm reconstructed tensor3: " << f_norm << std::endl << std::endl;
 
 	delete data, approximated_data, projection1, projection2, projection3;
 	
@@ -346,6 +346,13 @@ VMML_TEMPLATE_CLASSNAME::hooi( const t3_type& data_ )
 	<< "u2: " << std::endl << *_u2 << std::endl << "fnorm " << double(_u2->frobenius_norm()) << std::endl
 	<< "u3: " << std::endl << *_u3 << std::endl << "fnorm " << double(_u3->frobenius_norm()) << std::endl
 	<< "core: " << std::endl << *_core << std::endl << "fnorm " << double(_core->frobenius_norm()) << std::endl;
+#endif
+#if 0
+	std::cout  << "tucker3 export_to: " << std::endl
+	<< "fnorm u1: " << double(_u1->frobenius_norm()) << std::endl
+	<< "fnorm u2: " << double(_u2->frobenius_norm()) << std::endl
+	<< "fnorm u3: " << double(_u3->frobenius_norm()) << std::endl
+	<< "fnorm core: " << double(_core->frobenius_norm()) << std::endl;
 #endif
 }	
 	
@@ -365,11 +372,6 @@ VMML_TEMPLATE_CLASSNAME::hosvd_mode1( const tensor3<J1, J2, J3, T>& data_, matri
 		u->get_sub_matrix( U1_ );
 	else 
 		U1_.zero();
-	//std::cout << " u: " << *u << std::endl;
-	
-	//for( int i = 0; i < I1; ++i)
-	//	std::cout << " singular value @ " << i << "is " << lambdas->at(i) << std::endl;
-	
 	
 	delete u, lambdas, svd;
 }	
@@ -389,8 +391,6 @@ VMML_TEMPLATE_CLASSNAME::hosvd_mode2( const tensor3<J1, J2, J3, T>& data_, matri
 		u->get_sub_matrix( U2_ );
 	else 
 		U2_.zero();
-	//std::cout << " u: " << *u << std::endl;
-	//std::cout << " singular values: " << *lambdas << std::endl;
 	
 	delete u, lambdas, svd;
 }
@@ -411,10 +411,7 @@ VMML_TEMPLATE_CLASSNAME::hosvd_mode3( const tensor3<J1, J2, J3, T>& data_, matri
 		u->get_sub_matrix( U3_ );
 	else 
 		U3_.zero();
-	
-	//std::cout << " u: " << *u << std::endl;
-	//std::cout << " singular values: " << *lambdas << std::endl;
-	
+		
 	delete u, lambdas, svd;
 }
 

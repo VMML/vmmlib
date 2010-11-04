@@ -14,6 +14,7 @@
 #include <vmmlib/matrix.hpp>
 #include <vmmlib/tensor3_iterator.hpp>
 #include <vmmlib/enable_if.hpp>
+#include <stdint.h>
 
 namespace vmml
 {

@@ -291,7 +291,12 @@ VMML_TEMPLATE_CLASSNAME::hooi( const t3_type& data_ )
 	double f_norm = approximated_data->frobenius_norm();
 	double max_f_norm = data->frobenius_norm();
 	double normresidual  = sqrt( (max_f_norm * max_f_norm) - (f_norm * f_norm));
-	double fit = 1 - (normresidual / max_f_norm);
+	double fit = 0;
+	if (max_f_norm != 0 )
+		fit = 1 - (normresidual / max_f_norm);
+	else 
+		fit = 1;
+
 	double fitchange = fit;
 	double fitold = fit;
 	double fitchange_tolerance = 1.0e-4;
@@ -300,10 +305,11 @@ VMML_TEMPLATE_CLASSNAME::hooi( const t3_type& data_ )
 	tensor3< R1, I2, R3, T_coeff >* projection2 = new tensor3< R1, I2, R3, T_coeff >(); 
 	tensor3< R1, R2, I3, T_coeff >* projection3 = new tensor3< R1, R2, I3, T_coeff >(); 
 	
+#if TUCKER_LOG
 	std::cout << "Tucker ALS: HOOI (for tensor3) " << std::endl 
 		<< "initial fit: " << fit  << ", "
 		<< "frobenius norm original: " << max_f_norm << std::endl;
-	
+#endif	
 	size_t i = 0;
 	size_t max_iterations = 10;
 	while( (fitchange >= fitchange_tolerance) && (i < max_iterations) )
@@ -332,10 +338,11 @@ VMML_TEMPLATE_CLASSNAME::hooi( const t3_type& data_ )
 		fit = 1 - (normresidual / max_f_norm);
 		fitchange = fabs(fitold - fit);
 
+#if TUCKER_LOG
 		std::cout << "iteration '" << i << "', fit: " << fit 
 			<< ", fitdelta: " << fitchange 
 			<< ", frobenius norm: " << f_norm << std::endl;		
-
+#endif
 		++i;
 	}
 	std::cout << std::endl;

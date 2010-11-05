@@ -62,10 +62,10 @@ namespace vmml
 		cp3_tensor();
 		~cp3_tensor();
 		
-		void set_lambdas( const vector< R, T_coeff >& lambdas_ )  { _lambdas = new vector< R, T_coeff >(lambdas_); } ;
-		void set_u1( const u1_type& U1 ) { _u1 = new u1_type( U1 ); } ;
-		void set_u2( const u2_type& U2 ) { _u2 = new u2_type( U2 ); } ;
-		void set_u3( const u3_type& U3 ) { _u3 = new u3_type( U3 ); } ;
+		void set_lambdas( const vector< R, T_coeff >& lambdas_ )  { *_lambdas = vector< R, T_coeff >( lambdas_); } ;
+		void set_u1( u1_type& U1 ) { *_u1 = U1; } ;
+		void set_u2( u2_type& U2 ) { *_u2 = U2; } ;
+		void set_u3( u3_type& U3 ) { *_u3 = U3; } ;
 		
 		void get_lambdas( vector< R, T_coeff >& data_ ) const { data_  = *_lambdas; } ;
 		void get_u1( u1_type& U1 ) const { U1 = *_u1; } ;
@@ -90,6 +90,10 @@ namespace vmml
 		void optimize_mode1( const t3_type& data_, u1_type& U1_optimized_, const u2_type& U2_, const u3_type& U3_ ) const;
 		void optimize_mode2( const t3_type& data_, const u1_type& U1_, u2_type& U2_optimized_, const u3_type& U3_ ) const;		
 		float_t optimize_mode3( const t3_type& data_, const u1_type& U1_, const u2_type& U2_, u3_type& U3_optimized_ ) const;
+		
+	protected:
+		cp3_tensor( const cp3_tensor< R, I1, I1, I1, T_value, T_coeff >& other ) {};
+		cp3_tensor< R, I1, I1, I1, T_value, T_coeff > operator=( const cp3_tensor< R, I1, I1, I1, T_value, T_coeff >& other ) { return *this; };
 		
 	private:
 		vector< R, T_coeff >* _lambdas ;
@@ -116,16 +120,19 @@ VMML_TEMPLATE_CLASSNAME::cp3_tensor( u1_type& U1, u2_type& U2, u3_type& U3, vect
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::cp3_tensor()
 {
-	_lambdas = new vector< R, T_coeff>();
-	_u1 = new u1_type();
-	_u2 = new u2_type();
-	_u3 = new u3_type();
+	_lambdas = new vector< R, T_coeff>(); _lambdas->core();
+	_u1 = new u1_type(); _u1->zero();
+	_u2 = new u2_type(); _u2->zero();
+	_u3 = new u3_type(); _u3->zero();
 }
 	
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::~cp3_tensor()
 {
-	delete _u1, _u2, _u3, _lambdas;
+	delete _u1;
+	delete _u2;
+	delete _u3;
+	delete _lambdas;
 }
 	
 VMML_TEMPLATE_STRING

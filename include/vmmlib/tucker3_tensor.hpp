@@ -200,7 +200,10 @@ VMML_TEMPLATE_CLASSNAME::tucker3_tensor( t3_core_type& core, u1_type& U1, u2_typ
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::~tucker3_tensor( )
 {
-	delete _core, _u1, _u2, _u3;
+	delete _core;
+	delete _u1;
+	delete _u2;
+	delete _u3;
 }
 	
 	
@@ -299,10 +302,11 @@ VMML_TEMPLATE_CLASSNAME::hooi( const t3_type& data_ )
 	double max_f_norm = data->frobenius_norm();
 	double normresidual  = sqrt( (max_f_norm * max_f_norm) - (f_norm * f_norm));
 	double fit = 0;
-	if (max_f_norm != 0 )
+	if (max_f_norm != 0 ) {
 		fit = 1 - (normresidual / max_f_norm);
-	else 
+	} else { 
 		fit = 1;
+	}
 
 	double fitchange = fit;
 	double fitold = fit;
@@ -358,7 +362,11 @@ VMML_TEMPLATE_CLASSNAME::hooi( const t3_type& data_ )
 	f_norm = approximated_data->frobenius_norm();
 	//std::cout << "frobenius norm reconstructed tensor3: " << f_norm << std::endl << std::endl;
 
-	delete data, approximated_data, projection1, projection2, projection3;
+	delete data;
+	delete approximated_data;
+	delete projection1;
+	delete projection2;
+	delete projection3;
 	
 #if 0
 	std::cout  << "tucker3 export_to: " << std::endl
@@ -388,12 +396,15 @@ VMML_TEMPLATE_CLASSNAME::hosvd_mode1( const tensor3<J1, J2, J3, T>& data_, matri
 	
 	vector< J2*J3, T >* lambdas  = new vector< J2*J3, T >();
 	lapack_svd< J1, J2*J3, T >* svd = new lapack_svd< J1, J2*J3, T >();
-	if( svd->compute_and_overwrite_input( *u, *lambdas ))
+	if( svd->compute_and_overwrite_input( *u, *lambdas )) {
 		u->get_sub_matrix( U1_ );
-	else 
+	} else {
 		U1_.zero();
+	}
 	
-	delete u, lambdas, svd;
+	delete u;
+	delete lambdas;
+	delete svd;
 }	
 	
 	
@@ -407,12 +418,15 @@ VMML_TEMPLATE_CLASSNAME::hosvd_mode2( const tensor3<J1, J2, J3, T>& data_, matri
 	
 	vector< J1*J3, T >* lambdas  = new vector< J1*J3, T >();
 	lapack_svd< J2, J1*J3, T >* svd = new lapack_svd< J2, J1*J3, T >();
-	if( svd->compute_and_overwrite_input( *u, *lambdas ))
+	if( svd->compute_and_overwrite_input( *u, *lambdas )) {
 		u->get_sub_matrix( U2_ );
-	else 
+	} else {
 		U2_.zero();
+	}
 	
-	delete u, lambdas, svd;
+	delete u;
+	delete lambdas;
+	delete svd;
 }
 
 
@@ -427,12 +441,15 @@ VMML_TEMPLATE_CLASSNAME::hosvd_mode3( const tensor3<J1, J2, J3, T>& data_, matri
 	
 	vector< J1*J2, T>* lambdas  = new vector<  J1*J2, T >();
 	lapack_svd< J3, J1*J2, T >* svd = new lapack_svd<  J3, J1*J2, T >();
-	if( svd->compute_and_overwrite_input( *u, *lambdas ))
+	if( svd->compute_and_overwrite_input( *u, *lambdas )) {
 		u->get_sub_matrix( U3_ );
-	else 
+	} else {
 		U3_.zero();
-		
-	delete u, lambdas, svd;
+	}
+	
+	delete u;
+	delete lambdas;
+	delete svd;
 }
 
 	
@@ -466,7 +483,9 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode1( const t3_coeff_type& data_, tensor3< I1
 	tmp->multiply_frontal_bwd( data_, *u2_pinv );
 	projection_.multiply_horizontal_bwd( *tmp, *u3_pinv );
 	
-	delete u2_pinv, u3_pinv, tmp;
+	delete u2_pinv;
+	delete u3_pinv;
+	delete tmp;
 }
      
      
@@ -498,7 +517,9 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode2( const t3_coeff_type& data_, tensor3< R1
      tmp->multiply_lateral_bwd( data_, *u1_pinv );
      projection_.multiply_horizontal_bwd( *tmp, *u3_pinv );
 
-	delete u1_pinv, u3_pinv, tmp;
+	delete u1_pinv;
+	delete u3_pinv;
+	delete tmp;
 }
 
 	
@@ -530,7 +551,9 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode3( const t3_coeff_type& data_, tensor3< R1
      tmp->multiply_lateral_bwd( data_, *u1_pinv );
      projection_.multiply_frontal_bwd( *tmp, *u2_pinv );
 
-	delete u1_pinv, u2_pinv, tmp;
+	delete u1_pinv;
+	delete u2_pinv;
+	delete tmp;
 }
      
 
@@ -549,7 +572,10 @@ VMML_TEMPLATE_CLASSNAME::derive_core_orthogonal_bases( const t3_type& data_, t3_
      data->cast_from( data_ );
      core_.full_tensor3_matrix_multiplication( *data, *u1_inv, *u2_inv, *u3_inv );
 	
-	delete u1_inv, u2_inv, u3_inv, data; 
+	delete u1_inv;
+	delete u2_inv;
+	delete u3_inv;
+	delete data; 
 }
      
      
@@ -585,8 +611,11 @@ VMML_TEMPLATE_CLASSNAME::derive_core( const t3_type& data_, t3_core_type& core_,
 	data->cast_from( data_ );
 	core_.full_tensor3_matrix_multiplication( *data, *u1_pinv, *u2_pinv, *u3_pinv );
 	
-	delete u1_pinv, u2_pinv, u3_pinv, data; 
-
+	delete u1_pinv;
+	delete u2_pinv;
+	delete u3_pinv;
+	delete data; 
+	
 #else
      //previous version of compute core	
      for( size_t R3 = 0; R3 < R3; ++R3 )
@@ -665,7 +694,10 @@ VMML_TEMPLATE_CLASSNAME::reduce_ranks( const tucker3_tensor< K1, K2, K3, I1, I2,
           }
      }
 
-	delete other_core, u1, u2, u3;
+	delete other_core;
+	delete u1;
+	delete u2;
+	delete u3;
 }
 
 
@@ -703,7 +735,9 @@ VMML_TEMPLATE_CLASSNAME::subsampling( const tucker3_tensor< R1, R2, R3, K1, K2, 
      
      other.get_core( *_core );
 	
-	delete u1, u2, u3;
+	delete u1;
+	delete u2;
+	delete u3;
 }
 
 
@@ -757,8 +791,10 @@ VMML_TEMPLATE_CLASSNAME::subsampling_on_average( const tucker3_tensor< R1, R2, R
             _u3->set_row( i, u3->get_row( i3 ));
     }
     
-     other.get_core( *_core );
-	delete u1, u2, u3;
+	other.get_core( *_core );
+	delete u1;
+	delete u2;
+	delete u3;
 }
 
 
@@ -806,7 +842,9 @@ VMML_TEMPLATE_CLASSNAME::region_of_interest( const tucker3_tensor< R1, R2, R3, K
     
     other.get_core( *_core );
 	
-	delete u1, u2, u3;
+	delete u1;
+	delete u2;
+	delete u3;
 }
 	
 	
@@ -917,7 +955,12 @@ VMML_TEMPLATE_CLASSNAME::hosvd_on_eigs( const t3_type& data_ )
 	
 	//eigenvalue decomposition for each covariance matrix
 	
-	delete m_frontal, m_lateral, m_horizontal, s1, s2, s3;
+	delete m_frontal;
+	delete m_lateral;
+	delete m_horizontal;
+	delete s1;
+	delete s2;
+	delete s3;
 }
 
 #undef VMML_TEMPLATE_STRING

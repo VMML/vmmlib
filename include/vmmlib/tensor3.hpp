@@ -1057,7 +1057,8 @@ VMML_TEMPLATE_CLASSNAME::multiply_horizontal_bwd( const tensor3< J1, J2, J3, T >
 		set_horizontal_slice_bwd( i1, *slice_new );		
 	}
 	
-	delete slice, slice_new;
+	delete slice;
+	delete slice_new;
 }
 
 VMML_TEMPLATE_STRING
@@ -1073,7 +1074,8 @@ VMML_TEMPLATE_CLASSNAME::multiply_lateral_bwd( const tensor3< J1, J2, J3, T >& o
 		slice_new->multiply( other_slice_, *slice );
 		set_lateral_slice_bwd( i2, *slice_new );		
 	}
-	delete slice, slice_new;
+	delete slice;
+	delete slice_new;
  }
  
  
@@ -1090,7 +1092,8 @@ VMML_TEMPLATE_CLASSNAME::multiply_frontal_bwd( const tensor3< J1, J2, J3, T >& o
 		 slice_new->multiply( other_slice_, *slice );
 		 set_frontal_slice_bwd( i3, *slice_new );		
 	 }
-	 delete slice, slice_new;
+	delete slice;
+	delete slice_new;
 }
  
  
@@ -1111,7 +1114,8 @@ VMML_TEMPLATE_CLASSNAME::full_tensor3_matrix_multiplication(  const tensor3< J1,
  t3_result_2->multiply_frontal_bwd( *t3_result_1, U2 );
  multiply_horizontal_bwd( *t3_result_2, U3 );
  
- delete t3_result_1, t3_result_2;
+	delete t3_result_1;
+	delete t3_result_2;
 }
 
 VMML_TEMPLATE_STRING

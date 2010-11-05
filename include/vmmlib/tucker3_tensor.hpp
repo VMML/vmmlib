@@ -70,10 +70,10 @@ public:
 	~tucker3_tensor();
 		
 
-	void set_core( const t3_core_type& core )  { _core =  new t3_core_type(core); } ;
-	void set_u1( const u1_type& U1 ) { _u1 = new u1_type(U1); } ;
-	void set_u2( const u2_type& U2 ) { _u2 = new u2_type(U2); } ;
-	void set_u3( const u3_type& U3 ) { _u3 = new u3_type(U3); } ;
+	void set_core( t3_core_type& core )  { *_core = t3_core_type( core ); } ;
+	void set_u1( u1_type& U1 ) { *_u1 = U1; } ;
+	void set_u2( u2_type& U2 ) { *_u2 = U2; } ;
+	void set_u3( u3_type& U3 ) { *_u3 = U3; } ;
 	
 	void get_core( t3_core_type& data_ ) const { data_ = *_core; } ;
 	void get_u1( u1_type& U1 ) const { U1 = *_u1; } ;
@@ -149,7 +149,12 @@ public:
                                  const size_t& start_index2, const size_t& end_index2, 
                                  const size_t& start_index3, const size_t& end_index3);
 	
-	
+protected:
+		tucker3_tensor( const tucker3_tensor< R1, R2, R3, I1, I1, I1, T_value, T_coeff >& other ) {};
+		tucker3_tensor< R1, R2, R3, I1, I1, I1, T_value, T_coeff > operator=( const tucker3_tensor< R1, R2, R3, I1, I1, I1, T_value, T_coeff >& other ) { return *this; };
+		
+		
+		
 private:
         t3_core_type* _core ;
         u1_type* _u1 ;
@@ -175,7 +180,7 @@ VMML_TEMPLATE_CLASSNAME::tucker3_tensor( )
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::tucker3_tensor( t3_core_type& core )
 {
-	set_core( core );
+	_core =  new t3_core_type(core);
 	_u1 = new u1_type(); _u1->zero();
 	_u2 = new u2_type(); _u2->zero();
 	_u3 = new u3_type(); _u3->zero();	
@@ -184,11 +189,13 @@ VMML_TEMPLATE_CLASSNAME::tucker3_tensor( t3_core_type& core )
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::tucker3_tensor( t3_core_type& core, u1_type& U1, u2_type& U2, u3_type& U3 )
 {
-	set_core( core );
-	set_u1( U1 );
-	set_u2( U2 );
-	set_u3( U3 );
+	_core = new t3_core_type(core);
+	_u1 = new u1_type( U1 );
+	_u2 = new u2_type( U2 );
+	_u3 = new u3_type( U3 );
 }
+	
+
 	
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::~tucker3_tensor( )
@@ -345,7 +352,6 @@ VMML_TEMPLATE_CLASSNAME::hooi( const t3_type& data_ )
 #endif
 		++i;
 	}
-	std::cout << std::endl;
 	
 	approximated_data->zero();		
 	reconstruct( *approximated_data );

@@ -25,7 +25,7 @@
 namespace vmml
 {
 	
-	template< size_t R1, size_t R2, size_t R3, size_t I1, size_t I2, size_t I3, typename T_value = double, typename T_coeff = double >
+	template< size_t R1, size_t R2, size_t R3, size_t I1, size_t I2, size_t I3, typename T_value = float, typename T_coeff = double >
 	class tucker3_tensor
 	{
 public:    

@@ -145,7 +145,7 @@ VMML_TEMPLATE_CLASSNAME::reconstruct( t3_type& data_ ) const
 	t3_coeff_type data;
 	data.cast_from( data_ );
 	data.full_tensor3_matrix_multiplication( core_diag, *_u1, *_u2, *_u3 );
-	if( (sizeof(T_value) == sizeof(uint8_t)) || (sizeof(T_value) == sizeof(uint16_t)) ){
+	if( (sizeof(T_value) == 1) || (sizeof(T_value) == 2) ){
 		data_.float_t_to_uint_t( data );
 	} else {
 		data_.cast_from( data );

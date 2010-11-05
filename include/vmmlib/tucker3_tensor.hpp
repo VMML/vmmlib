@@ -260,8 +260,7 @@ VMML_TEMPLATE_CLASSNAME::hosvd( const t3_type& data_ )
 #endif
 	
 	derive_core_orthogonal_bases(data_, *_core, *_u1, *_u2, *_u3 );
-	set_core( *_core); set_u1( *_u1 ); set_u2( *_u2 ); set_u3( *_u3 ); 	
-	
+
 	delete data;
 }
 
@@ -342,7 +341,6 @@ VMML_TEMPLATE_CLASSNAME::hooi( const t3_type& data_ )
 		set_u3( *_u3 );
 		
 		_core->multiply_horizontal_bwd( *projection3, transpose( *_u3) );
-		set_core( *_core );
 		f_norm = _core->frobenius_norm();
 		
 		normresidual  = sqrt( max_f_norm * max_f_norm - f_norm * f_norm);

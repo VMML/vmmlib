@@ -43,7 +43,7 @@ namespace vmml
 			vector< T::COLS, float_t > sigmas;
 			matrix< T::COLS, T::COLS, float_t > Vt;
 			matrix< T::ROWS, T::COLS, float_t > input_data;
-			input_data.convert_from_type( input );
+			input_data.cast_from( input );
 			
 			bool ok = svd.compute( input_data, U, sigmas, Vt ); 
 						
@@ -92,7 +92,7 @@ namespace vmml
 					result += tmp;
 					
 				}
-				pseudoinverse.convert_from_type( result );
+				pseudoinverse.cast_from( result );
 				pseudoinverse_transposed = transpose( pseudoinverse );
 				
 			} else {

@@ -1277,7 +1277,7 @@ VMML_TEMPLATE_CLASSNAME::float_t_to_uint_t( const tensor3< I1, I2, I3, TT >& oth
 		}
 	} 
 	else {
-		std::cout << "Warning: use a different type as target (uint8 or uint16). No converstion done.\n" << std::endl;
+		//std::cout << "Warning: use a different type as target (uint8 or uint16). No converstion done.\n" << std::endl;
 		this->cast_from( other );
 		return;
 	}

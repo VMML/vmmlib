@@ -191,7 +191,7 @@ public:
 	double frobenius_norm() const;
 	
 	template< typename TT >
-	void convert_from_type( const matrix< M, N, TT >& other );
+	void cast_from( const matrix< M, N, TT >& other );
 	
 	//Khatri-Rao Product: columns must be of same size
     template< size_t O >
@@ -388,7 +388,12 @@ public:
             os << "(";
             for( size_t col_index = 0; col_index < N; ++col_index )
             {
-                os << matrix.at( row_index, col_index );
+ 				if (sizeof(T) == sizeof(uint8_t) || sizeof(T) == sizeof(uint16_t) ) {
+					os << long(matrix.at( row_index, col_index ));
+					
+				} else {
+					os << matrix.at( row_index, col_index );
+				}
 				if (col_index < (N-1) )
 					os << ", ";
             }
@@ -2268,7 +2273,7 @@ matrix< M, N, T >::khatri_rao_product( const matrix< O, N, T >& right_ ) const
 template< size_t M, size_t N, typename T  >
 template< typename TT >
 void 
-matrix< M, N, T >::convert_from_type( const matrix< M, N, TT >& other )
+matrix< M, N, T >::cast_from( const matrix< M, N, TT >& other )
 {
 	typedef vmml::matrix< M, N, TT > matrix_tt_type ;
 	typedef typename matrix_tt_type::const_iterator tt_const_iterator;

@@ -69,7 +69,10 @@ public:
 	tucker3_tensor( t3_core_type& core, u1_type& U1, u2_type& U2, u3_type& U3 );
 	~tucker3_tensor();
 		
-
+	void enable_quantify_coeff() { _is_quantify_coeff = true; };
+	void disable_quantify_coeff() { _is_quantify_coeff = false; } ;
+		
+		
 	void set_core( t3_core_type& core )  { *_core = t3_core_type( core ); } ;
 	void set_u1( u1_type& U1 ) { *_u1 = U1; } ;
 	void set_u2( u2_type& U2 ) { *_u2 = U2; } ;
@@ -106,16 +109,23 @@ public:
 	 */
 	void hosvd( const t3_type& data_ );
 	void hosvd_on_eigs( const t3_type& data_ );
+	void init_random( const t3_type& data_ );
 		
 	template< size_t M, size_t N >
 		void fill_random_2d( int seed, matrix< M, N, T_coeff >& u );
 		
+	template< size_t M, size_t N, size_t R, typename T >
+		void get_svd_u_red( const matrix< M, N, T >& data_, matrix< M, R, T_coeff >& u_ ) const;
+		
+	template< size_t M, size_t N >
+		void quantize_matrix( const matrix< M, N, double >& raw_, matrix< M, N, T_coeff >& quantized_ ) const;
+
 	template< size_t J1, size_t J2, size_t J3, typename T >
-		void hosvd_mode1( const tensor3<J1, J2, J3, T>& data_, matrix<J1, R1, T>& U1_ ) const;
+		void hosvd_mode1( const tensor3<J1, J2, J3, T >& data_, matrix<J1, R1, T_coeff >& U1_ ) const;
 	template< size_t J1, size_t J2, size_t J3, typename T >
-		void hosvd_mode2( const tensor3<J1, J2, J3, T>& data_, matrix<J2, R2, T>& U2_ ) const;
+		void hosvd_mode2( const tensor3<J1, J2, J3, T >& data_, matrix<J2, R2, T_coeff >& U2_ ) const;
 	template< size_t J1, size_t J2, size_t J3, typename T >
-		void hosvd_mode3( const tensor3<J1, J2, J3, T>& data_, matrix<J3, R3, T>& U3_ ) const;
+		void hosvd_mode3( const tensor3<J1, J2, J3, T >& data_, matrix<J3, R3, T_coeff >& U3_ ) const;
 		
 		
 	/*	higher-order orthogonal iteration (HOOI) is a truncated HOSVD decompositions, i.e., the HOSVD components are of lower-ranks. An optimal rank-reduction is 
@@ -160,6 +170,7 @@ private:
         u1_type* _u1 ;
         u2_type* _u2 ;
         u3_type* _u3 ;
+		bool _is_quantify_coeff; 
 	
 }; // class tucker3_tensor
 
@@ -170,6 +181,7 @@ private:
 
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::tucker3_tensor( )
+	: _is_quantify_coeff( false )
 {
 	_core = new t3_core_type(); _core->zero();
 	_u1 = new u1_type(); _u1->zero();
@@ -179,6 +191,7 @@ VMML_TEMPLATE_CLASSNAME::tucker3_tensor( )
 	
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::tucker3_tensor( t3_core_type& core )
+	: _is_quantify_coeff( false )
 {
 	_core =  new t3_core_type(core);
 	_u1 = new u1_type(); _u1->zero();
@@ -188,6 +201,7 @@ VMML_TEMPLATE_CLASSNAME::tucker3_tensor( t3_core_type& core )
 
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::tucker3_tensor( t3_core_type& core, u1_type& U1, u2_type& U2, u3_type& U3 )
+	: _is_quantify_coeff( false )
 {
 	_core = new t3_core_type(core);
 	_u1 = new u1_type( U1 );
@@ -240,29 +254,31 @@ VMML_TEMPLATE_CLASSNAME::tucker_als( const t3_type& data_ )
      hooi( data_ );
 }
 
+	
+VMML_TEMPLATE_STRING
+void 
+VMML_TEMPLATE_CLASSNAME::init_random( const t3_type& data_ )
+{	
+	int seed = time(NULL);
+	fill_random_2d(seed, *_u1 );
+	fill_random_2d(rand(), *_u2 );
+	fill_random_2d(rand(), *_u3 );
+	
+	derive_core_orthogonal_bases(data_, *_core, *_u1, *_u2, *_u3 );
+}	
 
 VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::hosvd( const t3_type& data_ )
 {	
-	t3_coeff_type* data = new t3_coeff_type();
-	data->cast_from( data_ );
-	
-#if 1	
-	hosvd_mode1( *data, *_u1 );
-	hosvd_mode2( *data, *_u2 );
-	hosvd_mode3( *data, *_u3 );
-#else	
-	int seed = time(NULL);
-	fill_random_2d(seed, *_u1 );
-	fill_random_2d(rand(), *_u2 );
-	fill_random_2d(rand(), *_u3 );
-#endif
+	hosvd_mode1( data_, *_u1 );
+	hosvd_mode2( data_, *_u2 );
+	hosvd_mode3( data_, *_u3 );
 	
 	derive_core_orthogonal_bases(data_, *_core, *_u1, *_u2, *_u3 );
-
-	delete data;
 }
+	
+	
 
 
 VMML_TEMPLATE_STRING
@@ -382,74 +398,81 @@ VMML_TEMPLATE_CLASSNAME::hooi( const t3_type& data_ )
 #endif
 }	
 	
-	
 
 VMML_TEMPLATE_STRING
-template< size_t J1, size_t J2, size_t J3, typename T>
+template< size_t J1, size_t J2, size_t J3, typename T >
 void 
-VMML_TEMPLATE_CLASSNAME::hosvd_mode1( const tensor3<J1, J2, J3, T>& data_, matrix<J1, R1, T>& U1_ ) const
+VMML_TEMPLATE_CLASSNAME::hosvd_mode1( const tensor3<J1, J2, J3, T >& data_, matrix<J1, R1, T_coeff >& U1_ ) const
 {
-	matrix< J1, J2*J3, T>* u = new matrix< J1, J2*J3, T>(); // -> u1
+	matrix< J1, J2*J3, T >* u = new matrix< J1, J2*J3, T >(); // -> u1
 	data_.lateral_matricization_bwd( *u );
 	
-	vector< J2*J3, T >* lambdas  = new vector< J2*J3, T >();
-	lapack_svd< J1, J2*J3, T >* svd = new lapack_svd< J1, J2*J3, T >();
-	if( svd->compute_and_overwrite_input( *u, *lambdas )) {
-		u->get_sub_matrix( U1_ );
-	} else {
-		U1_.zero();
-	}
+	get_svd_u_red( *u, U1_ );
 	
-	delete u;
-	delete lambdas;
-	delete svd;
 }	
-	
-	
+
+
 VMML_TEMPLATE_STRING
-template< size_t J1, size_t J2, size_t J3, typename T>
+template< size_t J1, size_t J2, size_t J3, typename T >
 void 
-VMML_TEMPLATE_CLASSNAME::hosvd_mode2( const tensor3<J1, J2, J3, T>& data_, matrix<J2, R2, T>& U2_ ) const
+VMML_TEMPLATE_CLASSNAME::hosvd_mode2( const tensor3<J1, J2, J3, T >& data_, matrix<J2, R2, T_coeff >& U2_ ) const
 {
-	matrix< J2, J1*J3, T>* u = new matrix< J2, J1*J3, T>(); // -> u1
+	matrix< J2, J1*J3, T >* u = new matrix< J2, J1*J3, T >(); // -> u1
 	data_.frontal_matricization_bwd( *u );
 	
-	vector< J1*J3, T >* lambdas  = new vector< J1*J3, T >();
-	lapack_svd< J2, J1*J3, T >* svd = new lapack_svd< J2, J1*J3, T >();
-	if( svd->compute_and_overwrite_input( *u, *lambdas )) {
-		u->get_sub_matrix( U2_ );
-	} else {
-		U2_.zero();
-	}
-	
-	delete u;
-	delete lambdas;
-	delete svd;
+	get_svd_u_red( *u, U2_ );
 }
 
 
 
 VMML_TEMPLATE_STRING
-template< size_t J1, size_t J2, size_t J3, typename T>
+template< size_t J1, size_t J2, size_t J3, typename T >
 void 
-VMML_TEMPLATE_CLASSNAME::hosvd_mode3( const tensor3<J1, J2, J3, T>& data_, matrix<J3, R3, T>& U3_  ) const
+VMML_TEMPLATE_CLASSNAME::hosvd_mode3( const tensor3<J1, J2, J3, T >& data_, matrix<J3, R3, T_coeff >& U3_  ) const
 {
-	matrix< J3, J1*J2, T>* u = new matrix< J3, J1*J2, T>(); // -> u1
+	matrix< J3, J1*J2, T >* u = new matrix< J3, J1*J2, T >(); // -> u1
 	data_.horizontal_matricization_bwd( *u );
 	
-	vector< J1*J2, T>* lambdas  = new vector<  J1*J2, T >();
-	lapack_svd< J3, J1*J2, T >* svd = new lapack_svd<  J3, J1*J2, T >();
-	if( svd->compute_and_overwrite_input( *u, *lambdas )) {
-		u->get_sub_matrix( U3_ );
-	} else {
-		U3_.zero();
-	}
+	get_svd_u_red( *u, U3_ );
 	
-	delete u;
-	delete lambdas;
-	delete svd;
 }
 
+	
+VMML_TEMPLATE_STRING
+template< size_t M, size_t N, size_t R, typename T >
+void 
+VMML_TEMPLATE_CLASSNAME::get_svd_u_red( const matrix< M, N, T >& data_, matrix< M, R, T_coeff >& u_ ) const
+{
+	matrix< M, N, double >* u_double = new matrix< M, N, double >(); 
+	u_double->cast_from( data_ );
+	
+	matrix< M, N, T_coeff >* u_quant = new matrix< M, N, T_coeff >(); 
+	
+	vector< N, double >* lambdas  = new vector<  N, double >();
+	lapack_svd< M, N, double >* svd = new lapack_svd<  M, N, double >();
+	if( svd->compute_and_overwrite_input( *u_double, *lambdas )) {
+		if( _is_quantify_coeff ){
+			quantize_matrix( *u_double, *u_quant );
+		} else if ( sizeof( T_coeff ) != 4 ){
+			u_quant->cast_from( *u_double );
+		} else {
+			*u_quant = *u_double;
+		}
+		
+		u_quant->get_sub_matrix( u_ );
+
+	} else {
+		u_.zero();
+	}
+	
+	delete lambdas;
+	delete svd;
+	delete u_double;
+	delete u_quant;
+	
+}
+	
+	
 	
 VMML_TEMPLATE_STRING
 void 
@@ -961,6 +984,41 @@ VMML_TEMPLATE_CLASSNAME::hosvd_on_eigs( const t3_type& data_ )
 	delete s3;
 }
 
+	
+	
+	
+VMML_TEMPLATE_STRING
+template< size_t M, size_t N>
+void
+VMML_TEMPLATE_CLASSNAME::quantize_matrix( const matrix< M, N, double >& raw_, matrix< M, N, T_coeff >& quantized_ ) const
+{
+	typedef matrix< M, N, double > matrix_raw_type ;
+	typedef typename matrix_raw_type::const_iterator m_const_iterator;
+	typedef matrix< M, N, T_coeff > matrix_quant_type ;
+	typedef typename matrix_quant_type::iterator m_iterator;
+	
+	m_const_iterator raw_it = raw_.begin();
+	m_iterator it = quantized_.begin(), it_end = quantized_.end();
+	
+	long half_range = std::numeric_limits< T_coeff >::max();
+#if 0
+	std::cout << "min: " << long(std::numeric_limits< T_coeff >::min()) << std::endl 
+	<< "max: " << half_range << std::endl;
+#endif
+	
+	for( ; it != it_end; ++it, ++raw_it )
+	{
+		*it = T_coeff( std::min( std::max( long( std::numeric_limits< T_coeff >::min()), long( (*raw_it * half_range) + 0.5)), half_range ));
+		
+#if 0
+		std::cout
+		<< "in value: " << *raw_it * half_range << std::endl
+		<< "out value: " << long(*it) << std::endl;
+#endif
+	}
+}		
+
+	
 #undef VMML_TEMPLATE_STRING
 #undef VMML_TEMPLATE_CLASSNAME
 	

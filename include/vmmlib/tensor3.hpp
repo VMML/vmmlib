@@ -11,9 +11,8 @@
 #ifndef __VMML__TENSOR3__HPP__
 #define __VMML__TENSOR3__HPP__
 
-#include <vmmlib/matrix.hpp>
 #include <vmmlib/tensor3_iterator.hpp>
-#include <vmmlib/enable_if.hpp>
+//#include <vmmlib/enable_if.hpp>
 
 namespace vmml
 {
@@ -44,10 +43,10 @@ public:
     typedef matrix< I1, I3, T >        slice_type_lateral_bwd;
     typedef matrix< I3, I2, T >        slice_type_horizontal_bwd;
 
-	typedef matrix< I1, I2*I3, T >     lateral_matricization_bwd_type;
-	typedef matrix< I2, I1*I3, T >     frontal_matricization_bwd_type;
-	typedef matrix< I3, I1*I2, T >     horizontal_matricization_bwd_type;
-	
+    typedef matrix< I1, I2*I3, T >     lateral_matricization_bwd_type;
+    typedef matrix< I2, I1*I3, T >     frontal_matricization_bwd_type;
+    typedef matrix< I3, I1*I2, T >     horizontal_matricization_bwd_type;
+    
     static const size_t ROWS	       = I1;
     static const size_t COLS	       = I2;
     static const size_t SLICES	       = I3;
@@ -67,12 +66,12 @@ public:
     const_iterator          begin() const;
     const_iterator          end() const;
 	
-    #if 0
+#if 0
     reverse_iterator        rbegin();
     reverse_iterator        rend();
     const_reverse_iterator  rbegin() const;
     const_reverse_iterator  rend() const;
-	#endif
+#endif
 
     // hack for static-member-init
     template< typename init_functor_t >

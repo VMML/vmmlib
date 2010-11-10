@@ -10,11 +10,7 @@
 #ifndef __VMML__TENSOR3_ITERATOR__HPP__
 #define __VMML__TENSOR3_ITERATOR__HPP__
 
-#include <iostream>
-#include <assert.h>
 #include <vmmlib/matrix.hpp>
-
-#include <iterator>
 
 namespace vmml
 {

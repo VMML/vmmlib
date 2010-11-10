@@ -19,8 +19,8 @@
 #define __VMML__TUCKER3_TENSOR__HPP__
 
 #include <vmmlib/tensor3.hpp>
+//#include <vmmlib/matrix_pseudoinverse.hpp>
 #include <vmmlib/lapack_svd.hpp>
-#include <vmmlib/matrix_pseudoinverse.hpp>
 
 namespace vmml
 {
@@ -96,7 +96,7 @@ public:
 	   where x_1 ... x_3 are n-mode products and U1_pinv ... U3_pinv are inverted basis matrices
 	   the inversion is done with a matrix pseudoinverse computation
 	 */
-    void derive_core( const t3_type& data_, t3_core_type& core_, const u1_type& U1_, const u2_type& U2_, const u3_type& U3_ );
+        void derive_core( const t3_type& data_, t3_core_type& core_, const u1_type& U1_, const u2_type& U2_, const u3_type& U3_ );
 	//faster: but only if basis matrices are orthogonal
 	void derive_core_orthogonal_bases( const t3_type& data_, t3_core_type& core_, const u1_type& U1_, const u2_type& U2_, const u3_type& U3_ );
 
@@ -107,19 +107,15 @@ public:
 		with the dimensions I1xI2I3, which corresponds to a matrizitation alonge mode I1.
 		other known names for HOSVD: n-mode SVD, 3-mode factor analysis (3MFA, tucker3), 3M-PCA, n-mode PCA, higher-order SVD
 	 */
-	void hosvd( const t3_type& data_ );
+        void hosvd( const t3_type& data_ );
 	void hosvd_on_eigs( const t3_type& data_ );
 	void init_random( const t3_type& data_ );
 		
 	template< size_t M, size_t N >
 		void fill_random_2d( int seed, matrix< M, N, T_coeff >& u );
 		
-	template< size_t M, size_t N, size_t R, typename T >
+        template< size_t M, size_t N, size_t R, typename T >
 		void get_svd_u_red( const matrix< M, N, T >& data_, matrix< M, R, T_coeff >& u_ ) const;
-		
-	template< size_t M, size_t N >
-		void quantize_matrix( const matrix< M, N, double >& raw_, matrix< M, N, T_coeff >& quantized_ ) const;
-
 	template< size_t J1, size_t J2, size_t J3, typename T >
 		void hosvd_mode1( const tensor3<J1, J2, J3, T >& data_, matrix<J1, R1, T_coeff >& U1_ ) const;
 	template< size_t J1, size_t J2, size_t J3, typename T >
@@ -159,6 +155,9 @@ public:
                                  const size_t& start_index2, const size_t& end_index2, 
                                  const size_t& start_index3, const size_t& end_index3);
 	
+	template< size_t M, size_t N >
+		void quantize_matrix( const matrix< M, N, double >& raw_, matrix< M, N, T_coeff >& quantized_ ) const;
+
 protected:
 		tucker3_tensor( const tucker3_tensor< R1, R2, R3, I1, I1, I1, T_value, T_coeff >& other ) {};
 		tucker3_tensor< R1, R2, R3, I1, I1, I1, T_value, T_coeff > operator=( const tucker3_tensor< R1, R2, R3, I1, I1, I1, T_value, T_coeff >& other ) { return *this; };
@@ -448,8 +447,9 @@ VMML_TEMPLATE_CLASSNAME::get_svd_u_red( const matrix< M, N, T >& data_, matrix< 
 	
 	matrix< M, N, T_coeff >* u_quant = new matrix< M, N, T_coeff >(); 
 	
-	vector< N, double >* lambdas  = new vector<  N, double >();
-	lapack_svd< M, N, double >* svd = new lapack_svd<  M, N, double >();
+#if 1
+        vector< N, double >* lambdas  = new vector<  N, double >();
+        lapack_svd< M, N, double >* svd = new lapack_svd<  M, N, double >();
 	if( svd->compute_and_overwrite_input( *u_double, *lambdas )) {
 		if( _is_quantify_coeff ){
 			quantize_matrix( *u_double, *u_quant );
@@ -463,13 +463,14 @@ VMML_TEMPLATE_CLASSNAME::get_svd_u_red( const matrix< M, N, T >& data_, matrix< 
 
 	} else {
 		u_.zero();
-	}
+        }
 	
 	delete lambdas;
 	delete svd;
 	delete u_double;
 	delete u_quant;
 	
+#endif
 }
 	
 	
@@ -478,35 +479,20 @@ VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::optimize_mode1( const t3_coeff_type& data_, tensor3< I1, R2, R3, T_coeff >& projection_, const u2_type& U2_, const u3_type& U3_ ) const
 {
-#if 0
-     //compute pseudo inverse for matrices u2,u3
-     u2_type* u2_pinv_t = new u2_type();
-     u3_type* u3_pinv_t = new u3_type();
-     
-     compute_pseudoinverse<  u2_type > compute_pinv_u2;
-     compute_pinv_u2( U2_, u2_pinv_t );	
-     compute_pseudoinverse<  u3_type > compute_pinv_u3;
-     compute_pinv_u3( U3_, u3_pinv_t );
-     
-     u2_inv_type u2_pinv = transpose( u2_pinv_t );
-     u3_inv_type u3_pinv = transpose( u3_pinv_t );
-	
-	delete u2_pinv_t, u3_pinv_t;
-#endif
-     
-	u2_inv_type* u2_pinv = new u2_inv_type();
-	*u2_pinv = transpose( U2_ );
-	u3_inv_type* u3_pinv = new u3_inv_type();
-	*u3_pinv = transpose( U3_ );
+
+     u2_inv_type* u2_inv = new u2_inv_type();
+     *u2_inv = transpose( U2_ );
+     u3_inv_type* u3_inv = new u3_inv_type();
+     *u3_inv = transpose( U3_ );
      
      //backward cyclic matricization (after Lathauwer et al., 2000a)
-	tensor3< I1, R2, I3, T_coeff >* tmp  = new tensor3< I1, R2, I3, T_coeff >();
-	tmp->multiply_frontal_bwd( data_, *u2_pinv );
-	projection_.multiply_horizontal_bwd( *tmp, *u3_pinv );
-	
-	delete u2_pinv;
-	delete u3_pinv;
-	delete tmp;
+     tensor3< I1, R2, I3, T_coeff >* tmp  = new tensor3< I1, R2, I3, T_coeff >();
+     tmp->multiply_frontal_bwd( data_, *u2_inv );
+     projection_.multiply_horizontal_bwd( *tmp, *u3_inv );
+     
+     delete u2_inv;
+     delete u3_inv;
+     delete tmp;
 }
      
      
@@ -514,33 +500,20 @@ VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::optimize_mode2( const t3_coeff_type& data_, tensor3< R1, I2, R3, T_coeff >& projection_, const u1_type& U1_, const u3_type& U3_ ) const
 {
-#if 0
-     //compute pseudo inverse for matrices u2,u3
-     u1_type u1_pinv_t ;
-     u3_type u3_pinv_t ;
-     
-     compute_pseudoinverse<  u1_type > compute_pinv_u1;
-     compute_pinv_u1( U1_, u1_pinv_t );	
-     compute_pseudoinverse<  u3_type > compute_pinv_u3;
-     compute_pinv_u3( U3_, u3_pinv_t );
-     
-     u1_inv_type u1_pinv = transpose( u1_pinv_t );
-     u3_inv_type u3_pinv = transpose( u3_pinv_t );
-#endif
-     
-	u1_inv_type* u1_pinv = new u1_inv_type();
-	*u1_pinv = transpose( U1_ );
-	u3_inv_type* u3_pinv = new u3_inv_type();
-	*u3_pinv = transpose( U3_ );
+
+     u1_inv_type* u1_inv = new u1_inv_type();
+     *u1_inv = transpose( U1_ );
+     u3_inv_type* u3_inv = new u3_inv_type();
+     *u3_inv = transpose( U3_ );
      
      //backward cyclic matricization (after Lathauwer et al., 2000a)
      tensor3< R1, I2, I3, T_coeff >* tmp = new tensor3< R1, I2, I3, T_coeff >();
-     tmp->multiply_lateral_bwd( data_, *u1_pinv );
-     projection_.multiply_horizontal_bwd( *tmp, *u3_pinv );
+     tmp->multiply_lateral_bwd( data_, *u1_inv );
+     projection_.multiply_horizontal_bwd( *tmp, *u3_inv );
 
-	delete u1_pinv;
-	delete u3_pinv;
-	delete tmp;
+     delete u1_inv;
+     delete u3_inv;
+     delete tmp;
 }
 
 	
@@ -548,33 +521,19 @@ VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::optimize_mode3( const t3_coeff_type& data_, tensor3< R1, R2, I3, T_coeff >& projection_, const u1_type& U1_, const u2_type& U2_ ) const
 {
-#if 0
-     //compute pseudo inverse for matrices u2,u3
-     u1_type u1_pinv_t ;
-     u2_type u2_pinv_t ;
-     
-     compute_pseudoinverse<  u1_type > compute_pinv_u1;
-     compute_pinv_u1( U1_, u1_pinv_t );
-     compute_pseudoinverse<  u2_type > compute_pinv_u2;
-     compute_pinv_u2( U2_, u2_pinv_t );	
-     
-     u1_inv_type u1_pinv = transpose( u1_pinv_t );
-     u2_inv_type u2_pinv = transpose( u2_pinv_t );
-#endif
-     
-	u1_inv_type* u1_pinv = new u1_inv_type();
-	*u1_pinv = transpose( U1_ );
-	u2_inv_type* u2_pinv = new u2_inv_type();
-	*u2_pinv = transpose( U2_ );
+     u1_inv_type* u1_inv = new u1_inv_type();
+     *u1_inv = transpose( U1_ );
+     u2_inv_type* u2_inv = new u2_inv_type();
+     *u2_inv = transpose( U2_ );
 
      //backward cyclic matricization (after Lathauwer et al., 2000a)
      tensor3< R1, I2, I3, T_coeff >* tmp = new tensor3< R1, I2, I3, T_coeff >();
-     tmp->multiply_lateral_bwd( data_, *u1_pinv );
-     projection_.multiply_frontal_bwd( *tmp, *u2_pinv );
+     tmp->multiply_lateral_bwd( data_, *u1_inv );
+     projection_.multiply_frontal_bwd( *tmp, *u2_inv );
 
-	delete u1_pinv;
-	delete u2_pinv;
-	delete tmp;
+     delete u1_inv;
+     delete u2_inv;
+     delete tmp;
 }
      
 
@@ -583,20 +542,20 @@ void
 VMML_TEMPLATE_CLASSNAME::derive_core_orthogonal_bases( const t3_type& data_, t3_core_type& core_, const u1_type& U1_, const u2_type& U2_, const u3_type& U3_ )
 {
     u1_inv_type * u1_inv = new u1_inv_type();
-	*u1_inv = transpose( U1_ );
+    *u1_inv = transpose( U1_ );
     u2_inv_type* u2_inv = new u2_inv_type();
-	*u2_inv = transpose( U2_ );
+    *u2_inv = transpose( U2_ );
     u3_inv_type* u3_inv = new u3_inv_type();
-	*u3_inv = transpose( U3_ );
+    *u3_inv = transpose( U3_ );
      
      t3_coeff_type* data  = new t3_coeff_type();
      data->cast_from( data_ );
      core_.full_tensor3_matrix_multiplication( *data, *u1_inv, *u2_inv, *u3_inv );
 	
-	delete u1_inv;
-	delete u2_inv;
-	delete u3_inv;
-	delete data; 
+     delete u1_inv;
+     delete u2_inv;
+     delete u3_inv;
+     delete data; 
 }
      
      
@@ -607,7 +566,7 @@ void
 VMML_TEMPLATE_CLASSNAME::derive_core( const t3_type& data_, t3_core_type& core_, const u1_type& U1_, const u2_type& U2_, const u3_type& U3_ )
 {
 
-#if 1
+#if 0
 	//compute pseudo inverse for matrices u1-u3
 	u1_type u1_pinv_t ;
 	u2_type u2_pinv_t ;
@@ -639,11 +598,11 @@ VMML_TEMPLATE_CLASSNAME::derive_core( const t3_type& data_, t3_core_type& core_,
 	
 #else
      //previous version of compute core	
-     for( size_t R3 = 0; R3 < R3; ++R3 )
+     for( size_t r3 = 0; r3 < R3; ++r3 )
      {
-         for( size_t R1 = 0; R1 < R1; ++R1 )
+         for( size_t r1 = 0; r1 < R1; ++r1 )
          {
-            for( size_t R2 = 0; R2 < R2; ++R2 )
+            for( size_t r2 = 0; r2 < R2; ++r2 )
             {
                float_t sum_i1_i2_i3 = 0.0;
                for( size_t i3 = 0; i3 < I3; ++i3 )
@@ -652,11 +611,11 @@ VMML_TEMPLATE_CLASSNAME::derive_core( const t3_type& data_, t3_core_type& core_,
                    {
                       for( size_t i2 = 0; i2 < I2; ++i2 )
                       {
-                              sum_i1_i2_i3 += U1_.at( i1, R1 ) * U2_.at( i2, R2 ) * U3_.at( i3, R3 ) * data_.at( i1, i2, i3 );
+                              sum_i1_i2_i3 += U1_.at( i1, r1 ) * U2_.at( i2, r2 ) * U3_.at( i3, r3 ) * data_.at( i1, i2, i3 );
                       }
                    }
                }
-               core_.at( R1, R2, R3 ) = sum_i1_i2_i3;
+               core_.at( r1, r2, r3 ) = sum_i1_i2_i3;
             }
          }
      }
@@ -999,23 +958,22 @@ VMML_TEMPLATE_CLASSNAME::quantize_matrix( const matrix< M, N, double >& raw_, ma
 	
 	m_const_iterator raw_it = raw_.begin();
 	m_iterator it = quantized_.begin(), it_end = quantized_.end();
-	
-	long half_range = std::numeric_limits< T_coeff >::max();
-#if 0
-	std::cout << "min: " << long(std::numeric_limits< T_coeff >::min()) << std::endl 
-	<< "max: " << half_range << std::endl;
-#endif
-	
-	for( ; it != it_end; ++it, ++raw_it )
+
+        long max_range = 32000; //long(std::numeric_limits< T_coeff >::max());
+        long min_range = 0;//long(std::numeric_limits< T_coeff >::min());
+
+        for( ; it != it_end; ++it, ++raw_it )
 	{
-		*it = T_coeff( std::min( std::max( long( std::numeric_limits< T_coeff >::min()), long( (*raw_it * half_range) + 0.5)), half_range ));
-		
+		//*it = T_coeff( std::min( std::max( min_range, long( (*raw_it * max_range ) + 0.5)), max_range ));
+                //*it = T_coeff( std::min(long(*raw_it * max_range), min_range));
+
 #if 0
+		
 		std::cout
-		<< "in value: " << *raw_it * half_range << std::endl
+		<< "in value: " << *raw_it * max_range << std::endl
 		<< "out value: " << long(*it) << std::endl;
 #endif
-	}
+        }
 }		
 
 	

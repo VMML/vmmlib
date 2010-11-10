@@ -388,14 +388,9 @@ public:
             os << "(";
             for( size_t col_index = 0; col_index < N; ++col_index )
             {
- 				if (sizeof(T) == sizeof(uint8_t) || sizeof(T) == sizeof(uint16_t) ) {
-					os << long(matrix.at( row_index, col_index ));
-					
-				} else {
-					os << matrix.at( row_index, col_index );
-				}
-				if (col_index < (N-1) )
-					os << ", ";
+                os << matrix.at( row_index, col_index );
+                if (col_index < (N-1) )
+                    os << ", ";
             }
             os << ")" << std::endl;
         }

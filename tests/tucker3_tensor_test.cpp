@@ -1,6 +1,5 @@
 #include "tucker3_tensor_test.hpp"
 
-#include <stdint.h>
 #include <vmmlib/tucker3_tensor.hpp>
 #include <sstream>
 
@@ -272,21 +271,21 @@ namespace vmml
 		
 		
 		//tucker3 reconstruction
-		tensor3< 2, 3, 4, uint16_t >  core;
+		tensor3< 2, 3, 4, int >  core;
 		core.fill_increasing_values();
-		tensor3< 6, 7, 5, uint16_t >  t3_reco;
-		matrix<6, 2, uint16_t> u1;
-		matrix<7, 3, uint16_t> u2;
-		matrix<5, 4, uint16_t> u3;
+		tensor3< 6, 7, 5, int >  t3_reco;
+		matrix<6, 2, int> u1;
+		matrix<7, 3, int> u2;
+		matrix<5, 4, int> u3;
 		u1.fill(2);
 		u2.fill(3);
 		u3.fill(1);
 		
-		tucker3_tensor<2, 3, 4, 6, 7, 5, uint16_t, uint16_t > tuck3( core, u1, u2, u3 );
+		tucker3_tensor<2, 3, 4, 6, 7, 5, int, int > tuck3( core, u1, u2, u3 );
 
 		tuck3.reconstruct( t3_reco );
 		
-		tensor3<6, 7, 5, uint16_t> t3_reco_test;
+		tensor3<6, 7, 5, int> t3_reco_test;
 		t3_reco_test.fill(1656);
 		//std::cout << "Tucker3 reconstruction (all values should be 1656): " << std::endl << t3_reco << std::endl;
 		//std::cout << "Tucker3 core : " << std::endl << tuck3.get_core() << std::endl;
@@ -305,16 +304,16 @@ namespace vmml
 		
 
 		//rank reduction
-		tensor3< 1, 2, 3, uint16_t >  core_red;
-		matrix<6, 1, uint16_t> u1_red;
-		matrix<7, 2, uint16_t> u2_red;
-		matrix<5, 3, uint16_t> u3_red;
-		tensor3< 1, 2, 3, uint16_t >  core_red2;
-		matrix<6, 1, uint16_t> u1_red2;
-		matrix<7, 2, uint16_t> u2_red2;
-		matrix<5, 3, uint16_t> u3_red2;
+		tensor3< 1, 2, 3, int >  core_red;
+		matrix<6, 1, int> u1_red;
+		matrix<7, 2, int> u2_red;
+		matrix<5, 3, int> u3_red;
+		tensor3< 1, 2, 3, int >  core_red2;
+		matrix<6, 1, int> u1_red2;
+		matrix<7, 2, int> u2_red2;
+		matrix<5, 3, int> u3_red2;
 		
-		tucker3_tensor< 1, 2, 3, 6, 7, 5, uint16_t, uint16_t > tuck3_red( core_red, u1_red, u2_red, u3_red );
+		tucker3_tensor< 1, 2, 3, 6, 7, 5, int, int > tuck3_red( core_red, u1_red, u2_red, u3_red );
 		tuck3_red.reduce_ranks( tuck3 );
 		
 		u1_red.fill(2);
@@ -347,17 +346,17 @@ namespace vmml
 		
 		
 		//basis matrices subsampling
-		tensor3< 3, 4, 3, uint16_t > t3_sub;
-		tensor3< 2, 3, 4, uint16_t > core_sub;
-		matrix< 3, 2, uint16_t > u1_sub;
-		matrix< 4, 3, uint16_t > u2_sub;
-		matrix< 3, 4, uint16_t > u3_sub;
-		tucker3_tensor< 2, 3, 4, 3, 4, 3, uint16_t, uint16_t > tuck3_sub( core_sub, u1_sub, u2_sub, u3_sub );
+		tensor3< 3, 4, 3, int > t3_sub;
+		tensor3< 2, 3, 4, int > core_sub;
+		matrix< 3, 2, int > u1_sub;
+		matrix< 4, 3, int > u2_sub;
+		matrix< 3, 4, int > u3_sub;
+		tucker3_tensor< 2, 3, 4, 3, 4, 3, int, int > tuck3_sub( core_sub, u1_sub, u2_sub, u3_sub );
 		
 		tuck3_sub.subsampling( tuck3, 2);
 		tuck3_sub.reconstruct( t3_sub );
 		
-		tensor3< 3, 4, 3, uint16_t > t3_sub_test;
+		tensor3< 3, 4, 3, int > t3_sub_test;
 		t3_sub_test.fill(1656);
 		if ( t3_sub_test == t3_sub )
 		{	
@@ -372,14 +371,14 @@ namespace vmml
 		}
 		
 		//basis matrices subsampling, average data
-		tensor3< 3, 4, 3, uint16_t > t3_sub_avg;
-		tensor3< 2, 3, 4, uint16_t > core_sub_avg;
-		matrix< 3, 2, uint16_t > u1_sub_avg;
-		matrix< 4, 3, uint16_t > u2_sub_avg;
-		matrix< 3, 4, uint16_t > u3_sub_avg;
-		tucker3_tensor< 2, 3, 4, 3, 4, 3, uint16_t, uint16_t > tuck3_sub_avg( core_sub_avg, u1_sub_avg, u2_sub_avg, u3_sub_avg );
+		tensor3< 3, 4, 3, int > t3_sub_avg;
+		tensor3< 2, 3, 4, int > core_sub_avg;
+		matrix< 3, 2, int > u1_sub_avg;
+		matrix< 4, 3, int > u2_sub_avg;
+		matrix< 3, 4, int > u3_sub_avg;
+		tucker3_tensor< 2, 3, 4, 3, 4, 3, int, int > tuck3_sub_avg( core_sub_avg, u1_sub_avg, u2_sub_avg, u3_sub_avg );
 		
-		/*matrix<6, 2, uint16_t> u1_new;
+		/*matrix<6, 2, int> u1_new;
 		u1_new.fill(5);
 		u1_new.at(1,1) = 2;
 		u1_new.at(4,0) = 3;
@@ -404,17 +403,17 @@ namespace vmml
 		
 		
 		//basis matrices region of interest selection
-		tensor3< 1, 1, 3, uint16_t > t3_roi;
-		tensor3< 2, 3, 4, uint16_t > core_roi;
-		matrix< 1, 2, uint16_t > u1_roi;
-		matrix< 1, 3, uint16_t > u2_roi;
-		matrix< 3, 4, uint16_t > u3_roi;
-		tucker3_tensor< 2, 3, 4, 1, 1, 3, uint16_t, uint16_t > tuck3_roi( core_roi, u1_roi, u2_roi, u3_roi );
+		tensor3< 1, 1, 3, int > t3_roi;
+		tensor3< 2, 3, 4, int > core_roi;
+		matrix< 1, 2, int > u1_roi;
+		matrix< 1, 3, int > u2_roi;
+		matrix< 3, 4, int > u3_roi;
+		tucker3_tensor< 2, 3, 4, 1, 1, 3, int, int > tuck3_roi( core_roi, u1_roi, u2_roi, u3_roi );
 		
 		tuck3_roi.region_of_interest( tuck3, 0, 1, 1, 2, 1, 4);
 		tuck3_roi.reconstruct( t3_roi );
 
-		tensor3< 1, 1, 3, uint16_t > t3_roi_test;
+		tensor3< 1, 1, 3, int > t3_roi_test;
 		t3_roi_test.fill(1656);
 		if ( t3_roi_test == t3_roi)
 		{	

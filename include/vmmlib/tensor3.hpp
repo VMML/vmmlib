@@ -143,6 +143,9 @@ public:
     void set( input_iterator_t begin_, input_iterator_t end_, 
 			 bool row_major_layout = true );	
     void zero();
+	
+	T get_min() const;
+	T get_max() const;
 
     bool operator==( const tensor3& other ) const;
     bool operator!=( const tensor3& other ) const;
@@ -1315,6 +1318,39 @@ VMML_TEMPLATE_CLASSNAME::import_from( const std::vector< T >& data_ )
 }	
 
 	
+VMML_TEMPLATE_STRING
+T
+VMML_TEMPLATE_CLASSNAME::get_min() const
+{
+	T tensor3_min = static_cast<T>(std::numeric_limits<T>::max());
+	
+	const_iterator  it = begin(),
+	it_end = end();
+	for( ; it != it_end; ++it)
+	{		
+		if ( *it < tensor3_min ) {
+			tensor3_min = *it;
+		}
+	}
+	return tensor3_min;
+}	
+	
+VMML_TEMPLATE_STRING
+T
+VMML_TEMPLATE_CLASSNAME::get_max() const
+{
+	T tensor3_max = static_cast<T>(0);
+	
+	const_iterator  it = begin(),
+	it_end = end();
+	for( ; it != it_end; ++it)
+	{		
+		if ( *it > tensor3_max ) {
+			tensor3_max = *it;
+		}
+	}
+	return tensor3_max;
+}		
 
 #undef VMML_TEMPLATE_STRING
 #undef VMML_TEMPLATE_CLASSNAME

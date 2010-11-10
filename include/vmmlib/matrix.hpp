@@ -197,6 +197,8 @@ public:
     template< size_t O >
     matrix< M*O, N, T > khatri_rao_product( const matrix< O, N, T >& right_ ) const;
 
+	T get_min() const;
+	T get_max() const;
 	
     vector< M, T >  get_column( size_t column_index ) const;
     void get_column( size_t column_index, vector< M, T>& column ) const;
@@ -2281,7 +2283,40 @@ matrix< M, N, T >::cast_from( const matrix< M, N, TT >& other )
     }	
 }
 
+
+template< size_t M, size_t N, typename T  >
+T
+matrix< M, N, T >::get_min() const
+{
+	T min_value = static_cast<T>(std::numeric_limits<T>::max());
 	
+	const_iterator  it = begin(),
+	it_end = end();
+	for( ; it != it_end; ++it)
+	{		
+		if ( *it < min_value ) {
+			min_value = *it;
+		}
+	}
+	return min_value;
+}	
+
+template< size_t M, size_t N, typename T  >
+T
+matrix< M, N, T >::get_max() const
+{
+	T max_value = static_cast<T>(0);
+	
+	const_iterator  it = begin(),
+	it_end = end();
+	for( ; it != it_end; ++it)
+	{		
+		if ( *it > max_value ) {
+			max_value = *it;
+		}
+	}
+	return max_value;
+}		
 
 } // namespace vmml
 

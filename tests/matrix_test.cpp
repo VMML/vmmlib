@@ -889,8 +889,8 @@ matrix_test::run()
 	
 	
 	{
-		//matrix type conversion
-		matrix< 2, 3, float_t > matrix_type_a;
+		//matrix type cast
+		matrix< 2, 3, float > matrix_type_a;
 		matrix< 2, 3, int > matrix_type_b;
 		matrix< 2, 3, int > matrix_type_b_check;
 		
@@ -904,14 +904,36 @@ matrix_test::run()
 		} else
 		{
 			std::stringstream error;
-			error << "type cast - matrix type float_t: " << std::endl << matrix_type_a << std::endl
-			<< " matrix cast uint16_t should be: " << std::endl << matrix_type_b_check << std::endl
+			error << "type cast - matrix type float: " << std::endl << matrix_type_a << std::endl
+			<< " matrix cast int should be: " << std::endl << matrix_type_b_check << std::endl
 			<< " is: " << matrix_type_b << std::endl;
 			log_error( error.str() );
 		}		
 		
 	}
 	
+	//get_min() + get_max()
+	{
+		matrix< 3, 2, int >  m_get_min_max;
+		m_get_min_max.zero();
+		m_get_min_max.at(0,1) = 4; m_get_min_max.at(2,1) = 8;
+		
+		int m_min = m_get_min_max.get_min();
+		int m_max = m_get_min_max.get_max();
+		
+		if ( (m_min == 0) && (m_max == 8) )	{	
+			log( "get min/max" , true  );
+		} else
+		{
+			std::stringstream error;
+			error 
+			<< "get min/max: " << std::endl
+			<< "min should be: " << std::endl << 0 << " is: " << m_min << std::endl 
+			<< "max should be: " << std::endl << 29 << " is: " << m_max << std::endl;
+			
+			log_error( error.str() );
+		}	
+	}
 	
     return ok;
 }

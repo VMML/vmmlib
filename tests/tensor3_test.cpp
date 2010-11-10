@@ -1,8 +1,6 @@
 #include "tensor3_test.hpp"
 
-#include <stdint.h>
 #include <vmmlib/tensor3.hpp>
-
 #include <sstream>
 
 namespace vmml
@@ -14,8 +12,8 @@ tensor3_test::run()
     bool ok = false;
 	        
 	
-	tensor3< 2, 3, 4, uint16_t >  t3;
-    tensor3< 2, 3, 4, uint16_t >  t3_tmp;
+	tensor3< 2, 3, 4, int >  t3;
+    tensor3< 2, 3, 4, int >  t3_tmp;
 
 	//test size
 	if (t3.size() == 24)
@@ -47,10 +45,10 @@ tensor3_test::run()
 	
 	
 	//test set tensor from input
-	uint16_t data[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24 };
+	int data[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24 };
 	t3.set(data, data + 24);
 	ok = false;
-	uint16_t check_value = 1;
+	int check_value = 1;
 	for ( size_t i3 = 0; i3 < 4; ++i3 )
 	{
 		for( size_t i1 = 0; i1 < 2; ++i1 )
@@ -106,9 +104,9 @@ tensor3_test::run()
 	
 	
 	//operations
-    tensor3< 2, 3, 4, uint16_t >  t3_2;
-    tensor3< 2, 3, 4, uint16_t >  t3_3;
-    tensor3< 2, 3, 4, uint16_t >  t3_result;
+    tensor3< 2, 3, 4, int >  t3_2;
+    tensor3< 2, 3, 4, int >  t3_3;
+    tensor3< 2, 3, 4, int >  t3_result;
 	t3.fill( 2 );
 	t3_2.fill( 5 );
 	t3_3.fill( 5 );
@@ -259,24 +257,24 @@ tensor3_test::run()
 
 	
 	//test get_n_vector functions
-	uint16_t i1 = 1;
-	uint16_t i2 = 2;
-	uint16_t i3 = 3;
+	int i1 = 1;
+	int i2 = 2;
+	int i3 = 3;
 	t3.fill_increasing_values();
 	t3 += 1;
 
-	vmml::vector< 3, uint16_t > test_I2_data ; 
-	vmml::vector< 3, uint16_t > I2_data ; 
+	vmml::vector< 3, int > test_I2_data ; 
+	vmml::vector< 3, int > I2_data ; 
 	t3.get_row( i1, i3, I2_data );
 	test_I2_data.set(22, 23, 24);
 	
-	vmml::vector< 2, uint16_t > test_I1_data ; 
-	vmml::vector< 2, uint16_t > I1_data ; 
+	vmml::vector< 2, int > test_I1_data ; 
+	vmml::vector< 2, int > I1_data ; 
 	t3.get_column( i2, i3, I1_data );
 	test_I1_data.set(21, 24);
 	
-	vmml::vector< 4, uint16_t > test_I3_data ; 
-	vmml::vector< 4, uint16_t > I3_data ; 
+	vmml::vector< 4, int > test_I3_data ; 
+	vmml::vector< 4, int > I3_data ; 
 	t3.get_I3_vector( i1, i2, I3_data );
 	test_I3_data.set( 6, 12, 18, 24);
 	
@@ -297,19 +295,19 @@ tensor3_test::run()
 	I2_data.set( 1 );
 	test_I2_data.set( 1, 1, 1 );
 	t3.set_row( i1, i3, I2_data );
-	vmml::vector< 3, uint16_t > I2_data_2 ; 
+	vmml::vector< 3, int > I2_data_2 ; 
 	t3.get_row( i1, i3, I2_data_2 );
 	
 	I1_data.set( 2 );
 	test_I1_data.set( 2, 2 );
 	t3.set_column( i2, i3, I1_data );
-	vmml::vector< 2, uint16_t > I1_data_2 ; 
+	vmml::vector< 2, int > I1_data_2 ; 
 	t3.get_column( i2, i3, I1_data_2 );
 	
 	I3_data.set( 3 );
 	test_I3_data.set( 3, 3, 3, 3 );
 	t3.set_tube( i1, i2, I3_data );
-	vmml::vector< 4, uint16_t > I3_data_2 ; 
+	vmml::vector< 4, int > I3_data_2 ; 
 	t3.get_tube( i1, i2, I3_data_2 );
 
 	if (I2_data_2 == test_I2_data && I1_data_2 == test_I1_data && I3_data_2 == test_I3_data)
@@ -328,14 +326,14 @@ tensor3_test::run()
 	
 	//test get_slice() functions
 	//frontal slice
-	matrix< 2, 3, uint16_t > mat_frontal;
-	matrix< 2, 3, uint16_t > test_mat_frontal;
-	uint16_t data2[] = { 13, 14, 15, 16, 17, 3 };
+	matrix< 2, 3, int > mat_frontal;
+	matrix< 2, 3, int > test_mat_frontal;
+	int data2[] = { 13, 14, 15, 16, 17, 3 };
 	test_mat_frontal.set(data2, data2 + 6);
 	t3.get_frontal_slice_fwd( 2, mat_frontal );
 
-	matrix< 2, 3, uint16_t > mat_frontal_2;
-	matrix< 2, 3, uint16_t > test_mat_frontal_2;
+	matrix< 2, 3, int > mat_frontal_2;
+	matrix< 2, 3, int > test_mat_frontal_2;
 	test_mat_frontal_2.fill(7);
 	t3.set_frontal_slice_fwd( 2, test_mat_frontal_2);
 	t3.get_frontal_slice_fwd( 2, mat_frontal_2);
@@ -354,12 +352,12 @@ tensor3_test::run()
 
 	
 	t3.set_frontal_slice_fwd( 2, test_mat_frontal);
-	matrix< 3, 2, uint16_t > mat_frontal_bwd = transpose( mat_frontal );
-	matrix< 3, 2, uint16_t > test_mat_frontal_bwd  = transpose( test_mat_frontal );
+	matrix< 3, 2, int > mat_frontal_bwd = transpose( mat_frontal );
+	matrix< 3, 2, int > test_mat_frontal_bwd  = transpose( test_mat_frontal );
 	t3.get_frontal_slice_bwd( 2, mat_frontal_bwd );
 	
-	matrix< 3, 2, uint16_t > mat_frontal_2_bwd  = transpose ( mat_frontal );;
-	matrix< 3, 2, uint16_t > test_mat_frontal_2_bwd = transpose( test_mat_frontal_2 );
+	matrix< 3, 2, int > mat_frontal_2_bwd  = transpose ( mat_frontal );;
+	matrix< 3, 2, int > test_mat_frontal_2_bwd = transpose( test_mat_frontal_2 );
 	t3.set_frontal_slice_bwd( 2, test_mat_frontal_2_bwd);
 	t3.get_frontal_slice_bwd( 2, mat_frontal_2_bwd);
 	
@@ -381,14 +379,14 @@ tensor3_test::run()
 	
 	
 	//lateral slice
-	matrix< 2, 4, uint16_t > mat_lateral;
-	matrix< 2, 4, uint16_t > test_mat_lateral;
-	uint16_t data3[] = { 1, 7, 7, 19, 4, 10, 7, 1 };
+	matrix< 2, 4, int > mat_lateral;
+	matrix< 2, 4, int > test_mat_lateral;
+	int data3[] = { 1, 7, 7, 19, 4, 10, 7, 1 };
 	test_mat_lateral.set(data3, data3 + 8);
 	t3.get_lateral_slice_bwd( 0, mat_lateral );
 	
-	matrix< 2, 4, uint16_t > mat_lateral_2;
-	matrix< 2, 4, uint16_t > test_mat_lateral_2;
+	matrix< 2, 4, int > mat_lateral_2;
+	matrix< 2, 4, int > test_mat_lateral_2;
 	test_mat_lateral_2.fill(6);
 	t3.set_lateral_slice_bwd( 0, test_mat_lateral_2 );
 	t3.get_lateral_slice_bwd( 0, mat_lateral_2 );
@@ -407,12 +405,12 @@ tensor3_test::run()
 	
 	
 	t3.set_lateral_slice_bwd( 0, test_mat_lateral );
-	matrix< 4, 2, uint16_t > mat_lateral_fwd = transpose( mat_lateral );
-	matrix< 4, 2, uint16_t > test_mat_lateral_fwd  = transpose( test_mat_lateral );
+	matrix< 4, 2, int > mat_lateral_fwd = transpose( mat_lateral );
+	matrix< 4, 2, int > test_mat_lateral_fwd  = transpose( test_mat_lateral );
 	t3.get_lateral_slice_fwd( 0, mat_lateral_fwd );
 	
-	matrix< 4, 2, uint16_t > mat_lateral_2_fwd = transpose( mat_lateral_2 );
-	matrix< 4, 2, uint16_t > test_mat_lateral_2_fwd  = transpose( test_mat_lateral_2 );
+	matrix< 4, 2, int > mat_lateral_2_fwd = transpose( mat_lateral_2 );
+	matrix< 4, 2, int > test_mat_lateral_2_fwd  = transpose( test_mat_lateral_2 );
 	t3.set_lateral_slice_fwd( 0, test_mat_lateral_2_fwd );
 	t3.get_lateral_slice_fwd( 0, mat_lateral_2_fwd );
 
@@ -432,15 +430,15 @@ tensor3_test::run()
 
 	
 	//horizontal slice
-	matrix< 3, 4, uint16_t > mat_horizontal;
-	matrix< 3, 4, uint16_t > test_mat_horizontal;
-	//uint16_t data4[] = { 6, 5, 3, 6, 11, 3, 6, 7, 7, 6, 1, 3 };
-	uint16_t data4[] = { 6, 6, 6, 6, 5, 11, 7, 1, 3, 3, 7, 3 };
+	matrix< 3, 4, int > mat_horizontal;
+	matrix< 3, 4, int > test_mat_horizontal;
+	//int data4[] = { 6, 5, 3, 6, 11, 3, 6, 7, 7, 6, 1, 3 };
+	int data4[] = { 6, 6, 6, 6, 5, 11, 7, 1, 3, 3, 7, 3 };
 	test_mat_horizontal.set(data4, data4 + 12);
 	t3.get_horizontal_slice_fwd( 1, mat_horizontal );
 	
-	matrix< 3, 4, uint16_t > mat_horizontal_2;
-	matrix< 3, 4, uint16_t > test_mat_horizontal_2;
+	matrix< 3, 4, int > mat_horizontal_2;
+	matrix< 3, 4, int > test_mat_horizontal_2;
 	test_mat_lateral_2.fill(5);
 	t3.set_horizontal_slice_fwd( 1, test_mat_horizontal_2 );
 	t3.get_horizontal_slice_fwd( 1, mat_horizontal_2 );
@@ -458,12 +456,12 @@ tensor3_test::run()
 	}
 	
 	t3.get_horizontal_slice_fwd( 1, test_mat_horizontal );
-	matrix< 4, 3, uint16_t > mat_horizontal_bwd  = transpose( mat_horizontal );
-	matrix< 4, 3, uint16_t > test_mat_horizontal_bwd = transpose( test_mat_horizontal );
+	matrix< 4, 3, int > mat_horizontal_bwd  = transpose( mat_horizontal );
+	matrix< 4, 3, int > test_mat_horizontal_bwd = transpose( test_mat_horizontal );
 	t3.get_horizontal_slice_bwd( 1, mat_horizontal_bwd );
 	
-	matrix< 4, 3, uint16_t > mat_horizontal_2_bwd  = transpose( mat_horizontal_2 );
-	matrix< 4, 3, uint16_t > test_mat_horizontal_2_bwd = transpose( test_mat_horizontal_2 );
+	matrix< 4, 3, int > mat_horizontal_2_bwd  = transpose( mat_horizontal_2 );
+	matrix< 4, 3, int > test_mat_horizontal_2_bwd = transpose( test_mat_horizontal_2 );
 	t3.set_horizontal_slice_bwd( 1, test_mat_horizontal_2_bwd );
 	t3.get_horizontal_slice_bwd( 1, mat_horizontal_2_bwd );
 
@@ -484,27 +482,27 @@ tensor3_test::run()
 	
 	//test tensor3 matrix multiplication
 	t3.fill_increasing_values();
-	matrix<5, 4, uint16_t> u3;
+	matrix<5, 4, int> u3;
 	u3.fill(1);
-	tensor3<2, 3, 5, uint16_t> t3_jji;
+	tensor3<2, 3, 5, int> t3_jji;
 	t3_jji.multiply_horizontal_bwd(t3, u3 );
 	
-	tensor3<6, 3, 5, uint16_t> t3_iji;
-	matrix<6, 2, uint16_t> u1;
+	tensor3<6, 3, 5, int> t3_iji;
+	matrix<6, 2, int> u1;
 	u1.fill(2);
 	t3_iji.multiply_lateral_bwd(t3_jji, u1 );
 
-	tensor3<6, 7, 5, uint16_t> t3_iii;
-	matrix<7, 3, uint16_t> u2;
+	tensor3<6, 7, 5, int> t3_iii;
+	matrix<7, 3, int> u2;
 	u2.fill(3);
 	t3_iii.multiply_frontal_bwd(t3_iji, u2 );
 	 
 	
 	t3.fill_increasing_values();
-	tensor3<6, 7, 5, uint16_t> t3_reco;
+	tensor3<6, 7, 5, int> t3_reco;
 	t3_reco.full_tensor3_matrix_multiplication( t3, u1, u2, u3 ); 
 	
-	tensor3<6, 7, 5, uint16_t> t3_iii_test;
+	tensor3<6, 7, 5, int> t3_iii_test;
 	t3_iii_test.fill(1656);
 	if ( t3_iii_test == t3_reco && t3_iii_test == t3_iii )
 	{	
@@ -522,22 +520,22 @@ tensor3_test::run()
 	//matrix< I3, I1*I2, T> m_horizontal;
 	//matrix< I1, I2*I3, T> m_lateral;
 	//matrix< I2, I1*I3, T> m_frontal;
-	matrix< 4, 6, uint16_t> m_horizontal;
-	matrix< 2, 12, uint16_t> m_lateral;
-	matrix< 3, 8, uint16_t> m_frontal;
+	matrix< 4, 6, int> m_horizontal;
+	matrix< 2, 12, int> m_lateral;
+	matrix< 3, 8, int> m_frontal;
 	
 	t3.horizontal_matricization_bwd( m_horizontal);
 	t3.lateral_matricization_bwd( m_lateral);
 	t3.frontal_matricization_bwd(  m_frontal);
 	
-	matrix< 4, 6, uint16_t> m_horizontal_test;
-	uint16_t data5[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 };
+	matrix< 4, 6, int> m_horizontal_test;
+	int data5[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 };
 	m_horizontal_test.set(data5, data5 + 24);
-	matrix< 2, 12, uint16_t> m_lateral_test;
-	uint16_t data6[] = { 0, 6, 12, 18, 1, 7, 13, 19, 2, 8, 14, 20, 3, 9, 15, 21, 4, 10, 16, 22, 5, 11, 17, 23 };
+	matrix< 2, 12, int> m_lateral_test;
+	int data6[] = { 0, 6, 12, 18, 1, 7, 13, 19, 2, 8, 14, 20, 3, 9, 15, 21, 4, 10, 16, 22, 5, 11, 17, 23 };
 	m_lateral_test.set(data6, data6 + 24);
-	matrix< 3, 8, uint16_t> m_frontal_test;
-	uint16_t data7[] = { 0, 3, 6, 9, 12, 15, 18, 21, 1, 4, 7, 10, 13, 16, 19, 22, 2, 5, 8, 11, 14, 17, 20, 23 };
+	matrix< 3, 8, int> m_frontal_test;
+	int data7[] = { 0, 3, 6, 9, 12, 15, 18, 21, 1, 4, 7, 10, 13, 16, 19, 22, 2, 5, 8, 11, 14, 17, 20, 23 };
 	m_frontal_test.set(data7, data7 + 24);
 	
 	if ( m_horizontal_test == m_horizontal && m_lateral_test == m_lateral && m_frontal_test == m_frontal )
@@ -598,10 +596,10 @@ tensor3_test::run()
 	
 	
 	//set diagonal values in a cubic tensor3, i.e., R=I1, R=I2, R=I3
-	tensor3< 3, 3, 3, uint16_t >  t3_diag;
-	tensor3< 3, 3, 3, uint16_t >  t3_diag_check;
+	tensor3< 3, 3, 3, int >  t3_diag;
+	tensor3< 3, 3, 3, int >  t3_diag_check;
 	t3_diag_check.zero(); t3_diag_check.at(1, 1, 1) = 1; t3_diag_check.at(2, 2, 2) = 2;
-	vector< 3, uint16_t > diag_values;
+	vector< 3, int > diag_values;
 	diag_values.at(0) = 0; diag_values.at(1) = 1; diag_values.at(2) = 2;
 	t3_diag.diag( diag_values );
 
@@ -620,8 +618,8 @@ tensor3_test::run()
 	
 	{	//tensor3 type cast
 		tensor3< 2, 3, 4, double >  t3_type_a;
-		tensor3< 2, 3, 4, uint16_t >  t3_type_b;
-		tensor3< 2, 3, 4, uint16_t >  t3_type_b_check;
+		tensor3< 2, 3, 4, int >  t3_type_b;
+		tensor3< 2, 3, 4, int >  t3_type_b_check;
 		
 		t3_type_a.fill(2.4); 
 		t3_type_b_check.fill(2);
@@ -634,7 +632,7 @@ tensor3_test::run()
 		{
 			std::stringstream error;
 			error << "type cast - tensor3 type double: " << std::endl << t3_type_a << std::endl
-			<< " tensor3 type uint16_t should be: " << std::endl << t3_type_b_check << std::endl
+			<< " tensor3 type int should be: " << std::endl << t3_type_b_check << std::endl
 			<< " is: " << t3_type_b << std::endl;
 			log_error( error.str() );
 		}
@@ -642,8 +640,8 @@ tensor3_test::run()
 	{
 		//tensor3: from float_t to uint_t
 		tensor3< 2, 3, 4, double >  t3_type_a;
-		tensor3< 2, 3, 4, uint8_t >  t3_type_b;
-		tensor3< 2, 3, 4, uint8_t >  t3_type_b_check;
+		tensor3< 2, 3, 4, unsigned char >  t3_type_b;
+		tensor3< 2, 3, 4, unsigned char >  t3_type_b_check;
 		
 		t3_type_a.fill(2.4); 
 		t3_type_a.at(0,0,0) = 2.67; 
@@ -660,7 +658,7 @@ tensor3_test::run()
 		{
 			std::stringstream error;
 			error << "from float_t to uint_t - tensor3 type double: " << std::endl << t3_type_a << std::endl
-			<< " tensor3 type uint8_t should be: " << std::endl << t3_type_b_check << std::endl
+			<< " tensor3 type int should be: " << std::endl << t3_type_b_check << std::endl
 			<< " is: " << t3_type_b << std::endl;
 			log_error( error.str() );
 		}
@@ -702,7 +700,26 @@ tensor3_test::run()
 		log_error( error.str() );
 	}		
 	
+	//get_min() + get_max()
 	
+	tensor3< 3, 2, 5, int >  t3_get_min_max;
+	t3_get_min_max.fill_increasing_values();
+	
+	int t3_min = t3_get_min_max.get_min();
+	int t3_max = t3_get_min_max.get_max();
+	
+	if ( (t3_min == 0) && (t3_max == 29) )	{	
+		log( "get min/max" , true  );
+	} else
+	{
+		std::stringstream error;
+		error 
+		<< "get min/max: " << std::endl
+		<< "min should be: " << std::endl << 0 << " is: " << t3_min << std::endl 
+		<< "max should be: " << std::endl << 29 << " is: " << t3_max << std::endl;
+		
+		log_error( error.str() );
+	}		
 	
 	
 	

@@ -107,14 +107,14 @@ public:
 		with the dimensions I1xI2I3, which corresponds to a matrizitation alonge mode I1.
 		other known names for HOSVD: n-mode SVD, 3-mode factor analysis (3MFA, tucker3), 3M-PCA, n-mode PCA, higher-order SVD
 	 */
-        void hosvd( const t3_type& data_ );
+	void hosvd( const t3_type& data_ );
 	void hosvd_on_eigs( const t3_type& data_ );
 	void init_random( const t3_type& data_ );
 		
 	template< size_t M, size_t N >
 		void fill_random_2d( int seed, matrix< M, N, T_coeff >& u );
 		
-        template< size_t M, size_t N, size_t R, typename T >
+	template< size_t M, size_t N, size_t R, typename T >
 		void get_svd_u_red( const matrix< M, N, T >& data_, matrix< M, R, T_coeff >& u_ ) const;
 	template< size_t J1, size_t J2, size_t J3, typename T >
 		void hosvd_mode1( const tensor3<J1, J2, J3, T >& data_, matrix<J1, R1, T_coeff >& U1_ ) const;
@@ -154,9 +154,6 @@ public:
                                  const size_t& start_index1, const size_t& end_index1, 
                                  const size_t& start_index2, const size_t& end_index2, 
                                  const size_t& start_index3, const size_t& end_index3);
-	
-	template< size_t M, size_t N >
-		void quantize_matrix( const matrix< M, N, double >& raw_, matrix< M, N, T_coeff >& quantized_ ) const;
 
 protected:
 		tucker3_tensor( const tucker3_tensor< R1, R2, R3, I1, I1, I1, T_value, T_coeff >& other ) {};
@@ -447,12 +444,12 @@ VMML_TEMPLATE_CLASSNAME::get_svd_u_red( const matrix< M, N, T >& data_, matrix< 
 	
 	matrix< M, N, T_coeff >* u_quant = new matrix< M, N, T_coeff >(); 
 	
-#if 1
-        vector< N, double >* lambdas  = new vector<  N, double >();
-        lapack_svd< M, N, double >* svd = new lapack_svd<  M, N, double >();
+	vector< N, double >* lambdas  = new vector<  N, double >();
+	lapack_svd< M, N, double >* svd = new lapack_svd<  M, N, double >();
 	if( svd->compute_and_overwrite_input( *u_double, *lambdas )) {
 		if( _is_quantify_coeff ){
-			quantize_matrix( *u_double, *u_quant );
+			double min_value = 0; double max_value = 0;
+			( u_double->quantize( *u_quant, min_value, max_value ) );
 		} else if ( sizeof( T_coeff ) != 4 ){
 			u_quant->cast_from( *u_double );
 		} else {
@@ -463,14 +460,13 @@ VMML_TEMPLATE_CLASSNAME::get_svd_u_red( const matrix< M, N, T >& data_, matrix< 
 
 	} else {
 		u_.zero();
-        }
+	}
 	
 	delete lambdas;
 	delete svd;
 	delete u_double;
 	delete u_quant;
 	
-#endif
 }
 	
 	
@@ -944,38 +940,6 @@ VMML_TEMPLATE_CLASSNAME::hosvd_on_eigs( const t3_type& data_ )
 }
 
 	
-	
-	
-VMML_TEMPLATE_STRING
-template< size_t M, size_t N>
-void
-VMML_TEMPLATE_CLASSNAME::quantize_matrix( const matrix< M, N, double >& raw_, matrix< M, N, T_coeff >& quantized_ ) const
-{
-	typedef matrix< M, N, double > matrix_raw_type ;
-	typedef typename matrix_raw_type::const_iterator m_const_iterator;
-	typedef matrix< M, N, T_coeff > matrix_quant_type ;
-	typedef typename matrix_quant_type::iterator m_iterator;
-	
-	m_const_iterator raw_it = raw_.begin();
-	m_iterator it = quantized_.begin(), it_end = quantized_.end();
-
-        long max_range = 32000; //long(std::numeric_limits< T_coeff >::max());
-        long min_range = 0;//long(std::numeric_limits< T_coeff >::min());
-
-        for( ; it != it_end; ++it, ++raw_it )
-	{
-		//*it = T_coeff( std::min( std::max( min_range, long( (*raw_it * max_range ) + 0.5)), max_range ));
-                //*it = T_coeff( std::min(long(*raw_it * max_range), min_range));
-
-#if 0
-		
-		std::cout
-		<< "in value: " << *raw_it * max_range << std::endl
-		<< "out value: " << long(*it) << std::endl;
-#endif
-        }
-}		
-
 	
 #undef VMML_TEMPLATE_STRING
 #undef VMML_TEMPLATE_CLASSNAME

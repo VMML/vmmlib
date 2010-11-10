@@ -935,6 +935,55 @@ matrix_test::run()
 		}	
 	}
 	
+	//quantize
+	{
+		matrix< 4, 3, float >  m_raw;
+		m_raw.fill(0.45692);
+		m_raw.at( 2,2) = 0.67777; m_raw.at(1,0) = 0.111111; m_raw.at(2,0) = -0.23; m_raw.at(3, 0) = -0.99;
+		m_raw.at(0,0) = -0.8; m_raw.at(2,1) = 0.0; m_raw.at(3,2) = 0.99; m_raw.at(1,0) = 0.23;
+		matrix< 4, 3, unsigned char >  m_quant; m_quant.zero();
+		matrix< 4, 3, unsigned char >  m_quant_check; 
+		int data_unsigned[] = {24, 186, 186, 157, 186, 186, 98, 128, 215, 0, 186, 255};
+		m_quant_check.set(data_unsigned, data_unsigned+12);
+		
+		float min_value = 50;
+		float max_value = -50;
+		
+		m_raw.quantize( m_quant, min_value, max_value );
+		
+		matrix< 4, 3, char >  m_quant_sign; m_quant_sign.zero();
+		matrix< 4, 3, char >  m_quant_sign_check; 
+		int data_signed[] = {-102, 59, 59, 30, 59, 59, -29, 0, 87, -127, 59, 127};
+		m_quant_sign_check.set(data_signed, data_signed +12 );
+		
+		m_raw.quantize( m_quant_sign, min_value, max_value );
+		
+	
+		//dequantize
+		matrix< 4, 3, float >  m_dequant;
+		matrix< 4, 3, float >  m_dequant_sign;
+		
+		m_quant.dequantize( m_dequant, min_value, max_value );
+		m_quant_sign.dequantize( m_dequant_sign, min_value, max_value );
+		
+		if ( ( m_quant_check == m_quant ) && ( m_quant_sign_check == m_quant_sign ) && m_dequant.equals(m_dequant_sign, 0.01) )	{	
+			log( "quantize/dequantize" , true  );
+		} else
+		{
+			std::stringstream error;
+			error 
+			<< "quantize/dequantize " << std::endl
+			<< "raw is: " << std::endl << m_raw << std::endl 
+			<< "unsigned quantized is: " << std::endl << m_quant << std::endl
+			<< "signed quantized is: " << std::endl << m_quant_sign << std::endl
+			<< "dequantized unsigned is: " << std::endl << m_dequant << std::endl 
+			<< "dequantized signed is: " << std::endl << m_dequant_sign << std::endl 
+			<< "min_value : " << min_value << " max_value: " << max_value << std::endl;
+			
+			log_error( error.str() );
+		}	
+	}
+	
     return ok;
 }
 

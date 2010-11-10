@@ -763,7 +763,7 @@ VMML_TEMPLATE_CLASSNAME::diag( const vector< R, T >& diag_values_ )
 	zero();
 	for( size_t r = 0; r < R; ++r )
 	{
-		at(r, r, r) = static_cast< T >(diag_values_.at(r));
+		at(r, r, r) = static_cast< T >( diag_values_.at(r) );
 	}
 }
 	

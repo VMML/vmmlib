@@ -193,6 +193,12 @@ public:
 	template< typename TT >
 	void cast_from( const matrix< M, N, TT >& other );
 	
+	template< typename TT >
+		void quantize( matrix< M, N, TT >& quantized_, T& min_value, T& max_value ) const;
+	template< typename TT >
+		void dequantize( matrix< M, N, TT >& quantized_, const TT& min_value, const TT& max_value ) const;
+
+	
 	//Khatri-Rao Product: columns must be of same size
     template< size_t O >
     matrix< M*O, N, T > khatri_rao_product( const matrix< O, N, T >& right_ ) const;
@@ -390,7 +396,11 @@ public:
             os << "(";
             for( size_t col_index = 0; col_index < N; ++col_index )
             {
-                os << matrix.at( row_index, col_index );
+                if( sizeof(T) ==sizeof(unsigned char)) {
+					os << int(matrix.at( row_index, col_index ));
+				} else {
+					os << matrix.at( row_index, col_index );
+				}
                 if (col_index < (N-1) )
                     os << ", ";
             }
@@ -2318,6 +2328,77 @@ matrix< M, N, T >::get_max() const
 	return max_value;
 }		
 
+
+template< size_t M, size_t N, typename T >
+template< typename TT  >
+void
+matrix< M, N, T >::quantize( matrix< M, N, TT >& quantized_, T& min_value, T& max_value ) const
+{
+	long max_tt_range = long(std::numeric_limits< TT >::max());
+	long min_tt_range = long(std::numeric_limits< TT >::min());
+	long tt_range = max_tt_range - min_tt_range;
+	
+	min_value = get_min();
+	max_value = get_max();
+	T t_range = max_value - min_value;
+	
+#if 0
+	std::cout
+	<< "q: value t range: " << float(t_range) << std::endl
+	<< "value tt range: " << tt_range << std::endl;
+#endif 
+
+	typedef matrix< M, N, TT > m_tt_type ;
+	typedef typename m_tt_type::iterator tt_iterator;
+	tt_iterator it_quant = quantized_.begin();
+	const_iterator it = begin(), it_end = end();
+
+	for( ; it != it_end; ++it, ++it_quant )
+	{
+		if (std::numeric_limits<TT>::is_signed ) {
+			*it_quant = TT( std::min( std::max( min_tt_range, long(( *it * tt_range / t_range ) + 0.5)), max_tt_range ));
+		} else {
+			*it_quant = TT( std::min( std::max( min_tt_range, long(((*it - min_value) * tt_range / t_range) + 0.5)), max_tt_range ));
+		}
+	}
+}		
+
+	
+
+template< size_t M, size_t N, typename T >
+template< typename TT  >
+void
+matrix< M, N, T >::dequantize( matrix< M, N, TT >& dequantized_, const TT& min_value, const TT& max_value ) const
+{
+	T max_t_range = get_max();
+	T min_t_range = get_min();
+	long t_range = long(max_t_range) - long(min_t_range);
+	
+	TT tt_range = max_value - min_value;
+	
+#if 0
+	std::cout
+	<< "deq: value t range: " << t_range << std::endl
+	<< "value tt range: " << float(tt_range) << std::endl;
+#endif 
+	
+	typedef matrix< M, N, TT > m_tt_type ;
+	typedef typename m_tt_type::iterator tt_iterator;
+	tt_iterator it_dequant = dequantized_.begin();
+	const_iterator it = begin(), it_end = end();
+	TT new_value = 0;
+	for( ; it != it_end; ++it, ++it_dequant )
+	{
+		if (std::numeric_limits<T>::is_signed ) {
+			*it_dequant = std::min( std::max( min_value, TT((TT(*it) / t_range) * tt_range)), max_value );
+		} else {
+			*it_dequant = std::min( std::max( min_value, TT((((TT(*it) / t_range)) * tt_range ) + min_value)), max_value );
+		}
+	}
+}		
+
+	
+	
 } // namespace vmml
 
 #endif

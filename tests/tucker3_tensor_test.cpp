@@ -57,10 +57,11 @@ namespace vmml
 		};
 		t3_data_hosvd.set(data_hosvd, data_hosvd + 27);
 		
-		tucker3_tensor< 3, 3, 3, 3, 3, 3, double, double > tuck3_hosvd( core_hosvd, u1_hosvd, u2_hosvd, u3_hosvd );
+		tucker3_tensor< 3, 3, 3, 3, 3, 3, double, double > tuck3_hosvd( core_hosvd, u1_hosvd_check, u2_hosvd_check, u3_hosvd_check );
 		
 		//(1a) derive core tensor (with pseudo inverse)
-		tuck3_hosvd.derive_core( t3_data_hosvd, core_hosvd, u1_hosvd_check, u2_hosvd_check, u3_hosvd_check );
+		tuck3_hosvd.derive_core( t3_data_hosvd );
+		tuck3_hosvd.get_core( core_hosvd );
 		
 		if ( core_hosvd.equals( core_hosvd_check, precision ))
 		{	
@@ -76,8 +77,10 @@ namespace vmml
 			log_error( error.str() );
 		}
 		//(1b) derive core tensor with orthogonal basis
-		tuck3_hosvd.derive_core_orthogonal_bases( t3_data_hosvd, core_hosvd, u1_hosvd_check, u2_hosvd_check, u3_hosvd_check );
-		
+		core_hosvd.zero();
+		tuck3_hosvd.derive_core_orthogonal_bases( t3_data_hosvd );
+		tuck3_hosvd.get_core( core_hosvd );
+
 		if ( core_hosvd.equals( core_hosvd_check, precision ))
 		{	
 			log( "HOSVD derive core tensor (orthogonal bases)", true  );

@@ -91,38 +91,17 @@ public:
 	void reconstruct( t3_type& data_ ) const;
 	void decompose( const t3_type& data_ ); 
 		
-	/* derive core
-	   implemented accodring to core = data x_1 U1_pinv x_2 U2_pinv x_3 U3_pinv, 
-	   where x_1 ... x_3 are n-mode products and U1_pinv ... U3_pinv are inverted basis matrices
-	   the inversion is done with a matrix pseudoinverse computation
-	 */
-        void derive_core( const t3_type& data_, t3_core_type& core_, const u1_type& U1_, const u2_type& U2_, const u3_type& U3_ );
-	//faster: but only if basis matrices are orthogonal
-	void derive_core_orthogonal_bases( const t3_type& data_, t3_core_type& core_, const u1_type& U1_, const u2_type& U2_, const u3_type& U3_ );
-
+	void tucker_als( const t3_type& data_ );	
+		
 	/*	higher-order singular value decomposition (HOSVD) with full rank decomposition (also known as Tucker decomposition). 
-		see: De Lathauer et al, 2000a: A multilinear singular value decomposition. 
-		the hosvd can be computed (a) with n-mode PCA, i.e., an eigenvalue decomposition on the covariance matrix of every mode's matricization, and 
-		(b) by performing a 2D SVD on the matricization of every mode. Matrix matricization means that a tensor I1xI2xI3 is unfolded/sliced into one matrix
-		with the dimensions I1xI2I3, which corresponds to a matrizitation alonge mode I1.
-		other known names for HOSVD: n-mode SVD, 3-mode factor analysis (3MFA, tucker3), 3M-PCA, n-mode PCA, higher-order SVD
+	 see: De Lathauer et al, 2000a: A multilinear singular value decomposition. 
+	 the hosvd can be computed (a) with n-mode PCA, i.e., an eigenvalue decomposition on the covariance matrix of every mode's matricization, and 
+	 (b) by performing a 2D SVD on the matricization of every mode. Matrix matricization means that a tensor I1xI2xI3 is unfolded/sliced into one matrix
+	 with the dimensions I1xI2I3, which corresponds to a matrizitation alonge mode I1.
+	 other known names for HOSVD: n-mode SVD, 3-mode factor analysis (3MFA, tucker3), 3M-PCA, n-mode PCA, higher-order SVD
 	 */
 	void hosvd( const t3_type& data_ );
 	void hosvd_on_eigs( const t3_type& data_ );
-	void init_random( const t3_type& data_ );
-		
-	template< size_t M, size_t N >
-		void fill_random_2d( int seed, matrix< M, N, T_coeff >& u );
-		
-	template< size_t M, size_t N, size_t R, typename T >
-		void get_svd_u_red( const matrix< M, N, T >& data_, matrix< M, R, T_coeff >& u_ ) const;
-	template< size_t J1, size_t J2, size_t J3, typename T >
-		void hosvd_mode1( const tensor3<J1, J2, J3, T >& data_, matrix<J1, R1, T_coeff >& U1_ ) const;
-	template< size_t J1, size_t J2, size_t J3, typename T >
-		void hosvd_mode2( const tensor3<J1, J2, J3, T >& data_, matrix<J2, R2, T_coeff >& U2_ ) const;
-	template< size_t J1, size_t J2, size_t J3, typename T >
-		void hosvd_mode3( const tensor3<J1, J2, J3, T >& data_, matrix<J3, R3, T_coeff >& U3_ ) const;
-		
 		
 	/*	higher-order orthogonal iteration (HOOI) is a truncated HOSVD decompositions, i.e., the HOSVD components are of lower-ranks. An optimal rank-reduction is 
 		performed with an alternating least-squares (ALS) algorithm, which minimizes the error between the approximated and orignal tensor based on the Frobenius norm
@@ -133,12 +112,14 @@ public:
 	 */
 	void hooi( const t3_type& data_ );
 		
-	void optimize_mode1( const t3_coeff_type& data_, tensor3< I1, R2, R3, T_coeff >& projection_, const u2_type& U2_, const u3_type& U3_ ) const;
-	void optimize_mode2( const t3_coeff_type& data_, tensor3< R1, I2, R3, T_coeff >& projection_, const u1_type& U1_, const u3_type& U3_ ) const;		
-	void optimize_mode3( const t3_coeff_type& data_, tensor3< R1, R2, I3, T_coeff >& projection_, const u1_type& U1_, const u2_type& U2_ ) const;
-	
-		
-	void tucker_als( const t3_type& data_ );	
+	/* derive core
+	 implemented accodring to core = data x_1 U1_pinv x_2 U2_pinv x_3 U3_pinv, 
+	 where x_1 ... x_3 are n-mode products and U1_pinv ... U3_pinv are inverted basis matrices
+	 the inversion is done with a matrix pseudoinverse computation
+	 */
+	void derive_core( const t3_type& data_ );
+	//faster: but only if basis matrices are orthogonal
+	void derive_core_orthogonal_bases( const t3_type& data_ );
 		
 	template< size_t K1, size_t K2, size_t K3>
 	void reduce_ranks( const tucker3_tensor< K1, K2, K3, I1, I2, I3, T_value, T_coeff >& other ); //call TuckerJI.reduce_ranks(TuckerKI) K1 -> R1, K2 -> R2, K3 -> R3
@@ -158,6 +139,24 @@ public:
 protected:
 		tucker3_tensor( const tucker3_tensor< R1, R2, R3, I1, I1, I1, T_value, T_coeff >& other ) {};
 		tucker3_tensor< R1, R2, R3, I1, I1, I1, T_value, T_coeff > operator=( const tucker3_tensor< R1, R2, R3, I1, I1, I1, T_value, T_coeff >& other ) { return *this; };
+		
+		void init_random( const t3_type& data_ );
+		
+		template< size_t M, size_t N >
+		void fill_random_2d( int seed, matrix< M, N, T_coeff >& u );
+		
+		template< size_t M, size_t N, size_t R, typename T >
+		void get_svd_u_red( const matrix< M, N, T >& data_, matrix< M, R, T_coeff >& u_ ) const;
+		template< size_t J1, size_t J2, size_t J3, typename T >
+		void hosvd_mode1( const tensor3<J1, J2, J3, T >& data_, matrix<J1, R1, T_coeff >& U1_ ) const;
+		template< size_t J1, size_t J2, size_t J3, typename T >
+		void hosvd_mode2( const tensor3<J1, J2, J3, T >& data_, matrix<J2, R2, T_coeff >& U2_ ) const;
+		template< size_t J1, size_t J2, size_t J3, typename T >
+		void hosvd_mode3( const tensor3<J1, J2, J3, T >& data_, matrix<J3, R3, T_coeff >& U3_ ) const;
+		
+		void optimize_mode1( const t3_coeff_type& data_, tensor3< I1, R2, R3, T_coeff >& projection_, const u2_type& U2_, const u3_type& U3_ ) const;
+		void optimize_mode2( const t3_coeff_type& data_, tensor3< R1, I2, R3, T_coeff >& projection_, const u1_type& U1_, const u3_type& U3_ ) const;		
+		void optimize_mode3( const t3_coeff_type& data_, tensor3< R1, R2, I3, T_coeff >& projection_, const u1_type& U1_, const u2_type& U2_ ) const;
 		
 		
 		
@@ -271,7 +270,7 @@ VMML_TEMPLATE_CLASSNAME::hosvd( const t3_type& data_ )
 	hosvd_mode2( data_, *_u2 );
 	hosvd_mode3( data_, *_u3 );
 	
-	derive_core_orthogonal_bases(data_, *_core, *_u1, *_u2, *_u3 );
+	derive_core_orthogonal_bases(data_ );
 }
 	
 	
@@ -535,18 +534,18 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode3( const t3_coeff_type& data_, tensor3< R1
 
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::derive_core_orthogonal_bases( const t3_type& data_, t3_core_type& core_, const u1_type& U1_, const u2_type& U2_, const u3_type& U3_ )
+VMML_TEMPLATE_CLASSNAME::derive_core_orthogonal_bases( const t3_type& data_ )
 {
     u1_inv_type * u1_inv = new u1_inv_type();
-    *u1_inv = transpose( U1_ );
+    *u1_inv = transpose( *_u1 );
     u2_inv_type* u2_inv = new u2_inv_type();
-    *u2_inv = transpose( U2_ );
+    *u2_inv = transpose( *_u2 );
     u3_inv_type* u3_inv = new u3_inv_type();
-    *u3_inv = transpose( U3_ );
+    *u3_inv = transpose( *_u3 );
      
      t3_coeff_type* data  = new t3_coeff_type();
      data->cast_from( data_ );
-     core_.full_tensor3_matrix_multiplication( *data, *u1_inv, *u2_inv, *u3_inv );
+     _core->full_tensor3_matrix_multiplication( *data, *u1_inv, *u2_inv, *u3_inv );
 	
      delete u1_inv;
      delete u2_inv;
@@ -559,7 +558,7 @@ VMML_TEMPLATE_CLASSNAME::derive_core_orthogonal_bases( const t3_type& data_, t3_
      
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::derive_core( const t3_type& data_, t3_core_type& core_, const u1_type& U1_, const u2_type& U2_, const u3_type& U3_ )
+VMML_TEMPLATE_CLASSNAME::derive_core( const t3_type& data_ )
 {
 
 #if 0
@@ -607,11 +606,11 @@ VMML_TEMPLATE_CLASSNAME::derive_core( const t3_type& data_, t3_core_type& core_,
                    {
                       for( size_t i2 = 0; i2 < I2; ++i2 )
                       {
-                              sum_i1_i2_i3 += U1_.at( i1, r1 ) * U2_.at( i2, r2 ) * U3_.at( i3, r3 ) * data_.at( i1, i2, i3 );
+                              sum_i1_i2_i3 += _u1->at( i1, r1 ) * _u2->at( i2, r2 ) * _u3->at( i3, r3 ) * data_.at( i1, i2, i3 );
                       }
                    }
                }
-               core_.at( r1, r2, r3 ) = sum_i1_i2_i3;
+               _core->at( r1, r2, r3 ) = sum_i1_i2_i3;
             }
          }
      }

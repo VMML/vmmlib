@@ -516,7 +516,7 @@ tensor3_test::run()
 		log_error( error.str() );
 	}
 	
-	//matricization
+	//unfolding
 	//matrix< I3, I1*I2, T> m_horizontal;
 	//matrix< I1, I2*I3, T> m_lateral;
 	//matrix< I2, I1*I3, T> m_frontal;
@@ -524,9 +524,9 @@ tensor3_test::run()
 	matrix< 2, 12, int> m_lateral;
 	matrix< 3, 8, int> m_frontal;
 	
-	t3.horizontal_matricization_bwd( m_horizontal);
-	t3.lateral_matricization_bwd( m_lateral);
-	t3.frontal_matricization_bwd(  m_frontal);
+	t3.horizontal_unfolding_bwd( m_horizontal);
+	t3.lateral_unfolding_bwd( m_lateral);
+	t3.frontal_unfolding_bwd(  m_frontal);
 	
 	matrix< 4, 6, int> m_horizontal_test;
 	int data5[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 };
@@ -540,18 +540,18 @@ tensor3_test::run()
 	
 	if ( m_horizontal_test == m_horizontal && m_lateral_test == m_lateral && m_frontal_test == m_frontal )
 	{	
-		log( "backward matricization along all modes", true  );
+		log( "backward unfolding along all modes", true  );
 	} else
 	{
 		std::stringstream error;
 		error 
-		<< "backward matricization: " << std::endl
-		<< "matricization_horizontal should be: " << std::endl << m_horizontal_test << std::endl
-		<< "matricization_horizontal is: " << std::endl << m_horizontal << std::endl
-		<< "matricization_lateral should be: " << std::endl << m_lateral_test << std::endl
-		<< "matricization_lateral is: " << std::endl << m_lateral << std::endl
-		<< "matricization_frontal should be: " << std::endl << m_frontal_test << std::endl
-		<< "matricization_frontal is: " << std::endl << m_frontal << std::endl
+		<< "backward unfolding: " << std::endl
+		<< "unfolding_horizontal should be: " << std::endl << m_horizontal_test << std::endl
+		<< "unfolding_horizontal is: " << std::endl << m_horizontal << std::endl
+		<< "unfolding_lateral should be: " << std::endl << m_lateral_test << std::endl
+		<< "unfolding_lateral is: " << std::endl << m_lateral << std::endl
+		<< "unfolding_frontal should be: " << std::endl << m_frontal_test << std::endl
+		<< "unfolding_frontal is: " << std::endl << m_frontal << std::endl
 		<< std::endl;
 		log_error( error.str() );
 	}

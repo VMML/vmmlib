@@ -171,9 +171,9 @@ namespace vmml
 		
 		//Step 2
 		
-		matrix<3, 2, double> u1_hooi_2;
-		matrix<2, 2, double> u2_hooi_2;
-		matrix<2, 1, double> u3_hooi_2;
+		matrix<3, 2, double> u1_hooi_2; u1_hooi_2.zero();
+		matrix<2, 2, double> u2_hooi_2; u2_hooi_2.zero();
+		matrix<2, 1, double> u3_hooi_2; u3_hooi_2.zero();
 		matrix<3, 2, double> u1_hooi_check_2;
 		matrix<2, 2, double> u2_hooi_check_2;
 		matrix<2, 1, double> u3_hooi_check_2;
@@ -316,15 +316,15 @@ namespace vmml
 		matrix<7, 2, int> u2_red2;
 		matrix<5, 3, int> u3_red2;
 		
-		tucker3_tensor< 1, 2, 3, 6, 7, 5, int, int > tuck3_red( core_red, u1_red, u2_red, u3_red );
-		tuck3_red.reduce_ranks( tuck3 );
-		
 		u1_red.fill(2);
 		u2_red.fill(3);
 		u3_red.fill(1);
 		double data[] = { 0, 1, 6, 7, 12, 13 };
-		core_red.set(data, data+6);
+		core_red.set(data, data+6);		
 		
+		tucker3_tensor< 1, 2, 3, 6, 7, 5, int, int > tuck3_red( core_red, u1_red, u2_red, u3_red );
+		tuck3_red.reduce_ranks( tuck3 );
+				
 		tuck3_red.get_u1( u1_red2 ); tuck3_red.get_u2( u2_red2 ); tuck3_red.get_u3( u3_red2 ); tuck3_red.get_core( core_red2 );
 		
 		if (  u1_red2 == u1_red && u2_red2 == u2_red && u3_red2 == u3_red && core_red2 == core_red)

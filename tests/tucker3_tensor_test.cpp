@@ -224,15 +224,15 @@ namespace vmml
 		
 		double export_data_check[] = {
 			-0.2789474111071825,  0.5983607967045261, 0.7511009910815755, -0.4141266306147141, -0.7806355076145298, 0.4680890279285662,
-			0.09816424894941822, 0.9951702267593203, 0.9951702267593203, -0.09816424894941811,
+			-0.09816424894941822, -0.9951702267593203, -0.9951702267593203, 0.09816424894941811,
 			-0.5104644303570166, 0.8598988692516618,
-			-10.14733447424582, -1.110223024625157e-15, 1.720845688168993e-15, 2.760705584847321 };
+			10.14733447424582, -1.110223024625157e-15, 1.720845688168993e-15, -2.760705584847321 };
 		
 		ok = true;
-		for (int i = 0; i < 16 && ok; ++i )
+		for (int i = 0; (i < 16) && ok; ++i )
 		{
-                    //std::cout << abs(export_data_check[i]) - abs(export_data[i]) << std::endl;
-                    ok = (abs(export_data_check[i]) - abs(export_data[i])) < 1.0e-6;
+			//std::cout << "should be: " << export_data_check[i] << " is " << export_data[i] << std::endl;
+			ok = (abs(export_data_check[i] - export_data[i])) < 1.0e-6;
 		}
 
 		log( "export tucker3", ok  );
@@ -244,7 +244,7 @@ namespace vmml
 		matrix<2, 2, double> u2_imported;
 		matrix<2, 1, double> u3_imported;
 		tensor3<2, 2, 1, double> core_imported;
-		tucker3_tensor< 2, 2, 1, 3, 2, 2, double, double > tuck3_import( core_imported, u1_imported, u2_imported, u3_imported );
+		tucker3_tensor< 2, 2, 1, 3, 2, 2, double, double > tuck3_import;
 		
 		tuck3_import.import_from( in_data );
 		

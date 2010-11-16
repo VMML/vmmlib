@@ -96,7 +96,7 @@ public:
 	void get_u3( u3_type& U3 ) const { U3.cast_from( *_u3_comp ); } ;
 		
 	template< typename T >
-	void export_to( std::vector< T >& data_ ) const;
+	void export_to( std::vector< T >& data_ );
 	template< typename T >
 	void import_from( const std::vector< T >& data_ );
 	
@@ -176,6 +176,7 @@ private:
 		
 		void cast_tucker3_members();
 		void cast_tucker3_comp_members();
+		void quantize_basis_matirces();
 		void quantize_tucker3_comp_members() {};
 		void quantize_tucker3_members() {};
 		
@@ -262,6 +263,25 @@ VMML_TEMPLATE_CLASSNAME::cast_tucker3_comp_members()
 	_core_comp->cast_from( *_core);
 }
 
+VMML_TEMPLATE_STRING
+void
+VMML_TEMPLATE_CLASSNAME::quantize_basis_matirces()
+{
+	std::cout << "before quant: " << std::endl << *_u1 << std::endl << *_u2 << std::endl << *_u3 << std::endl;
+	std::cout << *_u1_comp << std::endl << *_u2_comp << std::endl << *_u3_comp << std::endl;
+
+	double min_value = 0;
+	double max_value = 0;
+	_u1_comp->quantize( *_u1, min_value, max_value );
+	_u2_comp->quantize( *_u2, min_value, max_value );
+	_u3_comp->quantize( *_u3, min_value, max_value );	
+	
+	std::cout << "after quant: " << std::endl << *_u1 << std::endl << *_u2 << std::endl << *_u3 << std::endl;
+	std::cout << "min value: " << min_value << ", max value: " << max_value << std::endl;
+	//@TODO: store min, max values
+
+}	
+	
 	
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::~tucker3_tensor( )
@@ -307,7 +327,18 @@ VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::tucker_als( const t3_type& data_ )
 {
-     hooi( data_ );
+	hooi( data_ );
+	
+
+	if( _is_quantify_coeff ) {
+		quantize_basis_matirces();
+			
+		//compute core based on quantized basis matrices
+		_core->full_tensor3_matrix_multiplication( data_, transpose( *_u1 ), transpose( *_u2 ), transpose( *_u3) );
+		//TODO: 
+		cast_tucker3_comp_members();
+	}
+	
 }
 
 	
@@ -500,7 +531,7 @@ VMML_TEMPLATE_CLASSNAME::get_svd_u_red( const matrix< M, N, T >& data_, matrix< 
 	if( svd->compute_and_overwrite_input( *u_double, *lambdas )) {
 		if( _is_quantify_coeff ){
 			double min_value = 0; double max_value = 0;
-			( u_double->quantize( *u_quant, min_value, max_value ) );
+			u_double->quantize( *u_quant, min_value, max_value );
 		} else if ( sizeof( T_internal ) != 4 ){
 			u_quant->cast_from( *u_double );
 		} else {
@@ -882,11 +913,12 @@ VMML_TEMPLATE_CLASSNAME::region_of_interest( const tucker3_tensor< R1, R2, R3, K
 VMML_TEMPLATE_STRING
 template< typename T >
 void
-VMML_TEMPLATE_CLASSNAME::export_to( std::vector< T >& data_ ) const
+VMML_TEMPLATE_CLASSNAME::export_to( std::vector< T >& data_ )
 {
 	
 	data_.clear();
     
+	cast_tucker3_members();
 	u1_const_iterator  it = _u1->begin(),
     it_end = _u1->end();
     for( ; it != it_end; ++it )

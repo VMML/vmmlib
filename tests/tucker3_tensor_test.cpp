@@ -197,6 +197,12 @@ namespace vmml
 		tuck3_hooi_2.get_u3( u3_hooi_2 );
 		tuck3_hooi_2.get_core( core_hooi_2 );
 		
+		tensor3< 3, 2, 2, double > t3_data_hooi_2_reco;
+		tuck3_hooi_2.reconstruct( t3_data_hooi_2_reco );
+		
+		double rmse_2 = t3_data_hooi_2_reco.rmse( t3_data_hooi );
+		
+		
 		if ( u1_hooi_2.equals( u1_hooi_check_2, precision ) && u2_hooi_2.equals( u2_hooi_check_2, precision ) && u3_hooi_2.equals( u3_hooi_check_2, precision ) && core_hooi_2.equals( core_hooi_check_2, precision))
 		{	
 			log( "HOOI (step 2) rank-(2,2,1) approximation" , true  );
@@ -217,6 +223,81 @@ namespace vmml
 			
 			log_error( error.str() );
 		}		
+
+		
+		//quantization
+		matrix<3, 3, unsigned short > u1_hooi_3; u1_hooi_3.zero();
+		matrix<2, 2, unsigned short> u2_hooi_3; u2_hooi_3.zero();
+		matrix<2, 2, unsigned short> u3_hooi_3; u3_hooi_3.zero();
+		matrix<3, 3, unsigned short> u1_hooi_check_3;
+		matrix<2, 2, unsigned short> u2_hooi_check_3;
+		matrix<2, 2, unsigned short> u3_hooi_check_3;
+		/*
+		char data_u1_hooi_step2[] = { -0.2789474111071824, -0.4141266306147135, 0.5983607967045262, -0.7806355076145295, 0.7511009910815754, 0.4680890279285661}; //original from paper (u1): {-0.2789, -0.4141, 0.5984, -0.7806, 0.7511, 0.4681};
+		u1_hooi_check_3.set( data_u1_hooi_step2, data_u1_hooi_step2 + 6);
+		char data_u2_hooi_step2[] = { -0.09816424894941811, -0.9951702267593202, -0.9951702267593202, 0.098164248949418}; //original in paper (u2): 0.0982, -0.9952, 0.9952, 0.0982};
+		u2_hooi_check_3.set( data_u2_hooi_step2, data_u2_hooi_step2 + 4);
+		char data_u3_hooi_step2[] = {-0.5104644303570166, 0.8598988692516616};//original in paper (u3): {0.5105, -0.8599};
+		u3_hooi_check_3.set( data_u3_hooi_step2, data_u3_hooi_step2 + 2);
+		*/
+		tensor3<3, 2, 2, unsigned short> core_hooi_3;
+		tensor3<3, 2, 2, unsigned short> core_hooi_check_3;
+		unsigned short data_core_hooi_3[] = {  };
+		core_hooi_check_3.set( data_core_hooi_3, data_core_hooi_3 + 4);
+		
+		tensor3< 3, 2, 2, unsigned char> t3_data_hooi_3;
+		//char data_hooi_3[] = { 0, 13, 122, 123, 124, 95, -10, 40, -25, -54, 33, -76};
+		unsigned char data_hooi_3[] = { 0, 13, 122, 123, 124, 95, 10, 40, 25, 54, 33, 76};
+		t3_data_hooi_3.set(data_hooi_3, data_hooi_3 + 12);
+		
+		tucker3_tensor< 3, 2, 2, 3, 2, 2, unsigned char, unsigned short > tuck3_hooi_3( core_hooi_3, u1_hooi_3, u2_hooi_3, u3_hooi_3 );
+		
+		double u1_min, u1_max, u2_min, u2_max, u3_min, u3_max, core_min, core_max;
+		
+		tuck3_hooi_3.enable_quantify_coeff();
+		tuck3_hooi_3.decompose( t3_data_hooi_3, u1_min, u1_max, u2_min, u2_max, u3_min, u3_max, core_min, core_max );
+		tuck3_hooi_3.get_u1( u1_hooi_3 );
+		tuck3_hooi_3.get_u2( u2_hooi_3 );
+		tuck3_hooi_3.get_u3( u3_hooi_3 );
+		tuck3_hooi_3.get_core( core_hooi_3 );
+		
+		//std::cout << "u1, min " << u1_min << " max " << u1_max << std::endl << "u2, min " << u2_min << " max " << u2_max
+		//<< std::endl << "u3, min " << u3_min << " max " << u3_max << std::endl << "core, min " << core_min << " max " << core_max << std::endl;
+		
+		tensor3< 3, 2, 2, unsigned char > t3_data_hooi_3_reco;
+		tuck3_hooi_3.reconstruct( t3_data_hooi_3_reco, u1_min, u1_max, u2_min, u2_max, u3_min, u3_max, core_min, core_max );
+		
+		//std::cout << "reco: " << t3_data_hooi_3_reco << std::endl;
+		
+		double rmse = t3_data_hooi_3_reco.rmse( t3_data_hooi_3 );
+		double rmse_check = 0; 
+		
+		//std::cout << "rmse: " << rmse << std::endl;
+		
+		//if ( u1_hooi_3.equals( u1_hooi_check_3, precision ) && u2_hooi_3.equals( u2_hooi_check_3, precision ) && u3_hooi_3.equals( u3_hooi_check_3, precision ) && core_hooi_3.equals( core_hooi_check_3, precision))
+		if ( rmse >= rmse_check )
+		{	
+			log( "quantized HOOI (step 2) rank-(2,2,1) approximation" , true  );
+		} else
+		{
+			std::stringstream error;
+			error 
+			<< "quantized HOOI (step 2) rank-(2,2,1) approximation: " << std::setprecision(16) << std::endl
+			<< "RMSE should be: " << rmse_check << ", is: " << rmse << std::endl
+			<< "U1 should be: " << std::endl << u1_hooi_check_3 << std::endl
+			<< "U1 is: " << std::endl << u1_hooi_3 << std::endl
+			<< "U2 should be: " << std::endl << u2_hooi_check_3 << std::endl
+			<< "U2 is: " << std::endl << u2_hooi_3 << std::endl
+			<< "U3 should be: " << std::endl << u3_hooi_check_3 << std::endl
+			<< "U3 is: " << std::endl << u3_hooi_3 << std::endl
+			<< "core should be: " << std::endl << core_hooi_check_3 << std::endl
+			<< "core is: " << std::endl << core_hooi_3 << std::endl;
+			
+			
+			log_error( error.str() );
+		}		
+		
+		
 		
 		//export
 		std::vector< float > export_data;

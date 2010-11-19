@@ -721,7 +721,54 @@ tensor3_test::run()
 		log_error( error.str() );
 	}		
 	
-	
+	//quantize
+	{
+		tensor3< 2, 4, 3, float >  t3_raw;
+		t3_raw.fill(0.45692);
+		t3_raw.at( 0,2,2) = 0.67777; t3_raw.at(1,0,1) = 0.111111; t3_raw.at(1,2,0) = -0.23; t3_raw.at(1,3,0) = -0.99;
+		t3_raw.at(1,0,0) = -0.8; t3_raw.at(1,2,1) = 0.0; t3_raw.at(0,3,2) = 0.99; t3_raw.at(0,1,0) = 0.23;
+		tensor3< 2, 4, 3, unsigned char >  t3_quant; t3_quant.zero();
+		tensor3< 2, 4, 3, unsigned char >  t3_quant_check; 
+		int data_unsigned[] = {186, 157, 186, 186, 24, 186, 98, 0, 186, 186, 186, 186, 142, 186, 128, 186, 186, 186, 215, 255, 186, 186, 186, 186};
+		t3_quant_check.set(data_unsigned, data_unsigned+24);
+		
+		float min_value = 50;
+		float max_value = -50;
+		
+		t3_raw.quantize( t3_quant, min_value, max_value );
+		
+		tensor3< 2, 4, 3, char >  t3_quant_sign; t3_quant_sign.zero();
+		tensor3< 2, 4, 3, char >  t3_quant_sign_check; 
+		int data_signed[] = { 59, 30, 59, 59, -102, 59, -29, -127, 59, 59, 59, 59, 14, 59, 0, 59, 59, 59, 87, 127, 59, 59, 59, 59 };
+		t3_quant_sign_check.set(data_signed, data_signed +24 );
+		
+		t3_raw.quantize( t3_quant_sign, min_value, max_value );
+		
+		
+		//dequantize
+		tensor3< 2, 4, 3, float >  t3_dequant;
+		tensor3< 2, 4, 3, float >  t3_dequant_sign;
+		
+		t3_quant.dequantize( t3_dequant, min_value, max_value );
+		t3_quant_sign.dequantize( t3_dequant_sign, min_value, max_value );
+		
+		if ( ( t3_quant_check == t3_quant ) && ( t3_quant_sign_check == t3_quant_sign ) && t3_dequant.equals(t3_dequant_sign, 0.01) )	{	
+			log( "quantize/dequantize" , true  );
+		} else
+		{
+			std::stringstream error;
+			error 
+			<< "quantize/dequantize " << std::endl
+			<< "raw is: " << std::endl << t3_raw << std::endl 
+			<< "unsigned quantized is: " << std::endl << t3_quant << std::endl
+			<< "signed quantized is: " << std::endl << t3_quant_sign << std::endl
+			<< "dequantized unsigned is: " << std::endl << t3_dequant << std::endl 
+			<< "dequantized signed is: " << std::endl << t3_dequant_sign << std::endl 
+			<< "min_value : " << min_value << " max_value: " << max_value << std::endl;
+			
+			log_error( error.str() );
+		}	
+	}
 	
 	ok = true;
     return ok;

@@ -2341,12 +2341,6 @@ matrix< M, N, T >::quantize( matrix< M, N, TT >& quantized_, T& min_value, T& ma
 	min_value = get_min();
 	max_value = get_max();
 	T t_range = max_value - min_value;
-	
-#if 0
-	std::cout
-	<< "q: value t range: " << float(t_range) << std::endl
-	<< "value tt range: " << tt_range << std::endl;
-#endif 
 
 	typedef matrix< M, N, TT > m_tt_type ;
 	typedef typename m_tt_type::iterator tt_iterator;
@@ -2376,17 +2370,10 @@ matrix< M, N, T >::dequantize( matrix< M, N, TT >& dequantized_, const TT& min_v
 	
 	TT tt_range = max_value - min_value;
 	
-#if 0
-	std::cout
-	<< "deq: value t range: " << t_range << std::endl
-	<< "value tt range: " << float(tt_range) << std::endl;
-#endif 
-	
 	typedef matrix< M, N, TT > m_tt_type ;
 	typedef typename m_tt_type::iterator tt_iterator;
 	tt_iterator it_dequant = dequantized_.begin();
 	const_iterator it = begin(), it_end = end();
-	TT new_value = 0;
 	for( ; it != it_end; ++it, ++it_dequant )
 	{
 		if (std::numeric_limits<T>::is_signed ) {

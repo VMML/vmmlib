@@ -100,8 +100,24 @@ public:
 	template< typename T >
 	void import_from( const std::vector< T >& data_ );
 	
-	void reconstruct( t3_type& data_ ) const;
-	void decompose( const t3_type& data_ ); 
+	void reconstruct( t3_type& data_,
+			const T_internal& u1_min_ = T_internal(0), const T_internal& u1_max_  = T_internal(0),
+			const T_internal& u2_min_ = T_internal(0), const T_internal& u2_max_ = T_internal(0),
+			const T_internal& u3_min_ = T_internal(0), const T_internal& u3_max_ = T_internal(0),
+			const T_internal& core_min_ = T_internal(0), const T_internal& core_max_ = T_internal(0) ); 
+		
+
+/*	void decompose( const t3_type& data_, 
+		   T_internal& u1_min_ = T_internal(0), T_internal& u1_max_  = T_internal(0),
+		   T_internal& u2_min_ = T_internal(0), T_internal& u2_max_ = T_internal(0),
+		   T_internal& u3_min_ = T_internal(0), T_internal& u3_max_ = T_internal(0),
+		   T_internal& core_min_ = T_internal(0), T_internal& core_max_ = T_internal(0) ); */
+		
+    void decompose( const t3_type& data_, 
+					   T_internal& u1_min_ = 0, T_internal& u1_max_  = 0,
+					   T_internal& u2_min_ = 0, T_internal& u2_max_ = 0,
+					   T_internal& u3_min_ = 0, T_internal& u3_max_ = 0,
+					   T_internal& core_min_ = 0, T_internal& core_max_ = 0 ); 
 		
 	void tucker_als( const t3_type& data_ );	
 		
@@ -169,16 +185,15 @@ protected:
 		void optimize_mode1( const t3_comp_type& data_, tensor3< I1, R2, R3, T_internal >& projection_ ) const;
 		void optimize_mode2( const t3_comp_type& data_, tensor3< R1, I2, R3, T_internal >& projection_ ) const;		
 		void optimize_mode3( const t3_comp_type& data_, tensor3< R1, R2, I3, T_internal >& projection_ ) const;
-		
-		
-		
+
 private:
 		
-		void cast_tucker3_members();
-		void cast_tucker3_comp_members();
-		void quantize_basis_matirces();
-		void quantize_tucker3_comp_members() {};
-		void quantize_tucker3_members() {};
+		void cast_members();
+		void cast_comp_members();
+		void quantize_basis_matrices( T_internal& u1_min_, T_internal& u1_max_, T_internal& u2_min_, T_internal& u2_max_, T_internal& u3_min_, T_internal& u3_max_ );
+		void quantize_core( T_internal& core_min_, T_internal& core_max_ );
+		void dequantize_basis_matrices( const T_internal& u1_min_, const T_internal& u1_max_, const T_internal& u2_min_, const T_internal& u2_max_, const T_internal& u3_min_, const T_internal& u3_max_ );
+		void dequantize_core( const T_internal& core_min_, const T_internal& core_max_ );
 		
         t3_core_type* _core ;
         u1_type* _u1 ;
@@ -240,12 +255,12 @@ VMML_TEMPLATE_CLASSNAME::tucker3_tensor( t3_core_type& core, u1_type& U1, u2_typ
 	_u2_comp = new u2_comp_type(); 
 	_u3_comp = new u3_comp_type(); 	
 	_core_comp = new t3_core_comp_type();
-	cast_tucker3_comp_members();
+	cast_comp_members();
 }
 	
 VMML_TEMPLATE_STRING
 void
-VMML_TEMPLATE_CLASSNAME::cast_tucker3_members()
+VMML_TEMPLATE_CLASSNAME::cast_members()
 {
 	_u1->cast_from( *_u1_comp );
 	_u2->cast_from( *_u2_comp );
@@ -255,7 +270,7 @@ VMML_TEMPLATE_CLASSNAME::cast_tucker3_members()
 	
 VMML_TEMPLATE_STRING
 void
-VMML_TEMPLATE_CLASSNAME::cast_tucker3_comp_members()
+VMML_TEMPLATE_CLASSNAME::cast_comp_members()
 {
 	_u1_comp->cast_from( *_u1 );
 	_u2_comp->cast_from( *_u2 );
@@ -265,23 +280,67 @@ VMML_TEMPLATE_CLASSNAME::cast_tucker3_comp_members()
 
 VMML_TEMPLATE_STRING
 void
-VMML_TEMPLATE_CLASSNAME::quantize_basis_matirces()
+VMML_TEMPLATE_CLASSNAME::quantize_basis_matrices(T_internal& u1_min_, T_internal& u1_max_,
+												 T_internal& u2_min_, T_internal& u2_max_,
+												 T_internal& u3_min_, T_internal& u3_max_ )
 {
-	std::cout << "before quant: " << std::endl << *_u1 << std::endl << *_u2 << std::endl << *_u3 << std::endl;
-	std::cout << *_u1_comp << std::endl << *_u2_comp << std::endl << *_u3_comp << std::endl;
-
-	double min_value = 0;
-	double max_value = 0;
-	_u1_comp->quantize( *_u1, min_value, max_value );
-	_u2_comp->quantize( *_u2, min_value, max_value );
-	_u3_comp->quantize( *_u3, min_value, max_value );	
-	
-	std::cout << "after quant: " << std::endl << *_u1 << std::endl << *_u2 << std::endl << *_u3 << std::endl;
-	std::cout << "min value: " << min_value << ", max value: " << max_value << std::endl;
-	//@TODO: store min, max values
-
+	_u1_comp->quantize( *_u1, u1_min_, u1_max_ );
+	_u2_comp->quantize( *_u2, u2_min_, u2_max_ );
+	_u3_comp->quantize( *_u3, u3_min_, u3_max_ );	
 }	
 	
+VMML_TEMPLATE_STRING
+void
+VMML_TEMPLATE_CLASSNAME::quantize_core( T_internal& core_min_, T_internal& core_max_ )
+{
+	//std::cout << "before quant: " << std::endl << *_u1 << std::endl << *_u2 << std::endl << *_u3 << std::endl;
+	//std::cout << *_u1_comp << std::endl << *_u2_comp << std::endl << *_u3_comp << std::endl;
+	
+	_core_comp->quantize( *_core, core_min_, core_max_ );
+	
+	//std::cout << "after quant: " << std::endl << *_u1 << std::endl << *_u2 << std::endl << *_u3 << std::endl;
+	//std::cout << "core, min value: " << core_min_ << ", max value: " << core_max_ << std::endl;
+	
+#if 0	
+	//compute core based on quantized basis matrices
+	tensor3< R1, R2, R3, double >* core_check = new tensor3< R1, R2, R3, double >();
+	
+	tensor3< I1, I2, I3, double >* data = new tensor3<I1, I2, I3, double >();
+	data->cast_from( data_ );
+	
+	matrix< I1, R1, double >* u1 = new matrix< I1, R1, double >();
+	u1->cast_from( *_u1 );
+	matrix< I2,  R2,double >* u2 = new matrix<  I2, R2, double >();
+	u2->cast_from( *_u2 );
+	matrix<  I3, R3, double >* u3 = new matrix<  I3, R3, double >();
+	u3->cast_from( *_u3 );
+	
+	core_check->full_tensor3_matrix_multiplication( *data, transpose( *u1 ), transpose( *u2 ), transpose( *u3) );
+	
+	//std::cout << "core after quant: " << std::endl << *core_check << std::endl;
+#endif	
+	
+	
+}	
+
+
+VMML_TEMPLATE_STRING
+void
+VMML_TEMPLATE_CLASSNAME::dequantize_basis_matrices( const T_internal& u1_min_, const T_internal& u1_max_, 
+													 const T_internal& u2_min_, const T_internal& u2_max_, 
+													 const T_internal& u3_min_, const T_internal& u3_max_ )
+{
+	_u1->dequantize( *_u1_comp, u1_min_, u1_max_ );
+	_u2->dequantize( *_u2_comp, u2_min_, u2_max_ );
+	_u3->dequantize( *_u3_comp, u3_min_, u3_max_ );	
+}	
+
+VMML_TEMPLATE_STRING
+void
+VMML_TEMPLATE_CLASSNAME::dequantize_core( const T_internal& core_min_, const T_internal& core_max_ )
+{
+	_core->dequantize( *_core_comp, core_min_, core_max_ );
+}		
 	
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::~tucker3_tensor( )
@@ -299,8 +358,26 @@ VMML_TEMPLATE_CLASSNAME::~tucker3_tensor( )
 	
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::reconstruct( t3_type& data_ ) const
+VMML_TEMPLATE_CLASSNAME::reconstruct( t3_type& data_, 
+									 const T_internal& u1_min_, const T_internal& u1_max_ ,
+									 const T_internal& u2_min_, const T_internal& u2_max_,
+									 const T_internal& u3_min_, const T_internal& u3_max_,
+									 const T_internal& core_min_, const T_internal& core_max_ )
 {
+	if( _is_quantify_coeff ) {
+		dequantize_basis_matrices( u1_min_, u1_max_, u2_min_, u2_max_, u3_min_, u3_max_ );
+		dequantize_core( core_min_, core_max_ );
+		cast_members();
+#if 0
+		std::cout << "dequantized: " << std::endl << "u1-u3: " << std::endl 
+		<< *_u1 << std::endl << *_u1_comp << std::endl
+		<< *_u2 << std::endl << *_u2_comp << std::endl
+		<< *_u3 << std::endl << *_u3_comp << std::endl
+		<< " core " << std::endl
+		<< *_core << std::endl << *_core_comp << std::endl;	
+#endif
+	}
+
     t3_comp_type* data = new t3_comp_type();
     data->cast_from( data_ );
     data->full_tensor3_matrix_multiplication( *_core_comp, *_u1_comp, *_u2_comp, *_u3_comp );
@@ -318,9 +395,30 @@ VMML_TEMPLATE_CLASSNAME::reconstruct( t3_type& data_ ) const
 
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::decompose( const t3_type& data_ )
+VMML_TEMPLATE_CLASSNAME::decompose( const t3_type& data_, 
+								   T_internal& u1_min_, T_internal& u1_max_,
+								   T_internal& u2_min_, T_internal& u2_max_,
+								   T_internal& u3_min_, T_internal& u3_max_,
+								   T_internal& core_min_, T_internal& core_max_ ) 
+	
 {
     tucker_als( data_ );
+	
+	if( _is_quantify_coeff ) {
+		quantize_basis_matrices( u1_min_, u1_max_, u2_min_, u2_max_, u3_min_, u3_max_ );
+		quantize_core(core_min_, core_max_ );
+#if 0
+		std::cout << "quantized: " << std::endl << "u1-u3: " << std::endl 
+		<< *_u1 << std::endl << *_u1_comp << std::endl
+		<< *_u2 << std::endl << *_u2_comp << std::endl
+		<< *_u3 << std::endl << *_u3_comp << std::endl
+		<< " core " << std::endl
+		<< *_core << std::endl << *_core_comp << std::endl;	
+#endif
+		
+		cast_comp_members();
+	}
+	
 }
 
 VMML_TEMPLATE_STRING
@@ -328,17 +426,7 @@ void
 VMML_TEMPLATE_CLASSNAME::tucker_als( const t3_type& data_ )
 {
 	hooi( data_ );
-	
-
-	if( _is_quantify_coeff ) {
-		quantize_basis_matirces();
-			
-		//compute core based on quantized basis matrices
-		_core->full_tensor3_matrix_multiplication( data_, transpose( *_u1 ), transpose( *_u2 ), transpose( *_u3) );
-		//TODO: 
-		cast_tucker3_comp_members();
-	}
-	
+		
 }
 
 	
@@ -353,7 +441,7 @@ VMML_TEMPLATE_CLASSNAME::init_random( const t3_type& data_ )
 	
 	derive_core_orthogonal_bases(data_  );
 	
- 	cast_tucker3_members();
+ 	cast_members();
 }	
 
 VMML_TEMPLATE_STRING
@@ -366,7 +454,7 @@ VMML_TEMPLATE_CLASSNAME::hosvd( const t3_type& data_ )
 	
 	derive_core_orthogonal_bases(data_ );
 	
-	cast_tucker3_members();
+	cast_members();
 
 }
 	
@@ -398,12 +486,22 @@ VMML_TEMPLATE_CLASSNAME::hooi( const t3_type& data_ )
 	//intialize basis matrices
 	hosvd( data_ );
 	
+#if 0
+	std::cout << "initial guess: " << std::endl << "u1-u3: " << std::endl 
+	<< *_u1 << std::endl << *_u1_comp << std::endl
+	<< *_u2 << std::endl << *_u2_comp << std::endl
+	<< *_u3 << std::endl << *_u3_comp << std::endl
+	<< " core " << std::endl
+	<< *_core << std::endl << *_core_comp << std::endl;	
+#endif
+	
 	t3_comp_type* data = new t3_comp_type();
 	data->cast_from( data_ );
 	
 	//compute best rank-(R1, R2, R3) approximation (Lathauwer et al., 2000b)
-	t3_type* approximated_data =  new t3_type();
-	reconstruct( *approximated_data );
+	t3_comp_type* approximated_data =  new t3_comp_type();
+	approximated_data->full_tensor3_matrix_multiplication( *_core_comp, *_u1_comp, *_u2_comp, *_u3_comp );
+
 	
 	double f_norm = approximated_data->frobenius_norm();
 	double max_f_norm = data->frobenius_norm();
@@ -457,12 +555,12 @@ VMML_TEMPLATE_CLASSNAME::hooi( const t3_type& data_ )
 		++i;
 	}
 	
-	approximated_data->zero();		
-	reconstruct( *approximated_data );
-	f_norm = approximated_data->frobenius_norm();
+	//approximated_data->zero();		
+	//reconstruct( *approximated_data );
+	//f_norm = approximated_data->frobenius_norm();
 	//std::cout << "frobenius norm reconstructed tensor3: " << f_norm << std::endl << std::endl;
 
- 	cast_tucker3_members();
+ 	cast_members();
 	
 	delete data;
 	delete approximated_data;
@@ -523,16 +621,20 @@ VMML_TEMPLATE_CLASSNAME::get_svd_u_red( const matrix< M, N, T >& data_, matrix< 
 {
 	matrix< M, N, double >* u_double = new matrix< M, N, double >(); 
 	u_double->cast_from( data_ );
-	
+		
 	matrix< M, N, T_internal >* u_quant = new matrix< M, N, T_internal >(); 
 	
 	vector< N, double >* lambdas  = new vector<  N, double >();
 	lapack_svd< M, N, double >* svd = new lapack_svd<  M, N, double >();
 	if( svd->compute_and_overwrite_input( *u_double, *lambdas )) {
-		if( _is_quantify_coeff ){
+		
+		/* TODO: could be a future version
+		 if( _is_quantify_coeff ){
 			double min_value = 0; double max_value = 0;
 			u_double->quantize( *u_quant, min_value, max_value );
-		} else if ( sizeof( T_internal ) != 4 ){
+		} else */
+		
+		if ( sizeof( T_internal ) != 4 ){
 			u_quant->cast_from( *u_double );
 		} else {
 			*u_quant = *u_double;
@@ -543,7 +645,7 @@ VMML_TEMPLATE_CLASSNAME::get_svd_u_red( const matrix< M, N, T >& data_, matrix< 
 	} else {
 		u_.zero();
 	}
-	
+		
 	delete lambdas;
 	delete svd;
 	delete u_double;
@@ -751,7 +853,7 @@ VMML_TEMPLATE_CLASSNAME::reduce_ranks( const tucker3_tensor< K1, K2, K3, I1, I2,
      }
 
 	
-	cast_tucker3_comp_members();
+	cast_comp_members();
 
 	delete other_core;
 	delete u1;
@@ -794,7 +896,7 @@ VMML_TEMPLATE_CLASSNAME::subsampling( const tucker3_tensor< R1, R2, R3, K1, K2, 
      
      other.get_core( *_core );
 	
-	cast_tucker3_comp_members();
+	cast_comp_members();
 	delete u1;
 	delete u2;
 	delete u3;
@@ -852,7 +954,7 @@ VMML_TEMPLATE_CLASSNAME::subsampling_on_average( const tucker3_tensor< R1, R2, R
     }
     
 	other.get_core( *_core );
-	cast_tucker3_comp_members();
+	cast_comp_members();
 	delete u1;
 	delete u2;
 	delete u3;
@@ -903,7 +1005,7 @@ VMML_TEMPLATE_CLASSNAME::region_of_interest( const tucker3_tensor< R1, R2, R3, K
     
     other.get_core( *_core );
 	
-	cast_tucker3_comp_members();
+	cast_comp_members();
 	delete u1;
 	delete u2;
 	delete u3;
@@ -918,7 +1020,7 @@ VMML_TEMPLATE_CLASSNAME::export_to( std::vector< T >& data_ )
 	
 	data_.clear();
     
-	cast_tucker3_members();
+	cast_members();
 	u1_const_iterator  it = _u1->begin(),
     it_end = _u1->end();
     for( ; it != it_end; ++it )
@@ -988,7 +1090,7 @@ VMML_TEMPLATE_CLASSNAME::import_from( const std::vector< T >& data_ )
             *it_core = static_cast< T >( data_.at(i));
     }
 	
-	cast_tucker3_comp_members();
+	cast_comp_members();
 }
 
 	

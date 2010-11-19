@@ -146,7 +146,12 @@ public:
 	
 	T get_min() const;
 	T get_max() const;
-
+	
+	template< typename TT  >
+		void quantize( tensor3< I1, I2, I3, TT >& quantized_, T& min_value, T& max_value ) const;
+	template< typename TT  >
+		void dequantize( tensor3< I1, I2, I3, TT >& dequantized_, const TT& min_value, const TT& max_value ) const;
+	
     bool operator==( const tensor3& other ) const;
     bool operator!=( const tensor3& other ) const;
 	
@@ -1352,6 +1357,59 @@ VMML_TEMPLATE_CLASSNAME::get_max() const
 	return tensor3_max;
 }		
 
+VMML_TEMPLATE_STRING
+template< typename TT  >
+void
+VMML_TEMPLATE_CLASSNAME::quantize( tensor3< I1, I2, I3, TT >& quantized_, T& min_value, T& max_value ) const
+{
+	long max_tt_range = long(std::numeric_limits< TT >::max());
+	long min_tt_range = long(std::numeric_limits< TT >::min());
+	long tt_range = max_tt_range - min_tt_range;
+	
+	min_value = get_min();
+	max_value = get_max();
+	T t_range = max_value - min_value;
+	
+	typedef tensor3< I1, I2, I3, TT > t3_tt_type ;
+	typedef typename t3_tt_type::iterator tt_iterator;
+	tt_iterator it_quant = quantized_.begin();
+	const_iterator it = begin(), it_end = end();
+	
+	for( ; it != it_end; ++it, ++it_quant )
+	{
+		if (std::numeric_limits<TT>::is_signed ) {
+			*it_quant = TT( std::min( std::max( min_tt_range, long(( *it * tt_range / t_range ) + 0.5)), max_tt_range ));
+		} else {
+			*it_quant = TT( std::min( std::max( min_tt_range, long(((*it - min_value) * tt_range / t_range) + 0.5)), max_tt_range ));
+		}
+	}
+}		
+	
+VMML_TEMPLATE_STRING
+template< typename TT  >
+void
+VMML_TEMPLATE_CLASSNAME::dequantize( tensor3< I1, I2, I3, TT >& dequantized_, const TT& min_value, const TT& max_value ) const
+{
+	T max_t_range = get_max();
+	T min_t_range = get_min();
+	long t_range = long(max_t_range) - long(min_t_range);
+	
+	TT tt_range = max_value - min_value;
+
+	typedef tensor3< I1, I2, I3, TT > t3_tt_type ;
+	typedef typename t3_tt_type::iterator tt_iterator;
+	tt_iterator it_dequant = dequantized_.begin();
+	const_iterator it = begin(), it_end = end();
+	for( ; it != it_end; ++it, ++it_dequant )
+	{
+		if (std::numeric_limits<T>::is_signed ) {
+			*it_dequant = std::min( std::max( min_value, TT((TT(*it) / t_range) * tt_range)), max_value );
+		} else {
+			*it_dequant = std::min( std::max( min_value, TT((((TT(*it) / t_range)) * tt_range ) + min_value)), max_value );
+		}
+	}
+}		
+	
 #undef VMML_TEMPLATE_STRING
 #undef VMML_TEMPLATE_CLASSNAME
 

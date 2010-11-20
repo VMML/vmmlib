@@ -113,11 +113,12 @@ public:
 		   T_internal& u3_min_ = T_internal(0), T_internal& u3_max_ = T_internal(0),
 		   T_internal& core_min_ = T_internal(0), T_internal& core_max_ = T_internal(0) ); */
 		
-    void decompose( const t3_type& data_, 
-					   T_internal& u1_min_ = 0, T_internal& u1_max_  = 0,
-					   T_internal& u2_min_ = 0, T_internal& u2_max_ = 0,
-					   T_internal& u3_min_ = 0, T_internal& u3_max_ = 0,
-					   T_internal& core_min_ = 0, T_internal& core_max_ = 0 ); 
+	void decompose( const t3_type& data_ );
+	void decompose( const t3_type& data_, 
+				   T_internal& u1_min_, T_internal& u1_max_,
+				   T_internal& u2_min_, T_internal& u2_max_,
+				   T_internal& u3_min_, T_internal& u3_max_,
+				   T_internal& core_min_, T_internal& core_max_ ); 
 		
 	void tucker_als( const t3_type& data_ );	
 		
@@ -392,7 +393,14 @@ VMML_TEMPLATE_CLASSNAME::reconstruct( t3_type& data_,
 	delete data;
 }
 
+VMML_TEMPLATE_STRING
+void 
+VMML_TEMPLATE_CLASSNAME::decompose( const t3_type& data_ ) 
 
+{
+	tucker_als( data_ );
+}
+	
 VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::decompose( const t3_type& data_, 
@@ -402,20 +410,11 @@ VMML_TEMPLATE_CLASSNAME::decompose( const t3_type& data_,
 								   T_internal& core_min_, T_internal& core_max_ ) 
 	
 {
-    tucker_als( data_ );
+    decompose( data_ );
 	
 	if( _is_quantify_coeff ) {
 		quantize_basis_matrices( u1_min_, u1_max_, u2_min_, u2_max_, u3_min_, u3_max_ );
-		quantize_core(core_min_, core_max_ );
-#if 0
-		std::cout << "quantized: " << std::endl << "u1-u3: " << std::endl 
-		<< *_u1 << std::endl << *_u1_comp << std::endl
-		<< *_u2 << std::endl << *_u2_comp << std::endl
-		<< *_u3 << std::endl << *_u3_comp << std::endl
-		<< " core " << std::endl
-		<< *_core << std::endl << *_core_comp << std::endl;	
-#endif
-		
+		quantize_core(core_min_, core_max_ );		
 		cast_comp_members();
 	}
 	
@@ -485,16 +484,7 @@ VMML_TEMPLATE_CLASSNAME::hooi( const t3_type& data_ )
 {
 	//intialize basis matrices
 	hosvd( data_ );
-	
-#if 0
-	std::cout << "initial guess: " << std::endl << "u1-u3: " << std::endl 
-	<< *_u1 << std::endl << *_u1_comp << std::endl
-	<< *_u2 << std::endl << *_u2_comp << std::endl
-	<< *_u3 << std::endl << *_u3_comp << std::endl
-	<< " core " << std::endl
-	<< *_core << std::endl << *_core_comp << std::endl;	
-#endif
-	
+
 	t3_comp_type* data = new t3_comp_type();
 	data->cast_from( data_ );
 	
@@ -539,10 +529,15 @@ VMML_TEMPLATE_CLASSNAME::hooi( const t3_type& data_ )
 		hosvd_mode2( *projection2 );
 		optimize_mode3( *data, *projection3 );
 		hosvd_mode3( *projection3 );
-
 		_core_comp->multiply_horizontal_bwd( *projection3, transpose( *_u3_comp ) );
-		f_norm = _core_comp->frobenius_norm();
+				
+		if ( _is_quantify_coeff ) {
+			double core_min, core_max;
+			quantize_core( core_min, core_max );
+			dequantize_core( core_min, core_max);
+		}
 		
+		f_norm = _core_comp->frobenius_norm();
 		normresidual  = sqrt( max_f_norm * max_f_norm - f_norm * f_norm);
 		fit = 1 - (normresidual / max_f_norm);
 		fitchange = fabs(fitold - fit);
@@ -594,7 +589,7 @@ VMML_TEMPLATE_CLASSNAME::hosvd_mode2( const tensor3<J1, J2, J3, T >& data_ ) con
 	data_.frontal_unfolding_bwd( *u );
 	
 	get_svd_u_red( *u, *_u2_comp );
-	
+		
 	delete u;
 }
 
@@ -622,25 +617,23 @@ VMML_TEMPLATE_CLASSNAME::get_svd_u_red( const matrix< M, N, T >& data_, matrix< 
 	matrix< M, N, double >* u_double = new matrix< M, N, double >(); 
 	u_double->cast_from( data_ );
 		
-	matrix< M, N, T_internal >* u_quant = new matrix< M, N, T_internal >(); 
+	matrix< M, N, T_coeff >* u_quant = new matrix< M, N, T_coeff >(); 
+	matrix< M, N, T_internal >* u_dequant = new matrix< M, N, T_internal >(); 
 	
 	vector< N, double >* lambdas  = new vector<  N, double >();
 	lapack_svd< M, N, double >* svd = new lapack_svd<  M, N, double >();
 	if( svd->compute_and_overwrite_input( *u_double, *lambdas )) {
-		
-		/* TODO: could be a future version
-		 if( _is_quantify_coeff ){
+		if( _is_quantify_coeff ){
 			double min_value = 0; double max_value = 0;
 			u_double->quantize( *u_quant, min_value, max_value );
-		} else */
-		
-		if ( sizeof( T_internal ) != 4 ){
-			u_quant->cast_from( *u_double );
+			u_quant->dequantize( *u_dequant, min_value, max_value );
+		} else if ( sizeof( T_internal ) != 4 ){
+			u_dequant->cast_from( *u_double );
 		} else {
-			*u_quant = *u_double;
+			*u_dequant = *u_double;
 		}
 		
-		u_quant->get_sub_matrix( u_ );
+		u_dequant->get_sub_matrix( u_ );
 
 	} else {
 		u_.zero();
@@ -650,7 +643,7 @@ VMML_TEMPLATE_CLASSNAME::get_svd_u_red( const matrix< M, N, T >& data_, matrix< 
 	delete svd;
 	delete u_double;
 	delete u_quant;
-	
+	delete u_dequant;
 }
 	
 	

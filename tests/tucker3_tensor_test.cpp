@@ -200,9 +200,6 @@ namespace vmml
 		tensor3< 3, 2, 2, double > t3_data_hooi_2_reco;
 		tuck3_hooi_2.reconstruct( t3_data_hooi_2_reco );
 		
-		double rmse_2 = t3_data_hooi_2_reco.rmse( t3_data_hooi );
-		
-		
 		if ( u1_hooi_2.equals( u1_hooi_check_2, precision ) && u2_hooi_2.equals( u2_hooi_check_2, precision ) && u3_hooi_2.equals( u3_hooi_check_2, precision ) && core_hooi_2.equals( core_hooi_check_2, precision))
 		{	
 			log( "HOOI (step 2) rank-(2,2,1) approximation" , true  );
@@ -226,10 +223,10 @@ namespace vmml
 
 		
 		//quantization
-		matrix<3, 3, unsigned short > u1_hooi_3; u1_hooi_3.zero();
+		matrix<3, 2, unsigned short > u1_hooi_3; u1_hooi_3.zero();
 		matrix<2, 2, unsigned short> u2_hooi_3; u2_hooi_3.zero();
 		matrix<2, 2, unsigned short> u3_hooi_3; u3_hooi_3.zero();
-		matrix<3, 3, unsigned short> u1_hooi_check_3;
+		matrix<3, 2, unsigned short> u1_hooi_check_3;
 		matrix<2, 2, unsigned short> u2_hooi_check_3;
 		matrix<2, 2, unsigned short> u3_hooi_check_3;
 		/*
@@ -240,8 +237,8 @@ namespace vmml
 		char data_u3_hooi_step2[] = {-0.5104644303570166, 0.8598988692516616};//original in paper (u3): {0.5105, -0.8599};
 		u3_hooi_check_3.set( data_u3_hooi_step2, data_u3_hooi_step2 + 2);
 		*/
-		tensor3<3, 2, 2, unsigned short> core_hooi_3;
-		tensor3<3, 2, 2, unsigned short> core_hooi_check_3;
+		tensor3<2, 2, 2, unsigned short> core_hooi_3;
+		tensor3<2, 2, 2, unsigned short> core_hooi_check_3;
 		unsigned short data_core_hooi_3[] = {  };
 		core_hooi_check_3.set( data_core_hooi_3, data_core_hooi_3 + 4);
 		
@@ -250,7 +247,7 @@ namespace vmml
 		unsigned char data_hooi_3[] = { 0, 13, 122, 123, 124, 95, 10, 40, 25, 54, 33, 76};
 		t3_data_hooi_3.set(data_hooi_3, data_hooi_3 + 12);
 		
-		tucker3_tensor< 3, 2, 2, 3, 2, 2, unsigned char, unsigned short > tuck3_hooi_3( core_hooi_3, u1_hooi_3, u2_hooi_3, u3_hooi_3 );
+		tucker3_tensor< 2, 2, 2, 3, 2, 2, unsigned char, unsigned short > tuck3_hooi_3( core_hooi_3, u1_hooi_3, u2_hooi_3, u3_hooi_3 );
 		
 		double u1_min, u1_max, u2_min, u2_max, u3_min, u3_max, core_min, core_max;
 		
@@ -270,12 +267,12 @@ namespace vmml
 		//std::cout << "reco: " << t3_data_hooi_3_reco << std::endl;
 		
 		double rmse = t3_data_hooi_3_reco.rmse( t3_data_hooi_3 );
-		double rmse_check = 0; 
+		double rmse_check = 5.392896562454479; 
 		
 		//std::cout << "rmse: " << rmse << std::endl;
 		
 		//if ( u1_hooi_3.equals( u1_hooi_check_3, precision ) && u2_hooi_3.equals( u2_hooi_check_3, precision ) && u3_hooi_3.equals( u3_hooi_check_3, precision ) && core_hooi_3.equals( core_hooi_check_3, precision))
-		if ( rmse >= rmse_check )
+		if ( rmse <= rmse_check )
 		{	
 			log( "quantized HOOI (step 2) rank-(2,2,1) approximation" , true  );
 		} else

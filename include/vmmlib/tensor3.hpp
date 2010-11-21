@@ -11,8 +11,8 @@
 #ifndef __VMML__TENSOR3__HPP__
 #define __VMML__TENSOR3__HPP__
 
+#include <fstream>   // file I/O
 #include <vmmlib/tensor3_iterator.hpp>
-//#include <vmmlib/enable_if.hpp>
 
 namespace vmml
 {
@@ -195,7 +195,9 @@ public:
 	
     void export_to( std::vector< T >& data_ ) const ;
     void import_from( const std::vector< T >& data_ ) ;
-    
+	void write_to_file( const std::string& dir, const std::string& filename ) const;
+	void read_from_file( const std::string& dir, const std::string& filename ) ;
+	    
     inline tensor3 operator+( T scalar ) const;
     inline tensor3 operator-( T scalar ) const;
     
@@ -1409,6 +1411,72 @@ VMML_TEMPLATE_CLASSNAME::dequantize( tensor3< I1, I2, I3, TT >& dequantized_, co
 		}
 	}
 }		
+
+	
+VMML_TEMPLATE_STRING
+void
+VMML_TEMPLATE_CLASSNAME::write_to_file( const std::string& dir, const std::string& filename ) const
+{		
+	int dir_length = dir.size() -1;
+	int last_separator = dir.find_last_of( "/");
+	std::string path = dir;
+	if (last_separator < dir_length ) {
+		path.append( "/" );
+	}
+	path.append( filename);
+	
+	std::ofstream outfile;	
+	outfile.open( path.c_str() );
+	if( outfile.is_open() ) {
+		const_iterator oit = begin(), oit_end = end();
+		for( ; oit != oit_end; ++oit )
+		{
+			const T& byte = T(*oit);
+			outfile << byte;
+		}
+	} else {
+		std::cout << "no file open" << std::endl;
+	}
+	
+	outfile.close();
+}	
+
+VMML_TEMPLATE_STRING
+void
+VMML_TEMPLATE_CLASSNAME::read_from_file( const std::string& dir, const std::string& filename ) 
+{	
+	int dir_length = dir.size() -1;
+	int last_separator = dir.find_last_of( "/");
+	std::string path = dir;
+	if (last_separator < dir_length ) {
+		path.append( "/" );
+	}
+	path.append( filename);
+	
+	char * data;
+	data = new char[ SIZE ];
+	std::ifstream infile;
+	infile.open(path.c_str(), std::ios::in); 
+	
+	if( infile.is_open())
+	{
+		iterator  it = begin(),
+		it_end = end();
+		infile.read( data, (sizeof(T) * SIZE));
+		
+		size_t counter = 0;
+		for( ; it != it_end; ++it, ++counter)
+		{
+			*it =  data[counter];
+		}		
+		delete data;
+		
+	} else {
+		std::cout << "no file open" << std::endl;
+	}
+	
+	infile.close();
+}	
 	
 #undef VMML_TEMPLATE_STRING
 #undef VMML_TEMPLATE_CLASSNAME

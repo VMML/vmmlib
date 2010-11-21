@@ -72,10 +72,6 @@ public:
     const_reverse_iterator  rbegin() const;
     const_reverse_iterator  rend() const;
 #endif
-
-    // hack for static-member-init
-    template< typename init_functor_t >
-    static const tensor3 get_initialized_tensor3();
     
     // ctors
     // note: this ctor does not initialize anything because of performance reasons.
@@ -195,8 +191,8 @@ public:
 	
     void export_to( std::vector< T >& data_ ) const ;
     void import_from( const std::vector< T >& data_ ) ;
-	void write_to_file( const std::string& dir, const std::string& filename ) const;
-	void read_from_file( const std::string& dir, const std::string& filename ) ;
+	void write_to_raw( const std::string& dir, const std::string& filename ) const;
+	void read_from_raw( const std::string& dir, const std::string& filename ) ;
 	    
     inline tensor3 operator+( T scalar ) const;
     inline tensor3 operator-( T scalar ) const;
@@ -903,16 +899,6 @@ VMML_TEMPLATE_CLASSNAME::set( input_iterator_t begin_, input_iterator_t end_, bo
 
 
 
-VMML_TEMPLATE_STRING
-template< typename init_functor_t >
-const VMML_TEMPLATE_CLASSNAME
-VMML_TEMPLATE_CLASSNAME::get_initialized_tensor3()
-{
-	tensor3< I1, I2, I3, T > tensor3_;
-	init_functor_t()( tensor3_ );
-	return tensor3_;
-}
-
 
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::tensor3()
@@ -1415,7 +1401,7 @@ VMML_TEMPLATE_CLASSNAME::dequantize( tensor3< I1, I2, I3, TT >& dequantized_, co
 	
 VMML_TEMPLATE_STRING
 void
-VMML_TEMPLATE_CLASSNAME::write_to_file( const std::string& dir, const std::string& filename ) const
+VMML_TEMPLATE_CLASSNAME::write_to_raw( const std::string& dir, const std::string& filename ) const
 {		
 	int dir_length = dir.size() -1;
 	int last_separator = dir.find_last_of( "/");
@@ -1443,7 +1429,7 @@ VMML_TEMPLATE_CLASSNAME::write_to_file( const std::string& dir, const std::strin
 
 VMML_TEMPLATE_STRING
 void
-VMML_TEMPLATE_CLASSNAME::read_from_file( const std::string& dir, const std::string& filename ) 
+VMML_TEMPLATE_CLASSNAME::read_from_raw( const std::string& dir, const std::string& filename ) 
 {	
 	int dir_length = dir.size() -1;
 	int last_separator = dir.find_last_of( "/");

@@ -249,7 +249,8 @@ namespace vmml
 		
 		tucker3_tensor< 2, 2, 2, 3, 2, 2, unsigned char, unsigned short > tuck3_hooi_3( core_hooi_3, u1_hooi_3, u2_hooi_3, u3_hooi_3 );
 		
-		double u1_min, u1_max, u2_min, u2_max, u3_min, u3_max, core_min, core_max;
+		
+		float u1_min, u1_max, u2_min, u2_max, u3_min, u3_max, core_min, core_max;
 		
 		tuck3_hooi_3.enable_quantify_coeff();
 		tuck3_hooi_3.decompose( t3_data_hooi_3, u1_min, u1_max, u2_min, u2_max, u3_min, u3_max, core_min, core_max );

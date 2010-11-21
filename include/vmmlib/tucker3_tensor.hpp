@@ -30,7 +30,8 @@ namespace vmml
 	{
 public:    
 	
-	typedef double T_internal;	
+	typedef float T_internal;	
+	typedef double T_svd;
 		
 	typedef tensor3< I1, I2, I3, T_value > t3_type;
 	typedef typename t3_type::iterator t3_iterator;
@@ -532,7 +533,7 @@ VMML_TEMPLATE_CLASSNAME::hooi( const t3_type& data_ )
 		_core_comp->multiply_horizontal_bwd( *projection3, transpose( *_u3_comp ) );
 				
 		if ( _is_quantify_coeff ) {
-			double core_min, core_max;
+			T_internal core_min, core_max;
 			quantize_core( core_min, core_max );
 			dequantize_core( core_min, core_max);
 		}
@@ -614,26 +615,27 @@ template< size_t M, size_t N, size_t R, typename T >
 void 
 VMML_TEMPLATE_CLASSNAME::get_svd_u_red( const matrix< M, N, T >& data_, matrix< M, R, T_internal >& u_ ) const
 {
-	matrix< M, N, double >* u_double = new matrix< M, N, double >(); 
+	matrix< M, N, T_svd >* u_double = new matrix< M, N, T_svd >(); 
 	u_double->cast_from( data_ );
 		
 	matrix< M, N, T_coeff >* u_quant = new matrix< M, N, T_coeff >(); 
-	matrix< M, N, T_internal >* u_dequant = new matrix< M, N, T_internal >(); 
+	matrix< M, N, T_internal >* u_internal = new matrix< M, N, T_internal >(); 
 	
-	vector< N, double >* lambdas  = new vector<  N, double >();
-	lapack_svd< M, N, double >* svd = new lapack_svd<  M, N, double >();
+	vector< N, T_svd >* lambdas  = new vector<  N, T_svd >();
+	lapack_svd< M, N, T_svd >* svd = new lapack_svd<  M, N, T_svd >();
 	if( svd->compute_and_overwrite_input( *u_double, *lambdas )) {
 		if( _is_quantify_coeff ){
-			double min_value = 0; double max_value = 0;
-			u_double->quantize( *u_quant, min_value, max_value );
-			u_quant->dequantize( *u_dequant, min_value, max_value );
+			T_internal min_value = 0; T_internal max_value = 0;
+			u_internal->cast_from( *u_double );
+			u_internal->quantize( *u_quant, min_value, max_value );
+			u_quant->dequantize( *u_internal, min_value, max_value );
 		} else if ( sizeof( T_internal ) != 4 ){
-			u_dequant->cast_from( *u_double );
+			u_internal->cast_from( *u_double );
 		} else {
-			*u_dequant = *u_double;
+			*u_internal = *u_double;
 		}
 		
-		u_dequant->get_sub_matrix( u_ );
+		u_internal->get_sub_matrix( u_ );
 
 	} else {
 		u_.zero();
@@ -643,7 +645,7 @@ VMML_TEMPLATE_CLASSNAME::get_svd_u_red( const matrix< M, N, T >& data_, matrix< 
 	delete svd;
 	delete u_double;
 	delete u_quant;
-	delete u_dequant;
+	delete u_internal;
 }
 	
 	

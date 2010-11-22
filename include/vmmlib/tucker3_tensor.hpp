@@ -100,19 +100,16 @@ public:
 	void export_to( std::vector< T >& data_ );
 	template< typename T >
 	void import_from( const std::vector< T >& data_ );
+		
+	//get number of nonzeros for tensor decomposition
+	size_t nnz() const;
+	size_t nnz( const T_value& threshold ) const;	
 	
 	void reconstruct( t3_type& data_,
 			const T_internal& u1_min_ = T_internal(0), const T_internal& u1_max_  = T_internal(0),
 			const T_internal& u2_min_ = T_internal(0), const T_internal& u2_max_ = T_internal(0),
 			const T_internal& u3_min_ = T_internal(0), const T_internal& u3_max_ = T_internal(0),
 			const T_internal& core_min_ = T_internal(0), const T_internal& core_max_ = T_internal(0) ); 
-		
-
-/*	void decompose( const t3_type& data_, 
-		   T_internal& u1_min_ = T_internal(0), T_internal& u1_max_  = T_internal(0),
-		   T_internal& u2_min_ = T_internal(0), T_internal& u2_max_ = T_internal(0),
-		   T_internal& u3_min_ = T_internal(0), T_internal& u3_max_ = T_internal(0),
-		   T_internal& core_min_ = T_internal(0), T_internal& core_max_ = T_internal(0) ); */
 		
 	void decompose( const t3_type& data_ );
 	void decompose( const t3_type& data_, 
@@ -1088,6 +1085,33 @@ VMML_TEMPLATE_CLASSNAME::import_from( const std::vector< T >& data_ )
 	cast_comp_members();
 }
 
+VMML_TEMPLATE_STRING
+size_t
+VMML_TEMPLATE_CLASSNAME::nnz() const
+{
+	size_t counter = 0;
+	
+	counter += _u1_comp->nnz();
+	counter += _u2_comp->nnz();
+	counter += _u3_comp->nnz();
+	counter += _core_comp->nnz();
+	
+	return counter;
+}
+	
+VMML_TEMPLATE_STRING
+size_t
+VMML_TEMPLATE_CLASSNAME::nnz( const T_value& threshold ) const
+{
+	size_t counter = 0;
+	
+	counter += _u1_comp->nnz( threshold );
+	counter += _u2_comp->nnz( threshold );
+	counter += _u3_comp->nnz( threshold );
+	counter += _core_comp->nnz( threshold );
+
+	return counter;
+}	
 	
 VMML_TEMPLATE_STRING
 void 

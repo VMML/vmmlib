@@ -219,8 +219,14 @@ namespace vmml
 			
 			
 			log_error( error.str() );
-		}		
-
+		}
+		
+		//number of nonzeros
+		
+		size_t number_nonzeros = tuck3_hooi_2.nnz( );
+		size_t number_nonzeros2 = tuck3_hooi_2.nnz( 0.1 );		
+		ok = ( number_nonzeros == 16 ) && (number_nonzeros2 == 12);
+		log( "get number of nonzeros" , ok  );
 		
 		//quantization
 		matrix<3, 2, unsigned short > u1_hooi_3; u1_hooi_3.zero();

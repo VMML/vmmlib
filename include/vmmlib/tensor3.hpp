@@ -147,6 +147,10 @@ public:
 	T get_min() const;
 	T get_max() const;
 	
+	//returns number of non-zeros
+	size_t nnz() const;
+	size_t nnz( const T& threshold_ ) const;
+	
 	template< typename TT  >
 		void quantize( tensor3< I1, I2, I3, TT >& quantized_, T& min_value, T& max_value ) const;
 	template< typename TT  >
@@ -257,9 +261,7 @@ protected:
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::tensor3()
 	: array()
-{
-	zero();
-}
+{}
 
 	
 VMML_TEMPLATE_STRING
@@ -1354,6 +1356,42 @@ VMML_TEMPLATE_CLASSNAME::get_max() const
 		}
 	}
 	return tensor3_max;
+}
+	
+VMML_TEMPLATE_STRING
+size_t
+VMML_TEMPLATE_CLASSNAME::nnz() const
+{
+	size_t counter = 0;
+ 	
+	const_iterator  it = begin(),
+	it_end = end();
+	for( ; it != it_end; ++it)
+	{		
+		if ( *it != 0 ) {
+			++counter;
+		}
+	}
+	
+	return counter;
+}	
+	
+VMML_TEMPLATE_STRING
+size_t
+VMML_TEMPLATE_CLASSNAME::nnz( const T& threshold ) const
+{
+	size_t counter = 0;
+	
+	const_iterator  it = begin(),
+	it_end = end();
+	for( ; it != it_end; ++it)
+	{		
+		if ( fabs(*it) > threshold ) {
+			++counter;
+		}
+	}
+	
+	return counter;
 }		
 
 VMML_TEMPLATE_STRING

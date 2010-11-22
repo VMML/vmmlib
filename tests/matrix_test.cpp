@@ -983,6 +983,24 @@ matrix_test::run()
 			log_error( error.str() );
 		}	
 	}
+	{
+		//number of nonzeros
+		
+		matrix< 4, 5, int > m_nnz;
+		m_nnz.fill(2);
+		m_nnz.at( 3,3 ) = 0; m_nnz.at( 2,3 ) = -4;
+		size_t number_nonzeros = m_nnz.nnz();
+		
+		matrix< 4, 4, float > m_nnz2;
+		m_nnz2.fill( 0.9878);
+		m_nnz2.at( 3,3 ) = 0; m_nnz2.at( 2,3 ) = -1; m_nnz2.at( 2,2 ) = 0.045; m_nnz2.at( 1,2 ) = -0.085;
+		m_nnz2.at( 0,2 ) = 0.00000035; m_nnz2.at( 0,1 ) = -0.00000035;
+		size_t number_nonzeros2 = m_nnz2.nnz( 0.00001 );
+				
+		ok = ( number_nonzeros == 19 ) && (number_nonzeros2 == 13);
+		log( "get number of nonzeros" , ok  );
+		
+	}
 	
     return ok;
 }

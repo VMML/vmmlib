@@ -764,11 +764,30 @@ tensor3_test::run()
 			<< "signed quantized is: " << std::endl << t3_quant_sign << std::endl
 			<< "dequantized unsigned is: " << std::endl << t3_dequant << std::endl 
 			<< "dequantized signed is: " << std::endl << t3_dequant_sign << std::endl 
-			<< "min_value : " << min_value << " max_value: " << max_value << std::endl;
+			<< "min_value: " << min_value << " max_value: " << max_value << std::endl;
 			
 			log_error( error.str() );
 		}	
 	}
+	{
+		//number of nonzeros
+		
+		tensor3< 4, 5, 6, int > t3_nnz;
+		t3_nnz.fill_increasing_values();
+		t3_nnz.at( 3,3,3) = 0; t3_nnz.at( 2,3,3) = -4;
+		size_t number_nonzeros = t3_nnz.nnz();
+				
+		tensor3< 4, 4, 4, float > t3_nnz2;
+		t3_nnz2.fill( 0.9878);
+		t3_nnz2.at( 3,3,3) = 0; t3_nnz2.at( 2,3,3) = -1; t3_nnz2.at( 2,2,3) = 0.045; t3_nnz2.at( 1,2,3) = -0.085;
+		t3_nnz2.at( 0,2,3) = 0.00000035; t3_nnz2.at( 0,1,3) = -0.00000035;
+		size_t number_nonzeros2 = t3_nnz2.nnz( 0.00001 );
+		
+		ok = ( number_nonzeros == 118 ) && (number_nonzeros2 == 61);
+		log( "get number of nonzeros" , ok  );
+		
+	}
+	
 	
 	ok = true;
     return ok;

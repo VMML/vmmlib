@@ -13,6 +13,7 @@
 
 #include <fstream>   // file I/O
 #include <vmmlib/tensor3_iterator.hpp>
+#include <vmmlib/tensor3_data_store.hpp>
 
 namespace vmml
 {
@@ -27,14 +28,16 @@ public:
     typedef T*                                      pointer;
     typedef T&                                      reference;
     
-    typedef typename matrix< I1, I2, T>::iterator matrix_iterator;
+    typedef typename matrix< I1, I2, T>::iterator                                matrix_iterator;
+		
+    typedef typename vmml::tensor3_iterator< tensor3< I1, I2, I3, T > >	         iterator;
+    typedef typename vmml::tensor3_const_iterator< tensor3< I1, I2, I3, T > >    const_iterator;
 	
-    typedef typename vmml::tensor3_iterator< tensor3< I1, I2, I3, T > > iterator;
-    typedef typename vmml::tensor3_const_iterator< tensor3< I1, I2, I3, T > > const_iterator;
-	
-    typedef typename vmml::tensor3_iterator< tensor3< I1, I2, I3, T > > reverse_iterator;
-    typedef typename vmml::tensor3_iterator< tensor3< I1, I2, I3, T > > const_reverse_iterator;
+    typedef typename vmml::tensor3_iterator< tensor3< I1, I2, I3, T > >          reverse_iterator;
+    typedef typename vmml::tensor3_iterator< tensor3< I1, I2, I3, T > >          const_reverse_iterator;
     
+    typedef tensor3_data_store< I1, I2, I3, T >                                  store_type;
+	
     typedef matrix< I1, I2, T >        front_slice_type; //fwd: forward cylcling (after kiers et al., 2000)
     typedef matrix< I3, I1, T >        lat_slice_type;
     typedef matrix< I2, I3, T >        horiz_slice_type;
@@ -74,15 +77,16 @@ public:
 #endif
     
     // ctors
-    // note: this ctor does not initialize anything because of performance reasons.
     tensor3();
+        
+    tensor3( const tensor3& source );
     
     template< typename U >
     tensor3( const tensor3< I1, I2, I3, U >& source_ );
 	
     template< size_t J1, size_t J2, size_t J3>
     tensor3( const tensor3< J1, J2, J3, T >& source_ );
-
+	
     size_t size() const; // return I1 * I2 * I3;   
 	
     inline void get_I1_vector( size_t i2, size_t i3, vector< I1, T >& data ) const; // I1_vector is a column vector with all values i1 at i2 and i3
@@ -241,10 +245,7 @@ public:
 
 
 protected:
-    front_slice_type                                      array[ I3 ];
-	
-
-	
+	store_type			array;
 
 
 }; // class tensor3
@@ -252,6 +253,50 @@ protected:
 #define VMML_TEMPLATE_STRING    template< size_t I1, size_t I2, size_t I3, typename T >
 #define VMML_TEMPLATE_CLASSNAME tensor3< I1, I2, I3, T >
 
+
+VMML_TEMPLATE_STRING
+VMML_TEMPLATE_CLASSNAME::tensor3()
+	: array()
+{
+	zero();
+}
+
+	
+VMML_TEMPLATE_STRING
+VMML_TEMPLATE_CLASSNAME::tensor3( const tensor3& source )
+    : array( source.array )
+{}
+
+
+VMML_TEMPLATE_STRING
+template< typename U >
+VMML_TEMPLATE_CLASSNAME::tensor3( const tensor3< I1, I2, I3, U >& source_ )
+{
+	(*this) = source_;
+}
+	
+
+VMML_TEMPLATE_STRING
+template< size_t J1, size_t J2, size_t J3 >
+VMML_TEMPLATE_CLASSNAME::tensor3( const tensor3< J1, J2, J3, T >& source_ )
+{
+	const size_t minL =  J1 < I1 ? J1 : I1;
+	const size_t minC =  J2 < I2 ? J2 : I2;
+	const size_t minS =  J3 < I3 ? J3 : I3;
+	
+	zero();
+	
+	for ( size_t i = 0 ; i < minL ; i++ ) {
+		for ( size_t j = 0 ; j < minC ; j++ ) {
+			for ( size_t k = 0 ; k < minS ; k++ )
+			{
+				at( i,j, k ) = source_( i, j, k ); 
+			}
+		}
+	}
+}
+	
+	
 VMML_TEMPLATE_STRING
 inline T&
 VMML_TEMPLATE_CLASSNAME::at( size_t i1, size_t i2, size_t i3 )
@@ -898,40 +943,6 @@ VMML_TEMPLATE_CLASSNAME::set( input_iterator_t begin_, input_iterator_t end_, bo
 }
 
 
-
-
-VMML_TEMPLATE_STRING
-VMML_TEMPLATE_CLASSNAME::tensor3()
-{
-	zero();
-}
-
-
-VMML_TEMPLATE_STRING
-template< typename U >
-VMML_TEMPLATE_CLASSNAME::tensor3( const tensor3< I1, I2, I3, U >& source_ )
-{
-    (*this) = source_;
-}
-
-VMML_TEMPLATE_STRING
-template< size_t J1, size_t J2, size_t J3 >
-VMML_TEMPLATE_CLASSNAME::tensor3( const tensor3< J1, J2, J3, T >& source_ )
-{
-	const size_t minL =  J1 < I1 ? J1 : I1;
-	const size_t minC =  J2 < I2 ? J2 : I2;
-	const size_t minS =  J3 < I3 ? J3 : I3;
-	
-	//(*this) = ZERO;
-	zero();
-	
-	for ( size_t i = 0 ; i < minL ; i++ )
-		for ( size_t j = 0 ; j < minC ; j++ )
-			for ( size_t k = 0 ; k < minS ; k++ )
-		{
-			at( i,j, k ) = source_( i, j, k ); 
-		}
-}
 
 
 

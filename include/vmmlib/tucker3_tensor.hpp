@@ -102,8 +102,8 @@ public:
 	void export_to( std::vector< T >& data_ );
 	template< typename T >
 	void import_from( const std::vector< T >& data_ );
-	void export_quantized_to( char * data_ );
-	void import_quantized_from( const char * data_ );
+	void export_quantized_to(  std::vector<char>& data_out_  );
+	void import_quantized_from( const std::vector<char>& data_out_ );
 		
 	//get number of nonzeros for tensor decomposition
 	size_t nnz() const;
@@ -1092,7 +1092,7 @@ VMML_TEMPLATE_CLASSNAME::import_from( const std::vector< T >& data_ )
 	
 VMML_TEMPLATE_STRING
 void
-VMML_TEMPLATE_CLASSNAME::export_quantized_to( char * data_ )
+VMML_TEMPLATE_CLASSNAME::export_quantized_to( std::vector<char>& data_out_ )
 {
 	//quantize tucker3 components (u1-u3 and core)
 	T_internal u1_min, u1_max, u2_min, u2_max, u3_min, u3_max, core_min, core_max = 0;
@@ -1110,43 +1110,53 @@ VMML_TEMPLATE_CLASSNAME::export_quantized_to( char * data_ )
         << *_core_comp << std::endl;
 #endif
 
+	size_t len_export_data = SIZE * sizeof(T_coeff) + 8*sizeof(T_internal);
+	char * data = new char[ len_export_data ];
+	
 	size_t end_data = 0;
 	size_t len_t_comp = sizeof( T_internal );
 	
 	//copy data for u1
 	size_t len_u1 = I1 * R1 * sizeof( T_coeff );
-	memcpy( data_, &u1_min, len_t_comp ); end_data = len_t_comp;
-	memcpy( data_ + end_data, &u1_max, len_t_comp ); end_data += len_t_comp;
-	memcpy( data_ + end_data, _u1, len_u1 ); end_data += len_u1;
+	memcpy( data, &u1_min, len_t_comp ); end_data = len_t_comp;
+	memcpy( data + end_data, &u1_max, len_t_comp ); end_data += len_t_comp;
+	memcpy( data + end_data, _u1, len_u1 ); end_data += len_u1;
 	
 	//copy data for u2
 	size_t len_u2 = I2 * R2 * sizeof( T_coeff );
-	memcpy( data_ + end_data, &u2_min, len_t_comp ); end_data += len_t_comp;
-	memcpy( data_ + end_data, &u2_max, len_t_comp ); end_data += len_t_comp;
-	memcpy( data_ + end_data, _u2, len_u2 ); end_data += len_u2;
+	memcpy( data + end_data, &u2_min, len_t_comp ); end_data += len_t_comp;
+	memcpy( data + end_data, &u2_max, len_t_comp ); end_data += len_t_comp;
+	memcpy( data + end_data, _u2, len_u2 ); end_data += len_u2;
 	
 	//copy data for u3
 	size_t len_u3 = I3 * R3 * sizeof( T_coeff );
-	memcpy( data_ + end_data, &u3_min, len_t_comp ); end_data += len_t_comp;
-	memcpy( data_ + end_data, &u3_max, len_t_comp ); end_data += len_t_comp;
-	memcpy( data_ + end_data, _u3, len_u3 ); end_data += len_u3;
+	memcpy( data + end_data, &u3_min, len_t_comp ); end_data += len_t_comp;
+	memcpy( data + end_data, &u3_max, len_t_comp ); end_data += len_t_comp;
+	memcpy( data + end_data, _u3, len_u3 ); end_data += len_u3;
 
 	//copy data for core
-	memcpy( data_ + end_data, &core_min, len_t_comp ); end_data += len_t_comp;
-	memcpy( data_ + end_data, &core_max, len_t_comp ); end_data += len_t_comp;
+	memcpy( data + end_data, &core_min, len_t_comp ); end_data += len_t_comp;
+	memcpy( data + end_data, &core_max, len_t_comp ); end_data += len_t_comp;
 
 	size_t len_core_slice = R1 * R2 * sizeof( T_coeff );
 	for (size_t r3 = 0; r3 < R3; ++r3 ) {
-		memcpy( data_ + end_data, _core->get_frontal_slice_fwd( r3 ), len_core_slice );
+		memcpy( data + end_data, _core->get_frontal_slice_fwd( r3 ), len_core_slice );
 		end_data += len_core_slice;
 	}
-
+	
+	data_out_.clear();
+	for( size_t byte = 0; byte < len_export_data; ++byte )
+	{
+		data_out_.push_back( data[byte] );
+	}
+	delete[] data;
+	
 }
 
 
 VMML_TEMPLATE_STRING
 void
-VMML_TEMPLATE_CLASSNAME::import_quantized_from( const char * data_ )
+VMML_TEMPLATE_CLASSNAME::import_quantized_from( const std::vector<char>& data_in_  )
 {
 	T_internal u1_min = 0; T_internal u1_max = 0;
 	T_internal u2_min = 0; T_internal u2_max = 0;
@@ -1156,36 +1166,45 @@ VMML_TEMPLATE_CLASSNAME::import_quantized_from( const char * data_ )
 	size_t end_data = 0;
 	size_t len_t_comp = sizeof( T_internal );
 	
+	size_t len_export_data = SIZE * sizeof(T_coeff) + 8*sizeof(T_internal);
+	char * data = new char[ len_export_data ];
+
+	for( size_t byte = 0; byte < len_export_data; ++byte )
+	{
+		data[byte] = data_in_.at(byte);
+	}
+	
 	//copy data to u1
 	size_t len_u1 = I1 * R1 * sizeof( T_coeff );
-	memcpy( &u1_min, data_, len_t_comp ); end_data = len_t_comp;
-	memcpy( &u1_max, data_ + end_data, len_t_comp ); end_data += len_t_comp;
-	memcpy( _u1, data_ + end_data, len_u1 ); end_data += len_u1;
+	memcpy( &u1_min, data, len_t_comp ); end_data = len_t_comp;
+	memcpy( &u1_max, data + end_data, len_t_comp ); end_data += len_t_comp;
+	memcpy( _u1, data + end_data, len_u1 ); end_data += len_u1;
 	
 	//copy data to u2
 	size_t len_u2 = I2 * R2 * sizeof( T_coeff );
-	memcpy( &u2_min, data_ + end_data, len_t_comp ); end_data += len_t_comp;
-	memcpy( &u2_max, data_ + end_data, len_t_comp ); end_data += len_t_comp;
-	memcpy( _u2, data_ + end_data, len_u2 ); end_data += len_u2;
+	memcpy( &u2_min, data + end_data, len_t_comp ); end_data += len_t_comp;
+	memcpy( &u2_max, data + end_data, len_t_comp ); end_data += len_t_comp;
+	memcpy( _u2, data + end_data, len_u2 ); end_data += len_u2;
 	
 	//copy data to u3
 	size_t len_u3 = I3 * R3 * sizeof( T_coeff );
-	memcpy( &u3_min, data_ + end_data, len_t_comp ); end_data += len_t_comp;
-	memcpy( &u3_max, data_ + end_data, len_t_comp ); end_data += len_t_comp;
-	memcpy( _u3, data_ + end_data, len_u3 ); end_data += len_u3;
+	memcpy( &u3_min, data + end_data, len_t_comp ); end_data += len_t_comp;
+	memcpy( &u3_max, data + end_data, len_t_comp ); end_data += len_t_comp;
+	memcpy( _u3, data + end_data, len_u3 ); end_data += len_u3;
 	
 	//copy data to core
-	memcpy( &core_min, data_ + end_data, len_t_comp ); end_data += len_t_comp;
-	memcpy( &core_max, data_ + end_data, len_t_comp ); end_data += len_t_comp;
+	memcpy( &core_min, data + end_data, len_t_comp ); end_data += len_t_comp;
+	memcpy( &core_max, data + end_data, len_t_comp ); end_data += len_t_comp;
 	
 	size_t len_core_slice = R1 * R2 * sizeof( T_coeff );
 	front_core_slice_type* slice = new front_core_slice_type();
 	for (size_t r3 = 0; r3 < R3; ++r3 ) {
-		memcpy( slice, data_ + end_data, len_core_slice );
+		memcpy( slice, data + end_data, len_core_slice );
 		_core->set_frontal_slice_fwd( r3, *slice );
 		end_data += len_core_slice;
 	}
 	delete slice;
+	delete[] data;
 	
 	//dequantize tucker3 components (u1-u3 and core)
 	dequantize_basis_matrices( u1_min, u1_max, u2_min, u2_max, u3_min, u3_max );

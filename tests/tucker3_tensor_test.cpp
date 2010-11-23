@@ -331,10 +331,9 @@ namespace vmml
 			log_error( error.str() );
 		}		
 		
-		//export char *
-		size_t len_export_data = tuck3_hooi_3.SIZE * sizeof(unsigned short) + 8*sizeof(float);
-		char * export_data2 = new char[ len_export_data ];
-		tuck3_hooi_3.export_quantized_to( export_data2 );
+		//export bytes
+		std::vector<char> export_data_vec;
+		tuck3_hooi_3.export_quantized_to( export_data_vec );
 		
 		
 		//check exported data
@@ -345,7 +344,7 @@ namespace vmml
 		
 		ok = true;
 		
-		float * float_ptr = (float*)export_data2;
+		float * float_ptr = (float*)&(export_data_vec[0]);
 		float u1_min_e = *float_ptr;		
 		float_ptr++;
 		float u1_max_e = *float_ptr;
@@ -420,13 +419,12 @@ namespace vmml
 			ok = (fabs(float(export_data2_check[index]) - float(value))) < 1.0e-6;
 		}
 		
-		log( "export tucker3 (char *) ", ok  );
+		log( "export tucker3 (bytes) ", ok  );
 		
 		
-		//import from char *
+		//import from bytes
 		tucker3_tensor< 2, 2, 2, 3, 2, 2, unsigned char, unsigned short > tuck3_import2;
-		tuck3_import2.import_quantized_from( export_data2 );
-		delete[] export_data2;
+		tuck3_import2.import_quantized_from( export_data_vec );
 		
 		tensor3< 3, 2, 2, unsigned char > import_reco;
 		tuck3_import2.reconstruct( import_reco );
@@ -435,7 +433,7 @@ namespace vmml
 
 		if ( rmse <= rmse_check )
 		{
-			log( "import tucker3 (char *)" , true  );
+			log( "import tucker3 (bytes)" , true  );
 		} else
 		{
 			matrix<3, 2, unsigned short > u1_imported2;

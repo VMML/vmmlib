@@ -45,6 +45,8 @@ public:
 	typedef typename t3_core_type::iterator t3_core_iterator;
 	typedef typename t3_core_type::const_iterator t3_core_const_iterator;
 		
+	typedef matrix< R1, R2, T_coeff >        front_core_slice_type; //fwd: forward cylcling (after kiers et al., 2000)
+
 	typedef matrix< I1, R1, T_coeff > u1_type;
 	typedef typename u1_type::iterator u1_iterator;
 	typedef typename u1_type::const_iterator u1_const_iterator;
@@ -100,6 +102,8 @@ public:
 	void export_to( std::vector< T >& data_ );
 	template< typename T >
 	void import_from( const std::vector< T >& data_ );
+	void export_quantized_to( char * data_ );
+	void import_quantized_from( const char * data_ );
 		
 	//get number of nonzeros for tensor decomposition
 	size_t nnz() const;
@@ -413,7 +417,7 @@ VMML_TEMPLATE_CLASSNAME::decompose( const t3_type& data_,
 	if( _is_quantify_coeff ) {
 		quantize_basis_matrices( u1_min_, u1_max_, u2_min_, u2_max_, u3_min_, u3_max_ );
 		quantize_core(core_min_, core_max_ );		
-		cast_comp_members();
+		//cast_comp_members();
 	}
 	
 }
@@ -1084,6 +1088,101 @@ VMML_TEMPLATE_CLASSNAME::import_from( const std::vector< T >& data_ )
 	
 	cast_comp_members();
 }
+	
+	
+VMML_TEMPLATE_STRING
+void
+VMML_TEMPLATE_CLASSNAME::export_quantized_to( char * data_ )
+{
+	//quantize tucker3 components (u1-u3 and core)
+	T_internal u1_min, u1_max, u2_min, u2_max, u3_min, u3_max, core_min, core_max = 0;
+	quantize_basis_matrices( u1_min, u1_max, u2_min, u2_max, u3_min, u3_max );
+	quantize_core( core_min, core_max );		
+	
+	size_t end_data = 0;
+	size_t len_t_comp = sizeof( T_internal );
+	
+	//copy data for u1
+	size_t len_u1 = I1 * R1 * sizeof( T_coeff );
+	memcpy( data_, &u1_min, len_t_comp ); end_data = len_t_comp;
+	memcpy( data_ + end_data, &u1_max, len_t_comp ); end_data += len_t_comp;
+	memcpy( data_ + end_data, _u1, len_u1 ); end_data += len_u1;
+	
+	//copy data for u2
+	size_t len_u2 = I2 * R2 * sizeof( T_coeff );
+	memcpy( data_ + end_data, &u2_min, len_t_comp ); end_data += len_t_comp;
+	memcpy( data_ + end_data, &u2_max, len_t_comp ); end_data += len_t_comp;
+	memcpy( data_ + end_data, _u2, len_u2 ); end_data += len_u2;
+	
+	//copy data for u3
+	size_t len_u3 = I3 * R3 * sizeof( T_coeff );
+	memcpy( data_ + end_data, &u3_min, len_t_comp ); end_data += len_t_comp;
+	memcpy( data_ + end_data, &u3_max, len_t_comp ); end_data += len_t_comp;
+	memcpy( data_ + end_data, _u3, len_u3 ); end_data += len_u3;
+
+	//copy data for core
+	memcpy( data_ + end_data, &core_min, len_t_comp ); end_data += len_t_comp;
+	memcpy( data_ + end_data, &core_max, len_t_comp ); end_data += len_t_comp;
+
+	size_t len_core_slice = R1 * R2 * sizeof( T_coeff );
+	for (size_t r3 = 0; r3 < R3; ++r3 ) {
+		memcpy( data_ + end_data, _core->get_frontal_slice_fwd( r3 ), len_core_slice );
+		end_data += len_core_slice;
+	}
+
+}
+
+
+VMML_TEMPLATE_STRING
+void
+VMML_TEMPLATE_CLASSNAME::import_quantized_from( const char * data_ )
+{
+	T_internal u1_min = 0; T_internal u1_max = 0;
+	T_internal u2_min = 0; T_internal u2_max = 0;
+	T_internal u3_min = 0; T_internal u3_max = 0;
+	T_internal core_min = 0; T_internal core_max = 0;
+		
+	size_t end_data = 0;
+	size_t len_t_comp = sizeof( T_internal );
+	
+	//copy data to u1
+	size_t len_u1 = I1 * R1 * sizeof( T_coeff );
+	memcpy( &u1_min, data_, len_t_comp ); end_data = len_t_comp;
+	memcpy( &u1_max, data_ + end_data, len_t_comp ); end_data += len_t_comp;
+	memcpy( _u1, data_ + end_data, len_u1 ); end_data += len_u1;
+	
+	//copy data to u2
+	size_t len_u2 = I2 * R2 * sizeof( T_coeff );
+	memcpy( &u2_min, data_ + end_data, len_t_comp ); end_data += len_t_comp;
+	memcpy( &u2_max, data_ + end_data, len_t_comp ); end_data += len_t_comp;
+	memcpy( _u2, data_ + end_data, len_u2 ); end_data += len_u2;
+	
+	//copy data to u3
+	size_t len_u3 = I3 * R3 * sizeof( T_coeff );
+	memcpy( &u3_min, data_ + end_data, len_t_comp ); end_data += len_t_comp;
+	memcpy( &u3_max, data_ + end_data, len_t_comp ); end_data += len_t_comp;
+	memcpy( _u3, data_ + end_data, len_u3 ); end_data += len_u3;
+	
+	//copy data to core
+	memcpy( &core_min, data_ + end_data, len_t_comp ); end_data += len_t_comp;
+	memcpy( &core_max, data_ + end_data, len_t_comp ); end_data += len_t_comp;
+	
+	size_t len_core_slice = R1 * R2 * sizeof( T_coeff );
+	front_core_slice_type* slice = new front_core_slice_type();
+	for (size_t r3 = 0; r3 < R3; ++r3 ) {
+		memcpy( slice, data_ + end_data, len_core_slice );
+		_core->set_frontal_slice_fwd( r3, *slice );
+		end_data += len_core_slice;
+	}
+	delete slice;
+	
+	//dequantize tucker3 components (u1-u3 and core)
+	dequantize_basis_matrices( u1_min, u1_max, u2_min, u2_max, u3_min, u3_max );
+	dequantize_core( core_min, core_max );	
+	cast_members();
+}
+
+	
 
 VMML_TEMPLATE_STRING
 size_t

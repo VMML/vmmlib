@@ -168,35 +168,35 @@ public:
                                  const size_t& start_index3, const size_t& end_index3);
 
 protected:
-		tucker3_tensor( const tucker3_tensor< R1, R2, R3, I1, I1, I1, T_value, T_coeff >& other ) {};
-		tucker3_tensor< R1, R2, R3, I1, I1, I1, T_value, T_coeff > operator=( const tucker3_tensor< R1, R2, R3, I1, I1, I1, T_value, T_coeff >& other ) { return *this; };
-		
-		void init_random( const t3_type& data_ );
-		
-		template< size_t M, size_t N >
-		void fill_random_2d( int seed, matrix< M, N, T_internal >& u );
-		
-		template< size_t M, size_t N, size_t R, typename T >
-		void get_svd_u_red( const matrix< M, N, T >& data_, matrix< M, R, T_internal >& u_ ) const;
-		template< size_t J1, size_t J2, size_t J3, typename T >
-		void hosvd_mode1( const tensor3<J1, J2, J3, T >& data_ ) const;
-		template< size_t J1, size_t J2, size_t J3, typename T >
-		void hosvd_mode2( const tensor3<J1, J2, J3, T >& data_ ) const;
-		template< size_t J1, size_t J2, size_t J3, typename T >
-		void hosvd_mode3( const tensor3<J1, J2, J3, T >& data_ ) const;
-		
-		void optimize_mode1( const t3_comp_type& data_, tensor3< I1, R2, R3, T_internal >& projection_ ) const;
-		void optimize_mode2( const t3_comp_type& data_, tensor3< R1, I2, R3, T_internal >& projection_ ) const;		
-		void optimize_mode3( const t3_comp_type& data_, tensor3< R1, R2, I3, T_internal >& projection_ ) const;
+        tucker3_tensor( const tucker3_tensor< R1, R2, R3, I1, I1, I1, T_value, T_coeff >& other ) {};
+        tucker3_tensor< R1, R2, R3, I1, I1, I1, T_value, T_coeff > operator=( const tucker3_tensor< R1, R2, R3, I1, I1, I1, T_value, T_coeff >& other ) { return *this; };
+        
+        void init_random( const t3_type& data_ );
+        
+        template< size_t M, size_t N >
+        void fill_random_2d( int seed, matrix< M, N, T_internal >& u );
+        
+        template< size_t M, size_t N, size_t R, typename T >
+        void get_svd_u_red( const matrix< M, N, T >& data_, matrix< M, R, T_internal >& u_ ) const;
+        template< size_t J1, size_t J2, size_t J3, typename T >
+        void hosvd_mode1( const tensor3<J1, J2, J3, T >& data_ ) const;
+        template< size_t J1, size_t J2, size_t J3, typename T >
+        void hosvd_mode2( const tensor3<J1, J2, J3, T >& data_ ) const;
+        template< size_t J1, size_t J2, size_t J3, typename T >
+        void hosvd_mode3( const tensor3<J1, J2, J3, T >& data_ ) const;
+        
+        void optimize_mode1( const t3_comp_type& data_, tensor3< I1, R2, R3, T_internal >& projection_ ) const;
+        void optimize_mode2( const t3_comp_type& data_, tensor3< R1, I2, R3, T_internal >& projection_ ) const;		
+        void optimize_mode3( const t3_comp_type& data_, tensor3< R1, R2, I3, T_internal >& projection_ ) const;
 
 private:
-		
-		void cast_members();
-		void cast_comp_members();
-		void quantize_basis_matrices( T_internal& u1_min_, T_internal& u1_max_, T_internal& u2_min_, T_internal& u2_max_, T_internal& u3_min_, T_internal& u3_max_ );
-		void quantize_core( T_internal& core_min_, T_internal& core_max_ );
-		void dequantize_basis_matrices( const T_internal& u1_min_, const T_internal& u1_max_, const T_internal& u2_min_, const T_internal& u2_max_, const T_internal& u3_min_, const T_internal& u3_max_ );
-		void dequantize_core( const T_internal& core_min_, const T_internal& core_max_ );
+        
+        void cast_members();
+        void cast_comp_members();
+        void quantize_basis_matrices( T_internal& u1_min_, T_internal& u1_max_, T_internal& u2_min_, T_internal& u2_max_, T_internal& u3_min_, T_internal& u3_max_ );
+        void quantize_core( T_internal& core_min_, T_internal& core_max_ );
+        void dequantize_basis_matrices( const T_internal& u1_min_, const T_internal& u1_max_, const T_internal& u2_min_, const T_internal& u2_max_, const T_internal& u3_min_, const T_internal& u3_max_ );
+        void dequantize_core( const T_internal& core_min_, const T_internal& core_max_ );
 		
         t3_core_type* _core ;
         u1_type* _u1 ;
@@ -1099,6 +1099,17 @@ VMML_TEMPLATE_CLASSNAME::export_quantized_to( char * data_ )
 	quantize_basis_matrices( u1_min, u1_max, u2_min, u2_max, u3_min, u3_max );
 	quantize_core( core_min, core_max );		
 	
+#if 0
+        std::cout << "quantized: " << std::endl << "u1-u3: " << std::endl
+        << *_u1 << std::endl << *_u1_comp << std::endl
+        << *_u2 << std::endl << *_u2_comp << std::endl
+        << *_u3 << std::endl << *_u3_comp << std::endl
+        << " core " << std::endl
+        << *_core << std::endl
+        << " core_comp " << std::endl
+        << *_core_comp << std::endl;
+#endif
+
 	size_t end_data = 0;
 	size_t len_t_comp = sizeof( T_internal );
 	
@@ -1180,6 +1191,16 @@ VMML_TEMPLATE_CLASSNAME::import_quantized_from( const char * data_ )
 	dequantize_basis_matrices( u1_min, u1_max, u2_min, u2_max, u3_min, u3_max );
 	dequantize_core( core_min, core_max );	
 	cast_members();
+#if 0
+        std::cout << "dequantized: " << std::endl << "u1-u3: " << std::endl
+        << *_u1 << std::endl << *_u1_comp << std::endl
+        << *_u2 << std::endl << *_u2_comp << std::endl
+        << *_u3 << std::endl << *_u3_comp << std::endl
+        << " core " << std::endl
+        << *_core << std::endl
+        << " core_comp " << std::endl
+        << *_core_comp << std::endl;
+#endif
 }
 
 	

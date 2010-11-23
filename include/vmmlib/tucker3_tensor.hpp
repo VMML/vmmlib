@@ -1209,7 +1209,7 @@ VMML_TEMPLATE_CLASSNAME::import_quantized_from( const std::vector<char>& data_in
 	//dequantize tucker3 components (u1-u3 and core)
 	dequantize_basis_matrices( u1_min, u1_max, u2_min, u2_max, u3_min, u3_max );
 	dequantize_core( core_min, core_max );	
-	cast_members();
+	//cast_members();
 #if 0
         std::cout << "dequantized: " << std::endl << "u1-u3: " << std::endl
         << *_u1 << std::endl << *_u1_comp << std::endl

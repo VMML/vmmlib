@@ -431,7 +431,7 @@ namespace vmml
 		rmse = import_reco.rmse( t3_data_hooi_3 );
 		rmse_check = 5.392896562454479; 
 
-		if ( rmse <= rmse_check )
+		if ( (rmse <= rmse_check)&& rmse > 0 )
 		{
 			log( "import tucker3 (bytes)" , true  );
 		} else

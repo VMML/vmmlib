@@ -1114,30 +1114,32 @@ VMML_TEMPLATE_CLASSNAME::export_quantized_to( std::vector<unsigned char>& data_o
 	char * data = new char[ len_export_data ];
 	
 	size_t end_data = 0;
+
+	//copy min and max values: u1_min, u1_max, u2_min, u2_max, u3_min, u3_max, core_min, core_max
 	size_t len_t_comp = sizeof( T_internal );
+	memcpy( data, &u1_min, len_t_comp ); end_data = len_t_comp;
+	memcpy( data + end_data, &u1_max, len_t_comp ); end_data += len_t_comp;
+	memcpy( data + end_data, &u2_min, len_t_comp ); end_data += len_t_comp;
+	memcpy( data + end_data, &u2_max, len_t_comp ); end_data += len_t_comp;
+	memcpy( data + end_data, &u3_min, len_t_comp ); end_data += len_t_comp;
+	memcpy( data + end_data, &u3_max, len_t_comp ); end_data += len_t_comp;
+	memcpy( data + end_data, &core_min, len_t_comp ); end_data += len_t_comp;
+	memcpy( data + end_data, &core_max, len_t_comp ); end_data += len_t_comp;
+	
 	
 	//copy data for u1
 	size_t len_u1 = I1 * R1 * sizeof( T_coeff );
-	memcpy( data, &u1_min, len_t_comp ); end_data = len_t_comp;
-	memcpy( data + end_data, &u1_max, len_t_comp ); end_data += len_t_comp;
 	memcpy( data + end_data, _u1, len_u1 ); end_data += len_u1;
 	
 	//copy data for u2
 	size_t len_u2 = I2 * R2 * sizeof( T_coeff );
-	memcpy( data + end_data, &u2_min, len_t_comp ); end_data += len_t_comp;
-	memcpy( data + end_data, &u2_max, len_t_comp ); end_data += len_t_comp;
 	memcpy( data + end_data, _u2, len_u2 ); end_data += len_u2;
 	
 	//copy data for u3
 	size_t len_u3 = I3 * R3 * sizeof( T_coeff );
-	memcpy( data + end_data, &u3_min, len_t_comp ); end_data += len_t_comp;
-	memcpy( data + end_data, &u3_max, len_t_comp ); end_data += len_t_comp;
 	memcpy( data + end_data, _u3, len_u3 ); end_data += len_u3;
 
 	//copy data for core
-	memcpy( data + end_data, &core_min, len_t_comp ); end_data += len_t_comp;
-	memcpy( data + end_data, &core_max, len_t_comp ); end_data += len_t_comp;
-
 	size_t len_core_slice = R1 * R2 * sizeof( T_coeff );
 	for (size_t r3 = 0; r3 < R3; ++r3 ) {
 		memcpy( data + end_data, _core->get_frontal_slice_fwd( r3 ), len_core_slice );
@@ -1174,28 +1176,29 @@ VMML_TEMPLATE_CLASSNAME::import_quantized_from( const std::vector<unsigned char>
 		data[byte] = data_in_.at(byte);
 	}
 	
-	//copy data to u1
-	size_t len_u1 = I1 * R1 * sizeof( T_coeff );
+	//copy min and max values: u1_min, u1_max, u2_min, u2_max, u3_min, u3_max, core_min, core_max
 	memcpy( &u1_min, data, len_t_comp ); end_data = len_t_comp;
 	memcpy( &u1_max, data + end_data, len_t_comp ); end_data += len_t_comp;
+	memcpy( &u2_min, data + end_data, len_t_comp ); end_data += len_t_comp;
+	memcpy( &u2_max, data + end_data, len_t_comp ); end_data += len_t_comp;
+	memcpy( &u3_min, data + end_data, len_t_comp ); end_data += len_t_comp;
+	memcpy( &u3_max, data + end_data, len_t_comp ); end_data += len_t_comp;
+	memcpy( &core_min, data + end_data, len_t_comp ); end_data += len_t_comp;
+	memcpy( &core_max, data + end_data, len_t_comp ); end_data += len_t_comp;
+		
+	//copy data to u1
+	size_t len_u1 = I1 * R1 * sizeof( T_coeff );
 	memcpy( _u1, data + end_data, len_u1 ); end_data += len_u1;
 	
 	//copy data to u2
 	size_t len_u2 = I2 * R2 * sizeof( T_coeff );
-	memcpy( &u2_min, data + end_data, len_t_comp ); end_data += len_t_comp;
-	memcpy( &u2_max, data + end_data, len_t_comp ); end_data += len_t_comp;
 	memcpy( _u2, data + end_data, len_u2 ); end_data += len_u2;
 	
 	//copy data to u3
 	size_t len_u3 = I3 * R3 * sizeof( T_coeff );
-	memcpy( &u3_min, data + end_data, len_t_comp ); end_data += len_t_comp;
-	memcpy( &u3_max, data + end_data, len_t_comp ); end_data += len_t_comp;
 	memcpy( _u3, data + end_data, len_u3 ); end_data += len_u3;
 	
 	//copy data to core
-	memcpy( &core_min, data + end_data, len_t_comp ); end_data += len_t_comp;
-	memcpy( &core_max, data + end_data, len_t_comp ); end_data += len_t_comp;
-	
 	size_t len_core_slice = R1 * R2 * sizeof( T_coeff );
 	front_core_slice_type* slice = new front_core_slice_type();
 	for (size_t r3 = 0; r3 < R3; ++r3 ) {

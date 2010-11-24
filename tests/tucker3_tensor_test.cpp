@@ -337,82 +337,69 @@ namespace vmml
 		
 		
 		//check exported data
-		double export_data2_check[] = { -0.715831, 0.865961, 25669, 0, 1004, 65535, 12968, 41937,
-			-0.721108, 0.692825, 1311, 0, 0, 65535,
-			-0.921997, 0.921997, 0, 19007, 19007, 65535,
-			-251.344604, 16.3134937, 0, 60923, 61001, 59355, 61571, 52960, 51805, 65535 };
+		double export_data2_check[] = {
+			-0.715831, 0.865961, -0.721108, 0.692825, -0.921997, 0.921997, -251.344604, 16.3134937, 
+			25669, 0, 1004, 65535, 12968, 41937,
+			1311, 0, 0, 65535,
+			0, 19007, 19007, 65535,
+			0, 60923, 61001, 59355, 61571, 52960, 51805, 65535 };
 		
 		ok = true;
 		
 		float * float_ptr = (float*)&(export_data_vec[0]);
-		float u1_min_e = *float_ptr;		
-		float_ptr++;
-		float u1_max_e = *float_ptr;
-		float_ptr++;
+		//check u2 min/max
+		float u1_min_e = *float_ptr; float_ptr++;
+		float u1_max_e = *float_ptr; float_ptr++;
 		ok = ((fabs(float(export_data2_check[0]) - u1_min_e)) < 1.0e-6) && ((fabs(float(export_data2_check[1]) - u1_max_e)) < 1.0e-6 );
 		//std::cout<<"#### U1 min value === " << u1_min_e<<", U1 max value === " << u1_max_e << std::endl;
+		//check u2 min/max
+		float u2_min_e = *float_ptr; float_ptr++;
+		float u2_max_e = *float_ptr; float_ptr++;
+		ok = ok ? ((fabs(float(export_data2_check[2]) - u2_min_e)) < 1.0e-6) && ((fabs(float(export_data2_check[3]) - u2_max_e)) < 1.0e-6 ) : ok;
+		//std::cout<<"#### U2 min value === " << u2_min_e<<", U2 max value === " << u2_max_e << std::endl;
+		//std::cout<<"#### should be U2 min value === " << u2_min_e_check<<", U3 max value === " << u2_max_e_check << std::endl;
+		float u3_min_e = *float_ptr; float_ptr++;
+		float u3_max_e = *float_ptr; float_ptr++;
+		ok = ok ? ((fabs(float(export_data2_check[4]) - u3_min_e)) < 1.0e-6) && ((fabs(float(export_data2_check[5]) - u3_max_e)) < 1.0e-6 ) : ok ;
+		//std::cout<<"#### U3 min value === " << u3_min_e<<", U3 max value === " << u3_max_e << std::endl;
+		//std::cout<<"#### should be U3 min value === " << u3_min_e_check<<", U3 max value === " << u3_max_e_check << std::endl;
+		float core_min_e = *float_ptr; float_ptr++;
+		float core_max_e = *float_ptr; float_ptr++;
+		ok = ok ? ((fabs(float(export_data2_check[6]) - core_min_e)) < 1.0e-6) && ((fabs(float(export_data2_check[7]) - core_max_e)) < 1.0e-6 ) : ok;
+		//std::cout<<"#### core min value === " << core_min_e <<", core max value === " << core_max_e << std::endl;
+		//std::cout<<"#### shold be core min value === " << core_min_e_check <<", core max value === " << core_max_e_check << std::endl;
 		
 		unsigned short* value_ptr = (unsigned short*)float_ptr;
 		unsigned short value;
-		int index = 2;
-		for ( ; (index < (2+6))&&ok ; ++index ) {
+		size_t index = 8;
+		size_t end_index = index + 6;
+		//check u1
+		for ( ; (index < end_index )&&ok ; ++index ) {
 			value = *value_ptr;
 			//std::cout<<"#### U1 value === " << value << ", should be " << export_data2_check[index] << std::endl;
 			value_ptr++;
 			ok = (fabs(float(export_data2_check[index]) - float(value))) < 1.0e-6;
 		}
-		
-		float_ptr = (float*)value_ptr;
-		float u2_min_e = *float_ptr;
-		float_ptr++;
-		float u2_max_e = *float_ptr;
-                float_ptr++;
-                float u2_min_e_check = float(export_data2_check[index++]);
-                float u2_max_e_check = float(export_data2_check[index++]);
-          	ok = ((fabs(u2_min_e_check - u2_min_e)) < 1.0e-6) && ((fabs(u2_max_e_check - u2_max_e)) < 1.0e-6 );
-		//std::cout<<"#### U2 min value === " << u2_min_e<<", U2 max value === " << u2_max_e << std::endl;
-		//std::cout<<"#### should be U2 min value === " << u2_min_e_check<<", U3 max value === " << u2_max_e_check << std::endl;
-  	
-		value_ptr = (unsigned short*)float_ptr;
-		for ( ; (index < (10+4))&&ok ; ++index ) {
+		//check u2
+		end_index += 4;
+		for ( ; (index < end_index)&&ok ; ++index ) {
 			value = *value_ptr;
 			//std::cout<<"#### U2 value === " << value << ", should be " << export_data2_check[index] << std::endl;
 			value_ptr++;
 			ok = (fabs(float(export_data2_check[index]) - float(value))) < 1.0e-6;
 		}
-		
-		float_ptr = (float*)value_ptr;
-		float u3_min_e = *float_ptr;
-		float_ptr++;
-		float u3_max_e = *float_ptr;
-		float_ptr++;
-                float u3_min_e_check = float(export_data2_check[index++]);
-                float u3_max_e_check = float(export_data2_check[index++]);
-          	ok = ((fabs(u3_min_e_check - u3_min_e)) < 1.0e-6) && ((fabs(u3_max_e_check - u3_max_e)) < 1.0e-6 );
-		//std::cout<<"#### U3 min value === " << u3_min_e<<", U3 max value === " << u3_max_e << std::endl;
-		//std::cout<<"#### should be U3 min value === " << u3_min_e_check<<", U3 max value === " << u3_max_e_check << std::endl;
-		
-		value_ptr = (unsigned short*)float_ptr;
-		for ( ; (index < (16+4))&&ok ; ++index ) {
+		//check u3		
+		end_index += 4;
+		for ( ; (index < end_index)&&ok ; ++index ) {
 			value = *value_ptr;
 			//std::cout<<"#### U3 value === " << value << ", should be " << export_data2_check[index] << std::endl;
 			value_ptr++;
 			ok = (fabs(float(export_data2_check[index]) - float(value))) < 1.0e-6;
 		}
 		
-		float_ptr = (float*)value_ptr;
-		float core_min_e = *float_ptr;
-		float_ptr++;
-		float core_max_e = *float_ptr;
-		float_ptr++;
-                float core_min_e_check = float(export_data2_check[index++]);
-                float core_max_e_check = float(export_data2_check[index++]);
-          	ok = ((fabs(core_min_e_check - core_min_e)) < 1.0e-6) && ((fabs(core_max_e_check - core_max_e)) < 1.0e-6 );
-		//std::cout<<"#### core min value === " << core_min_e <<", core max value === " << core_max_e << std::endl;
-		//std::cout<<"#### shold be core min value === " << core_min_e_check <<", core max value === " << core_max_e_check << std::endl;
-
-		value_ptr = (unsigned short*)float_ptr;
-		for ( ; (index < (22+8))&&ok ; ++index ) {
+		//check core values
+		end_index += 8;
+		for ( ; (index < end_index)&&ok ; ++index ) {
 			value = *value_ptr;
 			//std::cout<<"#### core value === " << value << ", should be " << export_data2_check[index] << std::endl;
 			value_ptr++;

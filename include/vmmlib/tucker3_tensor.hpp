@@ -102,8 +102,8 @@ public:
 	void export_to( std::vector< T >& data_ );
 	template< typename T >
 	void import_from( const std::vector< T >& data_ );
-	void export_quantized_to(  std::vector<char>& data_out_  );
-	void import_quantized_from( const std::vector<char>& data_out_ );
+	void export_quantized_to(  std::vector<unsigned char>& data_out_  );
+	void import_quantized_from( const std::vector<unsigned char>& data_in_ );
 		
 	//get number of nonzeros for tensor decomposition
 	size_t nnz() const;
@@ -1092,7 +1092,7 @@ VMML_TEMPLATE_CLASSNAME::import_from( const std::vector< T >& data_ )
 	
 VMML_TEMPLATE_STRING
 void
-VMML_TEMPLATE_CLASSNAME::export_quantized_to( std::vector<char>& data_out_ )
+VMML_TEMPLATE_CLASSNAME::export_quantized_to( std::vector<unsigned char>& data_out_ )
 {
 	//quantize tucker3 components (u1-u3 and core)
 	T_internal u1_min, u1_max, u2_min, u2_max, u3_min, u3_max, core_min, core_max = 0;
@@ -1156,7 +1156,7 @@ VMML_TEMPLATE_CLASSNAME::export_quantized_to( std::vector<char>& data_out_ )
 
 VMML_TEMPLATE_STRING
 void
-VMML_TEMPLATE_CLASSNAME::import_quantized_from( const std::vector<char>& data_in_  )
+VMML_TEMPLATE_CLASSNAME::import_quantized_from( const std::vector<unsigned char>& data_in_  )
 {
 	T_internal u1_min = 0; T_internal u1_max = 0;
 	T_internal u2_min = 0; T_internal u2_max = 0;
@@ -1167,7 +1167,7 @@ VMML_TEMPLATE_CLASSNAME::import_quantized_from( const std::vector<char>& data_in
 	size_t len_t_comp = sizeof( T_internal );
 	
 	size_t len_export_data = SIZE * sizeof(T_coeff) + 8*sizeof(T_internal);
-	char * data = new char[ len_export_data ];
+	unsigned char * data = new unsigned char[ len_export_data ];
 
 	for( size_t byte = 0; byte < len_export_data; ++byte )
 	{
@@ -1209,7 +1209,7 @@ VMML_TEMPLATE_CLASSNAME::import_quantized_from( const std::vector<char>& data_in
 	//dequantize tucker3 components (u1-u3 and core)
 	dequantize_basis_matrices( u1_min, u1_max, u2_min, u2_max, u3_min, u3_max );
 	dequantize_core( core_min, core_max );	
-	//cast_members();
+
 #if 0
         std::cout << "dequantized: " << std::endl << "u1-u3: " << std::endl
         << *_u1 << std::endl << *_u1_comp << std::endl

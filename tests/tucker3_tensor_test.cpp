@@ -332,7 +332,7 @@ namespace vmml
 		}		
 		
 		//export bytes
-		std::vector<char> export_data_vec;
+		std::vector<unsigned char> export_data_vec;
 		tuck3_hooi_3.export_quantized_to( export_data_vec );
 		
 		

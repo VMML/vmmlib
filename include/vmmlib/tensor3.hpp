@@ -150,9 +150,12 @@ public:
 	//returns number of non-zeros
 	size_t nnz() const;
 	size_t nnz( const T& threshold_ ) const;
+	void threshold( const T& threshold_value_ );
 	
 	template< typename TT  >
 		void quantize( tensor3< I1, I2, I3, TT >& quantized_, T& min_value, T& max_value ) const;
+	template< typename TT  >
+	void quantize_log( tensor3< I1, I2, I3, TT >& quantized_, T& min_value, T& max_value ) const;
 	template< typename TT  >
 		void dequantize( tensor3< I1, I2, I3, TT >& dequantized_, const TT& min_value, const TT& max_value ) const;
 	
@@ -1378,7 +1381,7 @@ VMML_TEMPLATE_CLASSNAME::nnz() const
 	
 VMML_TEMPLATE_STRING
 size_t
-VMML_TEMPLATE_CLASSNAME::nnz( const T& threshold ) const
+VMML_TEMPLATE_CLASSNAME::nnz( const T& threshold_ ) const
 {
 	size_t counter = 0;
 	
@@ -1386,14 +1389,29 @@ VMML_TEMPLATE_CLASSNAME::nnz( const T& threshold ) const
 	it_end = end();
 	for( ; it != it_end; ++it)
 	{		
-		if ( fabs(*it) > threshold ) {
+		if ( fabs(*it) > threshold_ ) {
 			++counter;
 		}
 	}
 	
 	return counter;
 }		
-
+	
+VMML_TEMPLATE_STRING
+void
+VMML_TEMPLATE_CLASSNAME::threshold( const T& threshold_value_ ) 
+{
+	iterator  it = begin(),
+	it_end = end();
+	for( ; it != it_end; ++it)
+	{		
+		if ( fabs(*it) <= threshold_value_ ) {
+			*it = static_cast<T> (0);
+		}
+	}
+}	
+	
+	
 VMML_TEMPLATE_STRING
 template< typename TT  >
 void
@@ -1420,7 +1438,39 @@ VMML_TEMPLATE_CLASSNAME::quantize( tensor3< I1, I2, I3, TT >& quantized_, T& min
 			*it_quant = TT( std::min( std::max( min_tt_range, long(((*it - min_value) * tt_range / t_range) + 0.5)), max_tt_range ));
 		}
 	}
+}	
+	
+	
+VMML_TEMPLATE_STRING
+template< typename TT  >
+void
+VMML_TEMPLATE_CLASSNAME::quantize_log( tensor3< I1, I2, I3, TT >& quantized_, T& min_value, T& max_value ) const
+{
+	long max_tt_range = long(std::numeric_limits< TT >::max());
+	long min_tt_range = long(std::numeric_limits< TT >::min());
+	long tt_range = max_tt_range - min_tt_range;
+	
+	min_value = get_min();
+	max_value = get_max();
+	T t_range = max_value - min_value;
+	
+	typedef tensor3< I1, I2, I3, TT > t3_tt_type ;
+	typedef typename t3_tt_type::iterator tt_iterator;
+	tt_iterator it_quant = quantized_.begin();
+	const_iterator it = begin(), it_end = end();
+	
+	for( ; it != it_end; ++it, ++it_quant )
+	{
+		if (std::numeric_limits<TT>::is_signed ) {
+			*it_quant = TT( std::min( std::max( min_tt_range, long(( *it * tt_range / t_range ) + 0.5)), max_tt_range ));
+			std::cout << "quant value: " << float(log(*it) * (tt_range) / (t_range)) << std::endl;
+		} else {
+			*it_quant = TT( std::min( std::max( min_tt_range, long(((*it - min_value) * tt_range / t_range) + 0.5)), max_tt_range ));
+			std::cout << "quant value: " << float((log(*it) - min_value) * (tt_range) / (t_range)) << std::endl;
+		}
+	}
 }		
+
 	
 VMML_TEMPLATE_STRING
 template< typename TT  >

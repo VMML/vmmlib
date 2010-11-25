@@ -728,6 +728,7 @@ tensor3_test::run()
 		t3_raw.at( 0,2,2) = 0.67777; t3_raw.at(1,0,1) = 0.111111; t3_raw.at(1,2,0) = -0.23; t3_raw.at(1,3,0) = -0.99;
 		t3_raw.at(1,0,0) = -0.8; t3_raw.at(1,2,1) = 0.0; t3_raw.at(0,3,2) = 0.99; t3_raw.at(0,1,0) = 0.23;
 		tensor3< 2, 4, 3, unsigned char >  t3_quant; t3_quant.zero();
+		tensor3< 2, 4, 3, unsigned char >  t3_quant_log; t3_quant.zero();
 		tensor3< 2, 4, 3, unsigned char >  t3_quant_check; 
 		int data_unsigned[] = {186, 157, 186, 186, 24, 186, 98, 0, 186, 186, 186, 186, 142, 186, 128, 186, 186, 186, 215, 255, 186, 186, 186, 186};
 		t3_quant_check.set(data_unsigned, data_unsigned+24);
@@ -736,6 +737,14 @@ tensor3_test::run()
 		float max_value = -50;
 		
 		t3_raw.quantize( t3_quant, min_value, max_value );
+#if 0
+		t3_raw.quantize_log( t3_quant_log, min_value, max_value );
+		
+		std::cout << " quantization: " << std::endl 
+		<< "original: " << t3_raw << std::endl
+		<< "linear: " << t3_quant << std::endl
+		<< "log-scale: " << std::endl << t3_quant_log << std::endl;
+#endif		
 		
 		tensor3< 2, 4, 3, char >  t3_quant_sign; t3_quant_sign.zero();
 		tensor3< 2, 4, 3, char >  t3_quant_sign_check; 
@@ -786,6 +795,29 @@ tensor3_test::run()
 		ok = ( number_nonzeros == 118 ) && (number_nonzeros2 == 61);
 		log( "get number of nonzeros" , ok  );
 		
+	}
+	
+	{
+		//thresholding
+		
+		tensor3< 4, 5, 6, float > t3_thresh;
+		t3_thresh.fill(0.5673);
+		t3_thresh.at( 3,3,3) = 0; t3_thresh.at( 2,3,3) = -1; t3_thresh.at( 2,2,3) = 0.045; t3_thresh.at( 1,2,3) = -0.085;
+		t3_thresh.at( 0,2,3) = 0.00000035; t3_thresh.at( 0,1,3) = -0.00000035;
+		t3_thresh.at( 3,3,3) = 0; t3_thresh.at( 2,3,3) = 0.001; t3_thresh.at( 0,3,3) = 0.00001;
+				
+		tensor3< 4, 5, 6, float > t3_thresh2(t3_thresh);
+		t3_thresh.threshold( 0.001f );
+		size_t number_nonzeros = t3_thresh.nnz();
+		
+		tensor3< 4, 5, 6, unsigned char > t3_thresh_char;
+		t3_thresh_char.fill( 6);
+		t3_thresh_char.at(0,0,0) = 3;
+		t3_thresh_char.threshold( 4 );
+		size_t number_nonzeros_char = t3_thresh_char.nnz();
+		
+		ok = (number_nonzeros == 115 ) && (number_nonzeros_char == 119);
+		log( "thresholding" , ok  );
 	}
 	
 	

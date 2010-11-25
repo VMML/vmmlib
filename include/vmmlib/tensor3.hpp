@@ -146,6 +146,8 @@ public:
 	
 	T get_min() const;
 	T get_max() const;
+	T get_abs_min() const;
+	T get_abs_max() const;
 	
 	//returns number of non-zeros
 	size_t nnz() const;
@@ -1360,6 +1362,41 @@ VMML_TEMPLATE_CLASSNAME::get_max() const
 	}
 	return tensor3_max;
 }
+
+VMML_TEMPLATE_STRING
+T
+VMML_TEMPLATE_CLASSNAME::get_abs_min() const
+{
+	T tensor3_min = static_cast<T>(std::numeric_limits<T>::max());
+	
+	const_iterator  it = begin(),
+	it_end = end();
+	for( ; it != it_end; ++it)
+	{		
+		if ( fabs(*it) < fabs(tensor3_min) ) {
+			tensor3_min = fabs(*it);
+		}
+	}
+	return tensor3_min;
+}	
+
+VMML_TEMPLATE_STRING
+T
+VMML_TEMPLATE_CLASSNAME::get_abs_max() const
+{
+	T tensor3_max = static_cast<T>(0);
+	
+	const_iterator  it = begin(),
+	it_end = end();
+	for( ; it != it_end; ++it)
+	{		
+		if ( fabs(*it) > fabs(tensor3_max) ) {
+			tensor3_max = fabs(*it);
+		}
+	}
+	return tensor3_max;
+}
+	
 	
 VMML_TEMPLATE_STRING
 size_t

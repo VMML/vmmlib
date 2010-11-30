@@ -71,7 +71,7 @@ namespace vmml
 			matrix< T::COLS, T::ROWS, typename T::value_type> pseudoinverse;
 			result.zero();
 			matrix< T::COLS, T::ROWS, float_t > tmp;
-			double sigma_inv = 0;
+			//double sigma_inv = 0;
 			if ( num_sigmas >= 1 ) {
 				
 				it = sigmas.begin();

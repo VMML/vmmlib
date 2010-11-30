@@ -820,6 +820,32 @@ tensor3_test::run()
 		log( "thresholding" , ok  );
 	}
 	
+	{
+		//get_sub_tensor3
+		
+		tensor3< 4, 5, 6, int > t3_bigger;
+		t3_bigger.fill_increasing_values();
+		
+		tensor3< 2, 3, 2, int > t3_sub_check;
+		int data_sub_check[] = {32, 33, 34, 37, 38, 39, 52, 53, 54, 57, 58, 59};
+		t3_sub_check.set( data_sub_check, data_sub_check + 12);
+		
+		tensor3< 2, 3, 2, int > t3_sub;
+		t3_bigger.get_sub_tensor3( t3_sub, 2, 2, 1 );
+		
+		
+		if ( t3_sub == t3_sub_check )	{	
+			log( "get sub tensor3" , true  );
+		} else
+		{
+			std::stringstream error;
+			error 
+			<< "get sub tensor3 " << std::endl
+			<< "sub tensor3 is: " << std::endl << t3_sub << std::endl 
+			<< "should be: " << std::endl << t3_sub_check << std::endl;			
+			log_error( error.str() );
+		}	
+	}
 	
 	ok = true;
     return ok;

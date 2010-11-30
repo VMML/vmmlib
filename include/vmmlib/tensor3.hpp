@@ -14,6 +14,7 @@
 #include <fstream>   // file I/O
 #include <vmmlib/tensor3_iterator.hpp>
 #include <vmmlib/tensor3_data_store.hpp>
+#include <vmmlib/enable_if.hpp>
 
 namespace vmml
 {
@@ -89,6 +90,16 @@ public:
 	
     size_t size() const; // return I1 * I2 * I3;   
 	
+	template< size_t J1, size_t J2, size_t J3 >
+	tensor3<J1, J2, J3, T>
+    get_sub_tensor3( size_t row_offset, size_t col_offset, size_t slice_offset = 0,
+					typename enable_if< J1 <= I1 && J2 <= I2 && J3 <= I3 >::type* = 0 ) const;
+	
+	template< size_t J1, size_t J2, size_t J3 >
+	typename enable_if< J1 <= I1 && J2 <= I2 && J3 <= I3 >::type*
+    get_sub_tensor3( tensor3<J1, J2, J3, T >& result, 
+					size_t row_offset = 0, size_t col_offset = 0, size_t slice_offset = 0 ) const;
+
     inline void get_I1_vector( size_t i2, size_t i3, vector< I1, T >& data ) const; // I1_vector is a column vector with all values i1 at i2 and i3
     inline void get_I2_vector( size_t i1, size_t i3, vector< I2, T >& data ) const; // I2_vector is a row vector with all values i2 at i1 and i3
     inline void get_I3_vector( size_t i1, size_t i2, vector< I3, T >& data ) const; // I3_vector is a vector with all values i3 at a given i1 and i2
@@ -204,8 +215,9 @@ public:
 	
     void export_to( std::vector< T >& data_ ) const ;
     void import_from( const std::vector< T >& data_ ) ;
-	void write_to_raw( const std::string& dir, const std::string& filename ) const;
-	void read_from_raw( const std::string& dir, const std::string& filename ) ;
+	void write_to_raw( const std::string& dir_, const std::string& filename_ ) const;
+	void read_from_raw( const std::string& dir_, const std::string& filename_ ) ;
+	void write_datfile( const std::string& dir_, const std::string& filename_ ) const;
 	    
     inline tensor3 operator+( T scalar ) const;
     inline tensor3 operator-( T scalar ) const;
@@ -255,8 +267,7 @@ public:
 
 protected:
 	store_type			array;
-
-
+	
 }; // class tensor3
 
 #define VMML_TEMPLATE_STRING    template< size_t I1, size_t I2, size_t I3, typename T >
@@ -884,6 +895,45 @@ VMML_TEMPLATE_CLASSNAME::size() const
     return I1 * I2 * I3;
 }
 
+VMML_TEMPLATE_STRING
+template< size_t J1, size_t J2, size_t J3 >
+tensor3<J1, J2, J3, T>
+VMML_TEMPLATE_CLASSNAME::
+get_sub_tensor3( size_t row_offset, size_t col_offset, size_t slice_offset,
+				typename enable_if< J1 <= I1 && J2 <= I2 && J3 <= I3 >::type* ) const
+{
+	tensor3< J1, J2, J3, T > result;
+	get_sub_tensor3( result, row_offset, col_offset, slice_offset );
+	return result;
+}
+
+
+VMML_TEMPLATE_STRING
+template< size_t J1, size_t J2, size_t J3 >
+typename enable_if< J1 <= I1 && J2 <= I2 && J3 <= I3 >::type*
+VMML_TEMPLATE_CLASSNAME::
+get_sub_tensor3( tensor3<J1, J2, J3, T >& result,  
+				size_t row_offset, size_t col_offset, size_t slice_offset ) const
+{
+#ifdef VMMLIB_SAFE_ACCESSORS
+	if ( J1 + row_offset > I1 || J2 + col_offset > I2 || J3 + slice_offset > I3 )
+		VMMLIB_ERROR( "index out of bounds.", VMMLIB_HERE );
+#endif
+	
+	for( size_t slice = 0; slice < J3; ++slice )
+	{
+		for( size_t row = 0; row < J1; ++row )
+		{
+			for( size_t col = 0; col < J2; ++col )
+			{
+				result.at( row, col, slice ) 
+				= at( row_offset + row, col_offset + col, slice_offset + slice );
+			}
+		}
+	}
+	return 0;
+}
+	
 
 
 VMML_TEMPLATE_STRING
@@ -1532,23 +1582,51 @@ VMML_TEMPLATE_CLASSNAME::dequantize( tensor3< I1, I2, I3, TT >& dequantized_, co
 			*it_dequant = std::min( std::max( min_value, TT((((TT(*it) / t_range)) * tt_range ) + min_value)), max_value );
 		}
 	}
-}		
+}	
+
+#if 0
+	
+std::string format_path( const std::string& dir_, const std::string& filename_, const std::string& format_ )
+{
+	std::string path = dir_;
+	int dir_length = dir_.size() -1;
+	int last_separator = dir_.find_last_of( "/");
+	std::string path = dir_;
+	if (last_separator < dir_length ) {
+		path.append( "/" );
+	}
+	path.append( filename_ );
+	//check for format
+	if( filename_.find( format_, filename_.size() -3) == (-1)) {
+		path.append( ".");
+		path.append( format_ );
+	}
+	return path;	
+}
+
+#endif	
 
 	
 VMML_TEMPLATE_STRING
 void
-VMML_TEMPLATE_CLASSNAME::write_to_raw( const std::string& dir, const std::string& filename ) const
+VMML_TEMPLATE_CLASSNAME::write_to_raw( const std::string& dir_, const std::string& filename_ ) const
 {		
-	int dir_length = dir.size() -1;
-	int last_separator = dir.find_last_of( "/");
-	std::string path = dir;
+	std::string path_raw = dir_;
+	int dir_length = dir_.size() -1;
+	int last_separator = dir_.find_last_of( "/");
+	std::string path = dir_;
 	if (last_separator < dir_length ) {
 		path.append( "/" );
 	}
-	path.append( filename);
+	path.append( filename_ );
+	//check for format
+	if( filename_.find( "raw", filename_.size() -3) == (-1)) {
+		path.append( ".");
+		path.append( "raw" );
+	}
 	
 	std::ofstream outfile;	
-	outfile.open( path.c_str() );
+	outfile.open( path_raw.c_str() );
 	if( outfile.is_open() ) {
 		const_iterator oit = begin(), oit_end = end();
 		for( ; oit != oit_end; ++oit )
@@ -1563,17 +1641,57 @@ VMML_TEMPLATE_CLASSNAME::write_to_raw( const std::string& dir, const std::string
 	outfile.close();
 }	
 
+
 VMML_TEMPLATE_STRING
 void
-VMML_TEMPLATE_CLASSNAME::read_from_raw( const std::string& dir, const std::string& filename ) 
+VMML_TEMPLATE_CLASSNAME::write_datfile( const std::string& dir_, const std::string& filename_ ) const
 {	
-	int dir_length = dir.size() -1;
-	int last_separator = dir.find_last_of( "/");
-	std::string path = dir;
+	std::string path_dat = dir_;
+	int dir_length = dir_.size() -1;
+	int last_separator = dir_.find_last_of( "/");
+	std::string path = dir_;
 	if (last_separator < dir_length ) {
 		path.append( "/" );
 	}
-	path.append( filename);
+	path.append( filename_ );
+	//check for format
+	if( filename_.find( "dat", filename_.size() -3) == (-1)) {
+		path.append( ".");
+		path.append( "dat" );
+	}
+
+	std::string filename = "";
+	int pos = filename_.size() -4;
+	if( ( filename_.find(".raw", pos ) == pos) || ( filename_.find(".dat", pos ) == pos) ) {
+		filename = filename_.substr(0, filename_.size() -4);
+	} else {
+		filename = filename_;
+	}
+	
+	const char* format = (sizeof(T) == sizeof(uint16_t)) ? "USHORT": "UCHAR";
+	
+	FILE* datfile = fopen(path_dat.c_str(), "w");
+	fprintf(datfile, "ObjectFileName:\t%s.raw\n", filename.c_str());
+	fprintf(datfile, "TaggedFileName:\t---\nResolution:\t%i %i %i\n", I1, I2, I3);
+	fprintf(datfile, "SliceThickness:\t1.0 1.0 1.0\n");
+	fprintf(datfile, "Format:\t%s\nNbrTags:\t0\n", format);
+	fprintf(datfile, "ObjectType:\tTEXTURE_VOLUME_OBJECT\nObjectModel:\tI\nGridType:\tEQUIDISTANT\n");
+	fprintf(datfile, "Modality:\tunknown\nTimeStep:\t0\n");
+	fclose(datfile);
+}	
+
+	
+VMML_TEMPLATE_STRING
+void
+VMML_TEMPLATE_CLASSNAME::read_from_raw( const std::string& dir_, const std::string& filename_ ) 
+{	
+	int dir_length = dir_.size() -1;
+	int last_separator = dir_.find_last_of( "/");
+	std::string path = dir_;
+	if (last_separator < dir_length ) {
+		path.append( "/" );
+	}
+	path.append( filename_ );
 	
 	char * data;
 	data = new char[ SIZE ];

@@ -205,10 +205,13 @@ public:
 
 	T get_min() const;
 	T get_max() const;
+	T get_abs_min() const;
+	T get_abs_max() const;
 	
 	//returns number of non-zeros
 	size_t nnz() const;
 	size_t nnz( const T& threshold_ ) const;
+	void threshold( const T& threshold_value_ );
 	
     vector< M, T >  get_column( size_t column_index ) const;
     void get_column( size_t column_index, vector< M, T>& column ) const;
@@ -2330,7 +2333,44 @@ matrix< M, N, T >::get_max() const
 		}
 	}
 	return max_value;
+}
+	
+	
+template< size_t M, size_t N, typename T  >
+T
+matrix< M, N, T >::get_abs_min() const
+{
+	T min_value = static_cast<T>(std::numeric_limits<T>::max());
+	
+	const_iterator  it = begin(),
+	it_end = end();
+	for( ; it != it_end; ++it)
+	{		
+		if ( fabs(*it) < fabs(min_value) ) {
+			min_value = fabs(*it);
+		}
+	}
+	return min_value;
+}	
+
+template< size_t M, size_t N, typename T  >
+T
+matrix< M, N, T >::get_abs_max() const
+{
+	T max_value = static_cast<T>(0);
+	
+	const_iterator  it = begin(),
+	it_end = end();
+	for( ; it != it_end; ++it)
+	{		
+		if ( fabs(*it) > fabs(max_value) ) {
+			max_value = fabs(*it);
+		}
+	}
+	return max_value;
 }		
+
+	
 	
 template< size_t M, size_t N, typename T >
 size_t
@@ -2367,6 +2407,20 @@ matrix< M, N, T >::nnz( const T& threshold ) const
 	
 	return counter;
 }		
+
+template< size_t M, size_t N, typename T >
+void
+matrix< M, N, T >::threshold( const T& threshold_value_ ) 
+{
+	iterator  it = begin(),
+	it_end = end();
+	for( ; it != it_end; ++it)
+	{		
+		if ( fabs(*it) <= threshold_value_ ) {
+			*it = static_cast<T> (0);
+		}
+	}
+}	
 
 	
 

@@ -1001,6 +1001,22 @@ matrix_test::run()
 		log( "get number of nonzeros" , ok  );
 		
 	}
+	{
+		//threshold
+		
+		matrix< 4, 4, float > m_thresh;
+		m_thresh.fill( 0.9878);
+		m_thresh.at( 3,3 ) = 0; m_thresh.at( 2,3 ) = -1; m_thresh.at( 2,2 ) = 0.045; 
+		m_thresh.at( 1,2 ) = -0.085; m_thresh.at( 0,2 ) = 0.00000035; m_thresh.at( 0,1 ) = -0.00000035;
+		size_t number_nonzeros_check = m_thresh.nnz( 0.00001 );
+		
+		m_thresh.threshold( 0.00001 );
+		size_t number_nonzeros = m_thresh.nnz();
+		
+		ok = number_nonzeros == number_nonzeros_check ;
+		log( "thresholding" , ok  );
+		
+	}
 	
     return ok;
 }

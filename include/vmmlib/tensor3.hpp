@@ -1611,7 +1611,6 @@ VMML_TEMPLATE_STRING
 void
 VMML_TEMPLATE_CLASSNAME::write_to_raw( const std::string& dir_, const std::string& filename_ ) const
 {		
-	std::string path_raw = dir_;
 	int dir_length = dir_.size() -1;
 	int last_separator = dir_.find_last_of( "/");
 	std::string path = dir_;
@@ -1624,6 +1623,7 @@ VMML_TEMPLATE_CLASSNAME::write_to_raw( const std::string& dir_, const std::strin
 		path.append( ".");
 		path.append( "raw" );
 	}
+	std::string path_raw = path;
 	
 	std::ofstream outfile;	
 	outfile.open( path_raw.c_str() );
@@ -1646,7 +1646,6 @@ VMML_TEMPLATE_STRING
 void
 VMML_TEMPLATE_CLASSNAME::write_datfile( const std::string& dir_, const std::string& filename_ ) const
 {	
-	std::string path_dat = dir_;
 	int dir_length = dir_.size() -1;
 	int last_separator = dir_.find_last_of( "/");
 	std::string path = dir_;
@@ -1659,6 +1658,8 @@ VMML_TEMPLATE_CLASSNAME::write_datfile( const std::string& dir_, const std::stri
 		path.append( ".");
 		path.append( "dat" );
 	}
+	
+	std::string path_dat = path;
 
 	std::string filename = "";
 	int pos = filename_.size() -4;
@@ -1668,7 +1669,7 @@ VMML_TEMPLATE_CLASSNAME::write_datfile( const std::string& dir_, const std::stri
 		filename = filename_;
 	}
 	
-	const char* format = (sizeof(T) == sizeof(uint16_t)) ? "USHORT": "UCHAR";
+	const char* format = (sizeof(T) == sizeof(2)) ? "USHORT": "UCHAR";
 	
 	FILE* datfile = fopen(path_dat.c_str(), "w");
 	fprintf(datfile, "ObjectFileName:\t%s.raw\n", filename.c_str());

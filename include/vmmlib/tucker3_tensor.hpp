@@ -33,6 +33,8 @@ public:
 	typedef float T_internal;	
 	typedef double T_svd;
 		
+	typedef tucker3_tensor< R1, R2, R3, I1, I2, I3, T_value, T_coeff > tucker3_type;
+		
 	typedef tensor3< I1, I2, I3, T_value > t3_type;
 	typedef typename t3_type::iterator t3_iterator;
 	typedef typename t3_type::const_iterator t3_const_iterator;
@@ -82,11 +84,11 @@ public:
 	tucker3_tensor();
 	tucker3_tensor( t3_core_type& core );
 	tucker3_tensor( t3_core_type& core, u1_type& U1, u2_type& U2, u3_type& U3 );
+	tucker3_tensor( const tucker3_type& other );
 	~tucker3_tensor();
 		
 	void enable_quantify_coeff() { _is_quantify_coeff = true; };
 	void disable_quantify_coeff() { _is_quantify_coeff = false; } ;
-		
 		
 	void set_core( t3_core_type& core )  { *_core = t3_core_type( core ); _core_comp->cast_from( core ); } ;
 	void set_u1( u1_type& U1 ) { *_u1 = U1; _u1_comp->cast_from( U1 ); } ;
@@ -108,7 +110,12 @@ public:
 	//get number of nonzeros for tensor decomposition
 	size_t nnz() const;
 	size_t nnz( const T_value& threshold ) const;	
+	size_t nnz_core() const;
+	size_t size_core() const;
+	size_t size() const { return SIZE; } ;
 	
+	void threshold_core( const size_t& nnz_core_, size_t& nnz_core_is_ ); 
+	void threshold_core( const T_coeff& threshold_value_, size_t& nnz_core_ ); 
 	void reconstruct( t3_type& data_,
 			const T_internal& u1_min_ = T_internal(0), const T_internal& u1_max_  = T_internal(0),
 			const T_internal& u2_min_ = T_internal(0), const T_internal& u2_max_ = T_internal(0),
@@ -167,11 +174,29 @@ public:
                                  const size_t& start_index2, const size_t& end_index2, 
                                  const size_t& start_index3, const size_t& end_index3);
 
+	friend std::ostream& operator << ( std::ostream& os, const tucker3_type& t3 )
+	{
+		t3_core_type core; t3.get_core( core );
+		u1_type* u1 = new u1_type; t3.get_u1( *u1 );
+		u2_type* u2 = new u2_type; t3.get_u2( *u2 );
+		u3_type* u3 = new u3_type; t3.get_u3( *u3 );
+		
+		os << "U1: " << std::endl << *u1 << std::endl
+		<< "U2: " << std::endl << *u2 << std::endl
+		<< "U3: " << std::endl << *u3 << std::endl
+		<< "core: " << std::endl << core << std::endl;
+		
+		delete u1;
+		delete u2;
+		delete u3;
+		return os;
+	}
+		
+		
+		
 protected:
-        tucker3_tensor( const tucker3_tensor< R1, R2, R3, I1, I1, I1, T_value, T_coeff >& other ) {};
-        tucker3_tensor< R1, R2, R3, I1, I1, I1, T_value, T_coeff > operator=( const tucker3_tensor< R1, R2, R3, I1, I1, I1, T_value, T_coeff >& other ) { return *this; };
-        
-        void init_random( const t3_type& data_ );
+		tucker3_type operator=( const tucker3_type& other ) { return (*this); };
+       void init_random( const t3_type& data_ );
         
         template< size_t M, size_t N >
         void fill_random_2d( int seed, matrix< M, N, T_internal >& u );
@@ -198,10 +223,11 @@ private:
         void dequantize_basis_matrices( const T_internal& u1_min_, const T_internal& u1_max_, const T_internal& u2_min_, const T_internal& u2_max_, const T_internal& u3_min_, const T_internal& u3_max_ );
         void dequantize_core( const T_internal& core_min_, const T_internal& core_max_ );
 		
-        t3_core_type* _core ;
+        //t3_core_type* _core ;
         u1_type* _u1 ;
         u2_type* _u2 ;
         u3_type* _u3 ;
+		t3_core_type* _core ;
 		
 		//used only internally for computations to have a higher precision
         t3_core_comp_type* _core_comp ;
@@ -236,7 +262,7 @@ VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::tucker3_tensor( t3_core_type& core )
 	: _is_quantify_coeff( false )
 {
-	_core =  new t3_core_type(core);
+	_core = new t3_core_type(); *_core = core;
 	_u1 = new u1_type(); _u1->zero();
 	_u2 = new u2_type(); _u2->zero();
 	_u3 = new u3_type(); _u3->zero();	
@@ -250,7 +276,7 @@ VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::tucker3_tensor( t3_core_type& core, u1_type& U1, u2_type& U2, u3_type& U3 )
 	: _is_quantify_coeff( false )
 {
-	_core = new t3_core_type(core);
+	_core = new t3_core_type(); *_core = core;
 	_u1 = new u1_type( U1 );
 	_u2 = new u2_type( U2 );
 	_u3 = new u3_type( U3 );
@@ -260,6 +286,28 @@ VMML_TEMPLATE_CLASSNAME::tucker3_tensor( t3_core_type& core, u1_type& U1, u2_typ
 	_core_comp = new t3_core_comp_type();
 	cast_comp_members();
 }
+
+VMML_TEMPLATE_STRING
+VMML_TEMPLATE_CLASSNAME::tucker3_tensor( const tucker3_type& other )
+: _is_quantify_coeff( false )
+{
+	_core = new t3_core_type();
+	_u1 = new u1_type();
+	_u2 = new u2_type();
+	_u3 = new u3_type();
+	_u1_comp = new u1_comp_type(); 
+	_u2_comp = new u2_comp_type(); 
+	_u3_comp = new u3_comp_type(); 	
+	_core_comp = new t3_core_comp_type();
+	
+	other.get_core( *_core );
+	other.get_u1( *_u1 );
+	other.get_u2( *_u2 );
+	other.get_u3( *_u3 );
+
+	cast_comp_members();
+}
+		
 	
 VMML_TEMPLATE_STRING
 void
@@ -281,6 +329,23 @@ VMML_TEMPLATE_CLASSNAME::cast_comp_members()
 	_core_comp->cast_from( *_core);
 }
 
+	
+VMML_TEMPLATE_STRING
+size_t
+VMML_TEMPLATE_CLASSNAME::nnz_core() const
+{	
+	return _core_comp->nnz();
+}
+
+VMML_TEMPLATE_STRING
+size_t
+VMML_TEMPLATE_CLASSNAME::size_core() const
+{	
+	return _core_comp->size();
+}
+	
+	
+	
 VMML_TEMPLATE_STRING
 void
 VMML_TEMPLATE_CLASSNAME::quantize_basis_matrices(T_internal& u1_min_, T_internal& u1_max_,
@@ -296,34 +361,7 @@ VMML_TEMPLATE_STRING
 void
 VMML_TEMPLATE_CLASSNAME::quantize_core( T_internal& core_min_, T_internal& core_max_ )
 {
-	//std::cout << "before quant: " << std::endl << *_u1 << std::endl << *_u2 << std::endl << *_u3 << std::endl;
-	//std::cout << *_u1_comp << std::endl << *_u2_comp << std::endl << *_u3_comp << std::endl;
-	
 	_core_comp->quantize( *_core, core_min_, core_max_ );
-	
-	//std::cout << "after quant: " << std::endl << *_u1 << std::endl << *_u2 << std::endl << *_u3 << std::endl;
-	//std::cout << "core, min value: " << core_min_ << ", max value: " << core_max_ << std::endl;
-	
-#if 0	
-	//compute core based on quantized basis matrices
-	tensor3< R1, R2, R3, double >* core_check = new tensor3< R1, R2, R3, double >();
-	
-	tensor3< I1, I2, I3, double >* data = new tensor3<I1, I2, I3, double >();
-	data->cast_from( data_ );
-	
-	matrix< I1, R1, double >* u1 = new matrix< I1, R1, double >();
-	u1->cast_from( *_u1 );
-	matrix< I2,  R2,double >* u2 = new matrix<  I2, R2, double >();
-	u2->cast_from( *_u2 );
-	matrix<  I3, R3, double >* u3 = new matrix<  I3, R3, double >();
-	u3->cast_from( *_u3 );
-	
-	core_check->full_tensor3_matrix_multiplication( *data, transpose( *u1 ), transpose( *u2 ), transpose( *u3) );
-	
-	//std::cout << "core after quant: " << std::endl << *core_check << std::endl;
-#endif	
-	
-	
 }	
 
 
@@ -371,14 +409,6 @@ VMML_TEMPLATE_CLASSNAME::reconstruct( t3_type& data_,
 		dequantize_basis_matrices( u1_min_, u1_max_, u2_min_, u2_max_, u3_min_, u3_max_ );
 		dequantize_core( core_min_, core_max_ );
 		cast_members();
-#if 0
-		std::cout << "dequantized: " << std::endl << "u1-u3: " << std::endl 
-		<< *_u1 << std::endl << *_u1_comp << std::endl
-		<< *_u2 << std::endl << *_u2_comp << std::endl
-		<< *_u3 << std::endl << *_u3_comp << std::endl
-		<< " core " << std::endl
-		<< *_core << std::endl << *_core_comp << std::endl;	
-#endif
 	}
 
     t3_comp_type* data = new t3_comp_type();
@@ -395,6 +425,54 @@ VMML_TEMPLATE_CLASSNAME::reconstruct( t3_type& data_,
 	delete data;
 }
 
+VMML_TEMPLATE_STRING
+void 
+VMML_TEMPLATE_CLASSNAME::threshold_core( const size_t& nnz_core_, size_t& nnz_core_is_ )
+{
+	nnz_core_is_ = _core_comp->nnz();
+	T_coeff threshold_value = 0.00001;
+	while( nnz_core_is_ > nnz_core_ ) {
+		_core_comp->threshold( threshold_value );
+		nnz_core_is_ = _core_comp->nnz();
+		
+		//threshold value scheme
+		if( threshold_value < 0.01) {
+			threshold_value *= 10;
+		} else if ( threshold_value < 0.2) {
+			threshold_value += 0.05;
+		} else if ( threshold_value < 1) {
+			threshold_value += 0.25;
+		} else if (threshold_value < 10 ) {
+			threshold_value += 1;
+		} else if (threshold_value < 50 ) {
+			threshold_value += 10;
+		} else if (threshold_value < 200 ) {
+			threshold_value += 50;
+		} else if (threshold_value < 500 ) {
+			threshold_value += 100;
+		} else if (threshold_value < 2000 ) {
+			threshold_value += 500;
+		} else if (threshold_value < 5000 ) {
+			threshold_value += 3000;
+		} else if (threshold_value >= 5000 ){
+			threshold_value += 5000;
+		}
+	}
+	_core->cast_from( *_core_comp);
+}
+
+
+
+VMML_TEMPLATE_STRING
+void 
+VMML_TEMPLATE_CLASSNAME::threshold_core( const T_coeff& threshold_value_, size_t& nnz_core_ )
+{
+	_core_comp->threshold( threshold_value_ );
+	nnz_core_ = _core_comp->nnz();
+	_core->cast_from( *_core_comp);
+}
+	
+	
 VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::decompose( const t3_type& data_ ) 

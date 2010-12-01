@@ -460,20 +460,26 @@ namespace vmml
 		
 		tensor3<6, 7, 5, int> t3_reco_test;
 		t3_reco_test.fill(1656);
-		//std::cout << "Tucker3 reconstruction (all values should be 1656): " << std::endl << t3_reco << std::endl;
-		//std::cout << "Tucker3 core : " << std::endl << tuck3.get_core() << std::endl;
 		
-		if ( t3_reco_test == t3_reco)
-		{	
-			log( "tucker3 reconstruction", true  );
-		} else
-		{
-			std::stringstream error;
-			error 
-			<< "Tucker3 reconstruction (all values should be 1656): " << std::endl << t3_reco
-			<< std::endl;
-			log_error( error.str() );
-		}
+		//thresholded tucker
+		tucker3_tensor<2, 3, 4, 6, 7, 5, int, int > tuck3_copy( tuck3 );
+		//std::cout << "tucker3: " << std::endl << tuck3_copy << std::endl;
+
+		tensor3< 6, 7, 5, int >  t3_reco_thresh1;
+		tensor3< 6, 7, 5, int >  t3_reco_thresh2;
+		size_t nnz_core = 0;
+		tuck3_copy.threshold_core( 4, nnz_core );
+		tuck3_copy.reconstruct( t3_reco_thresh1 );
+		tuck3_copy.threshold_core( 12, nnz_core );
+		tuck3_copy.reconstruct( t3_reco_thresh2 );
+		
+		tensor3<6, 7, 5, int> t3_reco_thresh1_check;
+		t3_reco_thresh1_check.fill(1596);
+		tensor3<6, 7, 5, int> t3_reco_thresh2_check;
+		t3_reco_thresh2_check.fill(1188);
+		
+		ok = ( t3_reco_test == t3_reco ) && ( t3_reco_thresh1 == t3_reco_thresh1_check ) && ( t3_reco_thresh2 == t3_reco_thresh2_check);
+		log( "tucker3 reconstruction (incl. core thresholding)", ok );
 		
 
 		//rank reduction
@@ -598,6 +604,12 @@ namespace vmml
 			<< "basis matrices region of interest selection: " << std::endl << t3_roi
 			<< std::endl;
 			log_error( error.str() );
+		}
+		
+		{
+			
+			
+			
 		}
 		
 		

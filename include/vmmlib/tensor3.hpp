@@ -168,6 +168,8 @@ public:
 	template< typename TT  >
 		void quantize( tensor3< I1, I2, I3, TT >& quantized_, T& min_value, T& max_value ) const;
 	template< typename TT  >
+		void quantize_to( tensor3< I1, I2, I3, TT >& quantized_, const T& min_value, const T& max_value ) const;
+	template< typename TT  >
 	void quantize_log( tensor3< I1, I2, I3, TT >& quantized_, T& min_value, T& max_value ) const;
 	template< typename TT  >
 		void dequantize( tensor3< I1, I2, I3, TT >& dequantized_, const TT& min_value, const TT& max_value ) const;
@@ -1498,18 +1500,15 @@ VMML_TEMPLATE_CLASSNAME::threshold( const T& threshold_value_ )
 	}
 }	
 	
-	
 VMML_TEMPLATE_STRING
 template< typename TT  >
 void
-VMML_TEMPLATE_CLASSNAME::quantize( tensor3< I1, I2, I3, TT >& quantized_, T& min_value, T& max_value ) const
+VMML_TEMPLATE_CLASSNAME::quantize_to( tensor3< I1, I2, I3, TT >& quantized_, const T& min_value, const T& max_value ) const
 {
 	long max_tt_range = long(std::numeric_limits< TT >::max());
 	long min_tt_range = long(std::numeric_limits< TT >::min());
 	long tt_range = max_tt_range - min_tt_range;
 	
-	min_value = get_min();
-	max_value = get_max();
 	T t_range = max_value - min_value;
 	
 	typedef tensor3< I1, I2, I3, TT > t3_tt_type ;
@@ -1525,6 +1524,18 @@ VMML_TEMPLATE_CLASSNAME::quantize( tensor3< I1, I2, I3, TT >& quantized_, T& min
 			*it_quant = TT( std::min( std::max( min_tt_range, long(((*it - min_value) * tt_range / t_range) + 0.5)), max_tt_range ));
 		}
 	}
+}
+	
+	
+VMML_TEMPLATE_STRING
+template< typename TT  >
+void
+VMML_TEMPLATE_CLASSNAME::quantize( tensor3< I1, I2, I3, TT >& quantized_, T& min_value, T& max_value ) const
+{
+	min_value = get_min();
+	max_value = get_max();
+	
+	quantize_to( quantized_, min_value, max_value ); 
 }	
 	
 	

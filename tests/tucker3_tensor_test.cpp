@@ -244,15 +244,18 @@ namespace vmml
 		tucker3_tensor< 2, 2, 2, 3, 2, 2, unsigned char, unsigned short > tuck3_hooi_3( core_hooi_3, u1_hooi_3, u2_hooi_3, u3_hooi_3 );
 		
 		
-		float u1_min, u1_max, u2_min, u2_max, u3_min, u3_max, core_min, core_max;
+		float u1_min, u1_max, u2_min, u2_max, u3_min, u3_max, core_min, core_max, u_min, u_max;
 		
+		//std::cout << "start quant" << std::endl;
 		tuck3_hooi_3.enable_quantify_coeff();
 		tuck3_hooi_3.decompose( t3_data_hooi_3, u1_min, u1_max, u2_min, u2_max, u3_min, u3_max, core_min, core_max );
+		//tuck3_hooi_3.decompose( t3_data_hooi_3, u_min, u_max, core_min, core_max );
 		tuck3_hooi_3.get_u1( u1_hooi_3 ); tuck3_hooi_3.get_u2( u2_hooi_3 );
 		tuck3_hooi_3.get_u3( u3_hooi_3 ); tuck3_hooi_3.get_core( core_hooi_3 );
 				
 		tensor3< 3, 2, 2, unsigned char > t3_data_hooi_3_reco;
 		tuck3_hooi_3.reconstruct( t3_data_hooi_3_reco, u1_min, u1_max, u2_min, u2_max, u3_min, u3_max, core_min, core_max );
+		//tuck3_hooi_3.reconstruct( t3_data_hooi_3_reco, u_min, u_max, core_min, core_max );
 		double rmse = t3_data_hooi_3_reco.rmse( t3_data_hooi_3 );
 		double rmse_check = 5.392896562454479; 
 		

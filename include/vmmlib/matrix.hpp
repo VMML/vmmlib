@@ -194,6 +194,8 @@ public:
 	void cast_from( const matrix< M, N, TT >& other );
 	
 	template< typename TT >
+		void quantize_to( matrix< M, N, TT >& quantized_, const T& min_value, const T& max_value ) const;
+	template< typename TT >
 		void quantize( matrix< M, N, TT >& quantized_, T& min_value, T& max_value ) const;
 	template< typename TT >
 		void dequantize( matrix< M, N, TT >& quantized_, const TT& min_value, const TT& max_value ) const;
@@ -2423,25 +2425,22 @@ matrix< M, N, T >::threshold( const T& threshold_value_ )
 }	
 
 	
-
 template< size_t M, size_t N, typename T >
 template< typename TT  >
 void
-matrix< M, N, T >::quantize( matrix< M, N, TT >& quantized_, T& min_value, T& max_value ) const
+matrix< M, N, T >::quantize_to( matrix< M, N, TT >& quantized_, const T& min_value, const T& max_value ) const
 {
 	long max_tt_range = long(std::numeric_limits< TT >::max());
 	long min_tt_range = long(std::numeric_limits< TT >::min());
 	long tt_range = max_tt_range - min_tt_range;
 	
-	min_value = get_min();
-	max_value = get_max();
 	T t_range = max_value - min_value;
-
+	
 	typedef matrix< M, N, TT > m_tt_type ;
 	typedef typename m_tt_type::iterator tt_iterator;
 	tt_iterator it_quant = quantized_.begin();
 	const_iterator it = begin(), it_end = end();
-
+	
 	for( ; it != it_end; ++it, ++it_quant )
 	{
 		if (std::numeric_limits<TT>::is_signed ) {
@@ -2450,6 +2449,17 @@ matrix< M, N, T >::quantize( matrix< M, N, TT >& quantized_, T& min_value, T& ma
 			*it_quant = TT( std::min( std::max( min_tt_range, long(((*it - min_value) * tt_range / t_range) + 0.5)), max_tt_range ));
 		}
 	}
+}		
+	
+	
+template< size_t M, size_t N, typename T >
+template< typename TT  >
+void
+matrix< M, N, T >::quantize( matrix< M, N, TT >& quantized_, T& min_value, T& max_value ) const
+{
+	min_value = get_min();
+	max_value = get_max();
+	quantize_to( quantized_, min_value, max_value );
 }		
 
 	

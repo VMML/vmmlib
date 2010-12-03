@@ -95,10 +95,10 @@ public:
 	void set_u2( u2_type& U2 ) { *_u2 = U2; _u1_comp->cast_from( U2 ); } ;
 	void set_u3( u3_type& U3 ) { *_u3 = U3; _u1_comp->cast_from( U3 ); } ;
 	
-	void get_core( t3_core_type& data_ ) const { data_.cast_from( _core_comp ); } ;
-	void get_u1( u1_type& U1 ) const { U1.cast_from( *_u1_comp ); } ;
-	void get_u2( u2_type& U2 ) const { U2.cast_from( *_u2_comp ); } ;
-	void get_u3( u3_type& U3 ) const { U3.cast_from( *_u3_comp ); } ;
+	void get_core( t3_core_type& data_ ) const { data_ = _core; } ;
+	void get_u1( u1_type& U1 ) const { U1 = *_u1; } ;
+	void get_u2( u2_type& U2 ) const { U2 = *_u2; } ;
+	void get_u3( u3_type& U3 ) const { U3 = *_u3; } ;
 		
 	template< typename T >
 	void export_to( std::vector< T >& data_ );
@@ -392,6 +392,17 @@ VMML_TEMPLATE_CLASSNAME::quantize_basis_matrices(T_internal& u_min_, T_internal&
 	_u1_comp->quantize_to( *_u1, u_min_, u_max_ );
 	_u2_comp->quantize_to( *_u2, u_min_, u_max_ );
 	_u3_comp->quantize_to( *_u3, u_min_, u_max_ );	
+	
+#if 0
+	std::cout << "quantized (1u): " << std::endl << "u1-u3: " << std::endl
+	<< *_u1 << std::endl << *_u1_comp << std::endl
+	<< *_u2 << std::endl << *_u2_comp << std::endl
+	<< *_u3 << std::endl << *_u3_comp << std::endl
+	<< " core " << std::endl
+	<< _core << std::endl
+	<< " core_comp " << std::endl
+	<< _core_comp << std::endl;
+#endif
 }	
 
 	
@@ -440,7 +451,17 @@ VMML_TEMPLATE_CLASSNAME::reconstruct( t3_type& data_,
 {
 	dequantize_basis_matrices( u_min_, u_max_, u_min_, u_max_, u_min_, u_max_ );
 	dequantize_core( core_min_, core_max_ );
-	cast_members();
+	
+#if 0
+	std::cout << "dequantized (1u): " << std::endl << "u1-u3: " << std::endl
+	<< *_u1 << std::endl << *_u1_comp << std::endl
+	<< *_u2 << std::endl << *_u2_comp << std::endl
+	<< *_u3 << std::endl << *_u3_comp << std::endl
+	<< " core " << std::endl
+	<< _core << std::endl
+	<< " core_comp " << std::endl
+	<< _core_comp << std::endl;
+#endif
 	
 	reconstruct( data_ );
 }
@@ -455,8 +476,7 @@ VMML_TEMPLATE_CLASSNAME::reconstruct( t3_type& data_,
 {
 	dequantize_basis_matrices( u1_min_, u1_max_, u2_min_, u2_max_, u3_min_, u3_max_ );
 	dequantize_core( core_min_, core_max_ );
-	cast_members();
-
+	
     reconstruct( data_ );
 }
 	
@@ -636,7 +656,6 @@ VMML_TEMPLATE_CLASSNAME::hooi( const t3_type& data_ )
 	t3_comp_type approximated_data;
 	approximated_data.full_tensor3_matrix_multiplication( _core_comp, *_u1_comp, *_u2_comp, *_u3_comp );
 
-	
 	double f_norm = approximated_data.frobenius_norm();
 	double max_f_norm = data.frobenius_norm();
 	double normresidual  = sqrt( (max_f_norm * max_f_norm) - (f_norm * f_norm));
@@ -674,15 +693,6 @@ VMML_TEMPLATE_CLASSNAME::hooi( const t3_type& data_ )
 		optimize_mode3( data, projection3 );
 		hosvd_mode3( projection3 );
 		_core_comp.multiply_horizontal_bwd( projection3, transpose( *_u3_comp ) );
-				
-#if 0
-		//obsolete
-		if ( _is_quantify_coeff ) {
-			T_internal core_min, core_max;
-			quantize_core( core_min, core_max );
-			dequantize_core( core_min, core_max);
-		}
-#endif
 		
 		f_norm = _core_comp.frobenius_norm();
 		normresidual  = sqrt( max_f_norm * max_f_norm - f_norm * f_norm);
@@ -847,20 +857,22 @@ VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::derive_core_orthogonal_bases( const t3_type& data_ )
 {
-    u1_inv_type * u1_inv = new u1_inv_type();
+	u1_inv_type * u1_inv = new u1_inv_type();
     *u1_inv = transpose( *_u1_comp );
     u2_inv_type* u2_inv = new u2_inv_type();
     *u2_inv = transpose( *_u2_comp );
     u3_inv_type* u3_inv = new u3_inv_type();
     *u3_inv = transpose( *_u3_comp );
      
-     t3_comp_type data;
-     data.cast_from( data_ );
-     _core_comp.full_tensor3_matrix_multiplication( data, *u1_inv, *u2_inv, *u3_inv );
+	t3_comp_type data;
+	data.cast_from( data_ );
+	_core_comp.full_tensor3_matrix_multiplication( data, *u1_inv, *u2_inv, *u3_inv );
 	
-     delete u1_inv;
-     delete u2_inv;
-     delete u3_inv;
+	_core.cast_from( _core_comp );
+	
+	delete u1_inv;
+	delete u2_inv;
+	delete u3_inv;
 }
      
      
@@ -923,6 +935,7 @@ VMML_TEMPLATE_CLASSNAME::derive_core( const t3_type& data_ )
             }
          }
      }
+	_core.cast_from( _core_comp );
 
 #endif
 }
@@ -1234,9 +1247,9 @@ VMML_TEMPLATE_CLASSNAME::export_quantized_to( std::vector<unsigned char>& data_o
         << *_u2 << std::endl << *_u2_comp << std::endl
         << *_u3 << std::endl << *_u3_comp << std::endl
         << " core " << std::endl
-        << *_core << std::endl
+        << _core << std::endl
         << " core_comp " << std::endl
-        << *_core_comp << std::endl;
+        << _core_comp << std::endl;
 #endif
 
 	size_t len_export_data = SIZE * sizeof(T_coeff) + 8*sizeof(T_internal);

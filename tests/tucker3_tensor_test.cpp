@@ -78,6 +78,7 @@ namespace vmml
 		}
 		//(1b) derive core tensor with orthogonal basis
 		core_hosvd.zero();
+		tuck3_hosvd.set_core( core_hosvd );
 		tuck3_hosvd.derive_core_orthogonal_bases( t3_data_hosvd );
 		tuck3_hosvd.get_core( core_hosvd );
 
@@ -229,37 +230,41 @@ namespace vmml
 		log( "get number of nonzeros" , ok  );
 		
 		//quantization
-		matrix<3, 2, unsigned short > u1_hooi_3; u1_hooi_3.zero();
-		matrix<2, 2, unsigned short> u2_hooi_3; u2_hooi_3.zero();
-		matrix<2, 2, unsigned short> u3_hooi_3; u3_hooi_3.zero();
-		tensor3<2, 2, 2, unsigned short> core_hooi_3;
-		tensor3<2, 2, 2, unsigned short> core_hooi_check_3;
-		unsigned short data_core_hooi_3[] = {  };
-		core_hooi_check_3.set( data_core_hooi_3, data_core_hooi_3 + 4);
-		
 		tensor3< 3, 2, 2, unsigned char> t3_data_hooi_3;
 		unsigned char data_hooi_3[] = { 0, 13, 122, 123, 124, 95, 10, 40, 25, 54, 33, 76};
 		t3_data_hooi_3.set(data_hooi_3, data_hooi_3 + 12);
 		
-		tucker3_tensor< 2, 2, 2, 3, 2, 2, unsigned char, unsigned short > tuck3_hooi_3( core_hooi_3, u1_hooi_3, u2_hooi_3, u3_hooi_3 );
-		
+		tucker3_tensor< 2, 2, 2, 3, 2, 2, unsigned char, unsigned short > tuck3_hooi_3;
 		
 		float u1_min, u1_max, u2_min, u2_max, u3_min, u3_max, core_min, core_max, u_min, u_max;
 		
 		//std::cout << "start quant" << std::endl;
 		tuck3_hooi_3.enable_quantify_coeff();
 		tuck3_hooi_3.decompose( t3_data_hooi_3, u1_min, u1_max, u2_min, u2_max, u3_min, u3_max, core_min, core_max );
-		//tuck3_hooi_3.decompose( t3_data_hooi_3, u_min, u_max, core_min, core_max );
-		tuck3_hooi_3.get_u1( u1_hooi_3 ); tuck3_hooi_3.get_u2( u2_hooi_3 );
-		tuck3_hooi_3.get_u3( u3_hooi_3 ); tuck3_hooi_3.get_core( core_hooi_3 );
-				
+		//std::cout << "Tucker3 is : " << std::endl << tuck3_hooi_3 << std::endl;
+		
+		/*std::cout
+		<< "u1_min: " << u1_min << ", u1_max: " << u1_max << std::endl
+		<< "u2_min: " << u2_min << ", u2_max: " << u2_max << std::endl
+		<< "u3_min: " << u3_min << ", u3_max: " << u3_max << std::endl;*/
+		
 		tensor3< 3, 2, 2, unsigned char > t3_data_hooi_3_reco;
 		tuck3_hooi_3.reconstruct( t3_data_hooi_3_reco, u1_min, u1_max, u2_min, u2_max, u3_min, u3_max, core_min, core_max );
-		//tuck3_hooi_3.reconstruct( t3_data_hooi_3_reco, u_min, u_max, core_min, core_max );
 		double rmse = t3_data_hooi_3_reco.rmse( t3_data_hooi_3 );
 		double rmse_check = 5.392896562454479; 
+		//std::cout << "reco : " << std::endl << t3_data_hooi_3_reco << std::endl;
 		
-		if ( rmse <= rmse_check )
+		tuck3_hooi_3.decompose( t3_data_hooi_3, u_min, u_max, core_min, core_max );
+		//std::cout << "Tucker3 is (1 u min/max) : " << std::endl << tuck3_hooi_3 << std::endl;
+		//std::cout
+		//<< "u_min: " << u_min << ", u_max: " << u_max << std::endl;
+
+		tuck3_hooi_3.reconstruct( t3_data_hooi_3_reco, u_min, u_max, core_min, core_max );
+		//std::cout << "reco : " << std::endl << t3_data_hooi_3_reco << std::endl;
+		double rmse2 = t3_data_hooi_3_reco.rmse( t3_data_hooi_3 );
+
+		
+		if ( (rmse == rmse_check) && (rmse != 0) && (rmse2 == rmse_check))
 		{	
 			log( "quantized HOOI (step 2) rank-(2,2,1) approximation" , true  );
 		} else
@@ -268,11 +273,7 @@ namespace vmml
 			error 
 			<< "quantized HOOI (step 2) rank-(2,2,1) approximation: " << std::setprecision(16) << std::endl
 			<< "RMSE should be: " << rmse_check << ", is: " << rmse << std::endl
-			<< "U1 is: " << std::endl << u1_hooi_3 << std::endl
-			<< "U2 is: " << std::endl << u2_hooi_3 << std::endl
-			<< "U3 is: " << std::endl << u3_hooi_3 << std::endl
-			<< "core should be: " << std::endl << core_hooi_check_3 << std::endl
-			<< "core is: " << std::endl << core_hooi_3 << std::endl;
+			<< "Tucker3 is : " << std::endl << tuck3_hooi_3 << std::endl;
 			
 			
 			log_error( error.str() );
@@ -285,15 +286,15 @@ namespace vmml
 		tuck3_hooi_2.export_to( export_data );
 		
 		double export_data_check[] = {
-			-0.2789474111071825,  0.5983607967045261, 0.7511009910815755, -0.4141266306147141, -0.7806355076145298, 0.4680890279285662,
-			-0.09816424894941822, -0.9951702267593203, -0.9951702267593203, 0.09816424894941811,
-			-0.5104644303570166, 0.8598988692516618,
-			10.14733447424582, -1.110223024625157e-15, 1.720845688168993e-15, -2.760705584847321 };
+			-0.2789473533630371, 0.5983607769012451, 0.751101016998291, -0.4141266345977783, -0.7806354761123657, 0.4680890440940857, 
+			-0.09816429018974304, -0.9951702356338501, -0.9951702356338501, 0.09816429018974304,
+			-0.5104644894599915, 0.8598988652229309,
+			10.14733409881592, 1.639127731323242e-07, -2.384185791015625e-07, -2.76070547103881};
 		
 		ok = true;
 		for (int i = 0; (i < 16) && ok; ++i )
 		{
-			//std::cout << "should be: " << export_data_check[i] << " is " << export_data[i] << std::endl;
+			//std::cout << std::setprecision( 16) << export_data[i] << std::endl;
 			ok = (abs(export_data_check[i] - export_data[i])) < 1.0e-6;
 		}
 
@@ -341,11 +342,11 @@ namespace vmml
 		
 		//check exported data
 		double export_data2_check[] = {
-			-0.715831, 0.865961, -0.721108, 0.692825, -0.921997, 0.921997, -251.344604, 16.3134937, 
-			25669, 0, 1004, 65535, 12968, 41937,
+			-0.715838, 0.865947, -0.7211, 0.692823, -0.921996, 0.921939, -251.345, 16.3092, 
+			25670, 0, 1004, 65535, 12969, 41939,
 			1311, 0, 0, 65535,
 			0, 19007, 19007, 65535,
-			0, 60923, 61001, 59355, 61571, 52960, 51805, 65535 };
+			0, 60926, 61003, 59357, 61572, 52963, 51807, 65535 };
 		
 		ok = true;
 		
@@ -353,31 +354,31 @@ namespace vmml
 		//check u2 min/max
 		float u1_min_e = *float_ptr; float_ptr++;
 		float u1_max_e = *float_ptr; float_ptr++;
-		ok = ((fabs(float(export_data2_check[0]) - u1_min_e)) < 1.0e-6) && ((fabs(float(export_data2_check[1]) - u1_max_e)) < 1.0e-6 );
+		ok = ((fabs(float(export_data2_check[0]) - u1_min_e)) < 1.0e-4) && ((fabs(float(export_data2_check[1]) - u1_max_e)) < 1.0e-4 );
 		//std::cout<<"#### U1 min value === " << u1_min_e<<", U1 max value === " << u1_max_e << std::endl;
 		//check u2 min/max
 		float u2_min_e = *float_ptr; float_ptr++;
 		float u2_max_e = *float_ptr; float_ptr++;
-		ok = ok ? ((fabs(float(export_data2_check[2]) - u2_min_e)) < 1.0e-6) && ((fabs(float(export_data2_check[3]) - u2_max_e)) < 1.0e-6 ) : ok;
+		ok = ok ? ((fabs(float(export_data2_check[2]) - u2_min_e)) < 1.0e-4) && ((fabs(float(export_data2_check[3]) - u2_max_e)) < 1.0e-4 ) : ok;
 		//std::cout<<"#### U2 min value === " << u2_min_e<<", U2 max value === " << u2_max_e << std::endl;
 		//std::cout<<"#### should be U2 min value === " << u2_min_e_check<<", U3 max value === " << u2_max_e_check << std::endl;
 		float u3_min_e = *float_ptr; float_ptr++;
 		float u3_max_e = *float_ptr; float_ptr++;
-		ok = ok ? ((fabs(float(export_data2_check[4]) - u3_min_e)) < 1.0e-6) && ((fabs(float(export_data2_check[5]) - u3_max_e)) < 1.0e-6 ) : ok ;
+		ok = ok ? ((fabs(float(export_data2_check[4]) - u3_min_e)) < 1.0e-4) && ((fabs(float(export_data2_check[5]) - u3_max_e)) < 1.0e-4 ) : ok ;
 		//std::cout<<"#### U3 min value === " << u3_min_e<<", U3 max value === " << u3_max_e << std::endl;
 		//std::cout<<"#### should be U3 min value === " << u3_min_e_check<<", U3 max value === " << u3_max_e_check << std::endl;
 		float core_min_e = *float_ptr; float_ptr++;
 		float core_max_e = *float_ptr; float_ptr++;
-		ok = ok ? ((fabs(float(export_data2_check[6]) - core_min_e)) < 1.0e-6) && ((fabs(float(export_data2_check[7]) - core_max_e)) < 1.0e-6 ) : ok;
+		ok = ok ? ((fabs(float(export_data2_check[6]) - core_min_e)) < 1.0e-3) && ((fabs(float(export_data2_check[7]) - core_max_e)) < 1.0e-3 ) : ok;
 		//std::cout<<"#### core min value === " << core_min_e <<", core max value === " << core_max_e << std::endl;
-		//std::cout<<"#### shold be core min value === " << core_min_e_check <<", core max value === " << core_max_e_check << std::endl;
+		//std::cout<<"#### shold be core min value === " << export_data2_check[6] <<", core max value === " << export_data2_check[7] << std::endl;
 		
 		unsigned short* value_ptr = (unsigned short*)float_ptr;
 		unsigned short value;
 		size_t index = 8;
 		size_t end_index = index + 6;
 		//check u1
-		for ( ; (index < end_index )&&ok ; ++index ) {
+		for ( ; (index < end_index) && ok ; ++index ) {
 			value = *value_ptr;
 			//std::cout<<"#### U1 value === " << value << ", should be " << export_data2_check[index] << std::endl;
 			value_ptr++;
@@ -385,7 +386,7 @@ namespace vmml
 		}
 		//check u2
 		end_index += 4;
-		for ( ; (index < end_index)&&ok ; ++index ) {
+		for ( ; (index < end_index) && ok ; ++index ) {
 			value = *value_ptr;
 			//std::cout<<"#### U2 value === " << value << ", should be " << export_data2_check[index] << std::endl;
 			value_ptr++;
@@ -393,7 +394,7 @@ namespace vmml
 		}
 		//check u3		
 		end_index += 4;
-		for ( ; (index < end_index)&&ok ; ++index ) {
+		for ( ; (index < end_index) && ok; ++index ) {
 			value = *value_ptr;
 			//std::cout<<"#### U3 value === " << value << ", should be " << export_data2_check[index] << std::endl;
 			value_ptr++;
@@ -402,7 +403,7 @@ namespace vmml
 		
 		//check core values
 		end_index += 8;
-		for ( ; (index < end_index)&&ok ; ++index ) {
+		for ( ; (index < end_index) && ok ; ++index ) {
 			value = *value_ptr;
 			//std::cout<<"#### core value === " << value << ", should be " << export_data2_check[index] << std::endl;
 			value_ptr++;

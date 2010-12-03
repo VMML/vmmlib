@@ -730,7 +730,7 @@ tensor3_test::run()
 		tensor3< 2, 4, 3, unsigned char >  t3_quant; t3_quant.zero();
 		tensor3< 2, 4, 3, unsigned char >  t3_quant_log; t3_quant.zero();
 		tensor3< 2, 4, 3, unsigned char >  t3_quant_check; 
-		int data_unsigned[] = {186, 157, 186, 186, 24, 186, 98, 0, 186, 186, 186, 186, 142, 186, 128, 186, 186, 186, 215, 255, 186, 186, 186, 186};
+		int data_unsigned[] = {187, 158, 187, 187, 25, 187, 98, 0, 187, 187, 187, 187, 142, 187, 128, 187, 187, 187, 216, 255, 187, 187, 187, 187};
 		t3_quant_check.set(data_unsigned, data_unsigned+24);
 		
 		float min_value = 50;
@@ -748,7 +748,7 @@ tensor3_test::run()
 		
 		tensor3< 2, 4, 3, char >  t3_quant_sign; t3_quant_sign.zero();
 		tensor3< 2, 4, 3, char >  t3_quant_sign_check; 
-		int data_signed[] = { 59, 30, 59, 59, -102, 59, -29, -127, 59, 59, 59, 59, 14, 59, 0, 59, 59, 59, 87, 127, 59, 59, 59, 59 };
+		int data_signed[] = { 59, 30, 59, 59, -102, 59, -29, -127, 59, 59, 59, 59, 14, 59, 0, 59, 59, 59, 88, 127, 59, 59, 59, 59 };
 		t3_quant_sign_check.set(data_signed, data_signed +24 );
 		
 		t3_raw.quantize( t3_quant_sign, min_value, max_value );

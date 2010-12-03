@@ -2432,7 +2432,7 @@ matrix< M, N, T >::quantize_to( matrix< M, N, TT >& quantized_, const T& min_val
 {
 	long max_tt_range = long(std::numeric_limits< TT >::max());
 	long min_tt_range = long(std::numeric_limits< TT >::min());
-	long tt_range = max_tt_range - min_tt_range;
+	long tt_range = (max_tt_range - min_tt_range) + 1;
 	
 	T t_range = max_value - min_value;
 	
@@ -2447,7 +2447,7 @@ matrix< M, N, T >::quantize_to( matrix< M, N, TT >& quantized_, const T& min_val
 			*it_quant = TT( std::min( std::max( min_tt_range, long(( *it * tt_range / t_range ) + 0.5)), max_tt_range ));
 		} else {
 			*it_quant = TT( std::min( std::max( min_tt_range, long(((*it - min_value) * tt_range / t_range) + 0.5)), max_tt_range ));
-		}
+		}		
 	}
 }		
 	
@@ -2469,12 +2469,12 @@ template< typename TT  >
 void
 matrix< M, N, T >::dequantize( matrix< M, N, TT >& dequantized_, const TT& min_value, const TT& max_value ) const
 {
-	T max_t_range = get_max();
-	T min_t_range = get_min();
-	long t_range = long(max_t_range) - long(min_t_range);
+	long max_t_range = long(std::numeric_limits< T >::max());
+	long min_t_range = long(std::numeric_limits< T >::min());
+	long t_range = (max_t_range - min_t_range) + 1;
 	
 	TT tt_range = max_value - min_value;
-	
+		
 	typedef matrix< M, N, TT > m_tt_type ;
 	typedef typename m_tt_type::iterator tt_iterator;
 	tt_iterator it_dequant = dequantized_.begin();

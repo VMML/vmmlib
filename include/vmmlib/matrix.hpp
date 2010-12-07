@@ -381,7 +381,7 @@ public:
     friend std::ostream& operator << ( std::ostream& os, 
         const matrix< M, N, T >& matrix )
     {
-#ifdef EQ_EXPORT
+#ifdef EQBASE_DEFINES_H
         const std::ios::fmtflags flags = os.flags();
         const int                prec  = os.precision();
         
@@ -464,15 +464,15 @@ void matrix< M, N, T>::convolve(const matrix< U, V, T >& kernel)
 {
 	matrix< M, N, T> temp;  // do not override original values instantly as old values are needed for calculation
 	
-	for(int y = 0; y < N; ++y) 
+	for(int y_ = 0; y_ < N; ++y_) 
     {
-		for(int x = 0; x < M; ++x) 
+		for(int x_ = 0; x_ < M; ++x_) 
         {
 			double sum = 0.0;
 	
 			for(int j = 0; j < V; ++j)
             {
-				int srcy = y - V/2 + j;
+				int srcy = y_ - V/2 + j;
 		
 				// Extending border values
 				if(srcy < 0)	srcy = 0;
@@ -480,7 +480,7 @@ void matrix< M, N, T>::convolve(const matrix< U, V, T >& kernel)
 		
 				for(int i = 0; i < U; ++i)
                 {
-					int srcx = x - U/2 + i;
+					int srcx = x_ - U/2 + i;
 			
 					// Extending border values
 					if(srcx < 0)	srcx = 0;
@@ -489,10 +489,10 @@ void matrix< M, N, T>::convolve(const matrix< U, V, T >& kernel)
 					sum += kernel.at(j,i) * at(srcy,srcx);
 				}
 			}
-			temp.at(y,x) = sum;
+			temp.at(y_,x_) = sum;
 		}
 	}
-	
+
 	*this = temp;
 }
 
@@ -2394,7 +2394,7 @@ matrix< M, N, T >::nnz() const
 
 template< size_t M, size_t N, typename T >
 size_t
-matrix< M, N, T >::nnz( const T& threshold ) const
+matrix< M, N, T >::nnz( const T& threshold_ ) const
 {
 	size_t counter = 0;
 	
@@ -2402,7 +2402,7 @@ matrix< M, N, T >::nnz( const T& threshold ) const
 	it_end = end();
 	for( ; it != it_end; ++it)
 	{		
-		if ( fabs(*it) > threshold ) {
+		if ( fabs(*it) > threshold_ ) {
 			++counter;
 		}
 	}

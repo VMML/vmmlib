@@ -268,7 +268,7 @@ public:
     
     friend std::ostream& operator<< ( std::ostream& os, const vector& vector_ )
     {
-#ifdef EQ_EXPORT
+#ifdef EQBASE_DEFINES_H
         const std::ios::fmtflags flags = os.flags();
         const int                prec  = os.precision();
 

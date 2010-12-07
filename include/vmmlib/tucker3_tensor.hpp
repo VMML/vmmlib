@@ -18,6 +18,9 @@
 #ifndef __VMML__TUCKER3_TENSOR__HPP__
 #define __VMML__TUCKER3_TENSOR__HPP__
 
+#define CODE_ALL_U_MIN_MAX 1
+
+
 #include <vmmlib/tensor3.hpp>
 //#include <vmmlib/matrix_pseudoinverse.hpp>
 #include <vmmlib/lapack_svd.hpp>
@@ -1237,37 +1240,33 @@ void
 VMML_TEMPLATE_CLASSNAME::export_quantized_to( std::vector<unsigned char>& data_out_ )
 {
 	//quantize tucker3 components (u1-u3 and core)
-	T_internal u1_min, u1_max, u2_min, u2_max, u3_min, u3_max, core_min, core_max = 0;
-	quantize_basis_matrices( u1_min, u1_max, u2_min, u2_max, u3_min, u3_max );
-	quantize_core( core_min, core_max );		
-	
-#if 0
-        std::cout << "quantized: " << std::endl << "u1-u3: " << std::endl
-        << *_u1 << std::endl << *_u1_comp << std::endl
-        << *_u2 << std::endl << *_u2_comp << std::endl
-        << *_u3 << std::endl << *_u3_comp << std::endl
-        << " core " << std::endl
-        << _core << std::endl
-        << " core_comp " << std::endl
-        << _core_comp << std::endl;
-#endif
-
 	size_t len_export_data = SIZE * sizeof(T_coeff) + 8*sizeof(T_internal);
 	char * data = new char[ len_export_data ];
-	
 	size_t end_data = 0;
-
-	//copy min and max values: u1_min, u1_max, u2_min, u2_max, u3_min, u3_max, core_min, core_max
 	size_t len_t_comp = sizeof( T_internal );
+	
+	//quantize basis matrices and copy min-max values
+#if CODE_ALL_U_MIN_MAX	
+	T_internal u1_min, u1_max, u2_min, u2_max, u3_min, u3_max;
+	quantize_basis_matrices( u1_min, u1_max, u2_min, u2_max, u3_min, u3_max );
 	memcpy( data, &u1_min, len_t_comp ); end_data = len_t_comp;
 	memcpy( data + end_data, &u1_max, len_t_comp ); end_data += len_t_comp;
 	memcpy( data + end_data, &u2_min, len_t_comp ); end_data += len_t_comp;
 	memcpy( data + end_data, &u2_max, len_t_comp ); end_data += len_t_comp;
 	memcpy( data + end_data, &u3_min, len_t_comp ); end_data += len_t_comp;
 	memcpy( data + end_data, &u3_max, len_t_comp ); end_data += len_t_comp;
+#else
+	T_internal u_min, u_max;
+	quantize_basis_matrices( u_min, u_max);
+	memcpy( data, &u_min, len_t_comp ); end_data = len_t_comp;
+	memcpy( data + end_data, &u_max, len_t_comp ); end_data += len_t_comp;
+#endif
+	
+	//quantize core and copy min-max values
+	T_internal core_min, core_max;
+	quantize_core( core_min, core_max );		
 	memcpy( data + end_data, &core_min, len_t_comp ); end_data += len_t_comp;
 	memcpy( data + end_data, &core_max, len_t_comp ); end_data += len_t_comp;
-	
 	
 	//copy data for u1
 	size_t len_u1 = I1 * R1 * sizeof( T_coeff );
@@ -1302,29 +1301,33 @@ VMML_TEMPLATE_STRING
 void
 VMML_TEMPLATE_CLASSNAME::import_quantized_from( const std::vector<unsigned char>& data_in_  )
 {
-	T_internal u1_min = 0; T_internal u1_max = 0;
-	T_internal u2_min = 0; T_internal u2_max = 0;
-	T_internal u3_min = 0; T_internal u3_max = 0;
-	T_internal core_min = 0; T_internal core_max = 0;
-		
 	size_t end_data = 0;
 	size_t len_t_comp = sizeof( T_internal );
-	
 	size_t len_export_data = SIZE * sizeof(T_coeff) + 8*sizeof(T_internal);
 	unsigned char * data = new unsigned char[ len_export_data ];
-
 	for( size_t byte = 0; byte < len_export_data; ++byte )
 	{
 		data[byte] = data_in_.at(byte);
 	}
 	
 	//copy min and max values: u1_min, u1_max, u2_min, u2_max, u3_min, u3_max, core_min, core_max
+	T_internal u1_min = 0; T_internal u1_max = 0;
+	T_internal u2_min = 0; T_internal u2_max = 0;
+	T_internal u3_min = 0; T_internal u3_max = 0;
+	T_internal u_min = 0; T_internal u_max = 0;
+#if CODE_ALL_U_MIN_MAX	
 	memcpy( &u1_min, data, len_t_comp ); end_data = len_t_comp;
 	memcpy( &u1_max, data + end_data, len_t_comp ); end_data += len_t_comp;
 	memcpy( &u2_min, data + end_data, len_t_comp ); end_data += len_t_comp;
 	memcpy( &u2_max, data + end_data, len_t_comp ); end_data += len_t_comp;
 	memcpy( &u3_min, data + end_data, len_t_comp ); end_data += len_t_comp;
 	memcpy( &u3_max, data + end_data, len_t_comp ); end_data += len_t_comp;
+#else
+	memcpy( &u_min, data, len_t_comp ); end_data = len_t_comp;
+	memcpy( &u_max, data + end_data, len_t_comp ); end_data += len_t_comp;
+#endif
+	
+	T_internal core_min = 0; T_internal core_max = 0;
 	memcpy( &core_min, data + end_data, len_t_comp ); end_data += len_t_comp;
 	memcpy( &core_max, data + end_data, len_t_comp ); end_data += len_t_comp;
 		
@@ -1352,9 +1355,14 @@ VMML_TEMPLATE_CLASSNAME::import_quantized_from( const std::vector<unsigned char>
 	delete[] data;
 	
 	//dequantize tucker3 components (u1-u3 and core)
+#if CODE_ALL_U_MIN_MAX	
 	dequantize_basis_matrices( u1_min, u1_max, u2_min, u2_max, u3_min, u3_max );
+#else
+	dequantize_basis_matrices( u_min, u_max, u_min, u_max, u_min, u_max  );
+#endif
+	
 	dequantize_core( core_min, core_max );	
-
+	
 #if 0
         std::cout << "dequantized: " << std::endl << "u1-u3: " << std::endl
         << *_u1 << std::endl << *_u1_comp << std::endl

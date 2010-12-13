@@ -199,6 +199,8 @@ public:
     //backward cyclic matricization/unfolding (after Lathauwer et al., 2000a)
     template< size_t J1, size_t J2, size_t J3 > 
     void full_tensor3_matrix_multiplication( const tensor3< J1, J2, J3, T >& core, const matrix< I1, J1, T >& U1, const matrix< I2, J2, T >& U2, const matrix< I3, J3, T >& U3 );
+    template< size_t J1, size_t J2, size_t J3 > 
+    void full_tensor3_matrix_kronecker_mult( const tensor3< J1, J2, J3, T >& core, const matrix< I1, J1, T >& U1, const matrix< I2, J2, T >& U2, const matrix< I3, J3, T >& U3 );
     
     void horizontal_unfolding_bwd( bwd_horiz_unfolding_type& unfolding) const;
     void lateral_unfolding_bwd( bwd_lat_unfolding_type& unfolding) const;
@@ -1171,18 +1173,62 @@ VMML_TEMPLATE_CLASSNAME::full_tensor3_matrix_multiplication(  const tensor3< J1,
 														   const matrix< I2, J2, T >& U2, 
 														   const matrix< I3, J3, T >& U3 )
 {
- tensor3< I1, J2, J3, T>* t3_result_1 = new  tensor3< I1, J2, J3, T>();
- tensor3< I1, I2, J3, T>* t3_result_2 = new tensor3< I1, I2, J3, T>();
+	tensor3< I1, J2, J3, T>* t3_result_1 = new  tensor3< I1, J2, J3, T>();
+	tensor3< I1, I2, J3, T>* t3_result_2 = new tensor3< I1, I2, J3, T>();
  
- //backward cyclic matricization/unfolding (after Lathauwer et al., 2000a)
- t3_result_1->multiply_lateral_bwd( core, U1 );
- t3_result_2->multiply_frontal_bwd( *t3_result_1, U2 );
- multiply_horizontal_bwd( *t3_result_2, U3 );
+	//backward cyclic matricization/unfolding (after Lathauwer et al., 2000a)
+	t3_result_1->multiply_lateral_bwd( core, U1 );
+	t3_result_2->multiply_frontal_bwd( *t3_result_1, U2 );
+	multiply_horizontal_bwd( *t3_result_2, U3 );
+	
+	matrix< I1, I2*I3, T>* res_unfolded = new matrix< I1, I2*I3, T>();
+	lateral_unfolding_bwd( *res_unfolded );
+	//std::cout << "reco1 result (ttm): " << std::endl << *res_unfolded << std::endl;
  
 	delete t3_result_1;
 	delete t3_result_2;
 }
+	
+VMML_TEMPLATE_STRING
+template< size_t J1, size_t J2, size_t J3 > 
+void
+VMML_TEMPLATE_CLASSNAME::full_tensor3_matrix_kronecker_mult(  const tensor3< J1, J2, J3, T >& core, 
+															const matrix< I1, J1, T >& U1, 
+															const matrix< I2, J2, T >& U2, 
+															const matrix< I3, J3, T >& U3 )
+{
+	matrix< J1, J2*J3, T>* core_unfolded = new matrix< J1, J2*J3, T>();
+	core.lateral_unfolding_bwd( *core_unfolded );
+	matrix< I1, J2*J3, T>* tmp1 = new matrix< I1, J2*J3, T>();
+	tmp1->multiply( U1, *core_unfolded );
 
+	matrix< I2*I3, J2*J3, T>* kron_prod = new matrix< I2*I3, J2*J3, T>();
+	U2.kronecker_product( U3, *kron_prod );
+	
+	matrix< I1, I2*I3, T>* res_unfolded = new matrix< I1, I2*I3, T>();
+	res_unfolded->multiply( *tmp1, transpose(*kron_prod) );
+	
+	//std::cout << "reco2 result (matricized): " << std::endl << *res_unfolded << std::endl;
+	
+	//set this from res_unfolded
+	size_t i2 = 0;
+	for( size_t i = 0; i < (I2*I3); ++i, ++i2 )
+	{
+		if (i2 >= I2) {
+			i2 = 0;
+		}
+	
+		size_t i3 = i % I3;
+		set_column( i2, i3, res_unfolded->get_column(i));
+	}
+	
+	delete core_unfolded;
+	delete kron_prod;
+	delete tmp1;
+	delete res_unfolded;
+}
+
+	
 VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::horizontal_unfolding_bwd( bwd_horiz_unfolding_type& unfolding) const
@@ -1645,11 +1691,10 @@ VMML_TEMPLATE_CLASSNAME::write_to_raw( const std::string& dir_, const std::strin
 			const T& byte = T(*oit);
 			outfile << byte;
 		}
+		outfile.close();
 	} else {
 		std::cout << "no file open" << std::endl;
 	}
-	
-	outfile.close();
 }	
 
 
@@ -1722,12 +1767,10 @@ VMML_TEMPLATE_CLASSNAME::read_from_raw( const std::string& dir_, const std::stri
 			*it =  data[counter];
 		}		
 		delete data;
-		
+		infile.close();
 	} else {
 		std::cout << "no file open" << std::endl;
 	}
-	
-	infile.close();
 }	
 	
 #undef VMML_TEMPLATE_STRING

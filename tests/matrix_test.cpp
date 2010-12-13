@@ -887,6 +887,56 @@ matrix_test::run()
 		}
 	}
 	
+	{
+		//test kronecker product
+		matrix< 3, 4, int > left;
+		matrix< 4, 4, int > right;
+		matrix< 12, 16, int > kronecker;
+		matrix< 12, 16, int > kronecker_check;
+		int data_left[] = {
+			1, 2, 3, 4,
+			5, 6, 7, 8,
+			9, 10, 11, 12 };
+		int data_right[] = {
+			1, 2, 3, 4,
+			5, 6, 7, 8,
+			9, 10, 11, 12,
+			13, 14, 15, 16 };
+		left = data_left;
+		right = data_right;
+		
+		int data_kronecker[] = {
+			1, 2, 3, 4, 2, 4, 6, 8, 3, 6, 9, 12, 4, 8, 12, 16,
+			5, 6, 7, 8, 10, 12, 14, 16, 15, 18, 21, 24, 20, 24, 28, 32, 
+			9, 10, 11, 12, 18, 20, 22, 24, 27, 30, 33, 36, 36, 40, 44, 48,
+			13, 14, 15, 16, 26, 28, 30, 32, 39, 42, 45, 48, 52, 56, 60, 64, 
+			5, 10, 15, 20, 6, 12, 18, 24, 7, 14, 21, 28, 8, 16, 24, 32, 
+			25, 30, 35, 40, 30, 36, 42, 48, 35, 42, 49, 56, 40, 48, 56, 64, 
+			45, 50, 55, 60, 54, 60, 66, 72, 63, 70, 77, 84, 72, 80, 88, 96, 
+			65, 70, 75, 80, 78, 84, 90, 96, 91, 98, 105, 112, 104, 112, 120, 128,
+			9, 18, 27, 36, 10, 20, 30, 40, 11, 22, 33, 44, 12, 24, 36, 48,
+			45, 54, 63, 72, 50, 60, 70, 80, 55, 66, 77, 88, 60, 72, 84, 96,
+			81, 90, 99, 108, 90, 100, 110, 120, 99, 110, 121, 132, 108, 120, 132, 144,
+			117, 126, 135, 144, 130, 140, 150, 160, 143, 154, 165, 176, 156, 168, 180, 192 };
+		kronecker_check = data_kronecker;
+		
+		left.kronecker_product( right, kronecker );
+		
+		ok = kronecker == kronecker_check;
+		if ( ok )
+		{	
+			log( "kronecker matrix product ", ok  );
+		} else
+		{
+			std::stringstream error;
+			error 
+			<< "kronecker matrix product: should be: " << std::endl 
+			<< std::setprecision(24) << kronecker_check << std::endl 
+			<< " is: " << std::endl << kronecker << std::endl;
+			log_error( error.str() );
+		}
+	}
+	
 	
 	{
 		//matrix type cast

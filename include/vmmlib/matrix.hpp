@@ -204,7 +204,10 @@ public:
 	//Khatri-Rao Product: columns must be of same size
     template< size_t O >
     matrix< M*O, N, T > khatri_rao_product( const matrix< O, N, T >& right_ ) const;
-
+	//Kronecker Product: MxN x_kronecker OxP = M*OxN*P
+    template< size_t O, size_t P >
+    void kronecker_product( const matrix< O, P, T >& right_,  matrix< M*O, N*P, T >& result_) const;
+	
 	T get_min() const;
 	T get_max() const;
 	T get_abs_min() const;
@@ -2285,6 +2288,27 @@ matrix< M, N, T >::khatri_rao_product( const matrix< O, N, T >& right_ ) const
 	return khatri_rao;
 }
 	
+template< size_t M, size_t N, typename T  >
+template< size_t O, size_t P >
+void 
+matrix< M, N, T >::kronecker_product( const matrix< O, P, T >& right_, matrix< M*O, N*P, T >& result_ ) const
+{
+	//build product for every column
+	for (size_t m = 0; m < M; ++m )
+	{
+		for ( size_t n = 0; n < N; ++n )
+		{
+			for (size_t o = 0; o < O; ++o )
+			{
+				for (size_t p = 0; p < P; ++p )
+				{
+					result_.at(O*m + o, P*n + p) = at( m, n ) * right_.at( o, p );
+				}
+			}
+		}
+	}
+}
+
 	
 template< size_t M, size_t N, typename T  >
 template< typename TT >

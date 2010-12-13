@@ -501,10 +501,13 @@ tensor3_test::run()
 	t3.fill_increasing_values();
 	tensor3<6, 7, 5, int> t3_reco;
 	t3_reco.full_tensor3_matrix_multiplication( t3, u1, u2, u3 ); 
+	tensor3<6, 7, 5, int> t3_reco2;
+	t3_reco2.full_tensor3_matrix_kronecker_mult( t3, u1, u2, u3 ); 
+	ok = t3_reco == t3_reco2;
 	
 	tensor3<6, 7, 5, int> t3_iii_test;
 	t3_iii_test.fill(1656);
-	if ( t3_iii_test == t3_reco && t3_iii_test == t3_iii )
+	if ( t3_iii_test == t3_reco && t3_iii_test == t3_iii && ok )
 	{	
 		log( "tensor3 matrix multiplication along all three modes", true  );
 	} else

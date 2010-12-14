@@ -731,7 +731,6 @@ tensor3_test::run()
 		t3_raw.at( 0,2,2) = 0.67777; t3_raw.at(1,0,1) = 0.111111; t3_raw.at(1,2,0) = -0.23; t3_raw.at(1,3,0) = -0.99;
 		t3_raw.at(1,0,0) = -0.8; t3_raw.at(1,2,1) = 0.0; t3_raw.at(0,3,2) = 0.99; t3_raw.at(0,1,0) = 0.23;
 		tensor3< 2, 4, 3, unsigned char >  t3_quant; t3_quant.zero();
-		tensor3< 2, 4, 3, unsigned char >  t3_quant_log; t3_quant.zero();
 		tensor3< 2, 4, 3, unsigned char >  t3_quant_check; 
 		int data_unsigned[] = {187, 158, 187, 187, 25, 187, 98, 0, 187, 187, 187, 187, 142, 187, 128, 187, 187, 187, 216, 255, 187, 187, 187, 187};
 		t3_quant_check.set(data_unsigned, data_unsigned+24);
@@ -740,14 +739,6 @@ tensor3_test::run()
 		float max_value = -50;
 		
 		t3_raw.quantize( t3_quant, min_value, max_value );
-#if 0
-		t3_raw.quantize_log( t3_quant_log, min_value, max_value );
-		
-		std::cout << " quantization: " << std::endl 
-		<< "original: " << t3_raw << std::endl
-		<< "linear: " << t3_quant << std::endl
-		<< "log-scale: " << std::endl << t3_quant_log << std::endl;
-#endif		
 		
 		tensor3< 2, 4, 3, char >  t3_quant_sign; t3_quant_sign.zero();
 		tensor3< 2, 4, 3, char >  t3_quant_sign_check; 
@@ -764,8 +755,50 @@ tensor3_test::run()
 		t3_quant.dequantize( t3_dequant, min_value, max_value );
 		t3_quant_sign.dequantize( t3_dequant_sign, min_value, max_value );
 		
-		if ( ( t3_quant_check == t3_quant ) && ( t3_quant_sign_check == t3_quant_sign ) && t3_dequant.equals(t3_dequant_sign, 0.01) )	{	
-			log( "quantize/dequantize" , true  );
+		ok = ( t3_quant_check == t3_quant ) && ( t3_quant_sign_check == t3_quant_sign ) && t3_dequant.equals(t3_dequant_sign, 0.01);
+		
+		//logarithmic quantization
+		float lmin_value = 50;
+		float lmax_value = -50;
+		tensor3< 2, 4, 3, unsigned char >  t3_quant_log; t3_quant.zero();
+		tensor3< 2, 4, 3, float >  t3_raw2(t3_raw);
+		t3_raw2.at(0,2,1) = 200;
+		tensor3< 2, 4, 3, unsigned char >  t3_quant2; t3_quant2.zero();
+		t3_raw2.quantize( t3_quant2, lmin_value, lmax_value );
+		tensor3< 2, 4, 3, float >  t3_dequant2;
+		t3_quant2.dequantize( t3_dequant2, lmin_value, lmax_value );
+		
+		unsigned char tt_range = 127;
+		tensor3< 2, 4, 3, char >  signs;
+		t3_raw2.quantize_log( t3_quant_log, signs, lmin_value, lmax_value, tt_range );
+		tensor3< 2, 4, 3, float >  t3_dequant_log;
+		t3_quant_log.dequantize_log( t3_dequant_log, signs, lmin_value, lmax_value );
+		
+		float deq_log_check[] = {
+			0.451923, 0.23018, 0.451923, 0.451923,
+			-0.786126, 0.451923, -0.23018, -0.940437,
+			0.451923, 0.451923, 191.842, 0.451923,
+			0.132351, 0.451923, 0, 0.451923,
+			0.451923, 0.451923, 0.644086, 0.940437,
+			0.451923, 0.451923, 0.451923, 0.451923};
+		tensor3< 2, 4, 3, float >  t3_dequant_log_check;
+		t3_dequant_log_check.set(deq_log_check, deq_log_check +24 );
+		
+		ok = ok && t3_dequant_log_check.equals( t3_dequant_log, 0.001 );
+		
+#if 0
+		std::cout << " quantization: is " << ok << std::endl 
+		<< "original: " << t3_raw2 << std::endl
+		<< "linear: " << t3_quant2 << std::endl
+		<< "log-scale: " << std::endl << t3_quant_log << std::endl
+		<< "signs (0 = neg, 1 = pos): " << std::endl << signs << std::endl
+		<< "deq. from log-scale: " << std::endl << t3_dequant_log << std::endl
+		<< "deq. from linear: " << std::endl << t3_dequant2 << std::endl;
+#endif	
+
+		
+		if ( ok )	{	
+			log( "quantize/dequantize" , ok  );
 		} else
 		{
 			std::stringstream error;

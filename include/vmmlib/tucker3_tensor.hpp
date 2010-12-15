@@ -264,7 +264,7 @@ private:
 
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::tucker3_tensor( )
-	: _is_quantify_coeff( false )
+	: _is_quantify_coeff( false ), _is_quantify_hot( false ), _hottest_core_value( 0 )
 {
 	_core.zero();
 	_u1 = new u1_type(); _u1->zero();
@@ -804,7 +804,7 @@ VMML_TEMPLATE_CLASSNAME::get_svd_u_red( const matrix< M, N, T >& data_, matrix< 
 	vector< N, T_svd >* lambdas  = new vector<  N, T_svd >();
 	lapack_svd< M, N, T_svd >* svd = new lapack_svd<  M, N, T_svd >();
 	if( svd->compute_and_overwrite_input( *u_double, *lambdas )) {
-		if( _is_quantify_coeff ){
+		if( _is_quantify_coeff || _is_quantify_hot ){
 			T_internal min_value = 0; T_internal max_value = 0;
 			u_internal->cast_from( *u_double );
 			u_internal->quantize( *u_quant, min_value, max_value );

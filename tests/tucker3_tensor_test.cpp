@@ -436,6 +436,21 @@ namespace vmml
 			log_error( error.str() );
 		}		
 		
+		//export bytes (with optimized quantization of core) 
+		std::vector<unsigned char> export_data_vec2;
+		tuck3_hooi_3.export_hot_quantized_to( export_data_vec2 );
+		
+		tucker3_tensor< 2, 2, 2, 3, 2, 2, unsigned char, unsigned short > tuck3_import3;
+		tuck3_import3.import_hot_quantized_from( export_data_vec2 );
+		
+		tensor3< 3, 2, 2, unsigned char > import_reco3;
+		tuck3_import3.reconstruct( import_reco3 );
+		rmse = import_reco3.rmse( t3_data_hooi_3 );
+		rmse_check = 5.400617248673217; 
+		
+		ok = (rmse <= rmse_check)&& rmse > 0;
+		log( "export/import tucker3 (bytes) with hot core quantization" , ok  );
+			
 		
 		//tucker3 reconstruction
 		tensor3< 2, 3, 4, int >  core;

@@ -339,7 +339,6 @@ namespace vmml
 		std::vector<unsigned char> export_data_vec;
 		tuck3_hooi_3.export_quantized_to( export_data_vec );
 		
-		
 		//check exported data
 		double export_data2_check[] = {
 			-0.715838, 0.865947, -0.7211, 0.692823, -0.921996, 0.921939, -251.345, 16.3092, 
@@ -415,6 +414,7 @@ namespace vmml
 		
 		//import from bytes
 		tucker3_tensor< 2, 2, 2, 3, 2, 2, unsigned char, unsigned short > tuck3_import2;
+		tuck3_import2.enable_quantify_coeff();
 		tuck3_import2.import_quantized_from( export_data_vec );
 		
 		tensor3< 3, 2, 2, unsigned char > import_reco;
@@ -427,22 +427,12 @@ namespace vmml
 			log( "import tucker3 (bytes)" , true  );
 		} else
 		{
-			matrix<3, 2, unsigned short > u1_imported2;
-			matrix<2, 2, unsigned short > u2_imported2;
-			matrix<2, 2, unsigned short > u3_imported2;
-			tensor3<2, 2, 2, unsigned short > core_imported2;
-			tuck3_import2.get_core( core_imported2 ); tuck3_import2.get_u1( u1_imported2  ); 
-			tuck3_import2.get_u2( u2_imported2 ); tuck3_import2.get_u3( u3_imported2 );
 			std::stringstream error;
 			error 
-			<< "import tucker3 (char *): " << std::endl
+			<< "import tucker3 (bytes): " << std::endl
 			<< "RMSE should be: " << rmse_check << ", is: " << rmse << std::endl
-			<< "U1 is: " << std::endl << u1_imported2 << std::endl
-			<< "U2 is: " << std::endl << u2_imported2 << std::endl
-			<< "U3 is: " << std::endl << u3_imported2 << std::endl
-			<< "core is: " << std::endl << core_imported2 << std::endl;
-			
-			
+			<< "Tucker3 is: " << std::endl << tuck3_import2 << std::endl;
+
 			log_error( error.str() );
 		}		
 		

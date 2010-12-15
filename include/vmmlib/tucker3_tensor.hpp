@@ -432,14 +432,14 @@ VMML_TEMPLATE_STRING
 void
 VMML_TEMPLATE_CLASSNAME::quantize_core( T_internal& core_min_, T_internal& core_max_ )
 {
-	if ( _is_quantify_coeff ) {
-		_core_comp.quantize( _core, core_min_, core_max_ );
-	} else if ( _is_quantify_hot ) {
+	if ( _is_quantify_hot ) {
 		T_coeff range = 127;
-		_hottest_core_value = _hot_core_comp.at(0,0,0);
+		_hottest_core_value = _core_comp.at(0,0,0);
 		_cold_core_comp = _core_comp; 
 		_cold_core_comp.at( 0, 0, 0 ) = 0;		
 		_cold_core_comp.quantize_log( _core, _signs, core_min_, core_max_, range );
+	} else {
+		_core_comp.quantize( _core, core_min_, core_max_ );
 	}
 }	
 
@@ -459,13 +459,13 @@ VMML_TEMPLATE_STRING
 void
 VMML_TEMPLATE_CLASSNAME::dequantize_core( const T_internal& core_min_, const T_internal& core_max_ )
 {
-	if ( _is_quantify_coeff ) {
-		_core.dequantize( _core_comp, core_min_, core_max_ );
-	} else if ( _is_quantify_hot ) {
+	if ( _is_quantify_hot ) {
 		_core.dequantize_log( _cold_core_comp, _signs, core_min_, core_max_ );
 		_core_comp = _cold_core_comp;
 		_core.at(0,0,0) = _hottest_core_value;
 		_core_comp.at(0,0,0) = _hottest_core_value;
+	} else {
+		_core.dequantize( _core_comp, core_min_, core_max_ );
 	}
 }		
 	

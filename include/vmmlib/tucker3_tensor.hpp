@@ -1464,9 +1464,6 @@ VMML_TEMPLATE_CLASSNAME::export_hot_quantized_to( std::vector<unsigned char>& da
 	for (size_t r3 = 0; r3 < R3; ++r3 ) {
 		for (size_t r2 = 0; r2 < R2; ++r2 ) {
 			for (size_t r1 = 0; r1 < R1; ++r1 ) {
-				if ((r1 == 0) && (r2 == 0) && (r3 == 0))
-					continue;
-
 				core_el = (_core.at( r1, r2, r3 ) | (_signs.at( r1, r2, r3) * 0x80 ));
 				/*std::cout << "value: " << int(_core.at( r1, r2, r3 )) << " bit " << int( core_el ) 
 				<< " sign: " << int(_signs.at( r1, r2, r3)) << std::endl;*/
@@ -1532,9 +1529,6 @@ VMML_TEMPLATE_CLASSNAME::import_hot_quantized_from( const std::vector<unsigned c
 	for (size_t r3 = 0; r3 < R3; ++r3 ) {
 		for (size_t r2 = 0; r2 < R2; ++r2 ) {
 			for (size_t r1 = 0; r1 < R1; ++r1 ) {
-				if ((r1 == 0) && (r2 == 0) && (r3 == 0))
-					continue;
-
 				memcpy( &core_el, data + end_data, len_core_el );
 				_signs.at( r1, r2, r3 ) = (core_el & 0x80)/128;
 				_core.at( r1, r2, r3 ) = core_el & 0x7f ;

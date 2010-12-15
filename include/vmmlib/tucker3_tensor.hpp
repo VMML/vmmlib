@@ -92,6 +92,8 @@ public:
 		
 	void enable_quantify_coeff() { _is_quantify_coeff = true; };
 	void disable_quantify_coeff() { _is_quantify_coeff = false; } ;
+	void enable_quantify_hot() { _is_quantify_hot = true; };
+	void disable_quantify_hot() { _is_quantify_hot = false; } ;
 		
 	void set_core( t3_core_type& core )  { _core = t3_core_type( core ); _core_comp.cast_from( core ); } ;
 	void set_u1( u1_type& U1 ) { *_u1 = U1; _u1_comp->cast_from( U1 ); } ;
@@ -246,8 +248,13 @@ private:
         u2_comp_type* _u2_comp ;
         u3_comp_type* _u3_comp ;
 		
+		T_internal _hottest_core_value;
+		t3_core_comp_type _cold_core_comp;
+		tensor3< R1, R2, R3, char> _signs;
+		
 		bool _is_quantify_coeff; 
-	
+		bool _is_quantify_hot; 
+		
 }; // class tucker3_tensor
 
 
@@ -267,11 +274,14 @@ VMML_TEMPLATE_CLASSNAME::tucker3_tensor( )
 	_u1_comp = new u1_comp_type(); _u1_comp->zero();
 	_u2_comp = new u2_comp_type(); _u2_comp->zero();
 	_u3_comp = new u3_comp_type(); _u3_comp->zero();	
+	
+	_signs.zero();
+	_cold_core_comp.zero();
 }
 	
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::tucker3_tensor( t3_core_type& core )
-	: _is_quantify_coeff( false )
+	: _is_quantify_coeff( false ), _is_quantify_hot( false ), _hottest_core_value( 0 )
 {
 	_core = core;
 	_u1 = new u1_type(); _u1->zero();
@@ -281,11 +291,14 @@ VMML_TEMPLATE_CLASSNAME::tucker3_tensor( t3_core_type& core )
 	_u2_comp = new u2_comp_type(); _u2_comp->zero();
 	_u3_comp = new u3_comp_type(); _u3_comp->zero();	
 	_core_comp.cast_from( core );
+	
+	_signs.zero();
+	_cold_core_comp.zero();
 }
 
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::tucker3_tensor( t3_core_type& core, u1_type& U1, u2_type& U2, u3_type& U3 )
-	: _is_quantify_coeff( false )
+	: _is_quantify_coeff( false ), _is_quantify_hot( false ), _hottest_core_value( 0 )
 {
 	_core = core;
 	_u1 = new u1_type( U1 );
@@ -295,11 +308,14 @@ VMML_TEMPLATE_CLASSNAME::tucker3_tensor( t3_core_type& core, u1_type& U1, u2_typ
 	_u2_comp = new u2_comp_type(); 
 	_u3_comp = new u3_comp_type(); 	
 	cast_comp_members();
+	
+	_signs.zero();
+	_cold_core_comp.zero();
 }
 
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::tucker3_tensor( const tucker3_type& other )
-: _is_quantify_coeff( false )
+	: _is_quantify_coeff( false ), _is_quantify_hot( false ), _hottest_core_value( 0 )
 {
 	_u1 = new u1_type();
 	_u2 = new u2_type();
@@ -314,6 +330,9 @@ VMML_TEMPLATE_CLASSNAME::tucker3_tensor( const tucker3_type& other )
 	other.get_u3( *_u3 );
 
 	cast_comp_members();
+	
+	_signs.zero();
+	_cold_core_comp.zero();
 }
 		
 	
@@ -413,7 +432,15 @@ VMML_TEMPLATE_STRING
 void
 VMML_TEMPLATE_CLASSNAME::quantize_core( T_internal& core_min_, T_internal& core_max_ )
 {
-	_core_comp.quantize( _core, core_min_, core_max_ );
+	if ( _is_quantify_coeff ) {
+		_core_comp.quantize( _core, core_min_, core_max_ );
+	} else if ( _is_quantify_hot ) {
+		T_coeff range = 127;
+		_hottest_core_value = _hot_core_comp.at(0,0,0);
+		_cold_core_comp = _core_comp; 
+		_cold_core_comp.at( 0, 0, 0 ) = 0;		
+		_cold_core_comp.quantize_log( _core, _signs, core_min_, core_max_, range );
+	}
 }	
 
 
@@ -432,7 +459,14 @@ VMML_TEMPLATE_STRING
 void
 VMML_TEMPLATE_CLASSNAME::dequantize_core( const T_internal& core_min_, const T_internal& core_max_ )
 {
-	_core.dequantize( _core_comp, core_min_, core_max_ );
+	if ( _is_quantify_coeff ) {
+		_core.dequantize( _core_comp, core_min_, core_max_ );
+	} else if ( _is_quantify_hot ) {
+		_core.dequantize_log( _cold_core_comp, _signs, core_min_, core_max_ );
+		_core_comp = _cold_core_comp;
+		_core.at(0,0,0) = _hottest_core_value;
+		_core_comp.at(0,0,0) = _hottest_core_value;
+	}
 }		
 	
 VMML_TEMPLATE_STRING

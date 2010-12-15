@@ -732,7 +732,7 @@ tensor3_test::run()
 		t3_raw.at(1,0,0) = -0.8; t3_raw.at(1,2,1) = 0.0; t3_raw.at(0,3,2) = 0.99; t3_raw.at(0,1,0) = 0.23;
 		tensor3< 2, 4, 3, unsigned char >  t3_quant; t3_quant.zero();
 		tensor3< 2, 4, 3, unsigned char >  t3_quant_check; 
-		int data_unsigned[] = {187, 158, 187, 187, 25, 187, 98, 0, 187, 187, 187, 187, 142, 187, 128, 187, 187, 187, 216, 255, 187, 187, 187, 187};
+		int data_unsigned[] = {186, 157, 186, 186, 24, 186, 98, 0, 186, 186, 186, 186, 142, 186, 128, 186, 186, 186, 215, 255, 186, 186, 186, 186};
 		t3_quant_check.set(data_unsigned, data_unsigned+24);
 		
 		float min_value = 50;
@@ -742,7 +742,7 @@ tensor3_test::run()
 		
 		tensor3< 2, 4, 3, char >  t3_quant_sign; t3_quant_sign.zero();
 		tensor3< 2, 4, 3, char >  t3_quant_sign_check; 
-		int data_signed[] = { 59, 30, 59, 59, -102, 59, -29, -127, 59, 59, 59, 59, 14, 59, 0, 59, 59, 59, 88, 127, 59, 59, 59, 59 };
+		int data_signed[] = { 59, 30, 59, 59, -102, 59, -29, -127, 59, 59, 59, 59, 14, 59, 0, 59, 59, 59, 87, 127, 59, 59, 59, 59 };
 		t3_quant_sign_check.set(data_signed, data_signed +24 );
 		
 		t3_raw.quantize( t3_quant_sign, min_value, max_value );
@@ -756,6 +756,13 @@ tensor3_test::run()
 		t3_quant_sign.dequantize( t3_dequant_sign, min_value, max_value );
 		
 		ok = ( t3_quant_check == t3_quant ) && ( t3_quant_sign_check == t3_quant_sign ) && t3_dequant.equals(t3_dequant_sign, 0.01);
+#if 0
+		std::cout << " quantization: is " << ok << std::endl 
+		<< "original: " << t3_raw << std::endl
+		<< "linear: " << t3_quant << std::endl
+		<< "linear signed: " << t3_quant_sign << std::endl
+		<< "deq. from linear: " << std::endl << t3_dequant << std::endl;
+#endif	
 		
 		//logarithmic quantization
 		float lmin_value = 50;
@@ -775,12 +782,13 @@ tensor3_test::run()
 		t3_quant_log.dequantize_log( t3_dequant_log, signs, lmin_value, lmax_value );
 		
 		float deq_log_check[] = {
-			0.451923, 0.23018, 0.451923, 0.451923,
-			-0.786126, 0.451923, -0.23018, -0.940437,
-			0.451923, 0.451923, 191.842, 0.451923,
-			0.132351, 0.451923, 0, 0.451923,
-			0.451923, 0.451923, 0.644086, 0.940437,
-			0.451923, 0.451923, 0.451923, 0.451923};
+			0.456192, 0.232188, 0.456192, 0.456192,
+			-0.794302, 0.456192, -0.232188, -0.950592,
+			 0.456192, 0.456192, 200, 0.456192, 
+			 0.13346, 0.456192, 0, 0.456192,
+			 0.456192, 0.456192, 0.650535, 0.950592,
+			 0.456192, 0.456192, 0.456192, 0.456192
+		};
 		tensor3< 2, 4, 3, float >  t3_dequant_log_check;
 		t3_dequant_log_check.set(deq_log_check, deq_log_check +24 );
 		

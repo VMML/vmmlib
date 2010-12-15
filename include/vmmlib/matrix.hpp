@@ -2456,7 +2456,7 @@ matrix< M, N, T >::quantize_to( matrix< M, N, TT >& quantized_, const T& min_val
 {
 	long max_tt_range = long(std::numeric_limits< TT >::max());
 	long min_tt_range = long(std::numeric_limits< TT >::min());
-	long tt_range = (max_tt_range - min_tt_range) + 1;
+	long tt_range = (max_tt_range - min_tt_range);
 	
 	T t_range = max_value - min_value;
 	
@@ -2495,7 +2495,7 @@ matrix< M, N, T >::dequantize( matrix< M, N, TT >& dequantized_, const TT& min_v
 {
 	long max_t_range = long(std::numeric_limits< T >::max());
 	long min_t_range = long(std::numeric_limits< T >::min());
-	long t_range = (max_t_range - min_t_range) + 1;
+	long t_range = (max_t_range - min_t_range);
 	
 	TT tt_range = max_value - min_value;
 		

@@ -1555,7 +1555,7 @@ VMML_TEMPLATE_CLASSNAME::quantize_to( tensor3< I1, I2, I3, TT >& quantized_, con
 {
 	long max_tt_range = long(std::numeric_limits< TT >::max());
 	long min_tt_range = long(std::numeric_limits< TT >::min());
-	long tt_range = (max_tt_range - min_tt_range) + 1;
+	long tt_range = (max_tt_range - min_tt_range);
 	
 	T t_range = max_value_ - min_value_;
 	
@@ -1592,7 +1592,7 @@ template< typename TT  >
 void
 	VMML_TEMPLATE_CLASSNAME::quantize_log( tensor3< I1, I2, I3, TT >& quantized_, tensor3< I1, I2, I3, char >& signs_, T& min_value_, T& max_value_, const TT& tt_range_ ) const
 {
-	long max_tt_range = long(tt_range_) + 1;
+	long max_tt_range = long(tt_range_);
 	long min_tt_range = 0;
 	
 	min_value_ = get_abs_min();
@@ -1632,7 +1632,7 @@ VMML_TEMPLATE_CLASSNAME::dequantize_log( tensor3< I1, I2, I3, TT >& dequantized_
 {
 	T max_t_range = get_max();
 	T min_t_range = get_min();
-	long t_range = long(max_t_range) - long(min_t_range) +1;
+	long t_range = long(max_t_range) - long(min_t_range);
 	
 	TT tt_range = max_value_ - min_value_;
 		
@@ -1668,7 +1668,7 @@ VMML_TEMPLATE_CLASSNAME::dequantize( tensor3< I1, I2, I3, TT >& dequantized_, co
 {
 	T max_t_range = get_max();
 	T min_t_range = get_min();
-	long t_range = long(max_t_range) - long(min_t_range) +1;
+	long t_range = long(max_t_range) - long(min_t_range);
 	
 	TT tt_range = max_value_ - min_value_;
 

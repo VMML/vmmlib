@@ -1424,7 +1424,7 @@ VMML_TEMPLATE_CLASSNAME::export_hot_quantized_to( std::vector<unsigned char>& da
 {
 	enable_quantify_hot();
 	//quantize tucker3 components (u1-u3 and core)
-	size_t len_export_data = R1*R2*R3 + (R1*I1 + R2*I2 * R3*I3) * sizeof(T_coeff) + 4*sizeof(T_internal);
+	size_t len_export_data = R1*R2*R3 + (R1*I1 + R2*I2 + R3*I3) * sizeof(T_coeff) + 4*sizeof(T_internal);
 	char * data = new char[ len_export_data ];
 	size_t end_data = 0;
 	size_t len_t_comp = sizeof( T_internal );
@@ -1493,7 +1493,7 @@ VMML_TEMPLATE_CLASSNAME::import_hot_quantized_from( const std::vector<unsigned c
 	enable_quantify_hot();
 	size_t end_data = 0;
 	size_t len_t_comp = sizeof( T_internal );
-	size_t len_export_data = R1*R2*R3 + (R1*I1 + R2*I2 * R3*I3) * sizeof(T_coeff) + 4*sizeof(T_internal);
+	size_t len_export_data = R1*R2*R3 + (R1*I1 + R2*I2 + R3*I3) * sizeof(T_coeff) + 4*sizeof(T_internal);
 	unsigned char * data = new unsigned char[ len_export_data ];
 	for( size_t byte = 0; byte < len_export_data; ++byte )
 	{

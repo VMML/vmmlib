@@ -1183,9 +1183,10 @@ VMML_TEMPLATE_CLASSNAME::full_tensor3_matrix_multiplication(  const tensor3< J1,
 	t3_result_2->multiply_frontal_bwd( *t3_result_1, U2 );
 	multiply_horizontal_bwd( *t3_result_2, U3 );
 	
-	matrix< I1, I2*I3, T>* res_unfolded = new matrix< I1, I2*I3, T>();
-	lateral_unfolding_bwd( *res_unfolded );
+	//matrix< I1, I2*I3, T>* res_unfolded = new matrix< I1, I2*I3, T>();
+	//lateral_unfolding_bwd( *res_unfolded );
 	//std::cout << "reco1 result (ttm): " << std::endl << *res_unfolded << std::endl;
+	//delete res_unfolded;
  
 	delete t3_result_1;
 	delete t3_result_2;

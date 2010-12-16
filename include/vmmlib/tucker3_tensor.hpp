@@ -1438,8 +1438,11 @@ VMML_TEMPLATE_CLASSNAME::export_hot_quantized_to( std::vector<unsigned char>& da
 	//quantize core and copy min-max values
 	T_internal core_min, core_max;
 	quantize_core( core_min, core_max );		
-	memcpy( data + end_data, &core_min, len_t_comp ); end_data += len_t_comp;
+	//memcpy( data + end_data, &core_min, len_t_comp ); end_data += len_t_comp; min_value is always zero in log quant
 	memcpy( data + end_data, &core_max, len_t_comp ); end_data += len_t_comp;
+	
+	//copy first value of core tensor separately as a float
+	memcpy( data + end_data, &_hottest_core_value, len_t_comp ); end_data += len_t_comp;
 	
 	//copy data for u1
 	size_t len_u1 = I1 * R1 * sizeof( T_coeff );
@@ -1455,11 +1458,9 @@ VMML_TEMPLATE_CLASSNAME::export_hot_quantized_to( std::vector<unsigned char>& da
 	
 	//copy data for core
 	size_t len_core_el = 1; //currently 1 bit for sign and 7 bit for values
-	//copy first value of core tensor separately as a float
-	memcpy( data + end_data, &_hottest_core_value, len_t_comp ); end_data += len_t_comp;
 	
 	//Note: skip position (0,0,0) because highest energy core value is encoded separately
-	//TODO: check for colume-first or row-first export (see iterator)
+	//colume-first iteration
 	unsigned char core_el;
 	for (size_t r3 = 0; r3 < R3; ++r3 ) {
 		for (size_t r2 = 0; r2 < R2; ++r2 ) {
@@ -1504,9 +1505,11 @@ VMML_TEMPLATE_CLASSNAME::import_hot_quantized_from( const std::vector<unsigned c
 	memcpy( &u_min, data, len_t_comp ); end_data = len_t_comp;
 	memcpy( &u_max, data + end_data, len_t_comp ); end_data += len_t_comp;
 	
-	T_internal core_min = 0; T_internal core_max = 0;
-	memcpy( &core_min, data + end_data, len_t_comp ); end_data += len_t_comp;
+	T_internal core_min = 0; T_internal core_max = 0; //core_min is 0
+	//memcpy( &core_min, data + end_data, len_t_comp ); end_data += len_t_comp;
 	memcpy( &core_max, data + end_data, len_t_comp ); end_data += len_t_comp;
+	//copy first value of core tensor separately as a float
+	memcpy( &_hottest_core_value, data + end_data, len_t_comp ); end_data += len_t_comp;
 	
 	//copy data to u1
 	size_t len_u1 = I1 * R1 * sizeof( T_coeff );
@@ -1522,8 +1525,6 @@ VMML_TEMPLATE_CLASSNAME::import_hot_quantized_from( const std::vector<unsigned c
 	
 	//copy data to core
 	size_t len_core_el = 1; //currently 1 bit for sign and 7 bit for values
-	//copy first value of core tensor separately as a float
-	memcpy( &_hottest_core_value, data + end_data, len_t_comp ); end_data += len_t_comp;
 
 	unsigned char core_el;
 	for (size_t r3 = 0; r3 < R3; ++r3 ) {

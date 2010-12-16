@@ -256,7 +256,7 @@ private:
         u3_comp_type* _u3_comp ;
 		
 		T_internal _hottest_core_value;
-		t3_core_comp_type _cold_core_comp;
+		//t3_core_comp_type _cold_core_comp;
 		tensor3< R1, R2, R3, char> _signs;
 		
 		bool _is_quantify_coeff; 
@@ -283,7 +283,7 @@ VMML_TEMPLATE_CLASSNAME::tucker3_tensor( )
 	_u3_comp = new u3_comp_type(); _u3_comp->zero();	
 	
 	_signs.zero();
-	_cold_core_comp.zero();
+	//_cold_core_comp.zero();
 }
 	
 VMML_TEMPLATE_STRING
@@ -300,7 +300,7 @@ VMML_TEMPLATE_CLASSNAME::tucker3_tensor( t3_core_type& core )
 	_core_comp.cast_from( core );
 	
 	_signs.zero();
-	_cold_core_comp.zero();
+	//_cold_core_comp.zero();
 }
 
 VMML_TEMPLATE_STRING
@@ -317,7 +317,7 @@ VMML_TEMPLATE_CLASSNAME::tucker3_tensor( t3_core_type& core, u1_type& U1, u2_typ
 	cast_comp_members();
 	
 	_signs.zero();
-	_cold_core_comp.zero();
+	//_cold_core_comp.zero();
 }
 
 VMML_TEMPLATE_STRING
@@ -339,7 +339,7 @@ VMML_TEMPLATE_CLASSNAME::tucker3_tensor( const tucker3_type& other )
 	cast_comp_members();
 	
 	_signs.zero();
-	_cold_core_comp.zero();
+	//_cold_core_comp.zero();
 }
 		
 	
@@ -442,9 +442,9 @@ VMML_TEMPLATE_CLASSNAME::quantize_core( T_internal& core_min_, T_internal& core_
 	if ( _is_quantify_hot ) {
 		T_coeff range = 127;
 		_hottest_core_value = _core_comp.at(0,0,0);
-		_cold_core_comp = _core_comp; 
-		_cold_core_comp.at( 0, 0, 0 ) = 0;		
-		_cold_core_comp.quantize_log( _core, _signs, core_min_, core_max_, range );
+		//_cold_core_comp = _core_comp; 
+		_core_comp.at( 0, 0, 0 ) = 0;		
+		_core_comp.quantize_log( _core, _signs, core_min_, core_max_, range );
 	} else {
 		_core_comp.quantize( _core, core_min_, core_max_ );
 	}
@@ -467,8 +467,8 @@ void
 VMML_TEMPLATE_CLASSNAME::dequantize_core( const T_internal& core_min_, const T_internal& core_max_ )
 {
 	if ( _is_quantify_hot ) {
-		_core.dequantize_log( _cold_core_comp, _signs, core_min_, core_max_ );
-		_core_comp = _cold_core_comp;
+		_core.dequantize_log( _core_comp, _signs, core_min_, core_max_ );
+		//_core_comp = _cold_core_comp;
 		_core.at(0,0,0) = _hottest_core_value;
 		_core_comp.at(0,0,0) = _hottest_core_value;
 	} else {
@@ -1424,7 +1424,7 @@ VMML_TEMPLATE_CLASSNAME::export_hot_quantized_to( std::vector<unsigned char>& da
 {
 	enable_quantify_hot();
 	//quantize tucker3 components (u1-u3 and core)
-	size_t len_export_data = R1*R2*R3 + (R1*I1 + R2*I2 * R3*I3) * sizeof(T_coeff) + 5*sizeof(T_internal);
+	size_t len_export_data = R1*R2*R3 + (R1*I1 + R2*I2 * R3*I3) * sizeof(T_coeff) + 4*sizeof(T_internal);
 	char * data = new char[ len_export_data ];
 	size_t end_data = 0;
 	size_t len_t_comp = sizeof( T_internal );
@@ -1493,7 +1493,7 @@ VMML_TEMPLATE_CLASSNAME::import_hot_quantized_from( const std::vector<unsigned c
 	enable_quantify_hot();
 	size_t end_data = 0;
 	size_t len_t_comp = sizeof( T_internal );
-	size_t len_export_data = R1*R2*R3 + (R1*I1 + R2*I2 * R3*I3) * sizeof(T_coeff) + 5*sizeof(T_internal);
+	size_t len_export_data = R1*R2*R3 + (R1*I1 + R2*I2 * R3*I3) * sizeof(T_coeff) + 4*sizeof(T_internal);
 	unsigned char * data = new unsigned char[ len_export_data ];
 	for( size_t byte = 0; byte < len_export_data; ++byte )
 	{

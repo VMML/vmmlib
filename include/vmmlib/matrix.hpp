@@ -384,7 +384,7 @@ public:
     friend std::ostream& operator << ( std::ostream& os, 
         const matrix< M, N, T >& matrix )
     {
-#ifdef EQBASE_DEFINES_H
+#ifdef EQ_DEFINES_H
         const std::ios::fmtflags flags = os.flags();
         const int                prec  = os.precision();
         

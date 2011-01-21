@@ -15,7 +15,6 @@ VMMLIB_UNIT_TESTS =\
     tests/tucker3_tensor_test.cpp \
     tests/cp3_tensor_test.cpp \
     tests/matrix_pseudoinverse_test.cpp \
-    tests/lapack_fake_fortran_main.cpp
 
 VMMLIB_UNIT_TESTS_OBJECTS = ${VMMLIB_UNIT_TESTS:%.cpp=%.o}  
 
@@ -28,7 +27,7 @@ CXXFLAGS += -framework Accelerate -DVMMLIB_USE_LAPACK
 LDFLAGS += -framework Accelerate
 
 else
-CXXFLAGS += -DVMMLIB_USE_LAPACK
+CXXFLAGS += -DVMMLIB_USE_LAPACK 
 LDFLAGS +=
 LIBS += -lclapack -lf2c
 

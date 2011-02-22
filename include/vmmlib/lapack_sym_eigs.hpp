@@ -9,6 +9,7 @@
 #include <vmmlib/lapack_includes.hpp>
 
 #include <string>
+#include <vector>
 
 /** 
  *
@@ -193,6 +194,12 @@ struct lapack_sym_eigs
 	
 	// version of reduced sym. eigenvalue decomposition, 
 	// computes only the x largest magn. eigenvalues and their corresponding eigenvectors 
+	template< size_t X>
+	bool compute_x(
+					 const matrix< N, N, float_t >& A,
+					 matrix< X, N, float_t >& eigvectors,
+					 vector< X, float_t >& eigvalues
+					 );
 	
 	//computes all eigenvalues and eigenvectors for matrix A
 	bool compute_all(
@@ -230,8 +237,8 @@ lapack_sym_eigs< N, float_t >::lapack_sym_eigs()
 	p.ldz       = N; // The leading dimension of the array Z.  LDZ >= 1, and if JOBZ = 'V', LDZ >= max(1,N).
 	p.work      = new float_t;
 	//FIXME: check if correct datatype
-	p.iwork     = new __CLPK_integer[5*N]; //[5*N]; // INTEGER array, dimension (5*N)
-	p.ifail     = new __CLPK_integer[N]; //[N];
+	p.iwork     = new lapack::lapack_int[5*N]; //[5*N]; // INTEGER array, dimension (5*N)
+	p.ifail     = new lapack::lapack_int[N]; //[N];
 	p.lwork     = -1; //8N
 	
 	// workspace query
@@ -278,6 +285,54 @@ lapack_sym_eigs< N, float_t >::compute_all(
 	return p.info == 0;
 }	
 
+template< size_t N, typename float_t >
+template< size_t X >
+bool
+lapack_sym_eigs< N, float_t >::compute_x(
+										   const matrix< N, N, float_t >& A,
+										   matrix< X, N, float_t >& eigvectors,
+										   vector< X, float_t >& eigvalues
+										   )
+{
+	//get all eigenvalues and eigenvectors
+	matrix< N, N, float_t > all_eigvectors;
+	vector< N, float_t > all_eigvalues;	
+	compute_all( A, all_eigvectors, all_eigvalues );
+#if 0
+	std::cout << std::setprecision(16) 
+	<< std::endl << "eigvalues is\n" << all_eigvalues << std::endl << std::endl;
+	
+	std::cout << std::setprecision(16) 
+	<< std::endl << "eigvectors is\n" << all_eigvectors << std::endl;
+#endif
+	
+	
+	//sort the eigenvalues
+#if 0
+	//std::pair< data, original_index >;
+	std::vector< std::pair<float_t, size_t> > eigv_permutations;
+	
+	vector< N, float_t >::const_iterator it = all_eigvalues.begin(), it_end = all_eigvalues.end();
+	size_t counter = 0;
+	for( ; it != it_end; ++it, ++counter )
+	{
+		std::pair<float_t, size_t> new_pair( *it, counter);
+		eigv_permutations.push_back(new_pair);
+	}
+	
+#endif
+	
+	//select the largest magnitude eigenvalues and the corresponding eigenvectors
+
+	
+
+	
+	
+	
+	return 0;
+}	
+
+	
 	
 	
 } // namespace vmml

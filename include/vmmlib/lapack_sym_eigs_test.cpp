@@ -19,14 +19,12 @@ namespace vmml
 			0.5792, -0.5731, -0.8542, 0.1188};
 		A.set( data, data+16 );
 		
-
-		matrix< 4, 4, double > eigvectors;
-		vector< 4, double > eigvalues;
-
-		lapack_sym_eigs< 4, double >  eigs;
 		
 		//compute all eigenvalues
-		eigs.compute_all( A, eigvectors, eigvalues);
+		matrix< 4, 4, double > eigvectors;
+		vector< 4, double > eigvalues;
+		lapack_sym_eigs< 4, double >  eig;
+		eig.compute_all( A, eigvectors, eigvalues);
 		
 		double data_eigvalues[] = {-2.776873597454109, -1.505827874899289, -0.03704459256313505, 0.8483149985370052};
 		double data_eigvectors[] = {
@@ -38,15 +36,7 @@ namespace vmml
 		vector< 4, double > eigvalues_check;
 		eigvalues_check = data_eigvalues;
 		eigvectors_check.set( data_eigvectors, data_eigvectors + 16);
-		
-#if 0
-		std::cout << std::setprecision(16) << "eigvalues check:\n" << eigvalues_check
-		<< std::endl << "eigvalues is\n" << eigvalues << std::endl << std::endl;
-		
-		std::cout << std::setprecision(16) << "eigvectors check:\n" << eigvectors_check
-		<< std::endl << "eigvectors is\n" << eigvectors << std::endl;
-#endif
-		
+				
 		double precision = 1.0e-10;
 		ok = eigvalues.equals( eigvalues_check, precision );
 		ok = ok && eigvectors.equals( eigvectors_check, precision );
@@ -66,6 +56,42 @@ namespace vmml
 		}
 		//end compute all eigenvalues
 		
+		//compute x largest magnitude eigenvalues
+		matrix< 3, 4, double > eigxvectors;
+		vector< 3, double > eigxvalues;
+		lapack_sym_eigs< 4, double >  eigs;
+		eigs.compute_x( A, eigxvectors, eigxvalues);
+		
+#if 0
+		std::cout << std::setprecision(16) << "eigvalues check:\n" << eigxvalues_check
+		<< std::endl << "eigvalues is\n" << eigxvalues << std::endl << std::endl;
+		
+		std::cout << std::setprecision(16) << "eigvectors check:\n" << eigxvectors_check
+		<< std::endl << "eigvectors is\n" << eigxvectors << std::endl;
+#endif
+		
+#if 0		
+		matrix< 3, 4, double > eigxvectors_check;
+		vector< 3, double > eigxvalues_check;
+
+		ok = eigxvalues.equals( eigvalues_check, precision );
+		ok = ok && eigxvectors.equals( eigvectors_check, precision );
+		
+		if ( ok ) {
+			log( "symmetric eigenvalue decomposition (x largest eigenvalues) using lapack", ok );
+		} else {
+			std::stringstream error;
+			error 
+			<< "symmetric eigenvalue decomposition (x largest eigenvalues) using lapack: " << std::endl
+			<< "eigenvalues should be: " << std::endl << eigvalues_check << std::endl
+			<< "are: " << std::endl << eigxvalues << std::endl	
+			<< "eigenvectors should be: " << std::endl << eigvectors_check << std::endl
+			<< "are: " << std::endl << eigxvectors << std::endl;
+			
+			log_error( error.str() );
+		}
+		//end compute x largest eigenvalues
+#endif
 		
 		return true;
 	}

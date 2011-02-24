@@ -1,6 +1,6 @@
 #include "lapack_sym_eigs_test.hpp"
-#include "matrix.hpp"
-#include "lapack_sym_eigs.hpp"
+#include <vmmlib/matrix.hpp>
+#include <vmmlib/lapack_sym_eigs.hpp>
 
 
 namespace vmml

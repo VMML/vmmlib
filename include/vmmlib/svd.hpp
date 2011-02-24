@@ -95,7 +95,7 @@ void svdecompose(
                     a[i][k] *= scale;
             }
         }
-        anorm = std::max( anorm, static_cast< T >( ( fabs( w[i] ) + fabs( rv1[i] ) ) ) );
+        anorm = (std::max)( anorm, static_cast< T >( ( fabs( w[i] ) + fabs( rv1[i] ) ) ) );
     }
     for ( i = n-1; i >= 0; --i ) 
     { // Accumulation of right-hand transformations.

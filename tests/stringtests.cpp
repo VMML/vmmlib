@@ -1,4 +1,4 @@
-#include <vmmlib/vmmlib.h>
+#include <vmmlib/vmmlib.hpp>
 
 #include <string>
 #include <iostream>

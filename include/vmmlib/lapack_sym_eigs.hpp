@@ -189,6 +189,14 @@ namespace lapack
 template< size_t N, typename float_t >
 struct lapack_sym_eigs
 {
+	
+	typedef vector< N, float_t > evalues_type;
+	typedef typename evalues_type::iterator evalue_iterator;
+	typedef typename evalues_type::const_iterator evalue_const_iterator;
+	
+	typedef matrix< N, N, float_t > evectors_type;
+	
+	
 	lapack_sym_eigs();
 	~lapack_sym_eigs();
 	
@@ -197,7 +205,7 @@ struct lapack_sym_eigs
 	template< size_t X>
 	bool compute_x(
 					 const matrix< N, N, float_t >& A,
-					 matrix< X, N, float_t >& eigvectors,
+					 matrix< N, X, float_t >& eigvectors,
 					 vector< X, float_t >& eigvalues
 					 );
 	
@@ -285,49 +293,62 @@ lapack_sym_eigs< N, float_t >::compute_all(
 	return p.info == 0;
 }	
 
+bool sort_eig_values(const std::pair<float_t, size_t>& pair1, const std::pair<float_t, size_t>& pair2)
+{
+	return fabs(pair1.first) > fabs(pair2.first);
+}
+	
 template< size_t N, typename float_t >
 template< size_t X >
 bool
 lapack_sym_eigs< N, float_t >::compute_x(
 										   const matrix< N, N, float_t >& A,
-										   matrix< X, N, float_t >& eigvectors,
+										   matrix< N, X, float_t >& eigvectors,
 										   vector< X, float_t >& eigvalues
 										   )
 {
-	//get all eigenvalues and eigenvectors
-	matrix< N, N, float_t > all_eigvectors;
-	vector< N, float_t > all_eigvalues;	
-	compute_all( A, all_eigvectors, all_eigvalues );
-#if 0
-	std::cout << std::setprecision(16) 
-	<< std::endl << "eigvalues is\n" << all_eigvalues << std::endl << std::endl;
+	//(1) get all eigenvalues and eigenvectors
+	evectors_type* all_eigvectors = new evectors_type();
+	evalues_type all_eigvalues;	
+	compute_all( A, *all_eigvectors, all_eigvalues );
 	
-	std::cout << std::setprecision(16) 
-	<< std::endl << "eigvectors is\n" << all_eigvectors << std::endl;
-#endif
-	
-	
-	//sort the eigenvalues
-#if 0
+	//(2) sort the eigenvalues
 	//std::pair< data, original_index >;
-	std::vector< std::pair<float_t, size_t> > eigv_permutations;
+	std::vector< std::pair<float_t, size_t> > eig_permutations;
 	
-	vector< N, float_t >::const_iterator it = all_eigvalues.begin(), it_end = all_eigvalues.end();
+	evalue_const_iterator it = all_eigvalues.begin(), it_end = all_eigvalues.end();
 	size_t counter = 0;
 	for( ; it != it_end; ++it, ++counter )
 	{
 		std::pair<float_t, size_t> new_pair( *it, counter);
-		eigv_permutations.push_back(new_pair);
+		eig_permutations.push_back(new_pair);
 	}
-	
-#endif
-	
-	//select the largest magnitude eigenvalues and the corresponding eigenvectors
+	std::sort(eig_permutations.begin(), eig_permutations.end(), sort_eig_values);
 
+	//sort the eigenvectors according to eigenvalue permutations
+	evectors_type* sorted_eigvectors = new evectors_type();
+	evalues_type sorted_eigvalues;	
+	typename std::vector< std::pair<float_t, size_t> >::const_iterator it2 = eig_permutations.begin(), it2_end = eig_permutations.end();
+	evalue_iterator evalues_it = sorted_eigvalues.begin();
+	counter = 0;
+	for( ; it2 != it2_end; ++it2, ++evalues_it, ++counter )
+	{
+		*evalues_it = it2->first;
+		sorted_eigvectors->set_column( counter, all_eigvectors->get_column( it2->second ));
+	}	
 	
-
+	//(3) select the largest magnitude eigenvalues and the corresponding eigenvectors
+	typename vector< X, float_t >::iterator it3 = eigvalues.begin(), it3_end = eigvalues.end();
+	evalues_it = sorted_eigvalues.begin();
+	for( ; it3 != it3_end; ++it3, ++evalues_it )
+	{
+		*it3 = *evalues_it;
+	}	
 	
+	sorted_eigvectors->get_sub_matrix( eigvectors );
 	
+	delete all_eigvectors;
+	delete sorted_eigvectors;	
 	
 	return 0;
 }	

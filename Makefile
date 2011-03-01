@@ -10,6 +10,7 @@ VMMLIB_UNIT_TESTS =\
     tests/lapack_linear_least_squares_test.cpp\
     tests/lapack_gaussian_elimination_test.cpp\
     tests/vmmlib_unit_tests_main.cpp\
+    tests/lapack_sym_eigs_test.cpp\
     tests/tensor3_test.cpp \
     tests/tensor3_iterator_test.cpp \
     tests/tucker3_tensor_test.cpp \

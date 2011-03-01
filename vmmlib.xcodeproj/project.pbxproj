@@ -45,7 +45,7 @@
 		CF2DD265126C91670036DE05 /* cp3_tensor_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CF2DD264126C91670036DE05 /* cp3_tensor_test.cpp */; };
 		CF42E5EA125F738600C0A38E /* matrix_pseudoinverse_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CF42E5E9125F738600C0A38E /* matrix_pseudoinverse_test.cpp */; };
 		CF7FA8D5114EB617003076E4 /* tucker3_tensor_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CF7FA8D4114EB617003076E4 /* tucker3_tensor_test.cpp */; };
-		CFF952CF1312B6B200071FB3 /* lapack_sym_eigs_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CFF952CE1312B6B200071FB3 /* lapack_sym_eigs_test.cpp */; };
+		CFF95533131CECD100071FB3 /* lapack_sym_eigs_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CFF95532131CECD100071FB3 /* lapack_sym_eigs_test.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -128,8 +128,8 @@
 		CF7FA8D9114EB696003076E4 /* tucker3_tensor_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = tucker3_tensor_test.hpp; path = tests/tucker3_tensor_test.hpp; sourceTree = "<group>"; };
 		CFD82348129A7AF900CE6A3C /* tensor3_data_store.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = tensor3_data_store.hpp; path = include/vmmlib/tensor3_data_store.hpp; sourceTree = "<group>"; };
 		CFF952C41312B52C00071FB3 /* lapack_sym_eigs.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = lapack_sym_eigs.hpp; path = include/vmmlib/lapack_sym_eigs.hpp; sourceTree = "<group>"; };
-		CFF952CD1312B6B200071FB3 /* lapack_sym_eigs_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = lapack_sym_eigs_test.hpp; path = include/vmmlib/lapack_sym_eigs_test.hpp; sourceTree = "<group>"; };
-		CFF952CE1312B6B200071FB3 /* lapack_sym_eigs_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lapack_sym_eigs_test.cpp; path = include/vmmlib/lapack_sym_eigs_test.cpp; sourceTree = "<group>"; };
+		CFF95531131CECD100071FB3 /* lapack_sym_eigs_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = lapack_sym_eigs_test.hpp; path = tests/lapack_sym_eigs_test.hpp; sourceTree = "<group>"; };
+		CFF95532131CECD100071FB3 /* lapack_sym_eigs_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lapack_sym_eigs_test.cpp; path = tests/lapack_sym_eigs_test.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -341,8 +341,8 @@
 				98244A3D0E3F5AEE0018E13A /* lapack_linear_least_squares_test.cpp */,
 				9863B6F011903EFE00887FFC /* lapack_gaussian_elimination_test.hpp */,
 				9863B6F111903EFE00887FFC /* lapack_gaussian_elimination_test.cpp */,
-				CFF952CD1312B6B200071FB3 /* lapack_sym_eigs_test.hpp */,
-				CFF952CE1312B6B200071FB3 /* lapack_sym_eigs_test.cpp */,
+				CFF95531131CECD100071FB3 /* lapack_sym_eigs_test.hpp */,
+				CFF95532131CECD100071FB3 /* lapack_sym_eigs_test.cpp */,
 				CF42E5E7125F736E00C0A38E /* matrix_pseudoinverse_test.hpp */,
 				CF42E5E9125F738600C0A38E /* matrix_pseudoinverse_test.cpp */,
 				98476418110DDB940024A1F8 /* tensor3_test.hpp */,
@@ -500,7 +500,7 @@
 				CF42E5EA125F738600C0A38E /* matrix_pseudoinverse_test.cpp in Sources */,
 				CF2DD25E126C8EAE0036DE05 /* tensor3_iterator_test.cpp in Sources */,
 				CF2DD265126C91670036DE05 /* cp3_tensor_test.cpp in Sources */,
-				CFF952CF1312B6B200071FB3 /* lapack_sym_eigs_test.cpp in Sources */,
+				CFF95533131CECD100071FB3 /* lapack_sym_eigs_test.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

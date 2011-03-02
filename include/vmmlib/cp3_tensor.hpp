@@ -83,9 +83,9 @@ namespace vmml
 		//higher-order power method (lathauwer et al., 2000b)
 		void hopm( const t3_type& data_ );
 		
-		void hosvd_mode1( const t3_type& data_, u1_type& U1_ ) const;
-		void hosvd_mode2( const t3_type& data_, u2_type& U2_ ) const;
-		void hosvd_mode3( const t3_type& data_, u3_type& U3_ ) const;
+		void hopm_mode1( const t3_type& data_, u1_type& U1_ ) const;
+		void hopm_mode2( const t3_type& data_, u2_type& U2_ ) const;
+		void hopm_mode3( const t3_type& data_, u3_type& U3_ ) const;
 		
 		void optimize_mode1( const t3_type& data_, u1_type& U1_optimized_, const u2_type& U2_, const u3_type& U3_ ) const;
 		void optimize_mode2( const t3_type& data_, const u1_type& U1_, u2_type& U2_optimized_, const u3_type& U3_ ) const;		
@@ -187,9 +187,9 @@ VMML_TEMPLATE_CLASSNAME::hopm( const t3_type& data_ )
 	float_t lambda;
 	
 	//intialize u1-u3
-	//hosvd_mode1( data_, _u1 ); inital guess not needed for u1 since it will be computed in the first optimization step
-	hosvd_mode2( data_, *_u2 );
-	hosvd_mode3( data_, *_u3 );
+	//hopm_mode1( data_, _u1 ); inital guess not needed for u1 since it will be computed in the first optimization step
+	hopm_mode2( data_, *_u2 );
+	hopm_mode3( data_, *_u3 );
 	
 	//std::cout << "initial u2: " << std::endl << _u2 << std::endl;
 	//std::cout << "initial u3: " << std::endl << _u3 << std::endl;
@@ -231,7 +231,7 @@ VMML_TEMPLATE_CLASSNAME::hopm( const t3_type& data_ )
 	
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::hosvd_mode1( const t3_type& data_, u1_type& U1_ ) const
+VMML_TEMPLATE_CLASSNAME::hopm_mode1( const t3_type& data_, u1_type& U1_ ) const
 {
 	t3_coeff_type data;
 	data.cast_from( data_ );
@@ -249,7 +249,7 @@ VMML_TEMPLATE_CLASSNAME::hosvd_mode1( const t3_type& data_, u1_type& U1_ ) const
 
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::hosvd_mode2( const t3_type& data_, u2_type& U2_ ) const
+VMML_TEMPLATE_CLASSNAME::hopm_mode2( const t3_type& data_, u2_type& U2_ ) const
 {
 	t3_coeff_type data;
 	data.cast_from( data_ );
@@ -268,7 +268,7 @@ VMML_TEMPLATE_CLASSNAME::hosvd_mode2( const t3_type& data_, u2_type& U2_ ) const
 
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::hosvd_mode3( const t3_type& data_, u3_type& U3_ ) const
+VMML_TEMPLATE_CLASSNAME::hopm_mode3( const t3_type& data_, u3_type& U3_ ) const
 {
 	t3_coeff_type data;
 	data.cast_from( data_ );

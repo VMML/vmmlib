@@ -239,7 +239,7 @@ namespace vmml
 		float u1_min, u1_max, u2_min, u2_max, u3_min, u3_max, core_min, core_max, u_min, u_max;
 		
 		//std::cout << "start quant" << std::endl;
-		tuck3_hooi_3.enable_quantify_coeff();
+		tuck3_hooi_3.enable_quantify_linear();
 		tuck3_hooi_3.decompose( t3_data_hooi_3, u1_min, u1_max, u2_min, u2_max, u3_min, u3_max, core_min, core_max );
 		//std::cout << "Tucker3 is : " << std::endl << tuck3_hooi_3 << std::endl;
 		
@@ -335,15 +335,15 @@ namespace vmml
 			log_error( error.str() );
 		}		
 		
-		//export bytes
+		//export bytes (for one min/max value for all Us)
 		std::vector<unsigned char> export_data_vec;
 		tuck3_hooi_3.export_quantized_to( export_data_vec );
 		
 		//check exported data
 		double export_data2_check[] = {
-			-0.715833, 0.865947, -0.721095, 0.692817, -0.921997, 0.921997, -251.345, 16.3135, 
-			25669, 0, 1004, 65535, 12968, 41937,
-			1311, 0, 0, 65535,
+			-0.921997, 0.921997, -251.345, 16.3135,  /* all min/max values -0.715833, 0.865947, -0.721095, 0.692817, -0.921997, 0.921997,*/
+			29346, 7327, 8188, 63543, 18451, 43301,
+			8145, 7140, 7140, 57390,
 			0, 19007, 19007, 65535,
 			0, 60923, 61001, 59355, 61571, 52960, 51805, 65535 };
 		
@@ -355,29 +355,19 @@ namespace vmml
 		float u1_max_e = *float_ptr; float_ptr++;
 		ok = ((fabs(float(export_data2_check[0]) - u1_min_e)) < 1.0e-4) && ((fabs(float(export_data2_check[1]) - u1_max_e)) < 1.0e-4 );
 		//std::cout<<"#### U1 min value === " << u1_min_e<<", U1 max value === " << u1_max_e << std::endl;
-		//check u2 min/max
-		float u2_min_e = *float_ptr; float_ptr++;
-		float u2_max_e = *float_ptr; float_ptr++;
-		ok = ok ? ((fabs(float(export_data2_check[2]) - u2_min_e)) < 1.0e-4) && ((fabs(float(export_data2_check[3]) - u2_max_e)) < 1.0e-4 ) : ok;
-		//std::cout<<"#### U2 min value === " << u2_min_e<<", U2 max value === " << u2_max_e << std::endl;
-		//std::cout<<"#### should be U2 min value === " << u2_min_e_check<<", U3 max value === " << u2_max_e_check << std::endl;
-		float u3_min_e = *float_ptr; float_ptr++;
-		float u3_max_e = *float_ptr; float_ptr++;
-		ok = ok ? ((fabs(float(export_data2_check[4]) - u3_min_e)) < 1.0e-4) && ((fabs(float(export_data2_check[5]) - u3_max_e)) < 1.0e-4 ) : ok ;
-		//std::cout<<"#### U3 min value === " << u3_min_e<<", U3 max value === " << u3_max_e << std::endl;
-		//std::cout<<"#### should be U3 min value === " << u3_min_e_check<<", U3 max value === " << u3_max_e_check << std::endl;
+
 		float core_min_e = *float_ptr; float_ptr++;
 		float core_max_e = *float_ptr; float_ptr++;
-		ok = ok ? ((fabs(float(export_data2_check[6]) - core_min_e)) < 1.0e-3) && ((fabs(float(export_data2_check[7]) - core_max_e)) < 1.0e-3 ) : ok;
+		ok = ok ? ((fabs(float(export_data2_check[2]) - core_min_e)) < 1.0e-3) && ((fabs(float(export_data2_check[3]) - core_max_e)) < 1.0e-3 ) : ok;
 		//std::cout<<"#### core min value === " << core_min_e <<", core max value === " << core_max_e << std::endl;
-		//std::cout<<"#### shold be core min value === " << export_data2_check[6] <<", core max value === " << export_data2_check[7] << std::endl;
+		//std::cout<<"#### shold be core min value === " << export_data2_check[2] <<", core max value === " << export_data2_check[3] << std::endl;
 		
 		unsigned short* value_ptr = (unsigned short*)float_ptr;
 		unsigned short value;
-		size_t index = 8;
+		size_t index = 4;
 		size_t end_index = index + 6;
 		//check u1
-		for ( ; (index < end_index) && ok ; ++index ) {
+		for ( ; (index < end_index) && ok; ++index ) {
 			value = *value_ptr;
 			//std::cout<<"#### U1 value === " << value << ", should be " << export_data2_check[index] << std::endl;
 			value_ptr++;
@@ -393,7 +383,7 @@ namespace vmml
 		}
 		//check u3		
 		end_index += 4;
-		for ( ; (index < end_index) && ok; ++index ) {
+		for ( ; (index < end_index) ; ++index ) {
 			value = *value_ptr;
 			//std::cout<<"#### U3 value === " << value << ", should be " << export_data2_check[index] << std::endl;
 			value_ptr++;
@@ -402,7 +392,7 @@ namespace vmml
 		
 		//check core values
 		end_index += 8;
-		for ( ; (index < end_index) && ok ; ++index ) {
+		for ( ; (index < end_index) && ok; ++index ) {
 			value = *value_ptr;
 			//std::cout<<"#### core value === " << value << ", should be " << export_data2_check[index] << std::endl;
 			value_ptr++;

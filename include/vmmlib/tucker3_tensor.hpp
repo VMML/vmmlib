@@ -18,7 +18,8 @@
 #ifndef __VMML__TUCKER3_TENSOR__HPP__
 #define __VMML__TUCKER3_TENSOR__HPP__
 
-#define CODE_ALL_U_MIN_MAX 1
+#define CODE_ALL_U_MIN_MAX 0
+#define CORE_RANGE 127
 
 
 #include <vmmlib/tensor3.hpp>
@@ -92,8 +93,15 @@ public:
 		
 	void enable_quantify_coeff() { _is_quantify_coeff = true; };
 	void disable_quantify_coeff() { _is_quantify_coeff = false; } ;
-	void enable_quantify_hot() { _is_quantify_hot = true; };
-	void disable_quantify_hot() { _is_quantify_hot = false; } ;
+	void enable_quantify_hot() { _is_quantify_hot = true; _is_quantify_coeff = true;};
+	void disable_quantify_hot() { _is_quantify_hot = false; _is_quantify_coeff = false;} ;
+	void enable_quantify_linear() { _is_quantify_linear = true; _is_quantify_coeff = true;};
+	void disable_quantify_linear() { _is_quantify_linear = false; _is_quantify_coeff = false;} ;
+	void enable_quantify_log() { _is_quantify_log = true; _is_quantify_coeff = true;};
+	void disable_quantify_log() { _is_quantify_log = false; _is_quantify_coeff = false;} ;
+		
+	tensor3< R1, R2, R3, char> get_core_signs() { return _signs; };
+	void set_core_signs(	const tensor3< R1, R2, R3, char> signs_ ) { _signs = signs_; } ;
 		
 	void set_core( t3_core_type& core )  { _core = t3_core_type( core ); _core_comp.cast_from( core ); } ;
 	void set_u1( u1_type& U1 ) { *_u1 = U1; _u1_comp->cast_from( U1 ); } ;
@@ -261,6 +269,8 @@ private:
 		
 		bool _is_quantify_coeff; 
 		bool _is_quantify_hot; 
+		bool _is_quantify_log; 
+		bool _is_quantify_linear; 
 		
 }; // class tucker3_tensor
 
@@ -272,6 +282,7 @@ private:
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::tucker3_tensor( )
 	: _is_quantify_coeff( false ), _is_quantify_hot( false ), _hottest_core_value( 0 )
+	, _is_quantify_linear( false ), _is_quantify_log( false )
 {
 	_core.zero();
 	_u1 = new u1_type(); _u1->zero();
@@ -289,6 +300,7 @@ VMML_TEMPLATE_CLASSNAME::tucker3_tensor( )
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::tucker3_tensor( t3_core_type& core )
 	: _is_quantify_coeff( false ), _is_quantify_hot( false ), _hottest_core_value( 0 )
+	, _is_quantify_linear( false ), _is_quantify_log( false )
 {
 	_core = core;
 	_u1 = new u1_type(); _u1->zero();
@@ -306,6 +318,7 @@ VMML_TEMPLATE_CLASSNAME::tucker3_tensor( t3_core_type& core )
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::tucker3_tensor( t3_core_type& core, u1_type& U1, u2_type& U2, u3_type& U3 )
 	: _is_quantify_coeff( false ), _is_quantify_hot( false ), _hottest_core_value( 0 )
+	, _is_quantify_linear( false ), _is_quantify_log( false )
 {
 	_core = core;
 	_u1 = new u1_type( U1 );
@@ -323,6 +336,7 @@ VMML_TEMPLATE_CLASSNAME::tucker3_tensor( t3_core_type& core, u1_type& U1, u2_typ
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::tucker3_tensor( const tucker3_type& other )
 	: _is_quantify_coeff( false ), _is_quantify_hot( false ), _hottest_core_value( 0 )
+	, _is_quantify_linear( false ), _is_quantify_log( false )
 {
 	_u1 = new u1_type();
 	_u2 = new u2_type();
@@ -440,13 +454,16 @@ void
 VMML_TEMPLATE_CLASSNAME::quantize_core( T_internal& core_min_, T_internal& core_max_ )
 {
 	if ( _is_quantify_hot ) {
-		T_coeff range = 127;
 		_hottest_core_value = _core_comp.at(0,0,0);
-		//_cold_core_comp = _core_comp; 
 		_core_comp.at( 0, 0, 0 ) = 0;		
-		_core_comp.quantize_log( _core, _signs, core_min_, core_max_, range );
+		_core_comp.quantize_log( _core, _signs, core_min_, core_max_, T_coeff(CORE_RANGE) );
+	} else if ( _is_quantify_linear ) {
+		_core_comp.quantize( _core, core_min_, core_max_ );
+	} else if ( _is_quantify_log ) {
+		_core_comp.quantize_log( _core, _signs, core_min_, core_max_, T_coeff(CORE_RANGE) );
 	} else {
 		_core_comp.quantize( _core, core_min_, core_max_ );
+		std::cout << "quant.method not specified" << std::endl;
 	}
 }	
 
@@ -468,12 +485,15 @@ VMML_TEMPLATE_CLASSNAME::dequantize_core( const T_internal& core_min_, const T_i
 {
 	if ( _is_quantify_hot ) {
 		_core.dequantize_log( _core_comp, _signs, core_min_, core_max_ );
-		//_core_comp = _cold_core_comp;
 		_core.at(0,0,0) = _hottest_core_value;
 		_core_comp.at(0,0,0) = _hottest_core_value;
+	} else if ( _is_quantify_linear ) {
+		_core.dequantize( _core_comp, core_min_, core_max_ );
+	} else if ( _is_quantify_log ) {
+		_core.dequantize_log( _core_comp, _signs, core_min_, core_max_ );
 	} else {
 		_core.dequantize( _core_comp, core_min_, core_max_ );
-	}
+	}	
 }		
 	
 VMML_TEMPLATE_STRING
@@ -811,7 +831,7 @@ VMML_TEMPLATE_CLASSNAME::get_svd_u_red( const matrix< M, N, T >& data_, matrix< 
 	vector< N, T_svd >* lambdas  = new vector<  N, T_svd >();
 	lapack_svd< M, N, T_svd >* svd = new lapack_svd<  M, N, T_svd >();
 	if( svd->compute_and_overwrite_input( *u_double, *lambdas )) {
-		if( _is_quantify_coeff || _is_quantify_hot ){
+		if( _is_quantify_coeff ){
 			T_internal min_value = 0; T_internal max_value = 0;
 			u_internal->cast_from( *u_double );
 			u_internal->quantize( *u_quant, min_value, max_value );

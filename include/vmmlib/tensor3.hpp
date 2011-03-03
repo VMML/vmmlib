@@ -99,7 +99,12 @@ public:
 	typename enable_if< J1 <= I1 && J2 <= I2 && J3 <= I3 >::type*
     get_sub_tensor3( tensor3<J1, J2, J3, T >& result, 
 					size_t row_offset = 0, size_t col_offset = 0, size_t slice_offset = 0 ) const;
-
+	
+	template< size_t J1, size_t J2, size_t J3 >
+	typename enable_if< J1 <= I1 && J2 <= I2 && J3 <= I3 >::type*
+    set_sub_tensor3( const tensor3<J1, J2, J3, T >& sub_data_, 
+					size_t row_offset = 0, size_t col_offset = 0, size_t slice_offset = 0 );
+	
     inline void get_I1_vector( size_t i2, size_t i3, vector< I1, T >& data ) const; // I1_vector is a column vector with all values i1 at i2 and i3
     inline void get_I2_vector( size_t i1, size_t i3, vector< I2, T >& data ) const; // I2_vector is a row vector with all values i2 at i1 and i3
     inline void get_I3_vector( size_t i1, size_t i2, vector< I3, T >& data ) const; // I3_vector is a vector with all values i3 at a given i1 and i2
@@ -940,7 +945,30 @@ get_sub_tensor3( tensor3<J1, J2, J3, T >& result,
 	return 0;
 }
 	
-
+VMML_TEMPLATE_STRING
+template< size_t J1, size_t J2, size_t J3 >
+typename enable_if< J1 <= I1 && J2 <= I2 && J3 <= I3 >::type*
+VMML_TEMPLATE_CLASSNAME::
+set_sub_tensor3( const tensor3<J1, J2, J3, T >& sub_data_,  
+				size_t row_offset, size_t col_offset, size_t slice_offset )
+{
+#ifdef VMMLIB_SAFE_ACCESSORS
+	if ( J1 + row_offset > I1 || J2 + col_offset > I2 || J3 + slice_offset > I3 )
+		VMMLIB_ERROR( "index out of bounds.", VMMLIB_HERE );
+#endif
+	
+	for( size_t slice = 0; slice < J3; ++slice )
+	{
+		for( size_t row = 0; row < J1; ++row )
+		{
+			for( size_t col = 0; col < J2; ++col )
+			{
+				at( row_offset + row, col_offset + col, slice_offset + slice ) = sub_data_.at( row, col, slice ) ;
+			}
+		}
+	}
+	return 0;
+}
 
 VMML_TEMPLATE_STRING
 typename VMML_TEMPLATE_CLASSNAME::iterator
@@ -1615,10 +1643,10 @@ void
 		*it_sign  = ((*it) < 0.f) ? 0 : 1;
 		T quant_value = 0;
 		if (std::numeric_limits<TT>::is_signed ) {
-			quant_value = log( 1 + value) / log(1 + t_range ) * tt_range_;
+			quant_value = log2( 1 + value) / log2(1 + t_range ) * tt_range_;
 			*it_quant = TT( std::min( std::max( min_tt_range, long(quant_value + 0.5)), max_tt_range ));
 		} else {
-			quant_value = log( 1 + (value - min_value_ )) / log(1 + t_range ) * tt_range_;
+			quant_value = log2( 1 + (value - min_value_ )) / log2(1 + t_range ) * tt_range_;
 			*it_quant = TT(std::min( std::max( min_tt_range, long(quant_value + 0.5)), max_tt_range ));
 		}
 	}
@@ -1653,10 +1681,10 @@ VMML_TEMPLATE_CLASSNAME::dequantize_log( tensor3< I1, I2, I3, TT >& dequantized_
 		TT dequant_value = 0;
 		sign  = ((*it_sign) == 0) ? -1 : 1;
 		if (std::numeric_limits<T>::is_signed ) {
-			dequant_value = exp( (value / t_range) * log(1 + tt_range)) - 1;
+			dequant_value = exp2( (value / t_range) * log2(1 + tt_range)) - 1;
 			*it_dequant = sign * (std::min( std::max( min_value_, dequant_value ), max_value_ ));
 		} else {
-			dequant_value = exp( (value / t_range) * log(1 + tt_range)) - 1;
+			dequant_value = exp2( (value / t_range) * log2(1 + tt_range)) - 1;
 			*it_dequant = sign * (std::min( std::max( min_value_, dequant_value + min_value_ ), max_value_ ));
 		}
 	}

@@ -876,15 +876,26 @@ tensor3_test::run()
 		
 		tensor3< 2, 3, 2, int > t3_sub;
 		t3_bigger.get_sub_tensor3( t3_sub, 2, 2, 1 );
+		ok = t3_sub == t3_sub_check;
 		
+		t3_sub.fill_increasing_values();
+		t3_bigger.set_sub_tensor3( t3_sub, 0, 1, 1 );
 		
-		if ( t3_sub == t3_sub_check )	{	
-			log( "get sub tensor3" , true  );
+		tensor3< 4, 5, 6, int > t3_bigger_check;
+		t3_bigger_check = t3_bigger;
+		t3_bigger_check.at(0, 1, 1 ) = 0; t3_bigger_check.at(0, 2, 1 ) = 1; t3_bigger_check.at(0, 3, 1 ) = 2;
+		t3_bigger_check.at(1, 1, 1 ) = 3; t3_bigger_check.at(1, 2, 1 ) = 4; t3_bigger_check.at(1, 3, 1 ) = 5;
+		t3_bigger_check.at(0, 1, 2 ) = 6; t3_bigger_check.at(0, 2, 2 ) = 7; t3_bigger_check.at(0, 3, 2 ) = 8;
+		t3_bigger_check.at(1, 1, 2 ) = 9; t3_bigger_check.at(1, 2, 2 ) = 10; t3_bigger_check.at(1, 3, 2 ) = 11;
+		
+		ok = ok && ( t3_bigger == t3_bigger_check);
+		if ( ok )	{	
+			log( "get/set sub tensor3" , ok  );
 		} else
 		{
 			std::stringstream error;
 			error 
-			<< "get sub tensor3 " << std::endl
+			<< "get/set sub tensor3 " << std::endl
 			<< "sub tensor3 is: " << std::endl << t3_sub << std::endl 
 			<< "should be: " << std::endl << t3_sub_check << std::endl;			
 			log_error( error.str() );

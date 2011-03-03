@@ -264,7 +264,6 @@ private:
         u3_comp_type* _u3_comp ;
 		
 		T_internal _hottest_core_value;
-		//t3_core_comp_type _cold_core_comp;
 		tensor3< R1, R2, R3, char> _signs;
 		
 		bool _is_quantify_coeff; 
@@ -294,7 +293,6 @@ VMML_TEMPLATE_CLASSNAME::tucker3_tensor( )
 	_u3_comp = new u3_comp_type(); _u3_comp->zero();	
 	
 	_signs.zero();
-	//_cold_core_comp.zero();
 }
 	
 VMML_TEMPLATE_STRING
@@ -312,7 +310,6 @@ VMML_TEMPLATE_CLASSNAME::tucker3_tensor( t3_core_type& core )
 	_core_comp.cast_from( core );
 	
 	_signs.zero();
-	//_cold_core_comp.zero();
 }
 
 VMML_TEMPLATE_STRING
@@ -330,7 +327,6 @@ VMML_TEMPLATE_CLASSNAME::tucker3_tensor( t3_core_type& core, u1_type& U1, u2_typ
 	cast_comp_members();
 	
 	_signs.zero();
-	//_cold_core_comp.zero();
 }
 
 VMML_TEMPLATE_STRING
@@ -353,7 +349,6 @@ VMML_TEMPLATE_CLASSNAME::tucker3_tensor( const tucker3_type& other )
 	cast_comp_members();
 	
 	_signs.zero();
-	//_cold_core_comp.zero();
 }
 		
 	
@@ -1574,8 +1569,6 @@ VMML_TEMPLATE_CLASSNAME::import_hot_quantized_from( const std::vector<unsigned c
 	<< *_u3 << std::endl << *_u3_comp << std::endl
 	<< " core " << std::endl
 	<< _core << std::endl
-	<< " cold core comp " << std::endl
-	<< _cold_core_comp << std::endl
 	<< " core_comp " << std::endl
 	<< _core_comp << std::endl;
 #endif

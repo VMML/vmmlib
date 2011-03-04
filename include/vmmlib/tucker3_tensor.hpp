@@ -93,11 +93,11 @@ public:
 		
 	void enable_quantify_coeff() { _is_quantify_coeff = true; };
 	void disable_quantify_coeff() { _is_quantify_coeff = false; } ;
-	void enable_quantify_hot() { _is_quantify_hot = true; _is_quantify_coeff = true;};
+	void enable_quantify_hot() { _is_quantify_hot = true; _is_quantify_coeff = true; _is_quantify_log = false; _is_quantify_linear = false;};
 	void disable_quantify_hot() { _is_quantify_hot = false; _is_quantify_coeff = false;} ;
-	void enable_quantify_linear() { _is_quantify_linear = true; _is_quantify_coeff = true;};
+	void enable_quantify_linear() { _is_quantify_linear = true; _is_quantify_coeff = true; _is_quantify_hot = false;};
 	void disable_quantify_linear() { _is_quantify_linear = false; _is_quantify_coeff = false;} ;
-	void enable_quantify_log() { _is_quantify_log = true; _is_quantify_coeff = true;};
+	void enable_quantify_log() { _is_quantify_log = true; _is_quantify_coeff = true; _is_quantify_hot = false;};
 	void disable_quantify_log() { _is_quantify_log = false; _is_quantify_coeff = false;} ;
 		
 	tensor3< R1, R2, R3, char> get_core_signs() { return _signs; };
@@ -124,8 +124,13 @@ public:
 		
 	//use this version, works with a better quantization for the core tensor:
 	//logarithmic quantization and separate high energy core vale
+    //suitable for voxelwise reconstruction
 	void export_hot_quantized_to(  std::vector<unsigned char>& data_out_  );
 	void import_hot_quantized_from( const std::vector<unsigned char>& data_in_ );
+		
+	//use this version for the ttm export/import (core: backward cyclic), without plain hot value 
+	void export_ttm_quantized_to(  std::vector<unsigned char>& data_out_  );
+	void import_ttm_quantized_from( const std::vector<unsigned char>& data_in_ );
 		
 	//get number of nonzeros for tensor decomposition
 	size_t nnz() const;
@@ -1474,7 +1479,6 @@ VMML_TEMPLATE_CLASSNAME::export_hot_quantized_to( std::vector<unsigned char>& da
 	//copy data for core
 	size_t len_core_el = 1; //currently 1 bit for sign and 7 bit for values
 	
-	//Note: skip position (0,0,0) because highest energy core value is encoded separately
 	//colume-first iteration
 	unsigned char core_el;
 	for (size_t r3 = 0; r3 < R3; ++r3 ) {
@@ -1495,7 +1499,6 @@ VMML_TEMPLATE_CLASSNAME::export_hot_quantized_to( std::vector<unsigned char>& da
 		data_out_.push_back( data[byte] );
 	}
 	delete[] data;
-	
 }
 	
 	
@@ -1574,7 +1577,129 @@ VMML_TEMPLATE_CLASSNAME::import_hot_quantized_from( const std::vector<unsigned c
 #endif
 }
 	
+VMML_TEMPLATE_STRING
+void
+VMML_TEMPLATE_CLASSNAME::export_ttm_quantized_to( std::vector<unsigned char>& data_out_ )
+{
+	enable_quantify_log();
+	//quantize tucker3 components (u1-u3 and core)
+	size_t len_export_data = R1*R2*R3 + (R1*I1 + R2*I2 + R3*I3) * sizeof(T_coeff) + 3*sizeof(T_internal);
+	char * data = new char[ len_export_data ];
+	size_t end_data = 0;
+	size_t len_t_comp = sizeof( T_internal );
+	
+	//quantize basis matrices and copy min-max values
+	T_internal u_min, u_max;
+	quantize_basis_matrices( u_min, u_max);
+	memcpy( data, &u_min, len_t_comp ); end_data = len_t_comp;
+	memcpy( data + end_data, &u_max, len_t_comp ); end_data += len_t_comp;
+	
+	//quantize core and copy min-max values
+	T_internal core_min, core_max;
+	quantize_core( core_min, core_max );		
+	//memcpy( data + end_data, &core_min, len_t_comp ); end_data += len_t_comp; min_value is always zero in log quant
+	memcpy( data + end_data, &core_max, len_t_comp ); end_data += len_t_comp;
+	
+	//copy data for u1
+	size_t len_u1 = I1 * R1 * sizeof( T_coeff );
+	memcpy( data + end_data, _u1, len_u1 ); end_data += len_u1;
+	
+	//copy data for u2
+	size_t len_u2 = I2 * R2 * sizeof( T_coeff );
+	memcpy( data + end_data, _u2, len_u2 ); end_data += len_u2;
+	
+	//copy data for u3
+	size_t len_u3 = I3 * R3 * sizeof( T_coeff );
+	memcpy( data + end_data, _u3, len_u3 ); end_data += len_u3;
+	
+	//copy data for core
+	size_t len_core_el = 1; //currently 1 bit for sign and 7 bit for values
+	
+	//colume-first iteration
+	//backward cylcling after lathauwer et al. 
+	unsigned char core_el;
+	for (size_t r2 = 0; r2 < R2; ++r2 ) {
+		for (size_t r3 = 0; r3 < R3; ++r3 ) {
+			for (size_t r1 = 0; r1 < R1; ++r1 ) {
+				core_el = (_core.at( r1, r2, r3 ) | (_signs.at( r1, r2, r3) * 0x80 ));
+				/*std::cout << "value: " << int(_core.at( r1, r2, r3 )) << " bit " << int( core_el ) 
+				 << " sign: " << int(_signs.at( r1, r2, r3)) << std::endl;*/
+				memcpy( data + end_data, &core_el, len_core_el );
+				++end_data;
+			}
+		}
+	} 
+	
+	data_out_.clear();
+	for( size_t byte = 0; byte < len_export_data; ++byte )
+	{
+		data_out_.push_back( data[byte] );
+	}
+	delete[] data;
+}
 
+VMML_TEMPLATE_STRING
+void
+VMML_TEMPLATE_CLASSNAME::import_ttm_quantized_from( const std::vector<unsigned char>& data_in_  )
+{
+	enable_quantify_log();
+	size_t end_data = 0;
+	size_t len_t_comp = sizeof( T_internal );
+	size_t len_export_data = R1*R2*R3 + (R1*I1 + R2*I2 + R3*I3) * sizeof(T_coeff) + 3*sizeof(T_internal);
+	unsigned char * data = new unsigned char[ len_export_data ];
+	for( size_t byte = 0; byte < len_export_data; ++byte )
+	{
+		data[byte] = data_in_.at(byte);
+	}
+	
+	//copy min and max values: u1_min, u1_max, u2_min, u2_max, u3_min, u3_max, core_min, core_max
+	T_internal u_min = 0; T_internal u_max = 0;
+	memcpy( &u_min, data, len_t_comp ); end_data = len_t_comp;
+	memcpy( &u_max, data + end_data, len_t_comp ); end_data += len_t_comp;
+	
+	T_internal core_min = 0; T_internal core_max = 0; //core_min is 0
+	//memcpy( &core_min, data + end_data, len_t_comp ); end_data += len_t_comp;
+	memcpy( &core_max, data + end_data, len_t_comp ); end_data += len_t_comp;
+	
+	//copy data to u1
+	size_t len_u1 = I1 * R1 * sizeof( T_coeff );
+	memcpy( _u1, data + end_data, len_u1 ); end_data += len_u1;
+	
+	//copy data to u2
+	size_t len_u2 = I2 * R2 * sizeof( T_coeff );
+	memcpy( _u2, data + end_data, len_u2 ); end_data += len_u2;
+	
+	//copy data to u3
+	size_t len_u3 = I3 * R3 * sizeof( T_coeff );
+	memcpy( _u3, data + end_data, len_u3 ); end_data += len_u3;
+	
+	//copy data to core
+	size_t len_core_el = 1; //currently 1 bit for sign and 7 bit for values
+	
+	//backward cyclic after lathauwer et al. 
+	unsigned char core_el;
+	for (size_t r2 = 0; r2 < R2; ++r2 ) {
+		for (size_t r3 = 0; r3 < R3; ++r3 ) {
+			for (size_t r1 = 0; r1 < R1; ++r1 ) {
+				memcpy( &core_el, data + end_data, len_core_el );
+				_signs.at( r1, r2, r3 ) = (core_el & 0x80)/128;
+				_core.at( r1, r2, r3 ) = core_el & 0x7f ;
+				++end_data;
+			}
+		}
+	} 
+	//std::cout << "signs: " << _signs << std::endl;
+	//std::cout << "_core: " << _core << std::endl;
+	
+	delete[] data;
+	
+	//dequantize tucker3 components (u1-u3 and core)
+	dequantize_basis_matrices( u_min, u_max, u_min, u_max, u_min, u_max  );
+	dequantize_core( core_min, core_max );	
+}
+	
+	
+	
 VMML_TEMPLATE_STRING
 size_t
 VMML_TEMPLATE_CLASSNAME::nnz() const

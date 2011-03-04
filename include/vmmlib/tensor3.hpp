@@ -1203,21 +1203,13 @@ VMML_TEMPLATE_CLASSNAME::full_tensor3_matrix_multiplication(  const tensor3< J1,
 														   const matrix< I2, J2, T >& U2, 
 														   const matrix< I3, J3, T >& U3 )
 {
-	tensor3< I1, J2, J3, T>* t3_result_1 = new  tensor3< I1, J2, J3, T>();
-	tensor3< I1, I2, J3, T>* t3_result_2 = new tensor3< I1, I2, J3, T>();
+	tensor3< I1, J2, J3, T> t3_result_1;
+	tensor3< I1, I2, J3, T> t3_result_2;
  
 	//backward cyclic matricization/unfolding (after Lathauwer et al., 2000a)
-	t3_result_1->multiply_lateral_bwd( core, U1 );
-	t3_result_2->multiply_frontal_bwd( *t3_result_1, U2 );
-	multiply_horizontal_bwd( *t3_result_2, U3 );
-	
-	//matrix< I1, I2*I3, T>* res_unfolded = new matrix< I1, I2*I3, T>();
-	//lateral_unfolding_bwd( *res_unfolded );
-	//std::cout << "reco1 result (ttm): " << std::endl << *res_unfolded << std::endl;
-	//delete res_unfolded;
- 
-	delete t3_result_1;
-	delete t3_result_2;
+	t3_result_1.multiply_lateral_bwd( core, U1 );
+	t3_result_2.multiply_frontal_bwd( t3_result_1, U2 );
+	multiply_horizontal_bwd( t3_result_2, U3 );
 }
 	
 VMML_TEMPLATE_STRING

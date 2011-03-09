@@ -585,15 +585,30 @@ tensor3_test::run()
 	t3_tmp.at(1,1,1) = 0;
 	
 	double rmse = t3.rmse( t3_tmp );
-		
-	if ( rmse == rmse_check )
+	ok = rmse == rmse_check;
+	
+	//psnr
+	double psnr_check = 48.43872076218154;
+	double psnr = t3.compute_psnr( t3_tmp, t3.get_max() );
+	ok = ok && (psnr == psnr_check );
+	
+	//avg. frob. norm difference
+	double afnd_check = 0.03186756891694564;
+	double afnd = t3.avg_frobenius_norm_diff( t3_tmp );
+	ok = ok && ( afnd == afnd_check );
+	
+	
+	if ( ok )
 	{	
-		log( "compute RMSE ", true  );
+		log( "compute RMSE, PSNR, averaged frob.norm difference ", ok  );
 	} else
 	{
 		std::stringstream error;
 		error 
-		<< "compute RMSE: should be: " << rmse_check << " is: " << std::setprecision(16) << rmse << std::endl;
+		<< "compute RMSE: should be: " << rmse_check << " is: " << std::setprecision(16) << rmse << std::endl
+		<< "compute PSNR: should be: " << psnr_check << " is: " << std::setprecision(16) << psnr << std::endl
+		<< "compute avg.frob.norm diff : should be: " << afnd_check << " is: " << std::setprecision(16) << afnd << std::endl;
+		//<< "compute avg RMSE: should be: " << rmse_check/t3.get_max() << " is: " << std::setprecision(16) << rmse << std::endl;
 		log_error( error.str() );
 	}
 	

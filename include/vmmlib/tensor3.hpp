@@ -216,7 +216,9 @@ public:
     
     //error computation 
     double frobenius_norm( ) const;
+	double avg_frobenius_norm_diff( const tensor3< I1, I2, I3, T >& other ) const;
     double rmse( const tensor3< I1, I2, I3, T >& other ) const; //root mean-squared error
+    double compute_psnr( const tensor3< I1, I2, I3, T >& other, const T& max_value_ ) const; //peak signal-to-noise ratio
     
     template< typename TT >
     void cast_from( const tensor3< I1, I2, I3, TT >& other );
@@ -1364,6 +1366,18 @@ VMML_TEMPLATE_CLASSNAME::frobenius_norm( ) const
 
 VMML_TEMPLATE_STRING
 double 
+VMML_TEMPLATE_CLASSNAME::avg_frobenius_norm_diff(const tensor3< I1, I2, I3, T >& other ) const
+{
+	double f_norm_1 = frobenius_norm();
+	double f_norm_2 = other.frobenius_norm();
+	double avg_fnorm_diff = f_norm_1 - f_norm_2;
+	avg_fnorm_diff /= size();
+	
+	return fabs(avg_fnorm_diff);
+}
+
+VMML_TEMPLATE_STRING
+double 
 VMML_TEMPLATE_CLASSNAME::rmse( const tensor3< I1, I2, I3, T >& other ) const
 {
 	double mse = 0.0;
@@ -1377,6 +1391,17 @@ VMML_TEMPLATE_CLASSNAME::rmse( const tensor3< I1, I2, I3, T >& other ) const
 	
 	return sqrt(mse/size());
 }	
+
+VMML_TEMPLATE_STRING
+double 
+VMML_TEMPLATE_CLASSNAME::compute_psnr( const tensor3< I1, I2, I3, T >& other, const T& max_value_ ) const
+{
+	double rmse_val = rmse( other );
+	double psnr_val = log( max_value_ / rmse_val );
+	psnr_val *= 20;
+	
+	return fabs(psnr_val);
+}		
 	
 VMML_TEMPLATE_STRING
 template< typename TT >

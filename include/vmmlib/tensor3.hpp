@@ -1816,7 +1816,7 @@ VMML_TEMPLATE_CLASSNAME::write_datfile( const std::string& dir_, const std::stri
 		filename = filename_;
 	}
 	
-	const char* format = (sizeof(T) == sizeof(2)) ? "USHORT": "UCHAR";
+	const char* format = (sizeof(T) == 2) ? "USHORT": "UCHAR";
 	
 	FILE* datfile = fopen(path_dat.c_str(), "w");
 	fprintf(datfile, "ObjectFileName:\t%s.raw\n", filename.c_str());

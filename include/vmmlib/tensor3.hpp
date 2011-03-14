@@ -1840,23 +1840,22 @@ VMML_TEMPLATE_CLASSNAME::read_from_raw( const std::string& dir_, const std::stri
 	}
 	path.append( filename_ );
 	
+	size_t len_data = sizeof(T) *SIZE;
 	char * data;
-	data = new char[ SIZE ];
-	std::ifstream infile;
+	data = new char[ len_data ];
+	std::ifstream infile; 
 	infile.open(path.c_str(), std::ios::in); 
 	
 	if( infile.is_open())
 	{
 		iterator  it = begin(),
 		it_end = end();
-		infile.read( data, (sizeof(T) * SIZE));
-		
+		infile.read( data, len_data );
+				
 		T* T_ptr = (T*)&(data[0]);
-		T value = 0;
-		for( ; it != it_end; ++it, ++T_ptr)
+		for( ; it != it_end; ++it )
 		{
-			value = *T_ptr;
-			*it = value;
+			*it = *T_ptr; ++T_ptr;
 		}
 		delete data;
 		infile.close();

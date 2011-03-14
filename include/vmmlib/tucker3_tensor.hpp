@@ -1733,6 +1733,9 @@ void
 VMML_TEMPLATE_CLASSNAME::hosvd_on_eigs( const t3_type& data_ )
 {
 	//TODO: is not yet implemented
+	
+	//implement it analog to hosvd on svd. hosvd_eigs_mode1...
+	
 	//matricization along each mode (backward matricization after Lathauwer et al. 2000a)
 	mode1_matricization_type* m_lateral = new mode1_matricization_type(); // -> u1
 	mode2_matricization_type* m_frontal = new mode2_matricization_type(); // -> u2
@@ -1758,6 +1761,15 @@ VMML_TEMPLATE_CLASSNAME::hosvd_on_eigs( const t3_type& data_ )
 	 << "covariance matrix s3: " << s3 << std::endl;*/
 	
 	//eigenvalue decomposition for each covariance matrix
+	
+#if 0
+	//compute x largest magnitude eigenvalues
+	matrix< 4, 3, double > eigxvectors;
+	vector< 3, double > eigxvalues;
+	lapack_sym_eigs< 4, double >  eigs;
+	eigs.compute_x( A, eigxvectors, eigxvalues);
+#endif	
+	
 	
 	delete m_frontal;
 	delete m_lateral;

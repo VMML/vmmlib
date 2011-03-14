@@ -1776,11 +1776,10 @@ VMML_TEMPLATE_CLASSNAME::write_to_raw( const std::string& dir_, const std::strin
 	std::ofstream outfile;	
 	outfile.open( path_raw.c_str() );
 	if( outfile.is_open() ) {
-		const_iterator oit = begin(), oit_end = end();
-		for( ; oit != oit_end; ++oit )
+		size_t len_slice = sizeof(T) * I1 * I2;
+		for( size_t index = 0; index < I3; ++index )
 		{
-			const T& byte = T(*oit);
-			outfile << byte;
+			outfile.write( (char*)&(get_frontal_slice_fwd( index )), len_slice );
 		}
 		outfile.close();
 	} else {
@@ -1852,11 +1851,13 @@ VMML_TEMPLATE_CLASSNAME::read_from_raw( const std::string& dir_, const std::stri
 		it_end = end();
 		infile.read( data, (sizeof(T) * SIZE));
 		
-		size_t counter = 0;
-		for( ; it != it_end; ++it, ++counter)
+		T* T_ptr = (T*)&(data[0]);
+		T value = 0;
+		for( ; it != it_end; ++it, ++T_ptr)
 		{
-			*it =  data[counter];
-		}		
+			value = *T_ptr;
+			*it = value;
+		}
 		delete data;
 		infile.close();
 	} else {

@@ -11,55 +11,56 @@ namespace vmml
 	{
 	public:
 		typedef matrix< I1, I2, T >		matrix_type;
-		
+        
+        static const size_t matrix_size = I1 * I2;
+        
 		tensor3_data_store() 
 		{
-			for( size_t index = 0; index < I3; ++index )
-			{
-				_array[ index ] = new matrix_type( matrix_type::ZERO );
-			}
+            _allocate_memory();
 		}
 		
 		tensor3_data_store( const tensor3_data_store& source_ ) 
 		{
-			for( size_t index = 0; index < I3; ++index )
-			{
-				_array[ index ] = new matrix_type( source_[ index ] );
-			}
+            _allocate_memory();
+            (*this) = source_;
 		}
 		
 		~tensor3_data_store()
 		{
-			for( size_t index = 0; index < I3; ++index )
-			{
-				delete _array[ index ];
-			}
+            _deallocate_memory();
 		}
 		
-		matrix_type& operator[]( size_t index )
+		inline matrix_type& operator[]( size_t index )
 		{
 			assert( index < I3 );
-			return *_array[ index % I3 ];
+            return *reinterpret_cast< matrix_type* >( array + matrix_size * index );
 		}
 		
-		const matrix_type& operator[]( size_t index ) const
+		inline const matrix_type& operator[]( size_t index ) const
 		{
 			assert( index < I3 );
-			return *_array[ index % I3 ];
+            return *reinterpret_cast< const matrix_type* >( array + matrix_size * index );
 		}
 		
-		void operator=( const tensor3_data_store& other_ )
+		inline void operator=( const tensor3_data_store& other_ )
 		{
-			for( size_t index = 0; index < I3; ++index )
-			{
-				*(_array[ index ]) = other_[ index ];
-			}
+            memcpy( array, other_.array, I1 * I2 * I3 * sizeof( T ) );
 		}
+        
+        inline void _allocate_memory()
+        {
+            array = new T[ I1 * I2 * I3];
+        }
+        
+        inline void _deallocate_memory()
+        {
+            delete[] array;
+        }
 		
 		
 		
 	protected:
-		matrix< I1, I2, T >*	_array[I3];
+		T*          array;
 		
 	};
 	

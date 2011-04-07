@@ -916,6 +916,119 @@ tensor3_test::run()
 			log_error( error.str() );
 		}	
 	}
+
+
+    {   // operator(i,j,k)
+    	tensor3< 4, 3, 4, int >  t3x;
+
+        t3x.zero();
+        t3x.get_frontal_slice_fwd( 0 )( 1, 2 ) = 12;
+        t3x.get_frontal_slice_fwd( 0 )( 2, 1 ) = 21;
+
+        if ( t3x( 1, 2, 0 ) == 12 && t3x( 2, 1, 0 ) == 21 )
+        {
+            log( "operator( i1, i2, i3 )", true  );
+        }
+        else
+        {
+            std::stringstream error;
+            error 
+                << "operator(i1,i2,i3) failed. Tensor: " << std::endl << t3x
+                << std::endl;
+            log_error( error.str() );
+        }
+    }
+
+    {   // get_array_ptr
+    	tensor3< 4, 3, 4, int >  t3x;
+        
+        t3x.zero();
+        t3x.get_frontal_slice_fwd( 0 )( 0, 0 ) = 23;
+        t3x.get_frontal_slice_fwd( 0 )( 1, 0 ) = 12;
+        
+        int* array = t3x.get_array_ptr();
+        
+        if ( array[ 0 ] == 23 && array[ 1 ] == 12 )
+        {
+            log( "get_array_ptr", true  );
+        }
+        else
+        {
+            std::stringstream error;
+            error 
+            << "get_array_ptr() failed. Tensor: \n" << t3x
+            << std::endl;
+            log_error( error.str() );
+        }
+    }
+
+
+    {   // get_array_ptr
+    
+        std::cout << "iterator test" << std::endl;
+    	tensor3< 4, 3, 4, int >  t3x;
+        
+        t3x.zero();
+        t3x.get_frontal_slice_fwd( 0 )( 0, 0 ) = 23;
+        t3x.get_frontal_slice_fwd( 0 )( 1, 0 ) = 12;
+        t3x.get_frontal_slice_fwd( 0 )( 0, 1 ) = 11;
+        t3x.get_frontal_slice_fwd( 2 )( 1, 1 ) = 13;
+        
+            
+        tensor3< 4, 3, 4, int >::iterator 
+            it      = t3x.begin(),
+            it_end  = t3x.end();
+        
+        bool ok = *it == 23;
+        if ( ! ok ) 
+        {
+            std::cout << "*it should be " << 23 << " but is " << *it << std::endl;
+        }
+        
+        for( size_t index = 0; index < 1; ++it, ++index ) {}
+        
+        if ( ok ) 
+            ok = *it == 12;
+
+        if ( ! ok ) 
+        {
+            std::cout << "*it should be " << 12 << " but is " << *it << std::endl;
+        }
+
+        for( size_t index = 0; index < 3; ++it, ++index ) {}
+        
+        if ( ok ) 
+            ok = *it == 11;
+        
+        if ( ! ok ) 
+        {
+            std::cout << "*it should be " << 11 << " but is " << *it << std::endl;
+        }
+        
+        for( size_t index = 0; index < 8 + 12 + 5; ++it, ++index ) {}
+        
+        if ( ok ) 
+            ok = *it == 13;
+
+        if ( ! ok ) 
+        {
+            std::cout << "*it should be " << 13 << " but is " << *it << std::endl;
+        }
+        
+        if ( ok )
+        {
+            log( "iterator", true  );
+        }
+        else
+        {
+            std::stringstream error;
+            error 
+            << "iterator test failed. Tensor: \n" << t3x
+            << std::endl;
+            log_error( error.str() );
+        }
+    }
+
 	
 	ok = true;
     return ok;

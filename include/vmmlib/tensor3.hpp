@@ -13,7 +13,6 @@
 
 #include <fstream>   // file I/O
 #include <vmmlib/tensor3_iterator.hpp>
-#include <vmmlib/tensor3_data_store.hpp>
 #include <vmmlib/enable_if.hpp>
 
 namespace vmml
@@ -37,8 +36,6 @@ public:
     typedef typename vmml::tensor3_iterator< tensor3< I1, I2, I3, T > >          reverse_iterator;
     typedef typename vmml::tensor3_iterator< tensor3< I1, I2, I3, T > >          const_reverse_iterator;
     
-    typedef tensor3_data_store< I1, I2, I3, T >                                  store_type;
-	
     typedef matrix< I1, I2, T >        front_slice_type; //fwd: forward cylcling (after kiers et al., 2000)
     typedef matrix< I3, I1, T >        lat_slice_type;
     typedef matrix< I2, I3, T >        horiz_slice_type;
@@ -55,6 +52,9 @@ public:
     static const size_t COLS	       = I2;
     static const size_t SLICES	       = I3;
     static const size_t SIZE           = I1 * I2 * I3;
+    
+    static const size_t MATRIX_SIZE     = I1 * I2;
+
  
     // accessors
     inline T& operator()( size_t i1, size_t i2, size_t i3 );
@@ -88,6 +88,8 @@ public:
     template< size_t J1, size_t J2, size_t J3>
     tensor3( const tensor3< J1, J2, J3, T >& source_ );
 	
+    ~tensor3();
+    
     size_t size() const; // return I1 * I2 * I3;   
 	
 	template< size_t J1, size_t J2, size_t J3 >
@@ -146,6 +148,8 @@ public:
     void fill_random( );
     void fill_random_signed( );
     void fill_increasing_values( );
+    
+    const tensor3& operator=( const tensor3& source_ );
 	
     template< size_t R >
     typename enable_if< R == I1 && R == I2 && R == I3 >::type* 
@@ -212,6 +216,20 @@ public:
     void horizontal_unfolding_bwd( bwd_horiz_unfolding_type& unfolding) const;
     void lateral_unfolding_bwd( bwd_lat_unfolding_type& unfolding) const;
     void frontal_unfolding_bwd( bwd_front_unfolding_type& unfolding) const;
+
+
+    // reconstruction of a Kruskal tensor => inversion of CP (Candecomp/Parafac)
+    // please note that the parameter U will be overwritten
+    // temp is simply a required workspace matrix, it can be empty or uninitialized
+    // but is passed as parameter to prevent potentially superfluous allocations.
+    template< size_t Ranks >
+    void reconstruct_CP( const vmml::vector< Ranks, T>& lambda,
+        vmml::matrix< Ranks, I1, T >& U, 
+        const vmml::matrix< Ranks, I2, T >& V,
+        const vmml::matrix< Ranks, I3, T >& W,
+        vmml::matrix< Ranks, I2 * I3, T >& temp
+        );
+    
     
     
     //error computation 
@@ -268,19 +286,31 @@ public:
     {
         for(size_t i = 0; i < I3; ++i)
         {
-                os << t3.array[ i ] << "***" << std::endl;			
+            //os << t3.array[ i ] << "***" << std::endl;			
+            os << t3.get_frontal_slice_fwd( i ) << " *** " << std::endl;
         }	
         return os;
     }
 	
 	
     // static members
+    static void     tensor3_allocate_data( T*& array_ );
+    static void     tensor3_deallocate_data( T*& array_ );
+
     static const tensor3< I1, I2, I3, T > ZERO;
+
+    T*          get_array_ptr();
+    const T*    get_array_ptr() const;
+    
+    // computes the array index for direct access 
+    inline size_t compute_index( size_t i1, size_t i2, size_t i3 ) const;
 
 
 protected:
-	store_type			array;
-	
+    front_slice_type&                   _get_slice( size_t index_ );
+    const front_slice_type&             _get_slice( size_t index_ ) const;
+
+	T*                      _array;
 }; // class tensor3
 
 #define VMML_TEMPLATE_STRING    template< size_t I1, size_t I2, size_t I3, typename T >
@@ -289,21 +319,30 @@ protected:
 
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::tensor3()
-	: array()
-{}
+	: _array()
+{
+    tensor3_allocate_data( _array );
+}
 
 	
 VMML_TEMPLATE_STRING
-VMML_TEMPLATE_CLASSNAME::tensor3( const tensor3& source )
-    : array( source.array )
-{}
+VMML_TEMPLATE_CLASSNAME::tensor3( const tensor3& source_ )
+    : _array()
+{
+    tensor3_allocate_data( _array );
+    (*this) = source_;
+}
 
 
 VMML_TEMPLATE_STRING
 template< typename U >
 VMML_TEMPLATE_CLASSNAME::tensor3( const tensor3< I1, I2, I3, U >& source_ )
 {
-	(*this) = source_;
+    tensor3_allocate_data( _array );
+    for( size_t index = 0; index < I1 * I2 * I3; ++index )
+    {
+        _array[ index ] = static_cast< T >( source_._array[ index ] );
+    }
 }
 	
 
@@ -326,6 +365,15 @@ VMML_TEMPLATE_CLASSNAME::tensor3( const tensor3< J1, J2, J3, T >& source_ )
 		}
 	}
 }
+
+
+
+VMML_TEMPLATE_STRING
+VMML_TEMPLATE_CLASSNAME::~tensor3()
+{
+    tensor3_deallocate_data( _array );
+}
+
 	
 	
 VMML_TEMPLATE_STRING
@@ -333,10 +381,12 @@ inline T&
 VMML_TEMPLATE_CLASSNAME::at( size_t i1, size_t i2, size_t i3 )
 {
     #ifdef VMMLIB_SAFE_ACCESSORS
-    if ( i3 >= I3 )
+    if ( i1 >= I1 || i2 >= I2 || i3 >= I3 )
         VMMLIB_ERROR( "at( i1, i2, i3 ) - index out of bounds", VMMLIB_HERE );
     #endif
-    return array[ i3 ].at( i1, i2 );
+    //col_index * M + row_index
+    return _array[ i3 * MATRIX_SIZE + i2 * ROWS + i1 ];
+    //return array[ i3 ].at( i1, i2 );
 }
 
 
@@ -346,10 +396,11 @@ const inline T&
 VMML_TEMPLATE_CLASSNAME::at( size_t i1, size_t i2, size_t i3 ) const
 {
     #ifdef VMMLIB_SAFE_ACCESSORS
-    if ( i3 >= I3 )
+    if ( i1 >= I1 || i2 >= I2 || i3 >= I3 )
         VMMLIB_ERROR( "at( i1, i2, i3 ) - i3 index out of bounds", VMMLIB_HERE );
     #endif
-    return array[ i3 ].at( i1, i2 );
+    return _array[ i3 * MATRIX_SIZE + i2 * ROWS + i1 ];
+    //return array[ i3 ].at( i1, i2 );
 }
 
 
@@ -382,9 +433,10 @@ get_I2_vector( size_t i1, size_t i3, vector< I2, T >& data ) const
         VMMLIB_ERROR( "get_I1_vector() - i3 index out of bounds.", VMMLIB_HERE );
 	
 #endif
-    
-	array[ i3 ].get_row( i1, data );	
+   	_get_slice( i3 ).get_row( i1, data );	
 }
+
+
 
 VMML_TEMPLATE_STRING
 inline void 
@@ -398,9 +450,11 @@ get_I1_vector( size_t i2, size_t i3, vector< I1, T >& data ) const
 	
 #endif
     
-	array[ i3 ].get_column( i2, data );	
+	_get_slice( i3 ).get_column( i2, data );	
 	
 }
+
+
 
 VMML_TEMPLATE_STRING
 inline void 
@@ -409,7 +463,7 @@ get_I3_vector( size_t i1, size_t i2, vector< I3, T >& data ) const
 {
 	for (size_t i3 = 0; i3 < I3; ++i3)
 	{
-		data[ i3 ] = array[ i3 ].at( i1, i2 );		
+		data[ i3 ] = _get_slice( i3 ).at( i1, i2 );		
 	}
 
 }
@@ -452,7 +506,7 @@ set_I2_vector( size_t i1, size_t i3, const vector< I2, T >& data )
 	
 #endif
     
-	array[ i3 ].set_row( i1, data );	//@SUS: bug fix
+	_get_slice( i3 ).set_row( i1, data );	//@SUS: bug fix
 }
 
 
@@ -468,7 +522,7 @@ set_I1_vector( size_t i2, size_t i3, const vector< I1, T >& data )
 	
 #endif
     
-	array[ i3 ].set_column( i2, data );	
+	_get_slice( i3 ).set_column( i2, data );	
 	
 }
 
@@ -479,7 +533,7 @@ set_I3_vector( size_t i1, size_t i2, const vector< I3, T >& data )
 {
     for (size_t i3 = 0; i3 < I3; ++i3)
     {
-            array[ i3 ].at( i1, i2 ) = data[ i3 ];
+            _get_slice( i3 ).at( i1, i2 ) = data[ i3 ];
     }
 	
 }
@@ -512,26 +566,26 @@ set_tube( size_t i1, size_t i2, const vector< I3, T >& data )
 VMML_TEMPLATE_STRING
 inline typename VMML_TEMPLATE_CLASSNAME::front_slice_type& 
 VMML_TEMPLATE_CLASSNAME::
-get_frontal_slice_fwd( size_t index )
+get_frontal_slice_fwd( size_t i3 )
 {
 #ifdef VMMLIB_SAFE_ACCESSORS
-    if ( index >= I3 )
+    if ( i3 >= I3 )
         VMMLIB_ERROR( "get_frontal_slice_fwd() - index out of bounds.", VMMLIB_HERE );
 #endif
-	return array[ index ];
+	return _get_slice( i3 );
 }
 
 
 VMML_TEMPLATE_STRING
 inline const typename VMML_TEMPLATE_CLASSNAME::front_slice_type& 
 VMML_TEMPLATE_CLASSNAME::
-get_frontal_slice_fwd( size_t index ) const
+get_frontal_slice_fwd( size_t i3 ) const
 {
 #ifdef VMMLIB_SAFE_ACCESSORS
-    if ( index >= I3 )
+    if ( i3 >= I3 )
         VMMLIB_ERROR( "get_frontal_slice_fwd() - index out of bounds.", VMMLIB_HERE );
 #endif
-	return array[ index ];
+	return _get_slice( i3 );
 }
 
 VMML_TEMPLATE_STRING
@@ -544,7 +598,8 @@ get_frontal_slice_fwd( size_t i3, front_slice_type& data ) const
         VMMLIB_ERROR( "get_frontal_slice_fwd() - index out of bounds.", VMMLIB_HERE );
 #endif
 	
-	data = array[ i3 ];
+	data = _get_slice( i3 );
+;
 }
 
 
@@ -557,9 +612,10 @@ get_lateral_slice_bwd( size_t i2, bwd_lat_slice_type& data ) const
     if ( i2 >= I2 )
         VMMLIB_ERROR( "get_lateral_slice_bwd() - index out of bounds.", VMMLIB_HERE );
 #endif
+    
 	for( size_t i3 = 0; i3 < I3; ++i3 )
 	{
-		data.set_column( i3, array[ i3 ].get_column( i2 ));
+		data.set_column( i3, _get_slice( i3 ).get_column( i2 ));
 	}
 }
 
@@ -574,7 +630,7 @@ get_horizontal_slice_fwd( size_t i1, horiz_slice_type& data ) const
 #endif
 	for( size_t i3 = 0; i3 < I3; ++i3 )
 	{
-		data.set_column( i3, array[ i3 ].get_row( i1 )); //or for every i2 get/set column
+		data.set_column( i3, _get_slice( i3 ).get_row( i1 )); //or for every i2 get/set column
 	}
 }
 
@@ -589,7 +645,7 @@ get_frontal_slice_bwd( size_t i3, bwd_front_slice_type& data ) const
 #endif
 	
 	front_slice_type* data_t = new front_slice_type();
-	*data_t = array[ i3 ];
+	*data_t = _get_slice( i3 );
 	data = transpose( *data_t );
 	delete data_t;
 }
@@ -607,7 +663,7 @@ get_lateral_slice_fwd( size_t i2, lat_slice_type& data ) const
 	bwd_lat_slice_type* data_t = new bwd_lat_slice_type();
 	for( size_t i3 = 0; i3 < I3; ++i3 )
 	{
-		data_t->set_column( i3, array[ i3 ].get_column( i2 ));
+		data_t->set_column( i3, _get_slice( i3 ).get_column( i2 ));
 	}
 	data = transpose( *data_t );
 	delete data_t;
@@ -625,7 +681,7 @@ get_horizontal_slice_bwd( size_t i1, bwd_horiz_slice_type& data ) const
 	horiz_slice_type* data_t = new horiz_slice_type();
 	for( size_t i3 = 0; i3 < I3; ++i3 )
 	{
-		data_t->set_column( i3, array[ i3 ].get_row( i1 )); //or for every i2 get/set column
+		data_t->set_column( i3, _get_slice( i3 ).get_row( i1 )); //or for every i2 get/set column
 	}
 	data = transpose( *data_t );
 	delete data_t;
@@ -644,8 +700,10 @@ set_frontal_slice_fwd( size_t i3, const front_slice_type& data )
         VMMLIB_ERROR( "set_frontal_slice_fwd() - index out of bounds.", VMMLIB_HERE );
 #endif
 	
-	array[ i3 ] = data;
+	_get_slice( i3 ) = data;
 }
+
+
 
 VMML_TEMPLATE_STRING
 inline void 
@@ -659,7 +717,7 @@ set_lateral_slice_bwd( size_t i2, const bwd_lat_slice_type& data )
 	
 	for( size_t i3 = 0; i3 < I3; ++i3 )
 	{
-		array[ i3 ].set_column(i2, data.get_column( i3 ));
+		_get_slice( i3 ).set_column(i2, data.get_column( i3 ));
 	}
 }
 
@@ -675,7 +733,7 @@ set_horizontal_slice_fwd( size_t i1, const horiz_slice_type& data )
 	
 	for( size_t i3 = 0; i3 < I3; ++i3 )
 	{
-		array[ i3 ].set_row( i1, data.get_column( i3 ));
+		_get_slice( i3 ).set_row( i1, data.get_column( i3 ));
 	}
 	
 }
@@ -691,7 +749,7 @@ set_frontal_slice_bwd( size_t i3, const bwd_front_slice_type& data )
 #endif
 	front_slice_type* data_t  = new front_slice_type();
 	*data_t = transpose( data );
-	array[ i3 ] = *data_t;
+	_get_slice( i3 ) = *data_t;
 	delete data_t;
 }
 
@@ -708,7 +766,7 @@ set_lateral_slice_fwd( size_t i2, const lat_slice_type& data )
 	*data_t = transpose( data );
 	for( size_t i3 = 0; i3 < I3; ++i3 )
 	{
-		array[ i3 ].set_column(i2, data_t->get_column( i3 ));
+		_get_slice( i3 ).set_column(i2, data_t->get_column( i3 ));
 	}
 	
 	delete data_t;
@@ -728,7 +786,7 @@ set_horizontal_slice_bwd( size_t i1, const bwd_horiz_slice_type& data )
 	
 	for( size_t i3 = 0; i3 < I3; ++i3 )
 	{
-		array[ i3 ].set_row( i1, data_t->get_column( i3 ));
+		_get_slice( i3 ).set_row( i1, data_t->get_column( i3 ));
 	}
 	delete data_t;
 }
@@ -743,7 +801,7 @@ fill( T fillValue )
 {
 	for( size_t i3 = 0; i3 < I3; ++i3 )
 	{
-		array[ i3 ].fill( fillValue );
+		_get_slice( i3 ).fill( fillValue );
 	}
 }
 
@@ -755,6 +813,16 @@ fill_random( )
 {
 	double fillValue = 0.0f;
 	srand(time(NULL));
+    
+    for( size_t index = 0; index < I1 * I2 * I3; ++index )
+    {
+        fillValue = rand();
+        fillValue /= RAND_MAX;
+        fillValue *= std::numeric_limits< T >::max();
+        _array[ index ] = static_cast< T >( fillValue )  ;
+    }
+    
+#if 0
 	for( size_t i3 = 0; i3 < I3; ++i3 )
 	{
 		for( size_t i1 = 0; i1 < I1; ++i1 )
@@ -768,6 +836,7 @@ fill_random( )
 			}
 		}
 	}
+#endif
 }
 
 VMML_TEMPLATE_STRING
@@ -862,11 +931,19 @@ bool
 VMML_TEMPLATE_CLASSNAME::operator==( const tensor3< I1, I2, I3, T >& other ) const
 {
     bool ok = true;
+    for( size_t index = 0; index < I1 * I2 * I3; ++index )
+    {
+        if ( _array[ index ] != other._array[ index ] )
+            return false;
+    }
+    return true;
+    
+#if 0
     for( size_t i3 = 0; ok && i3 < I3; ++i3 )
 	{
         ok = array[ i3 ] == other.array[ i3 ];
 	}
-	
+#endif
     return ok;
 }
 
@@ -892,7 +969,7 @@ VMML_TEMPLATE_CLASSNAME::equals( const tensor3< I1, I2, I3, T >& other, T tolera
     bool ok = true;
 	for (size_t i3 = 0; ok && i3 < I3; ++i3 ) 
 	{
-		ok = array[ i3 ].equals(other.array[ i3 ], tolerance);
+		ok = _get_slice( i3 ).equals( other.get_frontal_slice_fwd( i3 ), tolerance );
 	}
     return ok;	
 }
@@ -1310,6 +1387,13 @@ VMML_TEMPLATE_STRING
 tensor3< I1, I2, I3, T >
 VMML_TEMPLATE_CLASSNAME::operator*( T scalar )
 {
+    tensor3< I1, I2, I3, T > result; 
+    for( size_t index = 0; index < I1 * I2 * I3; ++index )
+    {
+        result._array[ index ] = _array[ index ] * scalar;
+    }
+    
+#if 0
     tensor3< I1, I2, I3, T >* result = (*this);
     
 	for( size_t i3 = 0; i3 < I3; ++i3 )
@@ -1318,6 +1402,7 @@ VMML_TEMPLATE_CLASSNAME::operator*( T scalar )
 	}
 
     return *result;
+#endif
 }
 
 
@@ -1325,11 +1410,17 @@ VMML_TEMPLATE_STRING
 void
 VMML_TEMPLATE_CLASSNAME::operator*=( T scalar )
 {
+    for( size_t index = 0; index < I1 * I2 * I3; ++index )
+    {
+        _array[ index ] *= scalar;
+    }
+
+#if 0
 	for( size_t i3 = 0; i3 < I3; ++i3 )
 	{
 		array[ i3 ] *= scalar;
 	}
-	
+#endif	
 }
 
 
@@ -1733,6 +1824,16 @@ VMML_TEMPLATE_CLASSNAME::dequantize( tensor3< I1, I2, I3, TT >& dequantized_, co
 	}
 }	
 
+
+VMML_TEMPLATE_STRING
+const VMML_TEMPLATE_CLASSNAME&
+VMML_TEMPLATE_CLASSNAME::operator=( const VMML_TEMPLATE_CLASSNAME& source_ )
+{
+    memcpy( _array, source_._array, I1 * I2 * I3 * sizeof( T ) );
+}
+
+
+
 #if 0
 	
 std::string format_path( const std::string& dir_, const std::string& filename_, const std::string& format_ )
@@ -1872,6 +1973,115 @@ VMML_TEMPLATE_CLASSNAME::read_from_raw( const std::string& dir_, const std::stri
 		std::cout << "no file open" << std::endl;
 	}
 }	
+
+
+VMML_TEMPLATE_STRING
+vmml::matrix< I1, I2, T >&
+VMML_TEMPLATE_CLASSNAME::
+_get_slice( size_t index_ )
+{
+    typedef matrix< I1, I2, T >		matrix_type;
+    return *reinterpret_cast< matrix_type* >( _array + I1 * I2 * index_ );
+}
+
+
+VMML_TEMPLATE_STRING
+const vmml::matrix< I1, I2, T >&
+VMML_TEMPLATE_CLASSNAME::
+_get_slice( size_t index_ ) const
+{
+    typedef matrix< I1, I2, T >		matrix_type;
+    return *reinterpret_cast< const matrix_type* >( _array + I1 * I2 * index_ );
+}
+
+
+VMML_TEMPLATE_STRING
+void
+VMML_TEMPLATE_CLASSNAME::
+tensor3_allocate_data( T*& array_ )
+{
+    array_ = new T[ I1 * I2 * I3];
+}
+
+
+    
+VMML_TEMPLATE_STRING
+void
+VMML_TEMPLATE_CLASSNAME::
+tensor3_deallocate_data( T*& array_ )
+{
+    delete[] array_;
+}
+
+
+
+VMML_TEMPLATE_STRING
+T*
+VMML_TEMPLATE_CLASSNAME::get_array_ptr()
+{
+    return _array;
+}
+
+
+
+VMML_TEMPLATE_STRING
+const T*
+VMML_TEMPLATE_CLASSNAME::get_array_ptr() const
+{
+    return _array;
+}
+
+
+VMML_TEMPLATE_STRING
+template< size_t Ranks >
+void
+VMML_TEMPLATE_CLASSNAME::
+reconstruct_CP(
+   const vmml::vector< Ranks, T>& lambda,
+   vmml::matrix< Ranks, I1, T >& U,
+   const vmml::matrix< Ranks, I2, T >& V,
+   const vmml::matrix< Ranks, I3, T >& W, 
+   vmml::matrix< Ranks, I2 * I3, T >& temp
+    )
+{
+    for (size_t j = 0; j < I2; j++)
+    {
+        for (size_t k = 0; k < I3; k++)
+        {
+            for (size_t r = 0; r < Ranks; r++)
+            {
+                temp(r, j + k * I2) = V(r, j) * W(r, k);
+            }
+        }
+    }
+    
+    for (size_t i = 0; i < I1; i++)
+    {
+        for (size_t r = 0; r < Ranks; r++)
+        {
+            U(r, i) = lambda[r] * U(r, i);
+        }
+    }
+
+    T* array = _array; // DO NOT REMOVE - g++ performance hack :( 
+    
+    for (size_t k = 0; k < I3; k++)
+    {
+        for (size_t j = 0; j < I2; j++)
+        {
+            for (size_t i = 0; i < I1; i++)
+            {
+                for (size_t r = 0; r < Ranks; r++)
+                {
+                    array[ k * I1 * I2 + j * I1 + i ] += U(r, i) * temp(r, j + k * I2);
+                }
+            }
+        }
+    }
+}
+
+
+
 	
 #undef VMML_TEMPLATE_STRING
 #undef VMML_TEMPLATE_CLASSNAME

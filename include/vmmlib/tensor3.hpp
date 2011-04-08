@@ -2063,17 +2063,18 @@ reconstruct_CP(
         }
     }
 
-    T* array = _array; // DO NOT REMOVE - g++ performance hack :( 
-    
     for (size_t k = 0; k < I3; k++)
     {
         for (size_t j = 0; j < I2; j++)
         {
             for (size_t i = 0; i < I1; i++)
             {
+                T& value = at( i, j, k );
+                value = static_cast< T >( 0.0 );
+            
                 for (size_t r = 0; r < Ranks; r++)
                 {
-                    array[ k * I1 * I2 + j * I1 + i ] += U(r, i) * temp(r, j + k * I2);
+                    value += U(r, i) * temp(r, j + k * I2);
                 }
             }
         }

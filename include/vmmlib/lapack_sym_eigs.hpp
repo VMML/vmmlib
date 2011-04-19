@@ -42,7 +42,7 @@ namespace vmml
 	
 namespace lapack
 {
-	
+
 	// XYYZZZ 
 	// X    = data type: S - float, D - double
 	// YY   = matrix type, GE - general, TR - triangular
@@ -196,7 +196,7 @@ struct lapack_sym_eigs
     
 	typedef matrix< N, N, float_t > evectors_type;
 
-    typedef std::pair<float_t, size_t>  eigenvalue_sort_type;
+    typedef std::pair< float_t, size_t >  eigv_sort_type;
     
 	lapack_sym_eigs();
 	~lapack_sym_eigs();
@@ -222,7 +222,16 @@ struct lapack_sym_eigs
 	lapack::eigs_params< float_t > p;
 	
 	const lapack::eigs_params< float_t >& get_params(){ return p; };
-    
+
+    // comparison functor 
+    struct eigenvalue_compare
+    {
+        inline bool operator()( const eigv_sort_type& a, const eigv_sort_type& b )
+        {
+            return fabs( a.first ) > fabs( b.first );
+        }
+    };
+       
 }; // struct lapack_sym_eigs
 
 
@@ -311,19 +320,21 @@ lapack_sym_eigs< N, float_t >::compute_x(
 	
 	//(2) sort the eigenvalues
 	//std::pair< data, original_index >;
-	std::vector< std::pair<float_t, size_t> > eig_permutations;
+	std::vector< eigv_sort_type > eig_permutations;
 	
 	evalue_const_iterator it = all_eigvalues.begin(), it_end = all_eigvalues.end();
 	size_t counter = 0;
 	for( ; it != it_end; ++it, ++counter )
 	{
-		std::pair<float_t, size_t> new_pair( *it, counter);
-		eig_permutations.push_back(new_pair);
+		eig_permutations.push_back( eigv_sort_type( *it, counter ) );
+
 	}
     
-    
-    std::sort(eig_permutations.begin(), eig_permutations.end(), 
-              std::greater< eigenvalue_sort_pair >() );
+    std::sort(
+        eig_permutations.begin(),
+        eig_permutations.end(), 
+        eigenvalue_compare()
+        );
 
 	//sort the eigenvectors according to eigenvalue permutations
 	evectors_type* sorted_eigvectors = new evectors_type();

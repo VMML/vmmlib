@@ -97,7 +97,7 @@ namespace vmml
 		}
 		
 		
-		//(2) decomposition into basis matrices 		
+		//(2) decomposition into basis matrices using svd	
 		
 		tuck3_hosvd.hosvd( t3_data_hosvd );
 		 tuck3_hosvd.get_u1( u1_hosvd );
@@ -123,6 +123,34 @@ namespace vmml
 			log_error( error.str() );
 		}
 		
+		
+		//(2b) decomposition into basis using eigenvalue decomposition
+		tuck3_hosvd.hoeigs( t3_data_hosvd );
+		//FIXME: hoeigs have different signs of the eigenvectors
+		tuck3_hosvd.get_u1( u1_hosvd );
+		tuck3_hosvd.get_u2( u2_hosvd );
+		tuck3_hosvd.get_u3( u3_hosvd );
+		
+#if 0
+		if ( u1_hosvd.equals( u1_hosvd_check, precision ) && u2_hosvd.equals( u2_hosvd_check, precision ) && u3_hosvd.equals( u3_hosvd_check, precision ))
+		{	
+			log( "HOEIGS compute basis matrices U1, U2, U3", true  );
+		} else
+		{
+			std::stringstream error;
+			error 
+			<< "HOEIGS: " << std::endl
+			<< "U1 should be: " << std::endl << u1_hosvd_check << std::endl
+			<< "U1 is: " << std::endl << u1_hosvd << std::endl
+			<< "U2 should be: " << std::endl << u2_hosvd_check << std::endl
+			<< "U2 is: " << std::endl << u2_hosvd << std::endl
+			<< "U3 should be: " << std::endl << u3_hosvd_check << std::endl
+			<< "U3 is: " << std::endl << u3_hosvd << std::endl;
+			
+			
+			log_error( error.str() );
+		}
+#endif		
 		
 		//(3) higher-order orthogonal iteration (hooi test data after lathauwer 2000b)
 		matrix<3, 3, double> u1_hooi;

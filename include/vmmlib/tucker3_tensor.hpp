@@ -25,6 +25,7 @@
 #include <vmmlib/tensor3.hpp>
 //#include <vmmlib/matrix_pseudoinverse.hpp>
 #include <vmmlib/lapack_svd.hpp>
+#include <vmmlib/lapack_sym_eigs.hpp>
 
 namespace vmml
 {
@@ -78,11 +79,7 @@ public:
 	typedef matrix< R1, I1, T_internal > u1_inv_type;
 	typedef matrix< R2, I2, T_internal > u2_inv_type;
 	typedef matrix< R3, I3, T_internal > u3_inv_type;
-		
-	typedef matrix< I1, I2*I3, T_internal > mode1_matricization_type;
-	typedef matrix< I2, I1*I3, T_internal > mode2_matricization_type;
-	typedef matrix< I3, I1*I2, T_internal > mode3_matricization_type;
-
+	
 	static const size_t SIZE = R1*R2*R3 + I1*R1 + I2*R2 + I3*R3;
 		
 	tucker3_tensor();
@@ -171,7 +168,7 @@ public:
 	 other known names for HOSVD: n-mode SVD, 3-mode factor analysis (3MFA, tucker3), 3M-PCA, n-mode PCA, higher-order SVD
 	 */
 	void hosvd( const t3_type& data_ );
-	void hosvd_on_eigs( const t3_type& data_ );
+	void hoeigs( const t3_type& data_ );
 		
 	/*	higher-order orthogonal iteration (HOOI) is a truncated HOSVD decompositions, i.e., the HOSVD components are of lower-ranks. An optimal rank-reduction is 
 		performed with an alternating least-squares (ALS) algorithm, which minimizes the error between the approximated and orignal tensor based on the Frobenius norm
@@ -228,24 +225,36 @@ public:
 		
 protected:
 		tucker3_type operator=( const tucker3_type& other ) { return (*this); };
-       void init_random( const t3_type& data_ );
+		void init_random( const t3_type& data_ );
         
         template< size_t M, size_t N >
         void fill_random_2d( int seed, matrix< M, N, T_internal >& u );
         
+		//hosvd
         template< size_t M, size_t N, size_t R, typename T >
-        void get_svd_u_red( const matrix< M, N, T >& data_, matrix< M, R, T_internal >& u_ ) const;
+        void get_svd_u_red( const matrix< M, N, T >& data_, matrix< M, R, T_internal >& u_ );
         template< size_t J1, size_t J2, size_t J3, typename T >
-        void hosvd_mode1( const tensor3<J1, J2, J3, T >& data_ ) const;
+        void hosvd_mode1( const tensor3<J1, J2, J3, T >& data_ );
         template< size_t J1, size_t J2, size_t J3, typename T >
-        void hosvd_mode2( const tensor3<J1, J2, J3, T >& data_ ) const;
+        void hosvd_mode2( const tensor3<J1, J2, J3, T >& data_ );
         template< size_t J1, size_t J2, size_t J3, typename T >
-        void hosvd_mode3( const tensor3<J1, J2, J3, T >& data_ ) const;
+        void hosvd_mode3( const tensor3<J1, J2, J3, T >& data_ );
         
         void optimize_mode1( const t3_comp_type& data_, tensor3< I1, R2, R3, T_internal >& projection_ ) const;
         void optimize_mode2( const t3_comp_type& data_, tensor3< R1, I2, R3, T_internal >& projection_ ) const;		
         void optimize_mode3( const t3_comp_type& data_, tensor3< R1, R2, I3, T_internal >& projection_ ) const;
 
+		//hosvd on eigenvalue decomposition = hoeigs
+		template< size_t N, size_t R, typename T >
+        void get_eigs_u_red( const matrix< N, N, T >& data_, matrix< N, R, T_internal >& u_ );
+        template< size_t J1, size_t J2, size_t J3, typename T >
+        void hoeigs_mode1( const tensor3<J1, J2, J3, T >& data_ );
+        template< size_t J1, size_t J2, size_t J3, typename T >
+        void hoeigs_mode2( const tensor3<J1, J2, J3, T >& data_ );
+        template< size_t J1, size_t J2, size_t J3, typename T >
+        void hoeigs_mode3( const tensor3<J1, J2, J3, T >& data_ );
+ 		
+		
 private:
         
         void cast_members();
@@ -777,7 +786,7 @@ VMML_TEMPLATE_CLASSNAME::hooi( const t3_type& data_ )
 VMML_TEMPLATE_STRING
 template< size_t J1, size_t J2, size_t J3, typename T >
 void 
-VMML_TEMPLATE_CLASSNAME::hosvd_mode1( const tensor3<J1, J2, J3, T >& data_ ) const
+VMML_TEMPLATE_CLASSNAME::hosvd_mode1( const tensor3<J1, J2, J3, T >& data_ )
 {
 	matrix< J1, J2*J3, T >* u = new matrix< J1, J2*J3, T >(); // -> u1
 	data_.lateral_unfolding_bwd( *u );
@@ -791,7 +800,7 @@ VMML_TEMPLATE_CLASSNAME::hosvd_mode1( const tensor3<J1, J2, J3, T >& data_ ) con
 VMML_TEMPLATE_STRING
 template< size_t J1, size_t J2, size_t J3, typename T >
 void 
-VMML_TEMPLATE_CLASSNAME::hosvd_mode2( const tensor3<J1, J2, J3, T >& data_ ) const
+VMML_TEMPLATE_CLASSNAME::hosvd_mode2( const tensor3<J1, J2, J3, T >& data_ )
 {
 	matrix< J2, J1*J3, T >* u = new matrix< J2, J1*J3, T >(); // -> u1
 	data_.frontal_unfolding_bwd( *u );
@@ -806,7 +815,7 @@ VMML_TEMPLATE_CLASSNAME::hosvd_mode2( const tensor3<J1, J2, J3, T >& data_ ) con
 VMML_TEMPLATE_STRING
 template< size_t J1, size_t J2, size_t J3, typename T >
 void 
-VMML_TEMPLATE_CLASSNAME::hosvd_mode3( const tensor3<J1, J2, J3, T >& data_  ) const
+VMML_TEMPLATE_CLASSNAME::hosvd_mode3( const tensor3<J1, J2, J3, T >& data_  )
 {
 	matrix< J3, J1*J2, T >* u = new matrix< J3, J1*J2, T >(); // -> u1
 	data_.horizontal_unfolding_bwd( *u );
@@ -820,7 +829,7 @@ VMML_TEMPLATE_CLASSNAME::hosvd_mode3( const tensor3<J1, J2, J3, T >& data_  ) co
 VMML_TEMPLATE_STRING
 template< size_t M, size_t N, size_t R, typename T >
 void 
-VMML_TEMPLATE_CLASSNAME::get_svd_u_red( const matrix< M, N, T >& data_, matrix< M, R, T_internal >& u_ ) const
+VMML_TEMPLATE_CLASSNAME::get_svd_u_red( const matrix< M, N, T >& data_, matrix< M, R, T_internal >& u_ )
 {
 	matrix< M, N, T_svd >* u_double = new matrix< M, N, T_svd >(); 
 	u_double->cast_from( data_ );
@@ -1726,57 +1735,114 @@ VMML_TEMPLATE_CLASSNAME::nnz( const T_value& threshold ) const
 	counter += _core_comp.nnz( threshold );
 
 	return counter;
+}
+	
+VMML_TEMPLATE_STRING
+template< size_t N, size_t R, typename T >
+void 
+VMML_TEMPLATE_CLASSNAME::get_eigs_u_red( const matrix< N, N, T >& data_, matrix< N, R, T_internal >& u_ )
+{
+	//compute x largest magnitude eigenvalues; x = R
+	matrix< N, R, T_internal >* eigxvectors = new matrix< N, R, T_internal >;
+	vector< R, T_internal >* eigxvalues =  new vector< R, T_internal >;
+	lapack_sym_eigs< N, T_internal >  eigs;
+	
+	
+	if( eigs.compute_x( data_, *eigxvectors, *eigxvalues) ) {
+		//FIXME: handle cases for quantization etc.
+		u_ = *eigxvectors;
+		
+	} else {
+		u_.zero();
+	}
+	
+	//std::cout << "eigenvectors: " << *eigxvectors << std::endl;
+	
+	delete eigxvalues;
+	delete eigxvectors;
+	
+}
+	
+VMML_TEMPLATE_STRING
+template< size_t J1, size_t J2, size_t J3, typename T >
+void 
+VMML_TEMPLATE_CLASSNAME::hoeigs_mode1( const tensor3< J1, J2, J3, T >& data_ )
+{
+	//unfolding / matricization
+	matrix< J1, J2*J3, T >* m_lateral = new matrix< J1, J2*J3, T >(); // -> u1
+	data_.lateral_unfolding_bwd( *m_lateral );
+	
+	//covariance matrix of unfolded data
+	matrix< J1, J1, T >* cov  = new matrix< J1, J1, T >();
+	cov->multiply( *m_lateral, transpose( *m_lateral ));
+	delete m_lateral;
+
+	//compute x largest magnitude eigenvalues; x = R
+	get_eigs_u_red( *cov, *_u1_comp );
+	
+    delete cov;
 }	
 	
 VMML_TEMPLATE_STRING
+template< size_t J1, size_t J2, size_t J3, typename T >
 void 
-VMML_TEMPLATE_CLASSNAME::hosvd_on_eigs( const t3_type& data_ )
+VMML_TEMPLATE_CLASSNAME::hoeigs_mode2( const tensor3< J1, J2, J3, T >& data_ )
+{
+	//unfolding / matricization
+	matrix< J2, J1*J3, T >* m_frontal = new matrix< J2, J1*J3, T >(); // -> u2
+	data_.frontal_unfolding_bwd( *m_frontal );
+	
+	//covariance matrix of unfolded data
+	matrix< J2, J2, T >* cov  = new matrix< J2, J2, T >();
+	cov->multiply( *m_frontal, transpose( *m_frontal ));
+	delete m_frontal;
+	
+	//compute x largest magnitude eigenvalues; x = R
+	get_eigs_u_red( *cov, *_u2_comp );
+	
+	delete cov;
+}	
+
+VMML_TEMPLATE_STRING
+template< size_t J1, size_t J2, size_t J3, typename T >
+void 
+VMML_TEMPLATE_CLASSNAME::hoeigs_mode3( const tensor3< J1, J2, J3, T >& data_ )
+{
+	//unfolding / matricization
+	matrix< J3, J1*J2, T >* m_horizontal = new matrix< J3, J1*J2, T >(); // -> u3
+	data_.horizontal_unfolding_bwd( *m_horizontal );
+	
+	//covariance matrix of unfolded data
+	matrix< J3, J3, T >* cov  = new matrix< J3, J3, T >();
+	cov->multiply( *m_horizontal, transpose( *m_horizontal ));
+	delete m_horizontal;
+	
+	//compute x largest magnitude eigenvalues; x = R
+	get_eigs_u_red( *cov, *_u3_comp );
+	
+	delete cov;
+}	
+
+	
+	
+	
+VMML_TEMPLATE_STRING
+void 
+VMML_TEMPLATE_CLASSNAME::hoeigs( const t3_type& data_ )
 {
 	//TODO: is not yet implemented
 	
-	//implement it analog to hosvd on svd. hosvd_eigs_mode1...
-	
-	//matricization along each mode (backward matricization after Lathauwer et al. 2000a)
-	mode1_matricization_type* m_lateral = new mode1_matricization_type(); // -> u1
-	mode2_matricization_type* m_frontal = new mode2_matricization_type(); // -> u2
-	mode3_matricization_type* m_horizontal = new mode3_matricization_type(); //-> u3
-	data_.lateral_matricization( *m_lateral);
-	data_.frontal_matricization( *m_frontal);
-	data_.horizontal_matricization( *m_horizontal);
-	
-	//std::cout << "tensor input for tucker, method1: " << std::endl << tensor_ << std::endl;
-	
-	//2-mode PCA for each matricization A_n: (1) covariance matrix, (2) SVD
+	//(1) matricization along each mode (backward matricization after Lathauwer et al. 2000a)
+	//(2) 2-mode PCA for each matricization A_n: (1) covariance matrix, (2) eigenvalue decomposition
 	//covariance matrix S_n for each matrizitation A_n
-	matrix< I1, I1, T_internal >* s1  = new matrix< I1, I1, T_internal >();
-	matrix< I2, I2, T_internal >* s2 = new matrix< I2, I2, T_internal >();
-	matrix< I3, I3, T_internal >* s3  = new matrix< I3, I3, T_internal >();
+	//(3) eigenvalue decomposition for each covariance matrix: compute x largest magnitude eigenvalues; x = R
+	hoeigs_mode1( data_ );
+	hoeigs_mode2( data_ );
+	hoeigs_mode3( data_ );
 	
-	s1->multiply( *m_lateral, transpose( *m_lateral));
-	s2->multiply( *m_frontal, transpose( *m_frontal));
-	s3->multiply( *m_horizontal, transpose( *m_horizontal));
+	derive_core_orthogonal_bases(data_ );
 	
-	/*std::cout << "covariance matrix s1: " << std::endl << s1 << std::endl 
-	 << "covariance matrix s2: " << s2 << std::endl
-	 << "covariance matrix s3: " << s3 << std::endl;*/
-	
-	//eigenvalue decomposition for each covariance matrix
-	
-#if 0
-	//compute x largest magnitude eigenvalues
-	matrix< 4, 3, double > eigxvectors;
-	vector< 3, double > eigxvalues;
-	lapack_sym_eigs< 4, double >  eigs;
-	eigs.compute_x( A, eigxvectors, eigxvalues);
-#endif	
-	
-	
-	delete m_frontal;
-	delete m_lateral;
-	delete m_horizontal;
-	delete s1;
-	delete s2;
-	delete s3;
+	cast_members();
 }
 
 	

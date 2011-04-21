@@ -759,19 +759,28 @@ VMML_TEMPLATE_CLASSNAME::hooi( const t3_type& data_ )
 		fitold = fit;
 		
 		//optimize modes
+#if HOEIGS
+		//FIXME: enhance tests with signs of eigenvectors
+		optimize_mode1( data, projection1 );
+		hoeigs_mode1( projection1 );
+		optimize_mode2( data, projection2 );
+		hoeigs_mode2( projection2 );
+		optimize_mode3( data, projection3 );
+		hoeigs_mode3( projection3 );
+#else
 		optimize_mode1( data, projection1 );
 		hosvd_mode1( projection1 );
 		optimize_mode2( data, projection2 );
 		hosvd_mode2( projection2 );
 		optimize_mode3( data, projection3 );
 		hosvd_mode3( projection3 );
+#endif
 		_core_comp.multiply_horizontal_bwd( projection3, transpose( *_u3_comp ) );
-		
 		f_norm = _core_comp.frobenius_norm();
 		normresidual  = sqrt( max_f_norm * max_f_norm - f_norm * f_norm);
 		fit = 1 - (normresidual / max_f_norm);
 		fitchange = fabs(fitold - fit);
-
+		
 #if TUCKER_LOG
 		std::cout << "iteration '" << i << "', fit: " << fit 
 			<< ", fitdelta: " << fitchange 
@@ -1830,8 +1839,6 @@ VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::hoeigs( const t3_type& data_ )
 {
-	//TODO: is not yet implemented
-	
 	//(1) matricization along each mode (backward matricization after Lathauwer et al. 2000a)
 	//(2) 2-mode PCA for each matricization A_n: (1) covariance matrix, (2) eigenvalue decomposition
 	//covariance matrix S_n for each matrizitation A_n

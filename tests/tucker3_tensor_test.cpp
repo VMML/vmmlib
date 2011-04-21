@@ -97,12 +97,12 @@ namespace vmml
 		}
 		
 		
-		//(2) decomposition into basis matrices using svd	
+		//(2a) decomposition into basis matrices using SVD	-> HOSVD
 		
 		tuck3_hosvd.hosvd( t3_data_hosvd );
-		 tuck3_hosvd.get_u1( u1_hosvd );
-		 tuck3_hosvd.get_u2( u2_hosvd );
-		 tuck3_hosvd.get_u3( u3_hosvd );
+		tuck3_hosvd.get_u1( u1_hosvd );
+		tuck3_hosvd.get_u2( u2_hosvd );
+		tuck3_hosvd.get_u3( u3_hosvd );
 		
 		if ( u1_hosvd.equals( u1_hosvd_check, precision ) && u2_hosvd.equals( u2_hosvd_check, precision ) && u3_hosvd.equals( u3_hosvd_check, precision ))
 		{	
@@ -124,33 +124,45 @@ namespace vmml
 		}
 		
 		
-		//(2b) decomposition into basis using eigenvalue decomposition
+		//(2b) decomposition into basis using eigenvalue decomposition -> HOEIGS
+		matrix<3, 3, double> u1_hoeigs_check;
+		matrix<3, 3, double> u2_hoeigs_check;
+		matrix<3, 3, double> u3_hoeigs_check;
+		double data_u1_hoeigs[] = { 0.1122204363, 0.7738507986, -0.623347044, 
+			0.5770543218, -0.5614452958, -0.5931168199,
+			0.8089591861, 0.2931452692, 0.5095595717};
+		u1_hoeigs_check.set( data_u1_hoeigs, data_u1_hoeigs + 9);
+		double data_u2_hoeigs[] = { -0.4624060392, -0.01022823341, 0.8866092563,
+			-0.886639595, 0.01338403113, -0.4622673988,
+			0.007138226647, 0.9998582006, 0.01525761187 };
+		u2_hoeigs_check.set( data_u2_hoeigs, data_u2_hoeigs + 9);
+		double data_u3_hoeigs[] = { 0.6208223701, 0.4985756576, 0.6049809456,
+			-0.05741500854, 0.7985514402, -0.5991820693,
+			0.7818458676, -0.3372507095, -0.524384439 };
+		u3_hoeigs_check.set( data_u3_hoeigs, data_u3_hoeigs + 9);
+
 		tuck3_hosvd.hoeigs( t3_data_hosvd );
-		//FIXME: hoeigs have different signs of the eigenvectors
 		tuck3_hosvd.get_u1( u1_hosvd );
 		tuck3_hosvd.get_u2( u2_hosvd );
 		tuck3_hosvd.get_u3( u3_hosvd );
 		
-#if 0
-		if ( u1_hosvd.equals( u1_hosvd_check, precision ) && u2_hosvd.equals( u2_hosvd_check, precision ) && u3_hosvd.equals( u3_hosvd_check, precision ))
+		if ( u1_hosvd.equals( u1_hoeigs_check, precision ) && u2_hosvd.equals( u2_hoeigs_check, precision ) && u3_hosvd.equals( u3_hoeigs_check, precision ))
 		{	
 			log( "HOEIGS compute basis matrices U1, U2, U3", true  );
 		} else
 		{
 			std::stringstream error;
 			error 
-			<< "HOEIGS: " << std::endl
-			<< "U1 should be: " << std::endl << u1_hosvd_check << std::endl
+			<< "HOEIGS: " << std::endl << std::setprecision(10)
+			<< "U1 should be: " << std::endl << u1_hoeigs_check << std::endl
 			<< "U1 is: " << std::endl << u1_hosvd << std::endl
-			<< "U2 should be: " << std::endl << u2_hosvd_check << std::endl
+			<< "U2 should be: " << std::endl << u2_hoeigs_check << std::endl
 			<< "U2 is: " << std::endl << u2_hosvd << std::endl
-			<< "U3 should be: " << std::endl << u3_hosvd_check << std::endl
+			<< "U3 should be: " << std::endl << u3_hoeigs_check << std::endl
 			<< "U3 is: " << std::endl << u3_hosvd << std::endl;
-			
 			
 			log_error( error.str() );
 		}
-#endif		
 		
 		//(3) higher-order orthogonal iteration (hooi test data after lathauwer 2000b)
 		matrix<3, 3, double> u1_hooi;

@@ -97,6 +97,9 @@ public:
 	void enable_quantify_log() { _is_quantify_log = true; _is_quantify_coeff = true; _is_quantify_hot = false;};
 	void disable_quantify_log() { _is_quantify_log = false; _is_quantify_coeff = false;} ;
 		
+	void enable_weighted_covs() { _is_weighted_covs = true; };
+	void disable_weighted_covs() { _is_weighted_covs = false; };
+		
 	tensor3< R1, R2, R3, char> get_core_signs() { return _signs; };
 	void set_core_signs(	const tensor3< R1, R2, R3, char> signs_ ) { _signs = signs_; } ;
 		
@@ -247,6 +250,8 @@ protected:
 		//hosvd on eigenvalue decomposition = hoeigs
 		template< size_t N, size_t R, typename T >
         void get_eigs_u_red( const matrix< N, N, T >& data_, matrix< N, R, T_internal >& u_ );
+		template< size_t N, size_t R, typename T >
+        void get_eigs_u_red_weighted( const matrix< N, N, T >& data_, matrix< N, R, T_internal >& u_ );
         template< size_t J1, size_t J2, size_t J3, typename T >
         void hoeigs_mode1( const tensor3<J1, J2, J3, T >& data_ );
         template< size_t J1, size_t J2, size_t J3, typename T >
@@ -284,6 +289,7 @@ private:
 		bool _is_quantify_hot; 
 		bool _is_quantify_log; 
 		bool _is_quantify_linear; 
+		bool _is_weighted_covs;
 		
 }; // class tucker3_tensor
 
@@ -295,7 +301,7 @@ private:
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::tucker3_tensor( )
 	: _is_quantify_coeff( false ), _is_quantify_hot( false ), _hottest_core_value( 0 )
-	, _is_quantify_linear( false ), _is_quantify_log( false )
+	, _is_quantify_linear( false ), _is_quantify_log( false ), _is_weighted_covs( false )
 {
 	_core.zero();
 	_u1 = new u1_type(); _u1->zero();
@@ -312,7 +318,7 @@ VMML_TEMPLATE_CLASSNAME::tucker3_tensor( )
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::tucker3_tensor( t3_core_type& core )
 	: _is_quantify_coeff( false ), _is_quantify_hot( false ), _hottest_core_value( 0 )
-	, _is_quantify_linear( false ), _is_quantify_log( false )
+	, _is_quantify_linear( false ), _is_quantify_log( false ), _is_weighted_covs( false )
 {
 	_core = core;
 	_u1 = new u1_type(); _u1->zero();
@@ -329,7 +335,7 @@ VMML_TEMPLATE_CLASSNAME::tucker3_tensor( t3_core_type& core )
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::tucker3_tensor( t3_core_type& core, u1_type& U1, u2_type& U2, u3_type& U3 )
 	: _is_quantify_coeff( false ), _is_quantify_hot( false ), _hottest_core_value( 0 )
-	, _is_quantify_linear( false ), _is_quantify_log( false )
+	, _is_quantify_linear( false ), _is_quantify_log( false ), _is_weighted_covs( false )
 {
 	_core = core;
 	_u1 = new u1_type( U1 );
@@ -346,7 +352,7 @@ VMML_TEMPLATE_CLASSNAME::tucker3_tensor( t3_core_type& core, u1_type& U1, u2_typ
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::tucker3_tensor( const tucker3_type& other )
 	: _is_quantify_coeff( false ), _is_quantify_hot( false ), _hottest_core_value( 0 )
-	, _is_quantify_linear( false ), _is_quantify_log( false )
+	, _is_quantify_linear( false ), _is_quantify_log( false ), _is_weighted_covs( false )
 {
 	_u1 = new u1_type();
 	_u2 = new u2_type();
@@ -1757,12 +1763,9 @@ VMML_TEMPLATE_CLASSNAME::nnz( const T_value& threshold ) const
 VMML_TEMPLATE_STRING
 template< size_t N, size_t R, typename T >
 void 
-VMML_TEMPLATE_CLASSNAME::get_eigs_u_red( const matrix< N, N, T >& data_, matrix< N, R, T_internal >& u_ )
+VMML_TEMPLATE_CLASSNAME::get_eigs_u_red_weighted( const matrix< N, N, T >& data_, matrix< N, R, T_internal >& u_ )
 {
-	typedef matrix< N, R, T_internal > eigvec_type;
-	typedef vector< R, T_internal > eigval_type;
-	typedef matrix< N, N, T_internal > cov_matrix_type;
-	typedef	matrix< N, R, T_coeff > coeff_type;
+	typedef matrix< N, N, T_svd > cov_matrix_type;
 	
 	//weighted covariance matrix
 	cov_matrix_type* data_weighted = new cov_matrix_type;
@@ -1772,58 +1775,84 @@ VMML_TEMPLATE_CLASSNAME::get_eigs_u_red( const matrix< N, N, T >& data_, matrix<
 		for ( size_t x = 0; x <= hd; ++x) {
 			for ( size_t y = 0; y <= hd; ++y ) {
 				T_internal arg = (x-hd)*(x-hd) + (y-hd)*(y-hd);
-				data_weighted->at( x, y ) = expf(- arg) * data_.at(x,y);
+				data_weighted->at( x, y ) = static_cast<T_svd> ( expf(- arg) * data_.at(x,y) );
 			}
 		}
 		for ( size_t x = hd+1, i = hd; x < N; ++x, --i) {
 			for ( size_t y = 0, j = 0; y <= hd; ++y, ++j ) {
-				data_weighted->at( x, y ) = data_weighted->at(i, j) * data_.at(x,y);
+				data_weighted->at( x, y ) = static_cast<T_svd> ( data_weighted->at(i, j) * data_.at(x,y) );
 			}
 		}
 		for ( size_t x = 0, i = 0; x <= hd; ++x, ++i) {
 			for ( size_t y = hd+1, j = hd; y < N; ++y, --j ) {
-				data_weighted->at( x, y ) = data_weighted->at(i, j) * data_.at(x,y);
+				data_weighted->at( x, y ) = static_cast<T_svd> ( data_weighted->at(i, j) * data_.at(x,y) );
 			}
 		}
 		for ( size_t x = hd+1, i = hd; x < N; ++x, --i) {
 			for ( size_t y = hd+1, j = hd; y < N; ++y, --j ) {
-				data_weighted->at( x, y ) = data_weighted->at(i, j) * data_.at(x,y);
+				data_weighted->at( x, y ) = static_cast<T_svd> ( data_weighted->at(i, j) * data_.at(x,y) );
 			}
 		}
 	} else {
 		for ( size_t x = 0; x < N; ++x) {
 			for ( size_t y = 0; y < N; ++y ) {
 				T_internal arg = (x-hd)*(x-hd) + (y-hd)*(y-hd);
-				data_weighted->at( x, y ) = expf(- arg) * data_.at(x,y);
+				data_weighted->at( x, y ) = static_cast<T_svd> ( expf(- arg) * data_.at(x,y) );
 			}
 		}
 	}
-		
-	//compute x largest magnitude eigenvalues; x = R
-	eigvec_type* eigxvectors = new eigvec_type;
-	eigval_type* eigxvalues =  new eigval_type;
-	lapack_sym_eigs< N, T_internal >  eigs;
 	
-	if( eigs.compute_x( data_, *eigxvectors, *eigxvalues) ) {
-		//FIXME: check if same problem on unix exists with float and double
-		coeff_type* u_quant = new coeff_type; 
-		if( _is_quantify_coeff ){
-			T_internal min_value = 0; T_internal max_value = 0;
-			eigxvectors->quantize( *u_quant, min_value, max_value );
-			u_quant->dequantize( *eigxvectors, min_value, max_value );
-		}		
+    get_eigs_u_red( *data_weighted, u_ );
+	
+	delete data_weighted;
+	
+}
+
+VMML_TEMPLATE_STRING
+template< size_t N, size_t R, typename T >
+void 
+VMML_TEMPLATE_CLASSNAME::get_eigs_u_red( const matrix< N, N, T >& data_, matrix< N, R, T_internal >& u_ )
+{
+	typedef matrix< N, N, T_svd > cov_matrix_type;
+	typedef vector< R, T_svd > eigval_type;
+	typedef	matrix< N, R, T_svd > eigvec_type;
+	typedef	matrix< N, R, T_coeff > coeff_type;
+	
+	
+	//compute x largest magnitude eigenvalues; x = R
+	eigval_type* eigxvalues =  new eigval_type;
+	eigvec_type* eigxvectors = new eigvec_type; 
+	
+	lapack_sym_eigs< N, T_svd >  eigs;
+	cov_matrix_type* data = new cov_matrix_type;
+	data->cast_from( data_ );
+	if( eigs.compute_x( *data, *eigxvectors, *eigxvalues) ) {
 		
-		u_ = *eigxvectors;
+		if( _is_quantify_coeff ){
+			coeff_type* evec_quant = new coeff_type; 
+			T_internal min_value = 0; T_internal max_value = 0;
+			u_.cast_from( *eigxvectors );
+			u_.quantize( *evec_quant, min_value, max_value );
+			evec_quant->dequantize( u_, min_value, max_value );
+			delete evec_quant;
+		} else if ( sizeof( T_internal ) != 4 ){
+			u_.cast_from( *eigxvectors );
+		} else {
+			u_ = *eigxvectors;
+		}
 		
 	} else {
 		u_.zero();
 	}
-
+	
+	
 	delete eigxvalues;
 	delete eigxvectors;
-	delete data_weighted;
+	delete data;
 	
 }
+	
+	
 	
 VMML_TEMPLATE_STRING
 template< size_t J1, size_t J2, size_t J3, typename T >
@@ -1843,7 +1872,11 @@ VMML_TEMPLATE_CLASSNAME::hoeigs_mode1( const tensor3< J1, J2, J3, T >& data_ )
 	delete m_lateral;
 
 	//compute x largest magnitude eigenvalues; x = R
-	get_eigs_u_red( *cov, *_u1_comp );
+	if ( _is_weighted_covs ) {
+		get_eigs_u_red_weighted( *cov, *_u1_comp  );
+	} else {
+		get_eigs_u_red( *cov, *_u1_comp );
+	}
 	
     delete cov;
 }	
@@ -1866,7 +1899,12 @@ VMML_TEMPLATE_CLASSNAME::hoeigs_mode2( const tensor3< J1, J2, J3, T >& data_ )
 	delete m_frontal;
 	
 	//compute x largest magnitude eigenvalues; x = R
-	get_eigs_u_red( *cov, *_u2_comp );
+	if ( _is_weighted_covs ) {
+		get_eigs_u_red_weighted( *cov, *_u2_comp  );
+	} else {
+		get_eigs_u_red( *cov, *_u2_comp );
+	}
+	
 	
 	delete cov;
 }	
@@ -1889,7 +1927,11 @@ VMML_TEMPLATE_CLASSNAME::hoeigs_mode3( const tensor3< J1, J2, J3, T >& data_ )
 	delete m_horizontal;
 	
 	//compute x largest magnitude eigenvalues; x = R
-	get_eigs_u_red( *cov, *_u3_comp );
+	if ( _is_weighted_covs ) {
+		get_eigs_u_red_weighted( *cov, *_u3_comp  );
+	} else {
+		get_eigs_u_red( *cov, *_u3_comp );
+	}
 	
 	delete cov;
 }	
@@ -1912,9 +1954,7 @@ VMML_TEMPLATE_CLASSNAME::hoeigs( const t3_type& data_ )
 	derive_core_orthogonal_bases(data_ );
 	
 	cast_members();
-}
-
-	
+}	
 	
 #undef VMML_TEMPLATE_STRING
 #undef VMML_TEMPLATE_CLASSNAME

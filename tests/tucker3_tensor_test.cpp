@@ -153,7 +153,7 @@ namespace vmml
 		{
 			std::stringstream error;
 			error 
-			<< "HOEIGS: " << std::endl << std::setprecision(10)
+			<< "HOEIGS: " << std::endl
 			<< "U1 should be: " << std::endl << u1_hoeigs_check << std::endl
 			<< "U1 is: " << std::endl << u1_hosvd << std::endl
 			<< "U2 should be: " << std::endl << u2_hoeigs_check << std::endl
@@ -163,6 +163,50 @@ namespace vmml
 			
 			log_error( error.str() );
 		}
+		
+		//(2c) HOEIGS with weighted covariance matrices
+		matrix<3, 3, double> u1_hoeigs_w_check;
+		matrix<3, 3, double> u2_hoeigs_w_check;
+		matrix<3, 3, double> u3_hoeigs_w_check;
+		double data_u1_hoeigs_w[] = { 0.01659677736, 0.6643067598, 0.7472757697,
+			-0.9263272285, -0.2711019516, 0.2615753114,
+			-0.3763541579, 0.6965631843, -0.6108660102};
+		u1_hoeigs_w_check.set( data_u1_hoeigs_w, data_u1_hoeigs_w + 9);
+		double data_u2_hoeigs_w[] = { -0.1877161115, -0.01638161018, 0.9820867181,
+			-0.9822220802, 0.004734528251, -0.1876630038,
+			0.001575494884, 0.9998546243, 0.01697912626};
+		u2_hoeigs_w_check.set( data_u2_hoeigs_w, data_u2_hoeigs_w + 9);
+		double data_u3_hoeigs_w[] = { -0.03343283013, 0.6795191765, 0.7328956127,
+			0.9155584574, 0.3148912489, -0.2501924336,
+			-0.4007929564, 0.6626440883, -0.6326671839 };
+		u3_hoeigs_w_check.set( data_u3_hoeigs_w, data_u3_hoeigs_w + 9);
+		
+		tuck3_hosvd.enable_weighted_covs();
+		tuck3_hosvd.hoeigs( t3_data_hosvd );
+		tuck3_hosvd.get_u1( u1_hosvd );
+		tuck3_hosvd.get_u2( u2_hosvd );
+		tuck3_hosvd.get_u3( u3_hosvd );
+		tuck3_hosvd.disable_weighted_covs();
+		
+		
+		if ( u1_hosvd.equals( u1_hoeigs_w_check, precision ) && u2_hosvd.equals( u2_hoeigs_w_check, precision ) && u3_hosvd.equals( u3_hoeigs_w_check, precision ))
+		{	
+			log( "HOEIGS (weighted covariances) compute basis matrices U1, U2, U3", true  );
+		} else
+		{
+			std::stringstream error;
+			error 
+			<< "HOEIGS (weighted covs): " << std::endl 
+			<< "U1 should be: " << std::endl << u1_hoeigs_w_check << std::endl
+			<< "U1 is: " << std::endl << u1_hosvd << std::endl
+			<< "U2 should be: " << std::endl << u2_hoeigs_w_check << std::endl
+			<< "U2 is: " << std::endl << u2_hosvd << std::endl
+			<< "U3 should be: " << std::endl << u3_hoeigs_w_check << std::endl
+			<< "U3 is: " << std::endl << u3_hosvd << std::endl;
+			
+			log_error( error.str() );
+		}
+		
 		
 		//(3) higher-order orthogonal iteration (hooi test data after lathauwer 2000b)
 		matrix<3, 3, double> u1_hooi;

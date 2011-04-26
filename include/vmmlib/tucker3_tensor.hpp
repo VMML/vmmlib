@@ -1819,42 +1819,6 @@ VMML_TEMPLATE_CLASSNAME::get_eigs_u_red( const matrix< N, N, T >& data_, matrix<
 		u_.zero();
 	}
 
-	
-	///// from SVD
-#if 0
-	typedef	matrix< M, N, T_svd > svd_type;
-	typedef	matrix< M, N, T_coeff > coeff_type;
-	typedef	matrix< M, N, T_internal > internal_type;
-	typedef vector< N, T_svd > lambdas_type;
-	
-	svd_type* u_double = new svd_type; 
-	u_double->cast_from( data_ );
-	
-	coeff_type* u_quant = new coeff_type; 
-	internal_type* u_internal = new internal_type; 
-	
-	lambdas_type* lambdas  = new lambdas_type;
-	lapack_svd< M, N, T_svd >* svd = new lapack_svd<  M, N, T_svd >();
-	if( svd->compute_and_overwrite_input( *u_double, *lambdas )) {
-		if( _is_quantify_coeff ){
-			T_internal min_value = 0; T_internal max_value = 0;
-			u_internal->cast_from( *u_double );
-			u_internal->quantize( *u_quant, min_value, max_value );
-			u_quant->dequantize( *u_internal, min_value, max_value );
-		} else if ( sizeof( T_internal ) != 4 ){
-			u_internal->cast_from( *u_double );
-		} else {
-			*u_internal = *u_double;
-		}
-		
-		u_internal->get_sub_matrix( u_ );
-		
-	} else {
-		u_.zero();
-	}
-#endif	
-	////
-	
 	delete eigxvalues;
 	delete eigxvectors;
 	delete data_weighted;

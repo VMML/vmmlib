@@ -797,7 +797,8 @@ template< size_t J1, size_t J2, size_t J3, typename T >
 void 
 VMML_TEMPLATE_CLASSNAME::hosvd_mode1( const tensor3<J1, J2, J3, T >& data_ )
 {
-	matrix< J1, J2*J3, T >* u = new matrix< J1, J2*J3, T >(); // -> u1
+	typedef matrix< J1, J2*J3, T > unfolded_matrix_type;
+	unfolded_matrix_type* u = new unfolded_matrix_type; // -> u1
 	data_.lateral_unfolding_bwd( *u );
 	
 	get_svd_u_red( *u, *_u1_comp );
@@ -811,7 +812,8 @@ template< size_t J1, size_t J2, size_t J3, typename T >
 void 
 VMML_TEMPLATE_CLASSNAME::hosvd_mode2( const tensor3<J1, J2, J3, T >& data_ )
 {
-	matrix< J2, J1*J3, T >* u = new matrix< J2, J1*J3, T >(); // -> u1
+	typedef matrix< J2, J1*J3, T > unfolded_matrix_type;
+	unfolded_matrix_type* u = new unfolded_matrix_type; // -> u1
 	data_.frontal_unfolding_bwd( *u );
 	
 	get_svd_u_red( *u, *_u2_comp );
@@ -826,7 +828,8 @@ template< size_t J1, size_t J2, size_t J3, typename T >
 void 
 VMML_TEMPLATE_CLASSNAME::hosvd_mode3( const tensor3<J1, J2, J3, T >& data_  )
 {
-	matrix< J3, J1*J2, T >* u = new matrix< J3, J1*J2, T >(); // -> u1
+	typedef matrix< J3, J1*J2, T > unfolded_matrix_type;
+	unfolded_matrix_type* u = new unfolded_matrix_type; // -> u1
 	data_.horizontal_unfolding_bwd( *u );
 		
 	get_svd_u_red( *u, *_u3_comp );
@@ -840,13 +843,18 @@ template< size_t M, size_t N, size_t R, typename T >
 void 
 VMML_TEMPLATE_CLASSNAME::get_svd_u_red( const matrix< M, N, T >& data_, matrix< M, R, T_internal >& u_ )
 {
-	matrix< M, N, T_svd >* u_double = new matrix< M, N, T_svd >(); 
+	typedef	matrix< M, N, T_svd > svd_type;
+	typedef	matrix< M, N, T_coeff > coeff_type;
+	typedef	matrix< M, N, T_internal > internal_type;
+	typedef vector< N, T_svd > lambdas_type;
+	
+	svd_type* u_double = new svd_type; 
 	u_double->cast_from( data_ );
 		
-	matrix< M, N, T_coeff >* u_quant = new matrix< M, N, T_coeff >(); 
-	matrix< M, N, T_internal >* u_internal = new matrix< M, N, T_internal >(); 
+	coeff_type* u_quant = new coeff_type; 
+	internal_type* u_internal = new internal_type; 
 	
-	vector< N, T_svd >* lambdas  = new vector<  N, T_svd >();
+	lambdas_type* lambdas  = new lambdas_type;
 	lapack_svd< M, N, T_svd >* svd = new lapack_svd<  M, N, T_svd >();
 	if( svd->compute_and_overwrite_input( *u_double, *lambdas )) {
 		if( _is_quantify_coeff ){
@@ -1392,11 +1400,10 @@ VMML_TEMPLATE_CLASSNAME::import_quantized_from( const std::vector<unsigned char>
 	}
 	
 	//copy min and max values: u1_min, u1_max, u2_min, u2_max, u3_min, u3_max, core_min, core_max
+#if CODE_ALL_U_MIN_MAX	
 	T_internal u1_min = 0; T_internal u1_max = 0;
 	T_internal u2_min = 0; T_internal u2_max = 0;
 	T_internal u3_min = 0; T_internal u3_max = 0;
-	T_internal u_min = 0; T_internal u_max = 0;
-#if CODE_ALL_U_MIN_MAX	
 	memcpy( &u1_min, data, len_t_comp ); end_data = len_t_comp;
 	memcpy( &u1_max, data + end_data, len_t_comp ); end_data += len_t_comp;
 	memcpy( &u2_min, data + end_data, len_t_comp ); end_data += len_t_comp;
@@ -1404,6 +1411,7 @@ VMML_TEMPLATE_CLASSNAME::import_quantized_from( const std::vector<unsigned char>
 	memcpy( &u3_min, data + end_data, len_t_comp ); end_data += len_t_comp;
 	memcpy( &u3_max, data + end_data, len_t_comp ); end_data += len_t_comp;
 #else
+	T_internal u_min = 0; T_internal u_max = 0;
 	memcpy( &u_min, data, len_t_comp ); end_data = len_t_comp;
 	memcpy( &u_max, data + end_data, len_t_comp ); end_data += len_t_comp;
 #endif
@@ -1751,24 +1759,105 @@ template< size_t N, size_t R, typename T >
 void 
 VMML_TEMPLATE_CLASSNAME::get_eigs_u_red( const matrix< N, N, T >& data_, matrix< N, R, T_internal >& u_ )
 {
+	typedef matrix< N, R, T_internal > eigvec_type;
+	typedef vector< R, T_internal > eigval_type;
+	typedef matrix< N, N, T_internal > cov_matrix_type;
+	typedef	matrix< N, R, T_coeff > coeff_type;
+	
+	//weighted covariance matrix
+	cov_matrix_type* data_weighted = new cov_matrix_type;
+	size_t hd = (N-1)/2;
+	
+	if ( (N % 2) == 0 ) {
+		for ( size_t x = 0; x <= hd; ++x) {
+			for ( size_t y = 0; y <= hd; ++y ) {
+				T_internal arg = (x-hd)*(x-hd) + (y-hd)*(y-hd);
+				data_weighted->at( x, y ) = expf(- arg) * data_.at(x,y);
+			}
+		}
+		for ( size_t x = hd+1, i = hd; x < N; ++x, --i) {
+			for ( size_t y = 0, j = 0; y <= hd; ++y, ++j ) {
+				data_weighted->at( x, y ) = data_weighted->at(i, j) * data_.at(x,y);
+			}
+		}
+		for ( size_t x = 0, i = 0; x <= hd; ++x, ++i) {
+			for ( size_t y = hd+1, j = hd; y < N; ++y, --j ) {
+				data_weighted->at( x, y ) = data_weighted->at(i, j) * data_.at(x,y);
+			}
+		}
+		for ( size_t x = hd+1, i = hd; x < N; ++x, --i) {
+			for ( size_t y = hd+1, j = hd; y < N; ++y, --j ) {
+				data_weighted->at( x, y ) = data_weighted->at(i, j) * data_.at(x,y);
+			}
+		}
+	} else {
+		for ( size_t x = 0; x < N; ++x) {
+			for ( size_t y = 0; y < N; ++y ) {
+				T_internal arg = (x-hd)*(x-hd) + (y-hd)*(y-hd);
+				data_weighted->at( x, y ) = expf(- arg) * data_.at(x,y);
+			}
+		}
+	}
+		
 	//compute x largest magnitude eigenvalues; x = R
-	matrix< N, R, T_internal >* eigxvectors = new matrix< N, R, T_internal >;
-	vector< R, T_internal >* eigxvalues =  new vector< R, T_internal >;
+	eigvec_type* eigxvectors = new eigvec_type;
+	eigval_type* eigxvalues =  new eigval_type;
 	lapack_sym_eigs< N, T_internal >  eigs;
 	
-	
 	if( eigs.compute_x( data_, *eigxvectors, *eigxvalues) ) {
-		//FIXME: handle cases for quantization etc.
+		//FIXME: check if same problem on unix exists with float and double
+		coeff_type* u_quant = new coeff_type; 
+		if( _is_quantify_coeff ){
+			T_internal min_value = 0; T_internal max_value = 0;
+			eigxvectors->quantize( *u_quant, min_value, max_value );
+			u_quant->dequantize( *eigxvectors, min_value, max_value );
+		}		
+		
 		u_ = *eigxvectors;
 		
 	} else {
 		u_.zero();
 	}
+
 	
-	//std::cout << "eigenvectors: " << *eigxvectors << std::endl;
+	///// from SVD
+#if 0
+	typedef	matrix< M, N, T_svd > svd_type;
+	typedef	matrix< M, N, T_coeff > coeff_type;
+	typedef	matrix< M, N, T_internal > internal_type;
+	typedef vector< N, T_svd > lambdas_type;
+	
+	svd_type* u_double = new svd_type; 
+	u_double->cast_from( data_ );
+	
+	coeff_type* u_quant = new coeff_type; 
+	internal_type* u_internal = new internal_type; 
+	
+	lambdas_type* lambdas  = new lambdas_type;
+	lapack_svd< M, N, T_svd >* svd = new lapack_svd<  M, N, T_svd >();
+	if( svd->compute_and_overwrite_input( *u_double, *lambdas )) {
+		if( _is_quantify_coeff ){
+			T_internal min_value = 0; T_internal max_value = 0;
+			u_internal->cast_from( *u_double );
+			u_internal->quantize( *u_quant, min_value, max_value );
+			u_quant->dequantize( *u_internal, min_value, max_value );
+		} else if ( sizeof( T_internal ) != 4 ){
+			u_internal->cast_from( *u_double );
+		} else {
+			*u_internal = *u_double;
+		}
+		
+		u_internal->get_sub_matrix( u_ );
+		
+	} else {
+		u_.zero();
+	}
+#endif	
+	////
 	
 	delete eigxvalues;
 	delete eigxvectors;
+	delete data_weighted;
 	
 }
 	
@@ -1777,12 +1866,15 @@ template< size_t J1, size_t J2, size_t J3, typename T >
 void 
 VMML_TEMPLATE_CLASSNAME::hoeigs_mode1( const tensor3< J1, J2, J3, T >& data_ )
 {
+	typedef matrix< J1, J2*J3, T > unfolded_matrix_type;
+	typedef matrix< J1, J1, T > cov_matrix_type;
+	
 	//unfolding / matricization
-	matrix< J1, J2*J3, T >* m_lateral = new matrix< J1, J2*J3, T >(); // -> u1
+	unfolded_matrix_type* m_lateral = new unfolded_matrix_type; // -> u1
 	data_.lateral_unfolding_bwd( *m_lateral );
 	
 	//covariance matrix of unfolded data
-	matrix< J1, J1, T >* cov  = new matrix< J1, J1, T >();
+	cov_matrix_type* cov  = new cov_matrix_type;
 	cov->multiply( *m_lateral, transpose( *m_lateral ));
 	delete m_lateral;
 
@@ -1797,12 +1889,15 @@ template< size_t J1, size_t J2, size_t J3, typename T >
 void 
 VMML_TEMPLATE_CLASSNAME::hoeigs_mode2( const tensor3< J1, J2, J3, T >& data_ )
 {
+	typedef matrix< J2, J1*J3, T > unfolded_matrix_type;
+	typedef matrix< J2, J2, T > cov_matrix_type;
+
 	//unfolding / matricization
-	matrix< J2, J1*J3, T >* m_frontal = new matrix< J2, J1*J3, T >(); // -> u2
+	unfolded_matrix_type* m_frontal = new unfolded_matrix_type; // -> u2
 	data_.frontal_unfolding_bwd( *m_frontal );
 	
 	//covariance matrix of unfolded data
-	matrix< J2, J2, T >* cov  = new matrix< J2, J2, T >();
+	cov_matrix_type* cov  = new cov_matrix_type;
 	cov->multiply( *m_frontal, transpose( *m_frontal ));
 	delete m_frontal;
 	
@@ -1817,12 +1912,15 @@ template< size_t J1, size_t J2, size_t J3, typename T >
 void 
 VMML_TEMPLATE_CLASSNAME::hoeigs_mode3( const tensor3< J1, J2, J3, T >& data_ )
 {
+	typedef matrix< J3, J1*J2, T > unfolded_matrix_type;
+	typedef matrix< J3, J3, T > cov_matrix_type;
+
 	//unfolding / matricization
-	matrix< J3, J1*J2, T >* m_horizontal = new matrix< J3, J1*J2, T >(); // -> u3
+	unfolded_matrix_type* m_horizontal = new unfolded_matrix_type; // -> u3
 	data_.horizontal_unfolding_bwd( *m_horizontal );
 	
 	//covariance matrix of unfolded data
-	matrix< J3, J3, T >* cov  = new matrix< J3, J3, T >();
+	cov_matrix_type* cov  = new cov_matrix_type;
 	cov->multiply( *m_horizontal, transpose( *m_horizontal ));
 	delete m_horizontal;
 	

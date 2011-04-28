@@ -196,7 +196,7 @@ struct lapack_sym_eigs
     
 	typedef matrix< N, N, float_t > evectors_type;
 
-    typedef std::pair< float_t, size_t >  eigv_pair_type;
+        typedef std::pair< float_t, size_t >  eigv_pair_type;
     
 	lapack_sym_eigs();
 	~lapack_sym_eigs();
@@ -282,10 +282,10 @@ lapack_sym_eigs< N, float_t >::~lapack_sym_eigs()
 template< size_t N, typename float_t >
 bool
 lapack_sym_eigs< N, float_t >::compute_all(
-									   const matrix< N, N, float_t >& A,
-									   matrix< N, N, float_t >& eigvectors,
-									   vector< N, float_t >& eigvalues
-									   )
+                                        const matrix< N, N, float_t >& A,
+                                        matrix< N, N, float_t >& eigvectors,
+                                        vector< N, float_t >& eigvalues
+                                        )
 {
 	// lapack destroys the contents of the input matrix
 	matrix< N, N, float_t > AA( A );
@@ -308,10 +308,10 @@ template< size_t N, typename float_t >
 template< size_t X >
 bool
 lapack_sym_eigs< N, float_t >::compute_x(
-										   const matrix< N, N, float_t >& A,
-										   matrix< N, X, float_t >& eigvectors,
-										   vector< X, float_t >& eigvalues
-										   )
+                                        const matrix< N, N, float_t >& A,
+                                        matrix< N, X, float_t >& eigvectors,
+                                        vector< X, float_t >& eigvalues
+                                        )
 {
 	//(1) get all eigenvalues and eigenvectors
 	evectors_type* all_eigvectors = new evectors_type();
@@ -327,13 +327,12 @@ lapack_sym_eigs< N, float_t >::compute_x(
 	for( ; it != it_end; ++it, ++counter )
 	{
 		eig_permutations.push_back( eigv_pair_type( *it, counter ) );
-
 	}
     
-    std::sort(
-        eig_permutations.begin(),
-        eig_permutations.end(), 
-        eigenvalue_compare()
+        std::sort(
+                eig_permutations.begin(),
+                eig_permutations.end(), 
+                eigenvalue_compare()
         );
 
 	//sort the eigenvectors according to eigenvalue permutations
@@ -341,8 +340,8 @@ lapack_sym_eigs< N, float_t >::compute_x(
 	evalues_type sorted_eigvalues;	
 	typename std::vector< eigv_pair_type >::const_iterator it2 = eig_permutations.begin(), it2_end = eig_permutations.end();
 	evalue_iterator evalues_it = sorted_eigvalues.begin();
-	counter = 0;
-	for( ; it2 != it2_end; ++it2, ++evalues_it, ++counter )
+
+	for( counter = 0; it2 != it2_end; ++it2, ++evalues_it, ++counter )
 	{
 		*evalues_it = it2->first;
 		sorted_eigvectors->set_column( counter, all_eigvectors->get_column( it2->second ));
@@ -354,8 +353,8 @@ lapack_sym_eigs< N, float_t >::compute_x(
 	for( ; it3 != it3_end; ++it3, ++evalues_it )
 	{
 		*it3 = *evalues_it;
-	}	
-	
+	}
+
 	sorted_eigvectors->get_sub_matrix( eigvectors );
 	
 	delete all_eigvectors;

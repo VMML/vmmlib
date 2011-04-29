@@ -1,11 +1,22 @@
 # Copyright (c) 2011 Daniel Pfeifer <daniel@pfeifer-mail.de>
 
 cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
-project(VMMLib C CXX Fortran)
+project(VMMLib)
+
+enable_testing()
 
 include_directories(include)
 
-find_package(LAPACK)
+if(APPLE)
+  find_library(LAPACK_LIBRARIES accelerate)
+  if(LAPACK_LIBRARIES)
+    set(LAPACK_FOUND TRUE)
+  endif(LAPACK_LIBRARIES)
+else(APPLE)
+  enable_language(Fortran)
+  find_package(LAPACK)
+endif(APPLE)
+
 if(LAPACK_FOUND)
   add_definitions(-DVMMLIB_USE_LAPACK=1)
 endif(LAPACK_FOUND)
@@ -42,3 +53,5 @@ add_executable(vmmlib_test
 target_link_libraries(vmmlib_test
   ${LAPACK_LIBRARIES}
   )
+
+add_test(vmmlib_test vmmlib_test)

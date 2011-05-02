@@ -10,7 +10,7 @@ bool
 tensor3_test::run()
 {
     bool ok = false;
-	        
+        
 	
 	tensor3< 2, 3, 4, int >  t3;
     tensor3< 2, 3, 4, int >  t3_tmp;
@@ -189,6 +189,34 @@ tensor3_test::run()
 		<< std::endl;
 		log_error( error.str() );
 	}
+	
+	//test spherical weighting
+	tensor3< 3,3,3, double > t3_result_sw_check;
+	double data_sw[] = { 0.04978710040450096, 0.1353349983692169, 0.04978710040450096, 0.1353349983692169, 0.3678790032863617, 0.1353349983692169, 0.04978710040450096, 0.1353349983692169, 0.04978710040450096, 
+		0.1353349983692169, 0.3678790032863617, 0.1353349983692169, 0.3678790032863617, 1, 0.3678790032863617, 0.1353349983692169, 0.3678790032863617, 0.1353349983692169,
+		0.04978710040450096, 0.1353349983692169, 0.04978710040450096, 0.1353349983692169, 0.3678790032863617, 0.1353349983692169, 0.04978710040450096, 0.1353349983692169, 0.04978710040450096};
+	t3_result_sw_check.set(data_sw, data_sw + 27);
+	
+	tensor3< 3,3,3, uint8_t > t3_sw;
+	tensor3< 3,3,3, double > t3_result_sw;
+	t3_sw.fill( 1 );
+	t3_sw.apply_spherical_weights( t3_result_sw );
+	double precision = 1.0e-5;
+	if ( t3_result_sw.equals( t3_result_sw_check, precision ) )
+	{	
+		log( "apply spherical weights", true  );
+	} else
+	{
+		std::stringstream error;
+		error 
+		<< "Apply spherical weights "
+		<< "is: " << std::endl << t3_result_sw
+		<< "should be: " << std::endl << t3_result_sw_check
+		<< std::endl;
+		log_error( error.str() );
+	}
+	
+
 	
 	
 	//test fill increasing values
@@ -689,7 +717,7 @@ tensor3_test::run()
 	t3_export_import.export_to( export_data );
 	
 	double export_data_check[] = { 0, 3, 1, 4, 2, 5, 6, 9, 7, 10, 8, 11, 12, 15, 13, 16, 14, 17, 18, 21, 19, 22, 20, 23 };
-	double precision = 1.0e-1;
+	precision = 1.0e-1;
 	ok = true;
 	for (int i = 0; i < 24 && ok; ++i )
 	{

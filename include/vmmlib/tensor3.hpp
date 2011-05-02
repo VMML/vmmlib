@@ -206,7 +206,12 @@ public:
 	
     template< size_t J1, size_t J2, size_t J3 > 
     void multiply_frontal_bwd( const tensor3< J1, J2, J3, T >& other, const matrix< I2, J2, T >& other_slice_ ); //output: tensor3< J1, I2, J3, T >
-    
+
+	//apply spherical weights
+	template< typename float_t>
+    void apply_spherical_weights( tensor3< I1, I2, I3, float_t >& other );
+
+	
     //backward cyclic matricization/unfolding (after Lathauwer et al., 2000a)
     template< size_t J1, size_t J2, size_t J3 > 
     void full_tensor3_matrix_multiplication( const tensor3< J1, J2, J3, T >& core, const matrix< I1, J1, T >& U1, const matrix< I2, J2, T >& U2, const matrix< I3, J3, T >& U3 );
@@ -2082,7 +2087,29 @@ reconstruct_CP(
 }
 
 
+VMML_TEMPLATE_STRING
+template< typename float_t>
+void
+VMML_TEMPLATE_CLASSNAME::
+apply_spherical_weights( tensor3< I1, I2, I3, float_t >& other )
+{
+	//piecewise multiplication of every frontal slice with the weights (spherical)
+	for( size_t i3 = 0; i3 < I3; ++i3 )
+	{		
+		size_t k3 = i3 - I3/2;
+		for ( size_t i1 = 0; i1 < I1; ++i1) {
+			size_t k1 = i1 - I1/2;
+			for ( size_t i2 = 0; i2 < I2; ++i2 ) {
+				size_t k2 = i2 - I2/2;
+				float_t arg = k1*k1 + k2*k2 + k3*k3;
+				other.at( i1, i2, i3 ) = static_cast<float_t> ( expf(- arg) * static_cast<float_t>( at(i1, i2, i3)) );
+			}
+		}
+	}
+}
 
+
+	
 	
 #undef VMML_TEMPLATE_STRING
 #undef VMML_TEMPLATE_CLASSNAME

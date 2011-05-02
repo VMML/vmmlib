@@ -154,11 +154,11 @@ namespace vmml
 			std::stringstream error;
 			error 
 			<< "HOEIGS: " << std::endl
-			//<< "U1 should be: " << std::endl << u1_hoeigs_check << std::endl
+			<< "U1 should be: " << std::endl << u1_hoeigs_check << std::endl
 			<< "U1 is: " << std::endl << u1_hosvd << std::endl
-			//<< "U2 should be: " << std::endl << u2_hoeigs_check << std::endl
+			<< "U2 should be: " << std::endl << u2_hoeigs_check << std::endl
 			<< "U2 is: " << std::endl << u2_hosvd << std::endl
-			//<< "U3 should be: " << std::endl << u3_hoeigs_check << std::endl
+			<< "U3 should be: " << std::endl << u3_hoeigs_check << std::endl
 			<< "U3 is: " << std::endl << u3_hosvd << std::endl;
 			
 			log_error( error.str() );

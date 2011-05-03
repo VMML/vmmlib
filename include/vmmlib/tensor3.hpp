@@ -210,6 +210,7 @@ public:
 	//apply spherical weights
 	template< typename float_t>
     void apply_spherical_weights( tensor3< I1, I2, I3, float_t >& other );
+	void get_sphere();
 
 	
     //backward cyclic matricization/unfolding (after Lathauwer et al., 2000a)
@@ -2101,14 +2102,38 @@ apply_spherical_weights( tensor3< I1, I2, I3, float_t >& other )
 			size_t k1 = i1 - I1/2;
 			for ( size_t i2 = 0; i2 < I2; ++i2 ) {
 				size_t k2 = i2 - I2/2;
-				float_t arg = k1*k1 + k2*k2 + k3*k3;
-				other.at( i1, i2, i3 ) = static_cast<float_t> ( expf(- arg) * static_cast<float_t>( at(i1, i2, i3)) );
+				float_t weight = 10/(sqrtf( k1*k1 + k2*k2 + k3*k3) + 0.0000001);
+				float_t value = static_cast<float_t>( at(i1, i2, i3));
+				//value = (value > 35) ? (value - 35) : 0;
+				other.at( i1, i2, i3 ) = static_cast<float_t> ( weight * value);
+				//other.at( i1, i2, i3 ) = static_cast<float_t> ( expf(- weight) * value );
+				//or try exp(- weight * b)
 			}
 		}
 	}
 }
 
 
+VMML_TEMPLATE_STRING
+void
+VMML_TEMPLATE_CLASSNAME::
+get_sphere()
+{
+	for( size_t i3 = 0; i3 < I3; ++i3 )
+	{		
+		size_t k3 = i3 - I3/2;
+		for ( size_t i1 = 0; i1 < I1; ++i1) {
+			size_t k1 = i1 - I1/2;
+			for ( size_t i2 = 0; i2 < I2; ++i2 ) {
+				size_t k2 = i2 - I2/2;
+				float_t radius = sqrtf(k1*k1 + k2*k2 + k3*k3);
+				//FIXME(choose appropriate I
+				if (radius >= (I1/2))
+					at(i1, i2, i3 ) = 0;
+			}
+		}
+	}
+}
 	
 	
 #undef VMML_TEMPLATE_STRING

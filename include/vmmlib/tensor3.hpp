@@ -2102,12 +2102,11 @@ apply_spherical_weights( tensor3< I1, I2, I3, float_t >& other )
 			size_t k1 = i1 - I1/2;
 			for ( size_t i2 = 0; i2 < I2; ++i2 ) {
 				size_t k2 = i2 - I2/2;
-				float_t weight = 10/(sqrtf( k1*k1 + k2*k2 + k3*k3) + 0.0000001);
+				float_t weight = (sqrtf( k1*k1 + k2*k2 + k3*k3) + 0.0000001);
+				weight = exp( - weight ); //or try exp(- weight * factor)
 				float_t value = static_cast<float_t>( at(i1, i2, i3));
 				//value = (value > 35) ? (value - 35) : 0;
 				other.at( i1, i2, i3 ) = static_cast<float_t> ( weight * value);
-				//other.at( i1, i2, i3 ) = static_cast<float_t> ( expf(- weight) * value );
-				//or try exp(- weight * b)
 			}
 		}
 	}

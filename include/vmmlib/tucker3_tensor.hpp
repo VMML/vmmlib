@@ -110,6 +110,16 @@ public:
 	void get_u2( u2_type& U2 ) const { U2 = *_u2; } ;
 	void get_u3( u3_type& U3 ) const { U3 = *_u3; } ;
 		
+	void set_core_comp( t3_core_comp_type& core )  { _core = t3_core_type( core ); _core_comp.cast_from( core ); } ;
+	void set_u1_comp( u1_comp_type& U1 ) { *_u1_comp = U1; _u1->cast_from( U1 ); } ;
+	void set_u2_comp( u2_comp_type& U2 ) { *_u2_comp = U2; _u1->cast_from( U2 ); } ;
+	void set_u3_comp( u3_comp_type& U3 ) { *_u3_comp = U3; _u1->cast_from( U3 ); } ;
+
+	void get_core_comp( t3_core_comp_type& data_ ) const { data_ = _core_comp; } ;
+	void get_u1_comp( u1_comp_type& U1 ) const { U1 = *_u1_comp; } ;
+	void get_u2_comp( u2_comp_type& U2 ) const { U2 = *_u2_comp; } ;
+	void get_u3_comp( u3_comp_type& U3 ) const { U3 = *_u3_comp; } ;
+		
 	template< typename T >
 	void export_to( std::vector< T >& data_ );
 	template< typename T >
@@ -1213,30 +1223,30 @@ VMML_TEMPLATE_CLASSNAME::region_of_interest( const tucker3_tensor< R1, R2, R3, K
     assert(end_index3 < K3);
     
     //region_of_interes of basis matrices
-    matrix< K1, R1, T_coeff >* u1 = new matrix< K1, R1, T_coeff >();
-    other.get_u1( *u1 );
+    matrix< K1, R1, T_internal >* u1 = new matrix< K1, R1, T_internal >();
+    other.get_u1_comp( *u1 );
     for( size_t i1 = start_index1,  i = 0; i1 < end_index1; ++i1, ++i ) 
     {
-            _u1->set_row( i, u1->get_row( i1 ));
+            _u1_comp->set_row( i, u1->get_row( i1 ));
     }
     
-    matrix< K2, R2, T_coeff>* u2 = new matrix< K2, R2, T_coeff>();
-    other.get_u2( *u2 );
+    matrix< K2, R2, T_internal>* u2 = new matrix< K2, R2, T_internal>();
+    other.get_u2_comp( *u2 );
     for( size_t i2 = start_index2,  i = 0; i2 < end_index2; ++i2, ++i) 
     {
-            _u2->set_row( i, u2->get_row( i2 ));
+            _u2_comp->set_row( i, u2->get_row( i2 ));
     }
-    
-    matrix< K3, R3, T_coeff >* u3  = new matrix< K3, R3, T_coeff>();
-    other.get_u3( *u3 );
+	
+    matrix< K3, R3, T_internal >* u3  = new matrix< K3, R3, T_internal>();
+    other.get_u3_comp( *u3 );
     for( size_t i3 = start_index3,  i = 0; i3 < end_index3; ++i3, ++i) 
     {
-            _u3->set_row( i, u3->get_row( i3 ));
+            _u3_comp->set_row( i, u3->get_row( i3 ));
     }
     
-    other.get_core( _core );
+    other.get_core_comp( _core_comp );
 	
-	cast_comp_members();
+	//cast_comp_members();
 	delete u1;
 	delete u2;
 	delete u3;

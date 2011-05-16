@@ -228,12 +228,12 @@ public:
     // please note that the parameter U will be overwritten
     // temp is simply a required workspace matrix, it can be empty or uninitialized
     // but is passed as parameter to prevent potentially superfluous allocations.
-    template< size_t Ranks >
-    void reconstruct_CP( const vmml::vector< Ranks, T>& lambda,
-        vmml::matrix< Ranks, I1, T >& U, 
-        const vmml::matrix< Ranks, I2, T >& V,
-        const vmml::matrix< Ranks, I3, T >& W,
-        vmml::matrix< Ranks, I2 * I3, T >& temp
+    template< size_t R >
+    void reconstruct_CP( const vmml::vector< R, T>& lambda,
+        vmml::matrix< R, I1, T >& U, 
+        const vmml::matrix< R, I2, T >& V,
+        const vmml::matrix< R, I3, T >& W,
+        vmml::matrix< R, I2 * I3, T >& temp
         );
     
     
@@ -2039,22 +2039,22 @@ VMML_TEMPLATE_CLASSNAME::get_array_ptr() const
 
 
 VMML_TEMPLATE_STRING
-template< size_t Ranks >
+template< size_t R >
 void
 VMML_TEMPLATE_CLASSNAME::
 reconstruct_CP(
-   const vmml::vector< Ranks, T>& lambda,
-   vmml::matrix< Ranks, I1, T >& U,
-   const vmml::matrix< Ranks, I2, T >& V,
-   const vmml::matrix< Ranks, I3, T >& W, 
-   vmml::matrix< Ranks, I2 * I3, T >& temp
+   const vmml::vector< R, T>& lambda,
+   vmml::matrix< R, I1, T >& U,
+   const vmml::matrix< R, I2, T >& V,
+   const vmml::matrix< R, I3, T >& W, 
+   vmml::matrix< R, I2 * I3, T >& temp
     )
 {
     for (size_t j = 0; j < I2; j++)
     {
         for (size_t k = 0; k < I3; k++)
         {
-            for (size_t r = 0; r < Ranks; r++)
+            for (size_t r = 0; r < R; r++)
             {
                 temp(r, j + k * I2) = V(r, j) * W(r, k);
             }
@@ -2063,7 +2063,7 @@ reconstruct_CP(
     
     for (size_t i = 0; i < I1; i++)
     {
-        for (size_t r = 0; r < Ranks; r++)
+        for (size_t r = 0; r < R; r++)
         {
             U(r, i) = lambda[r] * U(r, i);
         }
@@ -2078,7 +2078,7 @@ reconstruct_CP(
                 T& value = at( i, j, k );
                 value = static_cast< T >( 0.0 );
             
-                for (size_t r = 0; r < Ranks; r++)
+                for (size_t r = 0; r < R; r++)
                 {
                     value += U(r, i) * temp(r, j + k * I2);
                 }

@@ -577,11 +577,6 @@ tensor3_test::run()
 		0.443990610098116, 0.498248315786364, 0.570430518994385, -0.583760373220334};
 	matrix< 4, 4, double > u3_cp; u3_cp.set( data_u3_cp, data_u3_cp + 16);
 	
-	std::cout << "lambdas: " << std::endl << lambda << std::endl << std::endl
-	<< "U1: " << std::endl << u1_cp << std::endl
-	<< "U2: " << std::endl << u2_cp << std::endl
-	<< "U3: " << std::endl << u3_cp << std::endl;
-		
 	tensor3< 4,4,4, double > t3_cp_reco_check;
 	double data_out_cp[] = { 
 		0.354263061197741, 0.336071353932582, 0.340120155317465, 0.148789058227363,
@@ -605,11 +600,19 @@ tensor3_test::run()
 		0.276358969906296, 0.233761715518065, 0.311620024949421, 0.277319482627673 };
 				
 	t3_cp_reco_check.set(data_out_cp, data_out_cp + 64);
+	
+	matrix< 4, 4, double > v1; 
+	matrix< 4, 4, double > v2; 
+	matrix< 4, 4, double > v3; 
+	u1_cp.transpose_to( v1 );
+	u2_cp.transpose_to( v2 );
+	u3_cp.transpose_to( v3 );
 			
 	tensor3< 4, 4, 4, double > t3_cp_reco;
 	matrix< 4, 16, double > temp;
-	t3_cp_reco.reconstruct_CP( lambda, u1_cp, u2_cp, u3_cp, temp);
+	t3_cp_reco.reconstruct_CP( lambda,  v1, v2, v3, temp);
 													
+	precision = 1.0e-4;
 	if ( t3_cp_reco.equals( t3_cp_reco_check, precision) )
 	{	
 		log( "tensor3 CP reconstruction", true  );

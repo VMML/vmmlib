@@ -120,7 +120,8 @@ VMML_TEMPLATE_CLASSNAME::cp3_tensor( u1_type& U1, u2_type& U2, u3_type& U3, vect
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::cp3_tensor()
 {
-	_lambdas = new vector< R, T_coeff>(); _lambdas->core();
+	_lambdas = new vector< R, T_coeff>(); 
+	_lambdas->set( 0 );
 	_u1 = new u1_type(); _u1->zero();
 	_u2 = new u2_type(); _u2->zero();
 	_u3 = new u3_type(); _u3->zero();

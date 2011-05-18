@@ -110,7 +110,7 @@ public:
 	void get_u2( u2_type& U2 ) const { U2 = *_u2; } ;
 	void get_u3( u3_type& U3 ) const { U3 = *_u3; } ;
 		
-	void set_core_comp( t3_core_comp_type& core )  { _core = t3_core_type( core ); _core_comp.cast_from( core ); } ;
+	void set_core_comp( t3_core_comp_type& core )  { _core_comp = t3_core_comp_type( core ); _core.cast_from( _core_comp ); } ;
 	void set_u1_comp( u1_comp_type& U1 ) { *_u1_comp = U1; _u1->cast_from( U1 ); } ;
 	void set_u2_comp( u2_comp_type& U2 ) { *_u2_comp = U2; _u1->cast_from( U2 ); } ;
 	void set_u3_comp( u3_comp_type& U3 ) { *_u3_comp = U3; _u1->cast_from( U3 ); } ;

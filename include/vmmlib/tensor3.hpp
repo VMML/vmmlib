@@ -234,9 +234,14 @@ public:
         const vmml::matrix< R, I2, T >& V,
         const vmml::matrix< R, I3, T >& W,
         vmml::matrix< R, I2 * I3, T >& temp
-        );
-    
-    
+        ); //-> tensor outer product
+    	
+	template< size_t R, typename TT >
+	T tensor_inner_product(
+        const vmml::vector< R, T>& lambda,
+        vmml::matrix< I1, R, TT >& U,
+        const vmml::matrix< I2, R, TT >& V,
+        const vmml::matrix< I3, R, TT >& W );    
     
     //error computation 
     double frobenius_norm() const;
@@ -2133,7 +2138,34 @@ get_sphere()
 		}
 	}
 }
-	
+
+
+
+VMML_TEMPLATE_STRING
+template< size_t R, typename TT >
+T
+VMML_TEMPLATE_CLASSNAME::tensor_inner_product(
+		const vmml::vector< R, T>& lambda,
+        vmml::matrix< I1, R, TT >& U,
+        const vmml::matrix< I2, R, TT >& V,
+        const vmml::matrix< I3, R, TT >& W )
+{
+	T inner_prod;
+	for (size_t k = 0; k < I3; k++)
+	{
+		for (size_t j = 0; j < I2; j++)
+		{
+			for (size_t i = 0; i < I1; i++)
+			{
+				for (size_t r = 0; r < R; r++)
+				{
+					inner_prod += at(i, j, k) * static_cast<T> ( U(i, r) * V( j, r) * W( k, r )) * lambda.at(r);
+				}
+			}
+		}
+	}
+	return inner_prod;
+}	
 	
 #undef VMML_TEMPLATE_STRING
 #undef VMML_TEMPLATE_CLASSNAME

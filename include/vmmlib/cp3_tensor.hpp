@@ -34,9 +34,14 @@ namespace vmml
 	class cp3_tensor
 	{
 	public:    		
+		typedef float T_internal;	
+		typedef double T_svd;
+
 		typedef tensor3< I1, I2, I3, T_value > t3_type;
 		typedef typename t3_type::iterator t3_iterator;
 		typedef typename t3_type::const_iterator t3_const_iterator;
+		
+		typedef tensor3< I1, I2, I3, T_internal > t3_comp_type;
 		
 		typedef tensor3< I1, I2, I3, T_coeff > t3_coeff_type;
 		typedef typename t3_coeff_type::iterator t3_coeff_iterator;
@@ -54,23 +59,40 @@ namespace vmml
 		typedef typename u3_type::iterator u3_iterator;
 		typedef typename u3_type::const_iterator u3_const_iterator;
 		
+		typedef matrix< I1, R, T_internal > u1_comp_type;
+		typedef matrix< I2, R, T_internal > u2_comp_type;
+		typedef matrix< I3, R, T_internal > u3_comp_type;
+		
+		typedef vector< R, T_internal > lambda_comp_type;
+		typedef vector< R, T_coeff > lambda_type;
+		
 		typedef matrix< I1, I2*I3, T_coeff > mode1_matricization_type;
 		typedef matrix< I2, I1*I3, T_coeff > mode2_matricization_type;
 		typedef matrix< I3, I1*I2, T_coeff > mode3_matricization_type;		
 
-		cp3_tensor(  u1_type& U1, u2_type& U2, u3_type& U3, vector< R, T_coeff >& lambdas_ );
+		cp3_tensor(  u1_type& U1, u2_type& U2, u3_type& U3, lambda_type& lambdas_ );
 		cp3_tensor();
 		~cp3_tensor();
 		
-		void set_lambdas( const vector< R, T_coeff >& lambdas_ )  { *_lambdas = vector< R, T_coeff >( lambdas_); } ;
-		void set_u1( u1_type& U1 ) { *_u1 = U1; } ;
-		void set_u2( u2_type& U2 ) { *_u2 = U2; } ;
-		void set_u3( u3_type& U3 ) { *_u3 = U3; } ;
-		
-		void get_lambdas( vector< R, T_coeff >& data_ ) const { data_  = *_lambdas; } ;
+		void get_lambdas( lambda_type& data_ ) const { data_  = *_lambdas; } ;
 		void get_u1( u1_type& U1 ) const { U1 = *_u1; } ;
 		void get_u2( u2_type& U2 ) const { U2 = *_u2; } ;
 		void get_u3( u3_type& U3 ) const { U3 = *_u3; } ;
+		
+		void set_core( const lambda_type& lambdas_ )  { _lambdas = lambda_type( lambdas_ ); _lambdas_comp.cast_from( _lambdas ); } ;
+		void set_u1( u1_type& U1 ) { *_u1 = U1; _u1_comp->cast_from( U1 ); } ;
+		void set_u2( u2_type& U2 ) { *_u2 = U2; _u1_comp->cast_from( U2 ); } ;
+		void set_u3( u3_type& U3 ) { *_u3 = U3; _u1_comp->cast_from( U3 ); } ;
+		
+		void set_lambda_comp( lambda_comp_type& lambdas_ )  { _lambdas_comp = lambda_comp_type( lambdas_ ); _lambdas.cast_from( _lambdas_comp ); } ;
+		void set_u1_comp( u1_comp_type& U1 ) { *_u1_comp = U1; _u1->cast_from( U1 ); } ;
+		void set_u2_comp( u2_comp_type& U2 ) { *_u2_comp = U2; _u1->cast_from( U2 ); } ;
+		void set_u3_comp( u3_comp_type& U3 ) { *_u3_comp = U3; _u1->cast_from( U3 ); } ;
+		
+		void get_lambda_comp( lambda_comp_type& data_ ) const { data_ = _lambdas_comp; } ;
+		void get_u1_comp( u1_comp_type& U1 ) const { U1 = *_u1_comp; } ;
+		void get_u2_comp( u2_comp_type& U2 ) const { U2 = *_u2_comp; } ;
+		void get_u3_comp( u3_comp_type& U3 ) const { U3 = *_u3_comp; } ;
 		
 		void export_to( std::vector< T_coeff >& data_ ) const;
 		void import_from( std::vector< T_coeff >& data_ );	
@@ -83,9 +105,13 @@ namespace vmml
 		//higher-order power method (lathauwer et al., 2000b)
 		void hopm( const t3_type& data_ );
 		
-		void hopm_mode1( const t3_type& data_, u1_type& U1_ ) const;
-		void hopm_mode2( const t3_type& data_, u2_type& U2_ ) const;
-		void hopm_mode3( const t3_type& data_, u3_type& U3_ ) const;
+		template< size_t M, size_t N, typename T >
+		void get_svd_u( const matrix< M, N, T >& data_, matrix< M, R, T_internal >& u_ );
+
+		template< size_t J1, size_t J2, size_t J3, typename T >
+		void hosvd_mode2(  const tensor3<J1, J2, J3, T >& data_ );
+		template< size_t J1, size_t J2, size_t J3, typename T >
+		void hosvd_mode3( const tensor3<J1, J2, J3, T >& data_ );
 		
 		void optimize_mode1( const t3_type& data_, u1_type& U1_optimized_, const u2_type& U2_, const u3_type& U3_ ) const;
 		void optimize_mode2( const t3_type& data_, const u1_type& U1_, u2_type& U2_optimized_, const u3_type& U3_ ) const;		
@@ -94,12 +120,20 @@ namespace vmml
 	protected:
 		cp3_tensor( const cp3_tensor< R, I1, I1, I1, T_value, T_coeff >& other ) {};
 		cp3_tensor< R, I1, I1, I1, T_value, T_coeff > operator=( const cp3_tensor< R, I1, I1, I1, T_value, T_coeff >& other ) { return *this; };
+
+        void cast_members();
+        void cast_comp_members();
 		
 	private:
-		vector< R, T_coeff >* _lambdas ;
+		lambda_type* _lambdas ;
 		u1_type* _u1 ;
 		u2_type* _u2 ;
 		u3_type* _u3 ;
+		
+        lambda_comp_type* _lambdas_comp ;
+        u1_comp_type* _u1_comp ;
+        u2_comp_type* _u2_comp ;
+        u3_comp_type* _u3_comp ;
 		
 	}; // class cp3_tensor
 	
@@ -109,7 +143,7 @@ namespace vmml
 	
 	
 VMML_TEMPLATE_STRING
-VMML_TEMPLATE_CLASSNAME::cp3_tensor( u1_type& U1, u2_type& U2, u3_type& U3, vector< R, T_coeff >& lambdas_ )
+VMML_TEMPLATE_CLASSNAME::cp3_tensor( u1_type& U1, u2_type& U2, u3_type& U3, lambda_type& lambdas_ )
 {
 	set_lambdas(lambdas_);
 	set_u1( U1);
@@ -125,6 +159,11 @@ VMML_TEMPLATE_CLASSNAME::cp3_tensor()
 	_u1 = new u1_type(); _u1->zero();
 	_u2 = new u2_type(); _u2->zero();
 	_u3 = new u3_type(); _u3->zero();
+	_lambdas_comp = new vector< R, T_internal>; 
+	_lambdas_comp->set( 0 );
+	_u1_comp = new u1_comp_type; _u1_comp->zero();
+	_u2_comp = new u2_comp_type; _u2_comp->zero();
+	_u3_comp = new u3_comp_type; _u3_comp->zero();
 }
 	
 VMML_TEMPLATE_STRING
@@ -134,7 +173,35 @@ VMML_TEMPLATE_CLASSNAME::~cp3_tensor()
 	delete _u2;
 	delete _u3;
 	delete _lambdas;
+	delete _u1_comp;
+	delete _u2_comp;
+	delete _u3_comp;
+	delete _lambdas_comp;
 }
+	
+	
+VMML_TEMPLATE_STRING
+void
+VMML_TEMPLATE_CLASSNAME::cast_members()
+{
+	_u1->cast_from( *_u1_comp );
+	_u2->cast_from( *_u2_comp );
+	_u3->cast_from( *_u3_comp );	
+#if FIXME
+	_lambdas.cast_from( _lambdas_comp);
+#endif
+}
+
+VMML_TEMPLATE_STRING
+void
+VMML_TEMPLATE_CLASSNAME::cast_comp_members()
+{
+	_u1_comp->cast_from( *_u1 );
+	_u2_comp->cast_from( *_u2 );
+	_u3_comp->cast_from( *_u3 );	
+	_lambdas_comp.cast_from( _lambdas );
+}
+	
 	
 VMML_TEMPLATE_STRING
 void 
@@ -172,118 +239,117 @@ VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::hopm( const t3_type& data_ )
 {
+	t3_comp_type data;
+	data.cast_from( data_ );
 	
 	//compute best rank-(R) approximation (Lathauwer et al., 2000b)
 	t3_type approximated_data;
 	reconstruct( approximated_data );
-	float_t max_f_norm = data_.frobenius_norm();
-	//std::cout << "frobenius norm original: " << max_f_norm << std::endl;
 	
-	float_t f_norm = approximated_data.frobenius_norm();
-	float_t last_f_norm = f_norm;
-	float_t improvement = max_f_norm - f_norm;
-	float_t min_improvement = 0.0001;
-	size_t i = 0;
-	size_t max_iterations = 20;
-	float_t lambda;
+	double f_norm = approximated_data.frobenius_norm();
+	double max_f_norm = data.frobenius_norm();
+	double normresidual  = sqrt( (max_f_norm * max_f_norm) - (f_norm * f_norm));
+	double lambda;
+	double fit = 0;
+	if (max_f_norm != 0 ) {
+		fit = 1 - (normresidual / max_f_norm);
+	} else { 
+		fit = 1;
+	}
+	
+	double fitchange = fit;
+	double fitold = fit;
+	double fitchange_tolerance = 1.0e-4;
 	
 	//intialize u1-u3
-	//hopm_mode1( data_, _u1 ); inital guess not needed for u1 since it will be computed in the first optimization step
-	hopm_mode2( data_, *_u2 );
-	hopm_mode3( data_, *_u3 );
+	//hosvd_mode1( data_, _u1 ); inital guess not needed for u1 since it will be computed in the first optimization step
+	hosvd_mode2( data_ );
+	hosvd_mode3( data_ );
 	
 	//std::cout << "initial u2: " << std::endl << _u2 << std::endl;
 	//std::cout << "initial u3: " << std::endl << _u3 << std::endl;
 	
 	//std::cout << " data: " << std::endl << data_ << std::endl;
 	
-	while( improvement > min_improvement && i < max_iterations )
+#if CP_LOG
+	std::cout << "CP ALS: HOPM (for tensor3) " << std::endl 
+	<< "initial fit: " << fit  << ", "
+	<< "frobenius norm original: " << max_f_norm << std::endl;
+#endif	
+
+	size_t i = 0;
+	size_t max_iterations = 10;
+	t3_comp_type outer_prod;
+	double outer_prod_norm;
+	T_value inner_prod;
+	while( (fitchange >= fitchange_tolerance) && (i < max_iterations) )
 	{
-		
+		fitold = fit;
 		//optimize u1
-		optimize_mode1( data_, *_u1, *_u2, *_u3);
+		optimize_mode1( data_, *_u1_comp, *_u2_comp, *_u3_comp);
 		//std::cout << std::endl << " *** iteration: " << i << std::endl << " new u1: " << std::endl << _u1 << std::endl;
 
 		//optimize u1
-		optimize_mode2( data_, *_u1, *_u2, *_u3);
+		optimize_mode2( data_, *_u1_comp, *_u2_comp, *_u3_comp );
 		//std::cout << " new u2: " << std::endl << _u2 << std::endl;
 
 		//optimize u1
-		lambda = optimize_mode3( data_, *_u1, *_u2, *_u3);
+		lambda = optimize_mode3( data_, *_u1_comp, *_u2_comp, *_u3_comp );
 		//std::cout << " new u3: " << std::endl << _u3 <<  std::endl;
 		
 		
-		set_u1( *_u1 ); set_u2( *_u2 ); set_u3( *_u3 );
 		_lambdas->at(0) = lambda; //TODO: for all lambdas/ranks
-		set_lambdas( *_lambdas );
 		
-		reconstruct( approximated_data );
-		f_norm = approximated_data.frobenius_norm();
-		improvement = f_norm - last_f_norm;
-		last_f_norm = f_norm;
-						
+		//Reconstruct cptensor and measure norm of approximation
+		outer_prod.tensor_outer_product( *_u1_comp, *_u2_comp, *_u3_comp );
+		outer_prod_norm = outer_prod.frobenius_norm();
+		inner_prod = data_.tensor_inner_product( *_u1_comp, *_u2_comp, *_u3_comp );
+		normresidual = sqrt( max_f_norm * max_f_norm + outer_prod_norm*outer_prod_norm - 2 * double(inner_prod) );
+		fit = 1 - ( normresidual / max_f_norm ); 
+		fitchange = fabs(fitold - fit);
+		
+#if CP_LOG
+		std::cout << "iteration '" << i << "', fit: " << fit 
+		<< ", fitdelta: " << fitchange 
+		<< ", frobenius norm: " << f_norm << std::endl;		
+#endif
 		++i;
 	}
-	
+ 	cast_members();
+
 	std::cout << "number of cp iterations: " << i << std::endl;
 }
 
 	
 	
 VMML_TEMPLATE_STRING
+template< size_t J1, size_t J2, size_t J3, typename T >
 void 
-VMML_TEMPLATE_CLASSNAME::hopm_mode1( const t3_type& data_, u1_type& U1_ ) const
+VMML_TEMPLATE_CLASSNAME::hosvd_mode2( const tensor3<J1, J2, J3, T >& data_ )
 {
-	t3_coeff_type data;
-	data.cast_from( data_ );
-	mode1_matricization_type u; // -> u1
-	data.lateral_matricization( u);
+	typedef matrix< J2, J1*J3, T > unfolded_matrix_type;
+	unfolded_matrix_type* u = new unfolded_matrix_type; // -> u1
+	data_.frontal_unfolding_bwd( *u );
+	
+	get_svd_u( *u, *_u2_comp );
+	
+	delete u;
+}
+	
 		
-	vector< I2*I3, T_coeff > lambdas;
-	lapack_svd< I1, I2*I3, T_coeff > svd;
-	if( svd.compute_and_overwrite_input( u, lambdas ))
-		u.get_sub_matrix( U1_ );
-	else 
-		U1_.zero();
-}
-
-
 VMML_TEMPLATE_STRING
+template< size_t J1, size_t J2, size_t J3, typename T >
 void 
-VMML_TEMPLATE_CLASSNAME::hopm_mode2( const t3_type& data_, u2_type& U2_ ) const
+VMML_TEMPLATE_CLASSNAME::hosvd_mode3( const tensor3<J1, J2, J3, T >& data_  )
 {
-	t3_coeff_type data;
-	data.cast_from( data_ );
-	mode2_matricization_type u; // -> u2
-	data.frontal_matricization_bwd( u );
+	typedef matrix< J3, J1*J2, T > unfolded_matrix_type;
+	unfolded_matrix_type* u = new unfolded_matrix_type; // -> u1
+	data_.horizontal_unfolding_bwd( *u );
 	
-	vector< I1*I3, T_coeff > lambdas;
-	lapack_svd< I2, I1*I3, T_coeff > svd;
-	if( svd.compute_and_overwrite_input( u, lambdas ))
-		u.get_sub_matrix( U2_ );
-	else 
-		U2_.zero();
-}
-
-
-
-VMML_TEMPLATE_STRING
-void 
-VMML_TEMPLATE_CLASSNAME::hopm_mode3( const t3_type& data_, u3_type& U3_ ) const
-{
-	t3_coeff_type data;
-	data.cast_from( data_ );
-	mode3_matricization_type u; //-> u3
-	data.horizontal_matricization_bwd( u );
+	get_svd_u( *u, *_u3_comp );
 	
-	vector< I1*I2, T_coeff > lambdas;
-	lapack_svd< I3, I1*I2, T_coeff > svd;
-	if( svd.compute_and_overwrite_input( u, lambdas ))
-		u.get_sub_matrix( U3_ );
-	else 
-		U3_.zero();
+	delete u;
 }
-
 	
 
 VMML_TEMPLATE_STRING
@@ -410,8 +476,55 @@ VMML_TEMPLATE_CLASSNAME::import_from( std::vector< T_coeff >& data_ )
 	
 }	
 
+
 	
+VMML_TEMPLATE_STRING
+template< size_t M, size_t N, typename T >
+void 
+VMML_TEMPLATE_CLASSNAME::get_svd_u( const matrix< M, N, T >& data_, matrix< M, R, T_internal >& u_ )
+{
+	typedef	matrix< M, N, T_svd > svd_type;
+	typedef	matrix< M, N, T_coeff > coeff_type;
+	typedef	matrix< M, N, T_internal > internal_type;
+	typedef vector< N, T_svd > lambdas_type;
 	
+	svd_type* u_double = new svd_type; 
+	u_double->cast_from( data_ );
+	
+	coeff_type* u_quant = new coeff_type; 
+	internal_type* u_internal = new internal_type; 
+	
+	lambdas_type* lambdas  = new lambdas_type;
+	lapack_svd< M, N, T_svd >* svd = new lapack_svd<  M, N, T_svd >();
+	if( svd->compute_and_overwrite_input( *u_double, *lambdas )) {
+#if FIXME
+		if( _is_quantify_coeff ){
+			T_internal min_value = 0; T_internal max_value = 0;
+			u_internal->cast_from( *u_double );
+			u_internal->quantize( *u_quant, min_value, max_value );
+			u_quant->dequantize( *u_internal, min_value, max_value );
+		} else if ( sizeof( T_internal ) != 4 ){
+			u_internal->cast_from( *u_double );
+		} else {
+			*u_internal = *u_double;
+		}
+#else
+		*u_internal = *u_double;		
+#endif
+		
+		u_internal->get_sub_matrix( u_ );
+		
+	} else {
+		u_.zero();
+	}
+	
+	delete lambdas;
+	delete svd;
+	delete u_double;
+	delete u_quant;
+	delete u_internal;
+}	
+
 	
 		
 #undef VMML_TEMPLATE_STRING

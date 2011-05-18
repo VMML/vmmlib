@@ -626,7 +626,23 @@ tensor3_test::run()
 		log_error( error.str() );
 	}
 	
+	//innerproduct between a tensor and a cp decomposition
 	
+	double innerp = t3_cp_input.tensor_inner_product( lambda, u1_cp, u2_cp, u3_cp);
+	
+	double innerp_check = 11.5230085;
+	if ( (innerp - innerp_check) < precision )
+	{	
+		log( "tensor3 inner product t3 and cp of t3", true  );
+	} else
+	{
+		std::stringstream error;
+		error 
+		<< "tensor3 inner product t3 and cp of t3: is " << std::endl << innerp
+		<< std::endl << "should be: " << innerp_check
+		<< std::endl;
+		log_error( error.str() );
+	}
 	
 	//unfolding
 	//matrix< I3, I1*I2, T> m_horizontal;

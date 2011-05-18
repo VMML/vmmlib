@@ -14,8 +14,8 @@ namespace vmml
 		bool ok = false;
 		
 		//TODO: notice this class is not yet working.
-		
 #if 0		
+		
 		//CP decomposition
 		//same test data s in tensor3.reconstruct_CP()
 		
@@ -84,7 +84,7 @@ namespace vmml
 		matrix< 4, 4, double > u2;
 		matrix< 4, 4, double > u3;
 		
-		//cp3_rank4.cp_als( t3_cp_input );
+		cp3_rank4.cp_als( t3_cp_input );
 		
 		cp3_rank4.get_u1( u1 );
 		cp3_rank4.get_u2( u2 );

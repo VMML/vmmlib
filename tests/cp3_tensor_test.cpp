@@ -14,7 +14,6 @@ namespace vmml
 		bool ok = false;
 		
 		//TODO: notice this class is not yet working.
-#if 0		
 		
 		//CP decomposition
 		//same test data s in tensor3.reconstruct_CP()
@@ -47,10 +46,13 @@ namespace vmml
 			0.443990610098116, 0.498248315786364, 0.570430518994385, -0.583760373220334};
 		matrix< 4, 4, double > u3_check; u3_check.set( data_u3_cp, data_u3_cp + 16);
 		
+#if 0
 		std::cout << "lambdas: " << std::endl << lambda_check << std::endl << std::endl
 		<< "U1: " << std::endl << u1_check << std::endl
 		<< "U2: " << std::endl << u2_check << std::endl
 		<< "U3: " << std::endl << u3_check << std::endl;
+#endif		
+		
 		
 		tensor3< 4,4,4, double > t3_cp_reco_check;
 		double data_out_cp[] = { 
@@ -91,6 +93,7 @@ namespace vmml
 		cp3_rank4.get_u3( u3 );
 		cp3_rank4.get_lambdas( lambda );
 		
+#if 0		
 		if( ok)
 		{	
 			log( "cp3 tensor test: rank-1 approximation ", ok  );

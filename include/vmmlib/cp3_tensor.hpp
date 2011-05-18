@@ -66,9 +66,9 @@ namespace vmml
 		typedef vector< R, T_internal > lambda_comp_type;
 		typedef vector< R, T_coeff > lambda_type;
 		
-		typedef matrix< I1, I2*I3, T_coeff > mode1_matricization_type;
-		typedef matrix< I2, I1*I3, T_coeff > mode2_matricization_type;
-		typedef matrix< I3, I1*I2, T_coeff > mode3_matricization_type;		
+		typedef matrix< I1, I2*I3, T_internal > mode1_matricization_type;
+		typedef matrix< I2, I1*I3, T_internal > mode2_matricization_type;
+		typedef matrix< I3, I1*I2, T_internal > mode3_matricization_type;		
 
 		cp3_tensor(  u1_type& U1, u2_type& U2, u3_type& U3, lambda_type& lambdas_ );
 		cp3_tensor();
@@ -113,9 +113,9 @@ namespace vmml
 		template< size_t J1, size_t J2, size_t J3, typename T >
 		void hosvd_mode3( const tensor3<J1, J2, J3, T >& data_ );
 		
-		void optimize_mode1( const t3_type& data_, u1_type& U1_optimized_, const u2_type& U2_, const u3_type& U3_ ) const;
-		void optimize_mode2( const t3_type& data_, const u1_type& U1_, u2_type& U2_optimized_, const u3_type& U3_ ) const;		
-		float_t optimize_mode3( const t3_type& data_, const u1_type& U1_, const u2_type& U2_, u3_type& U3_optimized_ ) const;
+		void optimize_mode1( const t3_comp_type& data_ );
+		void optimize_mode2( const t3_comp_type& data_ );		
+		float_t optimize_mode3( const t3_comp_type& data_);
 		
 	protected:
 		cp3_tensor( const cp3_tensor< R, I1, I1, I1, T_value, T_coeff >& other ) {};
@@ -207,6 +207,7 @@ VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::reconstruct( t3_type& data_ ) const
 {
+#if 1
 	tensor3< R, R, R, T_coeff > core_diag;
 	core_diag.diag( *_lambdas );
 	
@@ -218,6 +219,20 @@ VMML_TEMPLATE_CLASSNAME::reconstruct( t3_type& data_ ) const
 	} else {
 		data_.cast_from( data );
 	}
+	
+#else
+	//FIXME: check data types
+    t3_comp_type data;
+    data.cast_from( data_ );
+    data.reconstruct_CP( *_lambdas_comp, *_u1_comp, *_u2_comp, *_u3_comp, *temp );
+ 
+     //convert reconstructed data, which is in type T_internal (double, float) to T_value (uint8 or uint16)
+    if( (sizeof(T_value) == 1) || (sizeof(T_value) == 2) ){
+	data_.float_t_to_uint_t( data );
+    } else {
+	   data_.cast_from( data );
+    }
+#endif
 }
 
 
@@ -244,7 +259,7 @@ VMML_TEMPLATE_CLASSNAME::hopm( const t3_type& data_ )
 	
 	//compute best rank-(R) approximation (Lathauwer et al., 2000b)
 	t3_type approximated_data;
-	reconstruct( approximated_data );
+	reconstruct( approximated_data ); 
 	
 	double f_norm = approximated_data.frobenius_norm();
 	double max_f_norm = data.frobenius_norm();
@@ -270,7 +285,8 @@ VMML_TEMPLATE_CLASSNAME::hopm( const t3_type& data_ )
 	//std::cout << "initial u3: " << std::endl << _u3 << std::endl;
 	
 	//std::cout << " data: " << std::endl << data_ << std::endl;
-	
+
+#define	CP_LOG 0
 #if CP_LOG
 	std::cout << "CP ALS: HOPM (for tensor3) " << std::endl 
 	<< "initial fit: " << fit  << ", "
@@ -280,31 +296,31 @@ VMML_TEMPLATE_CLASSNAME::hopm( const t3_type& data_ )
 	size_t i = 0;
 	size_t max_iterations = 10;
 	t3_comp_type outer_prod;
-	double outer_prod_norm;
+	double approx_norm;
 	T_value inner_prod;
 	while( (fitchange >= fitchange_tolerance) && (i < max_iterations) )
 	{
 		fitold = fit;
 		//optimize u1
-		optimize_mode1( data_, *_u1_comp, *_u2_comp, *_u3_comp);
+		optimize_mode1( data );
 		//std::cout << std::endl << " *** iteration: " << i << std::endl << " new u1: " << std::endl << _u1 << std::endl;
 
 		//optimize u1
-		optimize_mode2( data_, *_u1_comp, *_u2_comp, *_u3_comp );
+		optimize_mode2( data );
 		//std::cout << " new u2: " << std::endl << _u2 << std::endl;
 
 		//optimize u1
-		lambda = optimize_mode3( data_, *_u1_comp, *_u2_comp, *_u3_comp );
+		lambda = optimize_mode3( data );
 		//std::cout << " new u3: " << std::endl << _u3 <<  std::endl;
 		
 		
-		_lambdas->at(0) = lambda; //TODO: for all lambdas/ranks
+		_lambdas->at(0) = lambda; //FIXME: for all lambdas/ranks
 		
 		//Reconstruct cptensor and measure norm of approximation
-		outer_prod.tensor_outer_product( *_u1_comp, *_u2_comp, *_u3_comp );
-		outer_prod_norm = outer_prod.frobenius_norm();
-		inner_prod = data_.tensor_inner_product( *_u1_comp, *_u2_comp, *_u3_comp );
-		normresidual = sqrt( max_f_norm * max_f_norm + outer_prod_norm*outer_prod_norm - 2 * double(inner_prod) );
+		reconstruct( approximated_data );
+		approx_norm = approximated_data.frobenius_norm();
+		data.tensor_inner_product( *_lambdas_comp, *_u1_comp, *_u2_comp, *_u3_comp );
+		inner_prod = normresidual = sqrt( max_f_norm * max_f_norm + approx_norm*approx_norm - 2 * T_internal(inner_prod) );
 		fit = 1 - ( normresidual / max_f_norm ); 
 		fitchange = fabs(fitold - fit);
 		
@@ -317,7 +333,9 @@ VMML_TEMPLATE_CLASSNAME::hopm( const t3_type& data_ )
 	}
  	cast_members();
 
+#if CP_LOG
 	std::cout << "number of cp iterations: " << i << std::endl;
+#endif
 }
 
 	
@@ -354,63 +372,68 @@ VMML_TEMPLATE_CLASSNAME::hosvd_mode3( const tensor3<J1, J2, J3, T >& data_  )
 
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::optimize_mode1( const t3_type& data_, u1_type& U1_optimized_, const u2_type& U2_, const u3_type& U3_ ) const
+VMML_TEMPLATE_CLASSNAME::optimize_mode1( const t3_comp_type& data_ )
 {	
-	t3_coeff_type data;
-	data.cast_from( data_ );
-	mode1_matricization_type unfolding; // -> u1
-	data.lateral_matricization_bwd( unfolding );
+	mode1_matricization_type* unfolding = new mode1_matricization_type; // -> u1
+	data_.horizontal_unfolding_bwd( *unfolding );
 	
-	matrix< I2*I3, R, T_coeff> u1_krp;
-	u1_krp = U2_.khatri_rao_product( U3_ );	
-	U1_optimized_.multiply( unfolding, u1_krp );
+	typedef matrix< I2*I3, R, T_internal > krp_matrix_type;
+	krp_matrix_type* u1_krp  = new krp_matrix_type;
+	*u1_krp = _u2_comp->khatri_rao_product( *_u3_comp );	
+	_u1_comp->multiply( *unfolding, *u1_krp );
 	
 	//std::cout << "m_lateral " << std::endl << m_lateral << std::endl;
 	//std::cout << "khatri-rao  " << std::endl << u1_krp << std::endl;
 	//std::cout << "u1_ optimized " << std::endl << U1_optimized_ << std::endl;
 	
 	//normalize u with lambda (= norm)
-	float_t lambda = U1_optimized_.frobenius_norm();
-	U1_optimized_ *= (1 / lambda);
+	float_t lambda = _u1_comp->frobenius_norm();
+	*_u1_comp *= (1 / lambda);
+	
+	delete unfolding;
+	delete u1_krp;
 }
 
 
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::optimize_mode2( const t3_type& data_, const u1_type& U1_, u2_type& U2_optimized_, const u3_type& U3_ ) const
+VMML_TEMPLATE_CLASSNAME::optimize_mode2( const t3_comp_type& data_ )
 {
-	t3_coeff_type data;
-	data.cast_from( data_ );
-	mode2_matricization_type unfolding; // -> u2
-	data.frontal_matricization_bwd( unfolding );
+	mode2_matricization_type* unfolding = new mode2_matricization_type; // -> u2
+	data_.frontal_unfolding_bwd( *unfolding );
 	
-	matrix< I1*I3, R, T_coeff> u2_krp;
-	u2_krp = U1_.khatri_rao_product( U3_ );
-	U2_optimized_.multiply( unfolding, u2_krp );
-	
+	typedef matrix< I1*I3, R, T_internal > krp_matrix_type;
+	krp_matrix_type* u2_krp  = new krp_matrix_type;
+	*u2_krp = _u1_comp->khatri_rao_product( *_u3_comp );	
+	_u2_comp->multiply( *unfolding, *u2_krp );
 	
 	//normalize u with lambda (= norm)
-	float_t lambda = U2_optimized_.frobenius_norm();
-	U2_optimized_ *= (1 / lambda);
+	float_t lambda = _u2_comp->frobenius_norm();
+	*_u2_comp *= (1 / lambda);
+	
+	delete unfolding;
+	delete u2_krp;
 }	
 
 
 VMML_TEMPLATE_STRING
 float_t  
-VMML_TEMPLATE_CLASSNAME::optimize_mode3( const t3_type& data_, const u1_type& U1_, const u2_type& U2_,  u3_type& U3_optimized_ ) const
+VMML_TEMPLATE_CLASSNAME::optimize_mode3( const t3_comp_type& data_ )
 {
-	t3_coeff_type data;
-	data.cast_from( data_ );
-	mode3_matricization_type unfolding; //-> u3
-	data.horizontal_matricization_bwd( unfolding);
+	mode3_matricization_type* unfolding = new mode3_matricization_type; //-> u3
+	data_.horizontal_unfolding_bwd( *unfolding );
 	
-	matrix< I1*I2, R, T_coeff> u3_krp;
-	u3_krp = U1_.khatri_rao_product( U2_ );
-	U3_optimized_.multiply( unfolding, u3_krp );
+	typedef matrix< I1*I2, R, T_internal > krp_matrix_type;
+	krp_matrix_type* u3_krp  = new krp_matrix_type;
+	*u3_krp = _u1_comp->khatri_rao_product( *_u2_comp );	
+	_u3_comp->multiply( *unfolding, *u3_krp );
 	
 	//normalize u with lambda (= norm)
-	float_t lambda = U3_optimized_.frobenius_norm();
-	U3_optimized_ *= (1 / lambda);
+	float_t lambda = _u3_comp->frobenius_norm();
+	*_u3_comp *= (1 / lambda);
+	
+	delete unfolding;
+	delete u3_krp;
 	
 	return lambda;
 }

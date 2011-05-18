@@ -238,7 +238,7 @@ public:
     	
 	template< size_t R, typename TT >
 	T tensor_inner_product(
-        const vmml::vector< R, T>& lambda,
+        const vmml::vector< R, TT>& lambda,
         vmml::matrix< I1, R, TT >& U,
         const vmml::matrix< I2, R, TT >& V,
         const vmml::matrix< I3, R, TT >& W );    
@@ -2145,7 +2145,7 @@ VMML_TEMPLATE_STRING
 template< size_t R, typename TT >
 T
 VMML_TEMPLATE_CLASSNAME::tensor_inner_product(
-		const vmml::vector< R, T>& lambda,
+		const vmml::vector< R, TT>& lambda,
         vmml::matrix< I1, R, TT >& U,
         const vmml::matrix< I2, R, TT >& V,
         const vmml::matrix< I3, R, TT >& W )

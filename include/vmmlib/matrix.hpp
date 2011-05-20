@@ -82,7 +82,9 @@ public:
     template< typename compare_t >
     bool equals( const matrix& other, compare_t& cmp ) const;
 
-    // (this) matrix = left matrix_mxp * right matrix_pxn
+    void multiply_piecewise( const matrix& other );
+    
+	// (this) matrix = left matrix_mxp * right matrix_pxn
     template< size_t P >
     void multiply(
         const matrix< M, P, T >& left,
@@ -200,6 +202,7 @@ public:
 	template< typename TT >
 		void dequantize( matrix< M, N, TT >& quantized_, const TT& min_value, const TT& max_value ) const;
 
+	void columnwise_sum( vector< N, T>& summed_columns_ ) const;
 	
 	//Khatri-Rao Product: columns must be of same size
     template< size_t O >
@@ -1008,6 +1011,20 @@ matrix< M, N, T >::operator=( const std::vector< T >& data )
 }
 
 
+template< size_t M, size_t N, typename T >
+void
+matrix< M, N, T >::multiply_piecewise( const matrix& other )
+{
+	for( size_t row_index = 0; row_index < M; row_index++)
+	{
+		for( size_t col_index = 0; col_index < N; col_index++ ) 
+		{
+			T& value = at( row_index, col_index );
+			value *= other.at( row_index, col_index );
+		}
+	}
+}
+	
 
 template< size_t M, size_t N, typename T >
 template< size_t P >
@@ -2513,7 +2530,21 @@ matrix< M, N, T >::dequantize( matrix< M, N, TT >& dequantized_, const TT& min_v
 	}
 }		
 
+template< size_t M, size_t N, typename T >
+void
+matrix< M, N, T >::columnwise_sum( vector< N, T>& summed_columns_ ) const
+{
 	
+	for ( size_t n = 0; n < N; ++n )
+	{
+		T value = 0;
+		for ( size_t m = 0; m < M; ++m )
+		{
+			value += at( m, n );
+		}
+		summed_columns_.at( n ) = value;
+	}
+}		
 	
 } // namespace vmml
 

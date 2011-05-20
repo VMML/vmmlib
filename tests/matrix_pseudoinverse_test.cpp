@@ -33,7 +33,7 @@ namespace vmml
 		pseudoinverse_control.set( data3, data3 + 24);
 		
 		matrix< 6, 4, float > pseudoinverse_transposed;
-                compute_pinv( input, pseudoinverse_transposed );
+		compute_pinv( input, pseudoinverse_transposed );
 
 		matrix< 4, 6, float > pseudoinverse = transpose( pseudoinverse_transposed );
 		

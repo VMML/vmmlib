@@ -1068,6 +1068,36 @@ matrix_test::run()
 		log( "thresholding" , ok  );
 		
 	}
+	{
+		//multiply piecewise
+		
+		matrix< 4, 3, float > mmp;
+		matrix< 4, 3, float > mmp_other;
+		matrix< 4, 3, float > mmp_check;
+		mmp.fill( 3 );
+		mmp_other.fill( 2 );
+		mmp_check.fill( 6 );
+		mmp.multiply_piecewise( mmp_other );
+		
+		ok = mmp == mmp_check;
+		log( "multiply piecewise" , ok  );
+		
+	}
+	{
+		//columnwise sum
+		
+		matrix< 4, 3, float > m_cs;
+		vector< 3, float > summed_cols;
+		vector< 3, float > summed_cols_check;
+		m_cs.fill( 3 );
+		summed_cols_check.set( 12 );
+		
+		m_cs.columnwise_sum( summed_cols );
+		
+		ok = summed_cols == summed_cols_check;
+		log( "summed columns" , ok  );
+		
+	}
 	
     return ok;
 }

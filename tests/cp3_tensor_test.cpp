@@ -86,6 +86,7 @@ namespace vmml
 		matrix< 4, 4, double > u2;
 		matrix< 4, 4, double > u3;
 		
+#if 0		
 		cp3_rank4.cp_als( t3_cp_input );
 		
 		cp3_rank4.get_u1( u1 );
@@ -93,7 +94,6 @@ namespace vmml
 		cp3_rank4.get_u3( u3 );
 		cp3_rank4.get_lambdas( lambda );
 		
-#if 0		
 		if( ok)
 		{	
 			log( "cp3 tensor test: rank-1 approximation ", ok  );

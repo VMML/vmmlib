@@ -8,9 +8,7 @@
 #include "tensor3_iterator_test.hpp"
 #include "tucker3_tensor_test.hpp"
 #include "cp3_tensor_test.hpp"
-#ifdef FIXME
 #include "matrix_pseudoinverse_test.hpp"
-#endif
 
 #include <iostream>
 
@@ -64,11 +62,9 @@ main( int argc, const char* argv[] )
 
 #endif
 	
-#ifdef FIXME
 	//problems on some unix machines
     vmml::matrix_pseudoinverse_test m_pinv;
     run_and_log( m_pinv );
-#endif
 	
     vmml::tensor3_test t3t;
     run_and_log( t3t );

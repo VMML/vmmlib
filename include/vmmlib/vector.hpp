@@ -85,6 +85,7 @@ public:
     bool operator!=( const vector& other ) const;
     bool equals( const vector& other, 
                  T tolerance = std::numeric_limits< T >::epsilon() ) const;
+    bool operator<( const vector& other ) const;
    
     // remember kids: c_arrays are dangerous and evil!
     const vector& operator=( const T* c_array );
@@ -1302,6 +1303,18 @@ equals( const vector< M, T >& other, T tolerance ) const
 
 }
 
+
+template< size_t M, typename T >
+bool
+vector< M, T >::operator<( const vector< M, T >& other ) const
+{
+    for(size_t index = 0; index < M; ++index )
+    {
+        if (at( index ) < other.at( index )) return true;
+        if (other.at( index ) < at( index )) return false;
+    }
+    return false;
+}
 
 
 // to-homogenous-coordinates assignment operator

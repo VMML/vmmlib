@@ -204,6 +204,11 @@ public:
 
 	void columnwise_sum( vector< N, T>& summed_columns_ ) const;
 	
+	template< size_t R >
+    typename enable_if< R == M && R == N >::type* 
+	diag( const vector< R, T >& diag_values_ );
+	
+	
 	//Khatri-Rao Product: columns must be of same size
     template< size_t O >
     matrix< M*O, N, T > khatri_rao_product( const matrix< O, N, T >& right_ ) const;
@@ -2544,7 +2549,19 @@ matrix< M, N, T >::columnwise_sum( vector< N, T>& summed_columns_ ) const
 		}
 		summed_columns_.at( n ) = value;
 	}
-}		
+}	
+	
+template< size_t M, size_t N, typename T >
+template< size_t R>
+typename enable_if< R == M && R == N>::type* 
+matrix< M, N, T >::diag( const vector< R, T >& diag_values_ )
+{
+	zero();
+	for( size_t r = 0; r < R; ++r )
+	{
+		at(r, r) = static_cast< T >( diag_values_.at(r) );
+	}
+}	
 	
 } // namespace vmml
 

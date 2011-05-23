@@ -1090,7 +1090,6 @@ tensor3_test::run()
 
     {   // get_array_ptr
     
-        std::cout << "iterator test" << std::endl;
     	tensor3< 4, 3, 4, int >  t3x;
         
         t3x.zero();

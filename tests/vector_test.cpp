@@ -562,7 +562,25 @@ vector_test::run()
     }
     #endif
     
-
+    {
+		//elementwise sqrt
+        vector< 4, float > vsq( 9.0, 4.0, 1.0, 2.0 );
+        vector< 4, float > vsq_check( 3.0, 2.0, 1.0, 1.414213538169861 );
+		vsq.sqrt_elementwise();
+        bool ok = vsq == vsq_check;
+		
+		log( "elementwise sqrt ", ok );
+    }
+    {
+		//elementwise sqrt
+        vector< 4, float > vr( 9.0, 4.0, 1.0, 2.0 );
+        vector< 4, float > vr_check( 0.1111111119389534, 0.25, 1, 0.5 );
+		vr.reciprocal();
+        bool ok = vr == vr_check;
+				
+		log( "reciprocal ", ok );
+    }
+	
     return ok;
 }
 

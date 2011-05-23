@@ -267,7 +267,8 @@ public:
     // perturbs each component by randomly + or - the perturbation parameter
     void perturb( T perturbation = 0.0001 );
 	
-	void sqrt_elementwise( );
+	void sqrt_elementwise();
+	void reciprocal();
 
     
     friend std::ostream& operator<< ( std::ostream& os, const vector& vector_ )
@@ -1631,15 +1632,23 @@ vector< M, T >::perturb( T perturbation )
 
 template< size_t M, typename T >
 void
-vector< M, T >::sqrt_elementwise( )
+vector< M, T >::sqrt_elementwise()
 {
 	for( iterator it = begin(), it_end = end(); it != it_end; ++it )
 	{
 		(*it) = sqrt(*it);
 	}
-	
 }
-
+	
+template< size_t M, typename T >
+void
+vector< M, T >:: reciprocal()
+{
+	for( iterator it = begin(), it_end = end(); it != it_end; ++it )
+	{
+		(*it) = 1/(*it);
+	}
+}
 
 } // namespace vmml
 

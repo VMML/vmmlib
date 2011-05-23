@@ -47,6 +47,10 @@ public:
     typedef matrix< I1, I2*I3, T >     bwd_lat_unfolding_type;
     typedef matrix< I2, I1*I3, T >     bwd_front_unfolding_type;
     typedef matrix< I3, I1*I2, T >     bwd_horiz_unfolding_type;
+	
+    typedef matrix< I1, I3*I2, T >     fwd_lat_unfolding_type;
+    typedef matrix< I2, I3*I1, T >     fwd_front_unfolding_type;
+    typedef matrix< I3, I2*I1, T >     fwd_horiz_unfolding_type;
     
     static const size_t ROWS	       = I1;
     static const size_t COLS	       = I2;
@@ -220,8 +224,11 @@ public:
     void full_tensor3_matrix_kronecker_mult( const tensor3< J1, J2, J3, T >& core, const matrix< I1, J1, T >& U1, const matrix< I2, J2, T >& U2, const matrix< I3, J3, T >& U3 );
     
     void horizontal_unfolding_bwd( bwd_horiz_unfolding_type& unfolding) const;
+    void horizontal_unfolding_fwd( fwd_horiz_unfolding_type& unfolding) const;
     void lateral_unfolding_bwd( bwd_lat_unfolding_type& unfolding) const;
+    void lateral_unfolding_fwd( fwd_lat_unfolding_type& unfolding) const;
     void frontal_unfolding_bwd( bwd_front_unfolding_type& unfolding) const;
+    void frontal_unfolding_fwd( fwd_front_unfolding_type& unfolding) const;
 
 
     // reconstruction of a Kruskal tensor => inversion of CP (Candecomp/Parafac)
@@ -1357,6 +1364,22 @@ VMML_TEMPLATE_CLASSNAME::horizontal_unfolding_bwd( bwd_horiz_unfolding_type& unf
 	}
 	delete horizontal_slice;
 }
+	
+VMML_TEMPLATE_STRING
+void 
+VMML_TEMPLATE_CLASSNAME::horizontal_unfolding_fwd( fwd_horiz_unfolding_type& unfolding) const
+{
+	horiz_slice_type* horizontal_slice = new horiz_slice_type();
+	for( size_t i = 0; i < I1; ++i )
+	{
+		get_horizontal_slice_fwd(i, *horizontal_slice );
+		for( size_t col = 0; col < I3; ++col )
+		{
+			unfolding.set_column( i*I3+col,  horizontal_slice->get_column(col));
+		} 
+	}
+	delete horizontal_slice;
+}	
 
 VMML_TEMPLATE_STRING
 void 
@@ -1374,7 +1397,22 @@ VMML_TEMPLATE_CLASSNAME::lateral_unfolding_bwd( bwd_lat_unfolding_type& unfoldin
 	delete lateral_slice;
 }
 
-
+VMML_TEMPLATE_STRING
+void 
+VMML_TEMPLATE_CLASSNAME::lateral_unfolding_fwd( fwd_lat_unfolding_type& unfolding) const
+{
+	lat_slice_type* lateral_slice = new lat_slice_type();
+	for( size_t i = 0; i < I2; ++i )
+	{
+		get_lateral_slice_fwd(i, *lateral_slice );
+		for( size_t col = 0; col < I1; ++col )
+		{
+			unfolding.set_column( i*I1+col,  lateral_slice->get_column(col));
+		} 
+	}
+	delete lateral_slice;
+}
+	
 VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::frontal_unfolding_bwd( bwd_front_unfolding_type& unfolding) const
@@ -1391,7 +1429,21 @@ VMML_TEMPLATE_CLASSNAME::frontal_unfolding_bwd( bwd_front_unfolding_type& unfold
 	delete frontal_slice;
 }
 
-
+VMML_TEMPLATE_STRING
+void 
+VMML_TEMPLATE_CLASSNAME::frontal_unfolding_fwd( fwd_front_unfolding_type& unfolding) const
+{
+	front_slice_type* frontal_slice = new front_slice_type();
+	for( size_t i = 0; i < I3; ++i )
+	{
+		get_frontal_slice_fwd(i, *frontal_slice );
+		for( size_t col = 0; col < I2; ++col )
+		{
+			unfolding.set_column( i*I2+col, frontal_slice->get_column(col));
+		} 
+	}
+	delete frontal_slice;
+}
 
 
 VMML_TEMPLATE_STRING

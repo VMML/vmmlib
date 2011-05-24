@@ -269,7 +269,10 @@ public:
 	
 	void sqrt_elementwise();
 	void reciprocal();
-
+	
+	template< typename TT >
+	void cast_from( const vector< M, TT >& other );
+	
     
     friend std::ostream& operator<< ( std::ostream& os, const vector& vector_ )
     {
@@ -1642,7 +1645,7 @@ vector< M, T >::sqrt_elementwise()
 	
 template< size_t M, typename T >
 void
-vector< M, T >:: reciprocal()
+vector< M, T >::reciprocal()
 {
 	for( iterator it = begin(), it_end = end(); it != it_end; ++it )
 	{
@@ -1650,6 +1653,23 @@ vector< M, T >:: reciprocal()
 	}
 }
 
+
+template< size_t M, typename T >
+template< typename TT >
+void 
+vector< M, T >::cast_from( const vector< M, TT >& other )
+{
+	typedef vmml::vector< M, TT > vector_tt_type ;
+	typedef typename vector_tt_type::const_iterator tt_const_iterator;
+	
+	iterator it = begin(), it_end = end();
+    tt_const_iterator other_it = other.begin();
+    for( ; it != it_end; ++it, ++other_it )
+    {
+        *it = static_cast< T >( *other_it );
+    }	
+}
+	
 } // namespace vmml
 
 #endif

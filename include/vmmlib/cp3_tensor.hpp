@@ -187,9 +187,7 @@ VMML_TEMPLATE_CLASSNAME::cast_members()
 	_u1->cast_from( *_u1_comp );
 	_u2->cast_from( *_u2_comp );
 	_u3->cast_from( *_u3_comp );	
-#if FIXME
-	_lambdas.cast_from( _lambdas_comp);
-#endif
+	_lambdas->cast_from( *_lambdas_comp );
 }
 
 VMML_TEMPLATE_STRING
@@ -199,7 +197,7 @@ VMML_TEMPLATE_CLASSNAME::cast_comp_members()
 	_u1_comp->cast_from( *_u1 );
 	_u2_comp->cast_from( *_u2 );
 	_u3_comp->cast_from( *_u3 );	
-	_lambdas_comp.cast_from( _lambdas );
+	_lambdas_comp->cast_from( _lambdas );
 }
 	
 	
@@ -235,6 +233,10 @@ VMML_TEMPLATE_CLASSNAME::reconstruct( t3_type& data_ ) const
 	typedef 	matrix<  R, I2 * I3, T_internal > m_temp_type;
 	m_temp_type* temp =  new m_temp_type; 
 	
+	*u1_t = transpose(*_u1_comp);
+	*u2_t = transpose(*_u2_comp);
+	*u3_t = transpose(*_u3_comp);
+	
     data.reconstruct_CP( *_lambdas_comp, *u1_t, *u2_t, *u3_t, *temp );
 	
 	delete temp;
@@ -248,7 +250,9 @@ VMML_TEMPLATE_CLASSNAME::reconstruct( t3_type& data_ ) const
     } else {
 	   data_.cast_from( data );
     }
+	
 #endif
+	std::cout << "reconstruction:\n" << data_ << std::endl;
 }
 
 
@@ -272,81 +276,64 @@ VMML_TEMPLATE_CLASSNAME::hopm( const t3_type& data_ )
 {
 	t3_comp_type data;
 	data.cast_from( data_ );
-	
-	//compute best rank-(R) approximation (Lathauwer et al., 2000b)
 	t3_type approximated_data;
-	reconstruct( approximated_data ); 
 	
-	double f_norm = approximated_data.frobenius_norm();
+	double approx_norm = 0;
 	double max_f_norm = data.frobenius_norm();
-	double normresidual  = sqrt( (max_f_norm * max_f_norm) - (f_norm * f_norm));
+	double normresidual  = 0;//sqrt( (max_f_norm * max_f_norm) - (f_norm * f_norm));
 	double fit = 0;
-	if (max_f_norm != 0 ) {
-		fit = 1 - (normresidual / max_f_norm);
-	} else { 
+	if (max_f_norm == 0 ) {
 		fit = 1;
-	}
-	
+	} // else { fit = 1 - (normresidual / max_f_norm);}
 	double fitchange = fit;
 	double fitold = fit;
 	double fitchange_tolerance = 1.0e-4;
+	double inner_prod;
 	
 	//intialize u1-u3
 	//hosvd_mode1( data_, _u1 ); inital guess not needed for u1 since it will be computed in the first optimization step
 	hosvd_mode2( data_ );
 	hosvd_mode3( data_ );
-	
-	//std::cout << "initial u2: " << std::endl << _u2 << std::endl;
-	//std::cout << "initial u3: " << std::endl << _u3 << std::endl;
-	
-	//std::cout << " data: " << std::endl << data_ << std::endl;
 
 #define	CP_LOG 1
 #if CP_LOG
-	std::cout << "CP ALS: HOPM (for tensor3) " << std::endl 
-	<< "initial fit: " << fit  << ", "
-	<< "frobenius norm original: " << max_f_norm << std::endl;
+	std::cout << "CP ALS: HOPM (for tensor3) " << std::endl;
 #endif	
-
+	
 	size_t i = 0;
 	size_t max_iterations = 1;
-	t3_comp_type outer_prod;
-	double approx_norm;
-	T_value inner_prod;
-	
-	//FIXME: while( (fitchange >= fitchange_tolerance) && (i < max_iterations) ) //do until converges
+	//FIXME: 
+	//while( (fitchange >= fitchange_tolerance) && (i < max_iterations) ) //do until converges
 	while( i < max_iterations ) //do until converges
 	{
 		fitold = fit;
-		std::cout << "u1: " << *_u1_comp << std::endl;
-		std::cout << "u2: " << *_u2_comp << std::endl;
-		std::cout << "u3: " << *_u3_comp << std::endl;
+		//std::cout << "u2: " << *_u2_comp << std::endl;
+		//std::cout << "u3: " << *_u3_comp << std::endl;
 		optimize_mode1( data );
-		std::cout << "optimize m1:\nlambdas\n: " << *_lambdas_comp << std::endl;
-		std::cout << "u1: " << *_u1_comp << std::endl;
-		std::cout << "u2: " << *_u2_comp << std::endl;
-		std::cout << "u3: " << *_u3_comp << std::endl << std::endl;
+		std::cout << "optimized u1:\n" << *_u1_comp << std::endl;
 		optimize_mode2( data );
-		std::cout << "optimize m2:\nlambdas\n: " << *_lambdas_comp << std::endl;
-		std::cout << "u2: " << *_u2_comp << std::endl;
+		std::cout << "optimized u2:\n" << *_u2_comp << std::endl;
 		optimize_mode3( data );
-		std::cout << "optimize m3:\nlambdas\n: " << *_lambdas_comp << std::endl;
-		std::cout << "u3: " << *_u3_comp << std::endl << std::endl;
+		std::cout << "optimized u3:\n" << *_u3_comp << std::endl << std::endl;
+		std::cout << "lambdas:\n" << *_lambdas_comp << std::endl;
 		
 		//Reconstruct cptensor and measure norm of approximation
 		reconstruct( approximated_data ); //FIX reconstruction
 		approx_norm = approximated_data.frobenius_norm();
-		
-		data.tensor_inner_product( *_lambdas_comp, *_u1_comp, *_u2_comp, *_u3_comp );
-		
-		inner_prod = normresidual = sqrt( max_f_norm * max_f_norm + approx_norm*approx_norm - 2 * T_internal(inner_prod) );
+		std::cout << "before inner product u1:\n" << *_u1_comp << std::endl;
+		std::cout << "u2:\n" << *_u2_comp << std::endl;
+		std::cout << "u3:\n" << *_u3_comp << std::endl << std::endl;
+		std::cout << "lambdas:\n" << *_lambdas_comp << std::endl;
+		inner_prod = data.tensor_inner_product( *_lambdas_comp, *_u1_comp, *_u2_comp, *_u3_comp );
+		double ss =  max_f_norm * max_f_norm + approx_norm*approx_norm - 2 * inner_prod;
+		normresidual = sqrt( max_f_norm * max_f_norm + approx_norm*approx_norm - 2 * inner_prod );
 		fit = 1 - ( normresidual / max_f_norm ); 
 		fitchange = fabs(fitold - fit);
 		
 #if CP_LOG
 		std::cout << "iteration '" << i << "', fit: " << fit 
 		<< ", fitdelta: " << fitchange 
-		<< ", frobenius norm: " << f_norm << std::endl;		
+		<< ", frobenius norm: " << approx_norm << std::endl;		
 #endif
 		++i;
 	} // end ALS
@@ -530,9 +517,9 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode3( const t3_comp_type& data_ )
 	u3_comp_type* u_new = new u3_comp_type;
 	u_new->multiply( *unfolding, *u3_krp );
 	
-	std::cout << "khatri-rao:\n" << *u3_krp << std::endl;
-	std::cout << "unfolding:\n" << *unfolding << std::endl;
-	std::cout << "after khatri-rao mult(u_new):\n" << *u_new << std::endl;
+	//std::cout << "khatri-rao:\n" << *u3_krp << std::endl;
+	//std::cout << "unfolding:\n" << *unfolding << std::endl;
+	//std::cout << "after khatri-rao mult(u_new):\n" << *u_new << std::endl;
 	
 	typedef matrix< R, R , T_internal > m_r2_type;
 	m_r2_type* u1_r = new m_r2_type;
@@ -541,17 +528,15 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode3( const t3_comp_type& data_ )
 	u1_r->multiply( transpose(*_u1_comp), *_u1_comp );
 	u2_r->multiply( transpose(*_u2_comp), *_u2_comp );
 	u1_r->multiply_piecewise( *u2_r );
-	std::cout << "u1_r:\n" << *u1_r << std::endl;
+	//std::cout << "u1_r:\n" << *u1_r << std::endl;
 	
 	m_r2_type* pinv_t = new m_r2_type;
 	compute_pseudoinverse< m_r2_type > compute_pinv;
 	compute_pinv( *u1_r, *pinv_t );
 	
-	std::cout << "pinv_t:\n" << *pinv_t << std::endl;
-	std::cout << "u_new:\n" << *u_new << std::endl;
-	std::cout << "CHECKED WITH MATHLAB UNTIL HERE: " << std::endl;
+	//std::cout << "u_new:\n" << *u_new << std::endl;
 	_u3_comp->multiply( *u_new, transpose(*pinv_t) );
-	std::cout << "?????u3_comp new (before normalization):\n" << *_u3_comp << std::endl;
+	//std::cout << "u3_comp new (before normalization):\n" << *_u3_comp << std::endl;
 	
 	//normalize with lambdas
 	*u_new = *_u3_comp;
@@ -566,9 +551,9 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode3( const t3_comp_type& data_ )
 	
 	*u_new = *_u3_comp;
 	_u3_comp->multiply( *u_new, *diag_lambdas );
-	std::cout << "diag_lambdas_rec: " << *diag_lambdas << std::endl;
-	std::cout << "u_new: " << *u_new << std::endl;
-	std::cout << "normalized u2: " << *_u3_comp << std::endl;
+	//std::cout << "diag_lambdas_rec: " << *diag_lambdas << std::endl;
+	//std::cout << "u_new: " << *u_new << std::endl;
+	//std::cout << "normalized u2: " << *_u3_comp << std::endl;
 	delete unfolding;
 	delete u3_krp;
 	delete u1_r;

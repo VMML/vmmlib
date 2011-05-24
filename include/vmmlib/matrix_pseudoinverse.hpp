@@ -71,17 +71,20 @@ namespace vmml
 			matrix< T::COLS, T::ROWS, typename T::value_type> pseudoinverse;
 			result.zero();
 			matrix< T::COLS, T::ROWS, float_t > tmp;
+			sigmas.reciprocal();
 			//double sigma_inv = 0;
+			matrix< 1, T::COLS, float_t > vt_i;
+			matrix< T::COLS, 1, float_t > v_i;
+			matrix< T::ROWS, 1, float_t > u_i;
+			matrix< 1, T::ROWS, float_t > ut_i;
 			if ( num_sigmas >= 1 ) {
 				
 				it = sigmas.begin();
 				for( size_t i = 0 ;  i < num_sigmas && it != it_end; ++it, ++i ) {
-					matrix< 1, T::COLS, float_t > vt_i;
 					Vt.get_sub_matrix(vt_i, i);
-					matrix< T::COLS, 1, float_t > v_i = transpose(vt_i);
-					matrix< T::ROWS, 1, float_t > u_i;
+					v_i = transpose(vt_i);
 					U.get_sub_matrix(u_i, 0, i); 
-					matrix< 1, T::ROWS, float_t > ut_i = transpose(u_i);
+					ut_i = transpose(u_i);
 					
 					//build outer product of v1_i and ut_i
 					tmp.multiply(v_i, ut_i);

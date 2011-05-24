@@ -2203,15 +2203,15 @@ VMML_TEMPLATE_CLASSNAME::tensor_inner_product(
         const vmml::matrix< I3, R, TT >& W )
 {
 	T inner_prod;
-	for (size_t k = 0; k < I3; k++)
+	for (size_t r = 0; r < R; ++r)
 	{
-		for (size_t j = 0; j < I2; j++)
+		for (size_t k = 0; k < I3; ++k)
 		{
-			for (size_t i = 0; i < I1; i++)
+			for (size_t j = 0; j < I2; ++j)
 			{
-				for (size_t r = 0; r < R; r++)
+				for (size_t i = 0; i < I1; ++i)
 				{
-					inner_prod += at(i, j, k) * static_cast<T> ( U(i, r) * V( j, r) * W( k, r )) * lambda.at(r);
+					inner_prod += at(i, j, k) * static_cast<T> ( U(i, r) * V( j, r) * W( k, r ) * lambda.at(r));
 				}
 			}
 		}

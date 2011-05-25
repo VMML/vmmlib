@@ -25,8 +25,6 @@
 #include <vmmlib/lapack_svd.hpp>
 #include <vmmlib/matrix_pseudoinverse.hpp>
 
-//TODO allocate data with new
-
 namespace vmml
 {
 	
@@ -350,14 +348,9 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode1( const t3_comp_type& data_ )
 	
 	typedef matrix< I2*I3, R, T_internal > krp_matrix_type;
 	krp_matrix_type* u1_krp  = new krp_matrix_type;
-	//*u1_krp = _u2_comp->khatri_rao_product( *_u3_comp );	
 	*u1_krp = _u3_comp->khatri_rao_product( *_u2_comp );	
 	u1_comp_type* u_new = new u1_comp_type;
 	u_new->multiply( *unfolding, *u1_krp );
-	
-	//std::cout << "khatri-rao:\n" << *u1_krp << std::endl;
-	//std::cout << "unfolding:\n" << *unfolding << std::endl;
-	//std::cout << "after khatri-rao mult(u_new):\n" << *u_new << std::endl;
 	
 	typedef matrix< R, R , T_internal > m_r2_type;
 	m_r2_type* u2_r = new m_r2_type;
@@ -372,26 +365,19 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode1( const t3_comp_type& data_ )
 	compute_pinv( *u2_r, *pinv_t );
 	
 	_u1_comp->multiply( *u_new, transpose(*pinv_t) );
-	//std::cout << "u1_comp new (before normalization):\n" << *_u1_comp << std::endl;
 
 	*u_new = *_u1_comp;
 	u_new->multiply_piecewise( *u_new ); //2 norm
 	u_new->columnwise_sum( *_lambdas_comp );
 	_lambdas_comp->sqrt_elementwise();
 	lambda_comp_type* tmp = new lambda_comp_type;
-	//std::cout << "lambdas:\n" << *_lambdas_comp << std::endl;
 	*tmp = *_lambdas_comp;
 	tmp->reciprocal();
-	u1_comp_type* diag_lambdas = new u1_comp_type;
+	m_r2_type* diag_lambdas = new m_r2_type;
 	diag_lambdas->diag( *tmp );
-	//FIXME: compute max norm for higher iterations
-	
 	
 	*u_new = *_u1_comp;
 	_u1_comp->multiply( *u_new, *diag_lambdas ); 
-	//std::cout << "diag_lambdas_rec: " << *diag_lambdas << std::endl;
-	//std::cout << "u_new: " << *u_new << std::endl;
-	//std::cout << "normalized u1: " << *_u1_comp << std::endl;
 
 	delete unfolding;
 	delete u1_krp;
@@ -418,10 +404,6 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode2( const t3_comp_type& data_ )
 	u2_comp_type* u_new = new u2_comp_type;
 	u_new->multiply( *unfolding, *u2_krp );
 	
-	//std::cout << "khatri-rao:\n" << *u2_krp << std::endl;
-	//std::cout << "unfolding:\n" << *unfolding << std::endl;
-	//std::cout << "after khatri-rao mult(u_new):\n" << *u_new << std::endl;
-	
 	typedef matrix< R, R , T_internal > m_r2_type;
 	m_r2_type* u1_r = new m_r2_type;
 	m_r2_type* u3_r = new m_r2_type;
@@ -435,7 +417,6 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode2( const t3_comp_type& data_ )
 	compute_pinv( *u1_r, *pinv_t );
 	
 	_u2_comp->multiply( *u_new, transpose(*pinv_t) );
-	//std::cout << "u2_comp new (before normalization):\n" << *_u2_comp << std::endl;
 	
 	//normalize with lambdas
 	*u_new = *_u2_comp;
@@ -445,14 +426,11 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode2( const t3_comp_type& data_ )
 	lambda_comp_type* tmp = new lambda_comp_type;
 	*tmp = *_lambdas_comp;
 	tmp->reciprocal();
-	u2_comp_type* diag_lambdas = new u2_comp_type;
+	m_r2_type* diag_lambdas = new m_r2_type;
 	diag_lambdas->diag( *tmp );
 	
 	*u_new = *_u2_comp;
 	_u2_comp->multiply( *u_new, *diag_lambdas );
-	//std::cout << "diag_lambdas_rec: " << *diag_lambdas << std::endl;
-	//std::cout << "u_new: " << *u_new << std::endl;
-	//std::cout << "normalized u2: " << *_u2_comp << std::endl;
 	
 	delete unfolding;
 	delete u2_krp;
@@ -479,10 +457,6 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode3( const t3_comp_type& data_ )
 	u3_comp_type* u_new = new u3_comp_type;
 	u_new->multiply( *unfolding, *u3_krp );
 	
-	//std::cout << "khatri-rao:\n" << *u3_krp << std::endl;
-	//std::cout << "unfolding:\n" << *unfolding << std::endl;
-	//std::cout << "after khatri-rao mult(u_new):\n" << *u_new << std::endl;
-	
 	typedef matrix< R, R , T_internal > m_r2_type;
 	m_r2_type* u1_r = new m_r2_type;
 	m_r2_type* u2_r = new m_r2_type;
@@ -490,15 +464,12 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode3( const t3_comp_type& data_ )
 	u1_r->multiply( transpose(*_u1_comp), *_u1_comp );
 	u2_r->multiply( transpose(*_u2_comp), *_u2_comp );
 	u1_r->multiply_piecewise( *u2_r );
-	//std::cout << "u1_r:\n" << *u1_r << std::endl;
 	
 	m_r2_type* pinv_t = new m_r2_type;
 	compute_pseudoinverse< m_r2_type > compute_pinv;
 	compute_pinv( *u1_r, *pinv_t );
 	
-	//std::cout << "u_new:\n" << *u_new << std::endl;
 	_u3_comp->multiply( *u_new, transpose(*pinv_t) );
-	//std::cout << "u3_comp new (before normalization):\n" << *_u3_comp << std::endl;
 	
 	//normalize with lambdas
 	*u_new = *_u3_comp;
@@ -508,14 +479,12 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode3( const t3_comp_type& data_ )
 	lambda_comp_type* tmp = new lambda_comp_type;
 	*tmp = *_lambdas_comp;
 	tmp->reciprocal();
-	u3_comp_type* diag_lambdas = new u3_comp_type;
+	m_r2_type* diag_lambdas = new m_r2_type;
 	diag_lambdas->diag( *tmp );
 	
 	*u_new = *_u3_comp;
 	_u3_comp->multiply( *u_new, *diag_lambdas );
-	//std::cout << "diag_lambdas_rec: " << *diag_lambdas << std::endl;
-	//std::cout << "u_new: " << *u_new << std::endl;
-	//std::cout << "normalized u2: " << *_u3_comp << std::endl;
+
 	delete unfolding;
 	delete u3_krp;
 	delete u1_r;

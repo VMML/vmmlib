@@ -45,7 +45,7 @@ namespace vmml
 			0.239172809919676, 0.216514108351268, 0.254464520462408, 0.296451592996035,
 			0.276358969906296, 0.233761715518065, 0.311620024949421, 0.277319482627673 };
 		t3_cp_reco_check.set(data_out_cp, data_out_cp + 64);
-		log( "cp3 tensor reconstruction ", false  );
+		//log( "cp3 tensor reconstruction ", false  );
 
 		
 		//rank-R approximation with R = I

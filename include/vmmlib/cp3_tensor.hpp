@@ -97,13 +97,11 @@ namespace vmml
 		void export_to( std::vector< T_coeff >& data_ ) const;
 		void import_from( std::vector< T_coeff >& data_ );	
 		
-		void decompose( const t3_type& data_ ); 
 		void reconstruct( t3_type& data_ ) const;
-		
-		void cp_als( const t3_type& data_ );
-		
+		void decompose( const t3_type& data_, const size_t max_iterations_ = 100 ); 
+		void cp_als( const t3_type& data_, const size_t max_iterations_ = 100 );
 		//higher-order power method (lathauwer et al., 2000b)
-		void hopm( const t3_type& data_ );
+		void hopm( const t3_type& data_, const size_t max_iterations_ = 100 );
 		
 		template< size_t M, size_t N, typename T >
 		void get_svd_u( const matrix< M, N, T >& data_, matrix< M, R, T_internal >& u_ );
@@ -205,20 +203,6 @@ VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::reconstruct( t3_type& data_ ) const
 {
-#if 0
-	tensor3< R, R, R, T_coeff > core_diag;
-	core_diag.diag( *_lambdas );
-	
-	t3_coeff_type data;
-	data.cast_from( data_ );
-	data.full_tensor3_matrix_multiplication( core_diag, *_u1, *_u2, *_u3 );
-	if( (sizeof(T_value) == 1) || (sizeof(T_value) == 2) ){
-		data_.float_t_to_uint_t( data );
-	} else {
-		data_.cast_from( data );
-	}
-	
-#else
 	//FIXME: check data types
     t3_comp_type data;
     data.cast_from( data_ );
@@ -250,83 +234,66 @@ VMML_TEMPLATE_CLASSNAME::reconstruct( t3_type& data_ ) const
     } else {
 	   data_.cast_from( data );
     }
-	
-#endif
-	std::cout << "reconstruction:\n" << data_ << std::endl;
 }
 
 
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::decompose( const t3_type& data_ )
+VMML_TEMPLATE_CLASSNAME::decompose( const t3_type& data_, const size_t max_iterations_  )
 {
-	cp_als( data_ );
+	cp_als( data_, max_iterations_ );
 }
 
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::cp_als( const t3_type& data_ )
+VMML_TEMPLATE_CLASSNAME::cp_als( const t3_type& data_, const size_t max_iterations_  )
 {
-	hopm( data_ );
+	hopm( data_, max_iterations_ );
 }
 
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::hopm( const t3_type& data_ )
+VMML_TEMPLATE_CLASSNAME::hopm( const t3_type& data_, const size_t max_iterations_ )
 {
 	t3_comp_type data;
 	data.cast_from( data_ );
 	t3_type approximated_data;
+	t3_type residual_data;
+	residual_data.zero();
 	
 	double approx_norm = 0;
 	double max_f_norm = data.frobenius_norm();
-	double normresidual  = 0;//sqrt( (max_f_norm * max_f_norm) - (f_norm * f_norm));
+	double normresidual  = 0;
 	double fit = 0;
-	if (max_f_norm == 0 ) {
+	if (max_f_norm == 0 )
 		fit = 1;
-	} // else { fit = 1 - (normresidual / max_f_norm);}
-	double fitchange = fit;
+	double fitchange = 1;
 	double fitold = fit;
 	double fitchange_tolerance = 1.0e-4;
-	double inner_prod;
 	
 	//intialize u1-u3
 	//hosvd_mode1( data_, _u1 ); inital guess not needed for u1 since it will be computed in the first optimization step
 	hosvd_mode2( data_ );
 	hosvd_mode3( data_ );
 
-#define	CP_LOG 1
 #if CP_LOG
 	std::cout << "CP ALS: HOPM (for tensor3) " << std::endl;
 #endif	
 	
 	size_t i = 0;
-	size_t max_iterations = 1;
-	//FIXME: 
-	//while( (fitchange >= fitchange_tolerance) && (i < max_iterations) ) //do until converges
-	while( i < max_iterations ) //do until converges
+	//size_t max_iterations = 100;
+	while( (fitchange >= fitchange_tolerance) && ( i < max_iterations_ ) ) //do until converges
 	{
 		fitold = fit;
-		//std::cout << "u2: " << *_u2_comp << std::endl;
-		//std::cout << "u3: " << *_u3_comp << std::endl;
 		optimize_mode1( data );
-		std::cout << "optimized u1:\n" << *_u1_comp << std::endl;
 		optimize_mode2( data );
-		std::cout << "optimized u2:\n" << *_u2_comp << std::endl;
 		optimize_mode3( data );
-		std::cout << "optimized u3:\n" << *_u3_comp << std::endl << std::endl;
-		std::cout << "lambdas:\n" << *_lambdas_comp << std::endl;
 		
 		//Reconstruct cptensor and measure norm of approximation
 		reconstruct( approximated_data ); //FIX reconstruction
 		approx_norm = approximated_data.frobenius_norm();
-		std::cout << "before inner product u1:\n" << *_u1_comp << std::endl;
-		std::cout << "u2:\n" << *_u2_comp << std::endl;
-		std::cout << "u3:\n" << *_u3_comp << std::endl << std::endl;
-		std::cout << "lambdas:\n" << *_lambdas_comp << std::endl;
-		inner_prod = data.tensor_inner_product( *_lambdas_comp, *_u1_comp, *_u2_comp, *_u3_comp );
-		double ss =  max_f_norm * max_f_norm + approx_norm*approx_norm - 2 * inner_prod;
-		normresidual = sqrt( max_f_norm * max_f_norm + approx_norm*approx_norm - 2 * inner_prod );
+		residual_data = data_ - approximated_data;
+		normresidual = residual_data.frobenius_norm();
 		fit = 1 - ( normresidual / max_f_norm ); 
 		fitchange = fabs(fitold - fit);
 		
@@ -338,11 +305,6 @@ VMML_TEMPLATE_CLASSNAME::hopm( const t3_type& data_ )
 		++i;
 	} // end ALS
 
-#if CP_LOG
-		std::cout << "number of cp iterations: " << i << std::endl;
-#endif
-		
-	
  	cast_members();
 }
 

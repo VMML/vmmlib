@@ -6,6 +6,9 @@
 #include "svd_test.hpp"
 #include "tensor3_test.hpp"
 #include "tensor3_iterator_test.hpp"
+#include "t3_hosvd_test.hpp"
+#include "t3_hooi_test.hpp"
+#include "t3_hopm_test.hpp"
 #include "tucker3_tensor_test.hpp"
 #include "cp3_tensor_test.hpp"
 #include "matrix_pseudoinverse_test.hpp"
@@ -71,6 +74,15 @@ main( int argc, const char* argv[] )
 	
     vmml::tensor3_iterator_test t3it;
     run_and_log( t3it );
+	
+    vmml::t3_hosvd_test t3hosvd;
+    run_and_log( t3hosvd );
+	
+    vmml::t3_hooi_test t3hooi;
+    run_and_log( t3hooi );
+
+	vmml::t3_hopm_test t3hopm;
+    run_and_log( t3hopm );
 	
     vmml::tucker3_tensor_test tt3t;
     run_and_log( tt3t );

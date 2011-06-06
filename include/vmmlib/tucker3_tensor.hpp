@@ -22,8 +22,8 @@
 #define CORE_RANGE 127
 
 
-//#include <vmmlib/matrix_pseudoinverse.hpp>
 #include <vmmlib/t3_hosvd.hpp>
+#include <vmmlib/t3_hooi.hpp>
 
 namespace vmml
 {
@@ -168,34 +168,6 @@ public:
 		
 	void tucker_als( const t3_type& data_ );	
 		
-	/*	higher-order singular value decomposition (HOSVD) with full rank decomposition (also known as Tucker decomposition). 
-	 see: De Lathauer et al, 2000a: A multilinear singular value decomposition. 
-	 the hosvd can be computed (a) with n-mode PCA, i.e., an eigenvalue decomposition on the covariance matrix of every mode's matricization, and 
-	 (b) by performing a 2D SVD on the matricization of every mode. Matrix matricization means that a tensor I1xI2xI3 is unfolded/sliced into one matrix
-	 with the dimensions I1xI2I3, which corresponds to a matrizitation alonge mode I1.
-	 other known names for HOSVD: n-mode SVD, 3-mode factor analysis (3MFA, tucker3), 3M-PCA, n-mode PCA, higher-order SVD
-	 */
-	void init( const t3_comp_type& data_ );
-	void hosvd( const t3_type& data_ );
-		
-	/*	higher-order orthogonal iteration (HOOI) is a truncated HOSVD decompositions, i.e., the HOSVD components are of lower-ranks. An optimal rank-reduction is 
-		performed with an alternating least-squares (ALS) algorithm, which minimizes the error between the approximated and orignal tensor based on the Frobenius norm
-		see: De Lathauwer et al, 2000b; On the best rank-1 and rank-(RRR) approximation of higher-order tensors.
-		the HOOI can be computed based on (a) n-mode PCA, i.e., an eigenvalue decomposition on the covariance matrix of every mode's matriciziation, and 
-		(b) by performing a 2D SVD on the matricization of every mode. Matrix matricization means that a tensor I1xI2xI3 is unfolded/sliced into one matrix
-		with the dimensions I1xI2I3, which corresponds to a matrizitation alonge mode I1.
-	 */
-	void hooi( const t3_type& data_ );
-		
-	/* derive core
-	 implemented accodring to core = data x_1 U1_pinv x_2 U2_pinv x_3 U3_pinv, 
-	 where x_1 ... x_3 are n-mode products and U1_pinv ... U3_pinv are inverted basis matrices
-	 the inversion is done with a matrix pseudoinverse computation
-	 */
-	void derive_core( const t3_type& data_ );
-	//faster: but only if basis matrices are orthogonal
-	void derive_core_orthogonal_bases( const t3_type& data_ );
-	void derive_core_orthogonal_bases( const t3_comp_type& data_ );
 		
 	template< size_t K1, size_t K2, size_t K3>
 	void reduce_ranks( const tucker3_tensor< K1, K2, K3, I1, I2, I3, T_value, T_coeff >& other ); //call TuckerJI.reduce_ranks(TuckerKI) K1 -> R1, K2 -> R2, K3 -> R3
@@ -234,14 +206,7 @@ public:
 		
 protected:
 		tucker3_type operator=( const tucker3_type& other ) { return (*this); };
-        
-        template< size_t M, size_t N >
-        void fill_random_2d( int seed, matrix< M, N, T_internal >& u );
-        
-        void optimize_mode1( const t3_comp_type& data_, tensor3< I1, R2, R3, T_internal >& projection_ ) const;
-        void optimize_mode2( const t3_comp_type& data_, tensor3< R1, I2, R3, T_internal >& projection_ ) const;		
-        void optimize_mode3( const t3_comp_type& data_, tensor3< R1, R2, I3, T_internal >& projection_ ) const;
-		
+        		
 private:
         
         void cast_members();
@@ -648,298 +613,13 @@ VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::tucker_als( const t3_type& data_ )
 {
-	hooi( data_ );
-		
-}
+	t3_comp_type data;
+	data.cast_from( data_ );
 
+	t3_hooi< R1, R2, R3, I1, I2, I3, T_internal >::als( data, *_u1_comp, *_u2_comp, *_u3_comp, _core_comp ); 
 
-VMML_TEMPLATE_STRING
-void 
-VMML_TEMPLATE_CLASSNAME::init( const t3_comp_type& data_ )
-{	
-#if RAND_INIT
-	int seed = time(NULL);
-	fill_random_2d(seed, *_u1_comp );
-	fill_random_2d(rand(), *_u2_comp );
-	fill_random_2d(rand(), *_u3_comp );
-#else
-	t3_hosvd< R1, R2, R3, I1, I2, I3, T_internal >::apply_all( data_, *_u1_comp, *_u2_comp, *_u3_comp );
-#endif
-	
-	derive_core_orthogonal_bases( data_ );
 	cast_members();
 }
-
-VMML_TEMPLATE_STRING
-void 
-VMML_TEMPLATE_CLASSNAME::hosvd( const t3_type& data_ )
-{	
-	t3_comp_type data;
-	data.cast_from( data_ );
-	
-	t3_hosvd< R1, R2, R3, I1, I2, I3, T_internal >::hosvd( data, *_u1_comp, *_u2_comp, *_u3_comp );
-	derive_core_orthogonal_bases( data_ );
-	cast_members();
-}	
-
-VMML_TEMPLATE_STRING
-template< size_t M, size_t N >
-void 
-VMML_TEMPLATE_CLASSNAME::fill_random_2d( int seed, matrix< M, N, T_internal >& u)
-{
-	double fillValue = 0.0f;
-	srand(seed);
-	for( size_t row = 0; row < M; ++row )
-	{
-		for( size_t col = 0; col < N; ++col )
-		{
-			fillValue = rand();
-			fillValue /= RAND_MAX;
-			u.at( row, col ) = -1.0 + 2.0 * static_cast< double >( fillValue )  ;
-		}
-	}
-}	
-
-VMML_TEMPLATE_STRING
-void 
-VMML_TEMPLATE_CLASSNAME::hooi( const t3_type& data_ )
-{
-	t3_comp_type data;
-	data.cast_from( data_ );
-	
-	//intialize basis matrices
-	init( data );
-	
-	//compute best rank-(R1, R2, R3) approximation (Lathauwer et al., 2000b)
-	t3_comp_type approximated_data;
-	approximated_data.full_tensor3_matrix_multiplication( _core_comp, *_u1_comp, *_u2_comp, *_u3_comp );
-
-	double f_norm = approximated_data.frobenius_norm();
-	double max_f_norm = data.frobenius_norm();
-	double normresidual  = sqrt( (max_f_norm * max_f_norm) - (f_norm * f_norm));
-	double fit = 0;
-	if (max_f_norm != 0 ) {
-		fit = 1 - (normresidual / max_f_norm);
-	} else { 
-		fit = 1;
-	}
-
-	double fitchange = fit;
-	double fitold = fit;
-	double fitchange_tolerance = 1.0e-4;
-	
-	tensor3< I1, R2, R3, T_internal > projection1; 
-	tensor3< R1, I2, R3, T_internal > projection2; 
-	tensor3< R1, R2, I3, T_internal > projection3; 
-
-#if TUCKER_LOG
-	std::cout << "Tucker ALS: HOOI (for tensor3) " << std::endl 
-		<< "initial fit: " << fit  << ", "
-		<< "frobenius norm original: " << max_f_norm << std::endl;
-#endif	
-	size_t i = 0;
-	size_t max_iterations = 10;
-	while( (fitchange >= fitchange_tolerance) && (i < max_iterations) )
-	{
-		fitold = fit;
-		
-		//optimize modes
-		optimize_mode1( data, projection1 );
-		t3_hosvd< R1, R2, R3, I1, R2, R3, T_internal >::apply_mode1( projection1, *_u1_comp );
-		
-		optimize_mode2( data, projection2 );
-		t3_hosvd< R1, R2, R3, R1, I2, R3, T_internal >::apply_mode2( projection2, *_u2_comp );
-		
-		optimize_mode3( data, projection3 );
-		t3_hosvd< R1, R2, R3, R1, R2, I3, T_internal >::apply_mode3( projection3, *_u3_comp );
-
-		_core_comp.multiply_horizontal_bwd( projection3, transpose( *_u3_comp ) );
-		f_norm = _core_comp.frobenius_norm();
-		normresidual  = sqrt( max_f_norm * max_f_norm - f_norm * f_norm);
-		fit = 1 - (normresidual / max_f_norm);
-		fitchange = fabs(fitold - fit);
-		
-#if TUCKER_LOG
-		std::cout << "iteration '" << i << "', fit: " << fit 
-			<< ", fitdelta: " << fitchange 
-			<< ", frobenius norm: " << f_norm << std::endl;		
-#endif
-		++i;
-	}
- 	cast_members();
-}	
-	
-
-	
-VMML_TEMPLATE_STRING
-void 
-VMML_TEMPLATE_CLASSNAME::optimize_mode1( const t3_comp_type& data_, tensor3< I1, R2, R3, T_internal >& projection_ ) const
-{
-     u2_inv_type* u2_inv = new u2_inv_type();
-     *u2_inv = transpose( *_u2_comp );
-     u3_inv_type* u3_inv = new u3_inv_type();
-     *u3_inv = transpose( *_u3_comp );
-     
-     //backward cyclic matricization/unfolding (after Lathauwer et al., 2000a)
-     tensor3< I1, R2, I3, T_internal >* tmp  = new tensor3< I1, R2, I3, T_internal >();
-     tmp->multiply_frontal_bwd( data_, *u2_inv );
-     projection_.multiply_horizontal_bwd( *tmp, *u3_inv );
-     
-     delete u2_inv;
-     delete u3_inv;
-     delete tmp;
-}
-     
-     
-VMML_TEMPLATE_STRING
-void 
-VMML_TEMPLATE_CLASSNAME::optimize_mode2( const t3_comp_type& data_, tensor3< R1, I2, R3, T_internal >& projection_ ) const
-{
-     u1_inv_type* u1_inv = new u1_inv_type();
-     *u1_inv = transpose( *_u1_comp );
-     u3_inv_type* u3_inv = new u3_inv_type();
-     *u3_inv = transpose( *_u3_comp );
-     
-     //backward cyclic matricization (after Lathauwer et al., 2000a)
-     tensor3< R1, I2, I3, T_internal >* tmp = new tensor3< R1, I2, I3, T_internal >();
-     tmp->multiply_lateral_bwd( data_, *u1_inv );
-     projection_.multiply_horizontal_bwd( *tmp, *u3_inv );
-
-     delete u1_inv;
-     delete u3_inv;
-     delete tmp;
-}
-
-	
-VMML_TEMPLATE_STRING
-void 
-VMML_TEMPLATE_CLASSNAME::optimize_mode3( const t3_comp_type& data_, tensor3< R1, R2, I3, T_internal >& projection_  ) const
-{
-     u1_inv_type* u1_inv = new u1_inv_type();
-     *u1_inv = transpose( *_u1_comp );
-     u2_inv_type* u2_inv = new u2_inv_type();
-     *u2_inv = transpose( *_u2_comp );
-
-     //backward cyclic matricization (after Lathauwer et al., 2000a)
-     tensor3< R1, I2, I3, T_internal >* tmp = new tensor3< R1, I2, I3, T_internal >();
-     tmp->multiply_lateral_bwd( data_, *u1_inv );
-     projection_.multiply_frontal_bwd( *tmp, *u2_inv );
-
-     delete u1_inv;
-     delete u2_inv;
-     delete tmp;
-}
-     
-
-VMML_TEMPLATE_STRING
-void 
-VMML_TEMPLATE_CLASSNAME::derive_core_orthogonal_bases( const t3_comp_type& data_ )
-{
-	u1_inv_type * u1_inv = new u1_inv_type();
-    *u1_inv = transpose( *_u1_comp );
-    u2_inv_type* u2_inv = new u2_inv_type();
-    *u2_inv = transpose( *_u2_comp );
-    u3_inv_type* u3_inv = new u3_inv_type();
-    *u3_inv = transpose( *_u3_comp );
-     
-	//t3_comp_type data;
-	//data.cast_from( data_ );
-	_core_comp.full_tensor3_matrix_multiplication( data_, *u1_inv, *u2_inv, *u3_inv );
-	
-	_core.cast_from( _core_comp );
-	
-	delete u1_inv;
-	delete u2_inv;
-	delete u3_inv;
-}
-     
-VMML_TEMPLATE_STRING
-void 
-VMML_TEMPLATE_CLASSNAME::derive_core_orthogonal_bases( const t3_type& data_ )
-{
-	u1_inv_type * u1_inv = new u1_inv_type();
-	*u1_inv = transpose( *_u1_comp );
-	u2_inv_type* u2_inv = new u2_inv_type();
-	*u2_inv = transpose( *_u2_comp );
-	u3_inv_type* u3_inv = new u3_inv_type();
-	*u3_inv = transpose( *_u3_comp );
-	
-	t3_comp_type data;
-	data.cast_from( data_ );
-	_core_comp.full_tensor3_matrix_multiplication( data, *u1_inv, *u2_inv, *u3_inv );
-	
-	_core.cast_from( _core_comp );
-	
-	delete u1_inv;
-	delete u2_inv;
-	delete u3_inv;
-}
-	
-     
-     
-VMML_TEMPLATE_STRING
-void 
-VMML_TEMPLATE_CLASSNAME::derive_core( const t3_type& data_ )
-{
-
-#if 0
-	//compute pseudo inverse for matrices u1-u3
-	u1_comp_type u1_pinv_t ;
-	u2_comp_type u2_pinv_t ;
-	u3_comp_type u3_pinv_t ;
-	
-	
-	compute_pseudoinverse<  u1_type > compute_pinv_u1;
-	compute_pinv_u1( *_u1_comp, u1_pinv_t );
-	compute_pseudoinverse<  u2_type > compute_pinv_u2;
-	compute_pinv_u2( *_u2_comp, u2_pinv_t );	
-	compute_pseudoinverse<  u3_type > compute_pinv_u3;
-	compute_pinv_u3( *_u3_comp, u3_pinv_t );
-	
-	u1_inv_type* u1_pinv = new u1_inv_type();
-	*u1_pinv = transpose( u1_pinv_t );
-	u2_inv_type* u2_pinv = new u2_inv_type();
-	*u2_pinv = transpose( u2_pinv_t );
-	u3_inv_type* u3_pinv = new u3_inv_type();
-	*u3_pinv = transpose( u3_pinv_t );
-	
-	t3_comp_type data;
-	datacast_from( data_ );
-	_core_comp.full_tensor3_matrix_multiplication( data, *u1_pinv, *u2_pinv, *u3_pinv );
-	
-	delete u1_pinv;
-	delete u2_pinv;
-	delete u3_pinv;
-	
-#else
-     //previous version of compute core	
-     for( size_t r3 = 0; r3 < R3; ++r3 )
-     {
-         for( size_t r1 = 0; r1 < R1; ++r1 )
-         {
-            for( size_t r2 = 0; r2 < R2; ++r2 )
-            {
-               float_t sum_i1_i2_i3 = 0.0;
-               for( size_t i3 = 0; i3 < I3; ++i3 )
-               {
-                   for( size_t i1 = 0; i1 < I1; ++i1 )
-                   {
-                      for( size_t i2 = 0; i2 < I2; ++i2 )
-                      {
-                              sum_i1_i2_i3 += _u1_comp->at( i1, r1 ) * _u2_comp->at( i2, r2 ) * _u3_comp->at( i3, r3 ) * T_internal(data_.at( i1, i2, i3 ));
-                      }
-                   }
-               }
-               _core_comp.at( r1, r2, r3 ) = sum_i1_i2_i3;
-            }
-         }
-     }
-	_core.cast_from( _core_comp );
-
-#endif
-}
-	
-	
 
 
 

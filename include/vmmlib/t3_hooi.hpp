@@ -334,6 +334,8 @@ VMML_HOOI_TEMPLATE_CLASSNAME::derive_core( const t3_type& data_, const u1_type& 
 }
 
 	
+#undef VMML_HOOI_TEMPLATE_STRING
+#undef VMML_HOOI_TEMPLATE_CLASSNAME
 	
 	
 }//end vmml namespace

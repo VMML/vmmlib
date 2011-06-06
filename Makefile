@@ -15,6 +15,9 @@ VMMLIB_UNIT_TESTS =\
     tests/tensor3_iterator_test.cpp \
     tests/tucker3_tensor_test.cpp \
     tests/cp3_tensor_test.cpp \
+    tests/t3_hosvd_test.cpp \
+    tests/t3_hooi_test.cpp \
+    tests/t3_hopm_test.cpp \
     tests/matrix_pseudoinverse_test.cpp \
 
 VMMLIB_UNIT_TESTS_OBJECTS = ${VMMLIB_UNIT_TESTS:%.cpp=%.o}  

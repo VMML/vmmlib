@@ -20,9 +20,8 @@
 #ifndef __VMML__CP3_TENSOR__HPP__
 #define __VMML__CP3_TENSOR__HPP__
 
-#include <vmmlib/tensor3.hpp>
+#include <vmmlib/t3_hopm.hpp>
 #include <vmmlib/tensor3_iterator.hpp>
-#include <vmmlib/lapack_svd.hpp>
 #include <vmmlib/matrix_pseudoinverse.hpp>
 
 namespace vmml
@@ -63,10 +62,6 @@ namespace vmml
 		
 		typedef vector< R, T_internal > lambda_comp_type;
 		typedef vector< R, T_coeff > lambda_type;
-		
-		typedef matrix< I1, I2*I3, T_internal > mode1_matricization_type;
-		typedef matrix< I2, I1*I3, T_internal > mode2_matricization_type;
-		typedef matrix< I3, I1*I2, T_internal > mode3_matricization_type;		
 
 		cp3_tensor(  u1_type& U1, u2_type& U2, u3_type& U3, lambda_type& lambdas_ );
 		cp3_tensor();
@@ -98,20 +93,6 @@ namespace vmml
 		void reconstruct( t3_type& data_ ) const;
 		void decompose( const t3_type& data_, const size_t max_iterations_ = 100 ); 
 		void cp_als( const t3_type& data_, const size_t max_iterations_ = 100 );
-		//higher-order power method (lathauwer et al., 2000b)
-		void hopm( const t3_type& data_, const size_t max_iterations_ = 100 );
-		
-		template< size_t M, size_t N, typename T >
-		void get_svd_u( const matrix< M, N, T >& data_, matrix< M, R, T_internal >& u_ );
-
-		template< size_t J1, size_t J2, size_t J3, typename T >
-		void hosvd_mode2(  const tensor3<J1, J2, J3, T >& data_ );
-		template< size_t J1, size_t J2, size_t J3, typename T >
-		void hosvd_mode3( const tensor3<J1, J2, J3, T >& data_ );
-		
-		void optimize_mode1( const t3_comp_type& data_ );
-		void optimize_mode2( const t3_comp_type& data_ );		
-		void optimize_mode3( const t3_comp_type& data_ );
 		
 	protected:
 		cp3_tensor( const cp3_tensor< R, I1, I1, I1, T_value, T_coeff >& other ) {};
@@ -246,253 +227,12 @@ VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::cp_als( const t3_type& data_, const size_t max_iterations_  )
 {
-	hopm( data_, max_iterations_ );
-}
-
-VMML_TEMPLATE_STRING
-void 
-VMML_TEMPLATE_CLASSNAME::hopm( const t3_type& data_, const size_t max_iterations_ )
-{
 	t3_comp_type data;
 	data.cast_from( data_ );
-	t3_type approximated_data;
-	t3_type residual_data;
-	residual_data.zero();
 	
-	double approx_norm = 0;
-	double max_f_norm = data.frobenius_norm();
-	double normresidual  = 0;
-	double fit = 0;
-	if (max_f_norm == 0 )
-		fit = 1;
-	double fitchange = 1;
-	double fitold = fit;
-	double fitchange_tolerance = 1.0e-4;
+	t3_hopm< R, I1, I2, I3, T_internal >::als( data, *_u1_comp, *_u2_comp, *_u3_comp, *_lambdas_comp, max_iterations_ );
 	
-	//intialize u1-u3
-	//hosvd_mode1( data_, _u1 ); inital guess not needed for u1 since it will be computed in the first optimization step
-	hosvd_mode2( data_ );
-	hosvd_mode3( data_ );
-
-#if CP_LOG
-	std::cout << "CP ALS: HOPM (for tensor3) " << std::endl;
-#endif	
-	
-	size_t i = 0;
-	//size_t max_iterations = 100;
-	while( (fitchange >= fitchange_tolerance) && ( i < max_iterations_ ) ) //do until converges
-	{
-		fitold = fit;
-		optimize_mode1( data );
-		optimize_mode2( data );
-		optimize_mode3( data );
-		
-		//Reconstruct cptensor and measure norm of approximation
-		reconstruct( approximated_data ); //FIX reconstruction
-		approx_norm = approximated_data.frobenius_norm();
-		residual_data = data_ - approximated_data;
-		normresidual = residual_data.frobenius_norm();
-		fit = 1 - ( normresidual / max_f_norm ); 
-		fitchange = fabs(fitold - fit);
-		
-#if CP_LOG
-		std::cout << "iteration '" << i << "', fit: " << fit 
-		<< ", fitdelta: " << fitchange 
-		<< ", frobenius norm: " << approx_norm << std::endl;		
-#endif
-		++i;
-	} // end ALS
-
  	cast_members();
-}
-
-	
-	
-VMML_TEMPLATE_STRING
-template< size_t J1, size_t J2, size_t J3, typename T >
-void 
-VMML_TEMPLATE_CLASSNAME::hosvd_mode2( const tensor3<J1, J2, J3, T >& data_ )
-{
-	typedef matrix< J2, J1*J3, T > unfolded_matrix_type;
-	unfolded_matrix_type* u = new unfolded_matrix_type; // -> u1
-	data_.frontal_unfolding_bwd( *u );
-	
-	get_svd_u( *u, *_u2_comp );
-	
-	delete u;
-}
-	
-		
-VMML_TEMPLATE_STRING
-template< size_t J1, size_t J2, size_t J3, typename T >
-void 
-VMML_TEMPLATE_CLASSNAME::hosvd_mode3( const tensor3<J1, J2, J3, T >& data_  )
-{
-	typedef matrix< J3, J1*J2, T > unfolded_matrix_type;
-	unfolded_matrix_type* u = new unfolded_matrix_type; // -> u1
-	data_.horizontal_unfolding_bwd( *u );
-	
-	get_svd_u( *u, *_u3_comp );
-	
-	delete u;
-}
-	
-
-VMML_TEMPLATE_STRING
-void 
-VMML_TEMPLATE_CLASSNAME::optimize_mode1( const t3_comp_type& data_ )
-{	
-	mode1_matricization_type* unfolding = new mode1_matricization_type; // -> u1
-	//data_.horizontal_unfolding_bwd( *unfolding ); //lathauwer
-	data_.frontal_unfolding_fwd( *unfolding ); //lathauwer
-	
-	typedef matrix< I2*I3, R, T_internal > krp_matrix_type;
-	krp_matrix_type* u1_krp  = new krp_matrix_type;
-	*u1_krp = _u3_comp->khatri_rao_product( *_u2_comp );	
-	u1_comp_type* u_new = new u1_comp_type;
-	u_new->multiply( *unfolding, *u1_krp );
-	
-	typedef matrix< R, R , T_internal > m_r2_type;
-	m_r2_type* u2_r = new m_r2_type;
-	m_r2_type* u3_r = new m_r2_type;
-	
-	u2_r->multiply( transpose(*_u2_comp), *_u2_comp );
-	u3_r->multiply( transpose(*_u3_comp), *_u3_comp );
-	u2_r->multiply_piecewise( *u3_r );
-	
-	m_r2_type* pinv_t = new m_r2_type;
-	compute_pseudoinverse< m_r2_type > compute_pinv;
-	compute_pinv( *u2_r, *pinv_t );
-	
-	_u1_comp->multiply( *u_new, transpose(*pinv_t) );
-
-	*u_new = *_u1_comp;
-	u_new->multiply_piecewise( *u_new ); //2 norm
-	u_new->columnwise_sum( *_lambdas_comp );
-	_lambdas_comp->sqrt_elementwise();
-	lambda_comp_type* tmp = new lambda_comp_type;
-	*tmp = *_lambdas_comp;
-	tmp->reciprocal();
-	m_r2_type* diag_lambdas = new m_r2_type;
-	diag_lambdas->diag( *tmp );
-	
-	*u_new = *_u1_comp;
-	_u1_comp->multiply( *u_new, *diag_lambdas ); 
-
-	delete unfolding;
-	delete u1_krp;
-	delete u2_r;
-	delete u3_r;
-	delete pinv_t;
-	delete u_new;
-	delete diag_lambdas;
-	delete tmp;
-}
-
-
-VMML_TEMPLATE_STRING
-void 
-VMML_TEMPLATE_CLASSNAME::optimize_mode2( const t3_comp_type& data_ )
-{
-	mode2_matricization_type* unfolding = new mode2_matricization_type; // -> u2
-	//data_.frontal_unfolding_bwd( *unfolding ); //lathauwer
-	data_.frontal_unfolding_bwd( *unfolding );
-	
-	typedef matrix< I1*I3, R, T_internal > krp_matrix_type;
-	krp_matrix_type* u2_krp  = new krp_matrix_type;
-	*u2_krp = _u3_comp->khatri_rao_product( *_u1_comp );	
-	u2_comp_type* u_new = new u2_comp_type;
-	u_new->multiply( *unfolding, *u2_krp );
-	
-	typedef matrix< R, R , T_internal > m_r2_type;
-	m_r2_type* u1_r = new m_r2_type;
-	m_r2_type* u3_r = new m_r2_type;
-	
-	u1_r->multiply( transpose(*_u1_comp), *_u1_comp );
-	u3_r->multiply( transpose(*_u3_comp), *_u3_comp );
-	u1_r->multiply_piecewise( *u3_r );
-	
-	m_r2_type* pinv_t = new m_r2_type;
-	compute_pseudoinverse< m_r2_type > compute_pinv;
-	compute_pinv( *u1_r, *pinv_t );
-	
-	_u2_comp->multiply( *u_new, transpose(*pinv_t) );
-	
-	//normalize with lambdas
-	*u_new = *_u2_comp;
-	u_new->multiply_piecewise( *u_new ); //2 norm
-	u_new->columnwise_sum( *_lambdas_comp );
-	_lambdas_comp->sqrt_elementwise();
-	lambda_comp_type* tmp = new lambda_comp_type;
-	*tmp = *_lambdas_comp;
-	tmp->reciprocal();
-	m_r2_type* diag_lambdas = new m_r2_type;
-	diag_lambdas->diag( *tmp );
-	
-	*u_new = *_u2_comp;
-	_u2_comp->multiply( *u_new, *diag_lambdas );
-	
-	delete unfolding;
-	delete u2_krp;
-	delete u1_r;
-	delete u3_r;
-	delete pinv_t;
-	delete u_new;
-	delete diag_lambdas;
-	delete tmp;
-}	
-
-
-VMML_TEMPLATE_STRING
-void  
-VMML_TEMPLATE_CLASSNAME::optimize_mode3( const t3_comp_type& data_ )
-{
-	mode3_matricization_type* unfolding = new mode3_matricization_type; //-> u3
-	//data_.horizontal_unfolding_bwd( *unfolding );//lathauwer
-	data_.lateral_unfolding_fwd( *unfolding );
-	
-	typedef matrix< I1*I2, R, T_internal > krp_matrix_type;
-	krp_matrix_type* u3_krp  = new krp_matrix_type;
-	*u3_krp = _u2_comp->khatri_rao_product( *_u1_comp );	
-	u3_comp_type* u_new = new u3_comp_type;
-	u_new->multiply( *unfolding, *u3_krp );
-	
-	typedef matrix< R, R , T_internal > m_r2_type;
-	m_r2_type* u1_r = new m_r2_type;
-	m_r2_type* u2_r = new m_r2_type;
-	
-	u1_r->multiply( transpose(*_u1_comp), *_u1_comp );
-	u2_r->multiply( transpose(*_u2_comp), *_u2_comp );
-	u1_r->multiply_piecewise( *u2_r );
-	
-	m_r2_type* pinv_t = new m_r2_type;
-	compute_pseudoinverse< m_r2_type > compute_pinv;
-	compute_pinv( *u1_r, *pinv_t );
-	
-	_u3_comp->multiply( *u_new, transpose(*pinv_t) );
-	
-	//normalize with lambdas
-	*u_new = *_u3_comp;
-	u_new->multiply_piecewise( *u_new ); //2 norm
-	u_new->columnwise_sum( *_lambdas_comp );
-	_lambdas_comp->sqrt_elementwise();
-	lambda_comp_type* tmp = new lambda_comp_type;
-	*tmp = *_lambdas_comp;
-	tmp->reciprocal();
-	m_r2_type* diag_lambdas = new m_r2_type;
-	diag_lambdas->diag( *tmp );
-	
-	*u_new = *_u3_comp;
-	_u3_comp->multiply( *u_new, *diag_lambdas );
-
-	delete unfolding;
-	delete u3_krp;
-	delete u1_r;
-	delete u2_r;
-	delete pinv_t;
-	delete u_new;	
-	delete diag_lambdas;
-	delete tmp;
 }
 
 	
@@ -557,55 +297,6 @@ VMML_TEMPLATE_CLASSNAME::import_from( std::vector< T_coeff >& data_ )
 }	
 
 
-	
-VMML_TEMPLATE_STRING
-template< size_t M, size_t N, typename T >
-void 
-VMML_TEMPLATE_CLASSNAME::get_svd_u( const matrix< M, N, T >& data_, matrix< M, R, T_internal >& u_ )
-{
-	typedef	matrix< M, N, T_svd > svd_type;
-	typedef	matrix< M, N, T_coeff > coeff_type;
-	typedef	matrix< M, N, T_internal > internal_type;
-	typedef vector< N, T_svd > lambdas_type;
-	
-	svd_type* u_double = new svd_type; 
-	u_double->cast_from( data_ );
-	
-	coeff_type* u_quant = new coeff_type; 
-	internal_type* u_internal = new internal_type; 
-	
-	lambdas_type* lambdas  = new lambdas_type;
-	lapack_svd< M, N, T_svd >* svd = new lapack_svd<  M, N, T_svd >();
-	if( svd->compute_and_overwrite_input( *u_double, *lambdas )) {
-#if FIXME
-		if( _is_quantify_coeff ){
-			T_internal min_value = 0; T_internal max_value = 0;
-			u_internal->cast_from( *u_double );
-			u_internal->quantize( *u_quant, min_value, max_value );
-			u_quant->dequantize( *u_internal, min_value, max_value );
-		} else if ( sizeof( T_internal ) != 4 ){
-			u_internal->cast_from( *u_double );
-		} else {
-			*u_internal = *u_double;
-		}
-#else
-		*u_internal = *u_double;		
-#endif
-		
-		u_internal->get_sub_matrix( u_ );
-		
-	} else {
-		u_.zero();
-	}
-	
-	delete lambdas;
-	delete svd;
-	delete u_double;
-	delete u_quant;
-	delete u_internal;
-}	
-
-	
 		
 #undef VMML_TEMPLATE_STRING
 #undef VMML_TEMPLATE_CLASSNAME

@@ -26,6 +26,9 @@ namespace vmml
 		//TODO: Add restriction for matrices with M >= N only to template
 				
 	public:		
+		
+		typedef double float_t;
+		
 		/// do pseudo inverse for M >= N ///
 		void operator()( const T& input, T& pseudoinverse_transposed, 
 						typename T::value_type tolerance = std::numeric_limits< typename T::value_type >::epsilon() )

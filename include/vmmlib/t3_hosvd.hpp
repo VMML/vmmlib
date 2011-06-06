@@ -336,7 +336,9 @@ VMML_HOSVD_TEMPLATE_CLASSNAME::get_svd_u_red( const matrix< M, N, T >& data_, ma
 	//delete u_quant;
 	delete u_out;
 }	
-	
+
+#undef VMML_TEMPLATE_STRING
+#undef VMML_TEMPLATE_CLASSNAME
 
 }//end vmml namespace
 

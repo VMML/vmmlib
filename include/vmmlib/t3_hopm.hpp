@@ -45,7 +45,7 @@ namespace vmml
 		typedef matrix< I2, I1*I3, T > mode2_matricization_type;
 		typedef matrix< I3, I1*I2, T > mode3_matricization_type;	
 		
-		
+
 		typedef matrix< R, R , T > m_r2_type;
 
 		

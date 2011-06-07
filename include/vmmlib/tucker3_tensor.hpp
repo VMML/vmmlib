@@ -34,7 +34,6 @@ namespace vmml
 public:    
 	
 	typedef float T_internal;	
-	typedef double T_svd;
 		
 	typedef tucker3_tensor< R1, R2, R3, I1, I2, I3, T_value, T_coeff > tucker3_type;
 		
@@ -72,11 +71,6 @@ public:
 	typedef matrix< I1, R1, T_internal > u1_comp_type;
 	typedef matrix< I2, R2, T_internal > u2_comp_type;
 	typedef matrix< I3, R3, T_internal > u3_comp_type;
-	
-	//matrix types for inverted (pseudo-inverted) u1-u3
-	typedef matrix< R1, I1, T_internal > u1_inv_type;
-	typedef matrix< R2, I2, T_internal > u2_inv_type;
-	typedef matrix< R3, I3, T_internal > u3_inv_type;
 	
 	static const size_t SIZE = R1*R2*R3 + I1*R1 + I2*R2 + I3*R3;
 		

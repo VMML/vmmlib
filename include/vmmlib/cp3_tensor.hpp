@@ -27,12 +27,11 @@
 namespace vmml
 {
 	
-	template< size_t I1, size_t I2, size_t I3, size_t R, typename T_value = float, typename T_coeff = float >
+	template< size_t R, size_t I1, size_t I2, size_t I3, typename T_value = float, typename T_coeff = float >
 	class cp3_tensor
 	{
 	public:    		
 		typedef float T_internal;	
-		typedef double T_svd;
 
 		typedef tensor3< I1, I2, I3, T_value > t3_type;
 		typedef typename t3_type::iterator t3_iterator;
@@ -115,8 +114,8 @@ namespace vmml
 	}; // class cp3_tensor
 	
 	
-#define VMML_TEMPLATE_STRING    	template< size_t I1, size_t I2, size_t I3, size_t R, typename T_value, typename T_coeff >
-#define VMML_TEMPLATE_CLASSNAME     cp3_tensor< I1, I2, I3, R, T_value, T_coeff >
+#define VMML_TEMPLATE_STRING			template< size_t I1, size_t I2, size_t I3, size_t R, typename T_value, typename T_coeff >
+#define VMML_TEMPLATE_CLASSNAME			cp3_tensor< I1, I2, I3, R, T_value, T_coeff >
 	
 	
 VMML_TEMPLATE_STRING

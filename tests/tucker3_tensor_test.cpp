@@ -188,11 +188,11 @@ namespace vmml
 		
 		//check exported data
 		double export_data2_check[] = {
-			-0.921997, 0.921997, -251.345, 16.3135,  /* all min/max values -0.715833, 0.865947, -0.721095, 0.692817, -0.921997, 0.921997,*/
-			29346, 7327, 8188, 63543, 18451, 43301,
+			-0.921996, 0.921996, -251.346, 16.3137,  /* all min/max values -0.715833, 0.865947, -0.721095, 0.692817, -0.921997, 0.921997,*/
+			29346, 7327, 8188, 63544, 18451, 43301,
 			8145, 7140, 7140, 57390,
 			0, 19007, 19007, 65535,
-			0, 60923, 61001, 59355, 61571, 52960, 51805, 65535 };
+			0, 60924, 61001, 59354, 61570, 52960, 51805, 65535 };
 		
 		ok = true;
 		
@@ -230,7 +230,7 @@ namespace vmml
 		}
 		//check u3		
 		end_index += 4;
-		for ( ; (index < end_index) ; ++index ) {
+		for ( ; (index < end_index) && ok; ++index ) {
 			value = *value_ptr;
 			//std::cout<<"#### U3 value === " << value << ", should be " << export_data2_check[index] << std::endl;
 			value_ptr++;

@@ -40,7 +40,11 @@ namespace vmml
 		typedef matrix< I1, I2*I3, T > u1_unfolded_type;
 		typedef matrix< I2, I1*I3, T > u2_unfolded_type;
 		typedef matrix< I3, I1*I2, T > u3_unfolded_type;
-
+		
+		typedef matrix< I2*I3, I1, T > u1_t_unfolded_type;
+		typedef matrix< I1*I3, I2, T > u2_t_unfolded_type;
+		typedef matrix< I1*I2, I3, T > u3_t_unfolded_type;
+		
 		typedef matrix< I1, I1, T > u1_cov_type;
 		typedef matrix< I2, I2, T > u2_cov_type;
 		typedef matrix< I3, I3, T > u3_cov_type;
@@ -199,10 +203,14 @@ VMML_HOSVD_TEMPLATE_CLASSNAME::eigs_mode1( const t3_type& data_, u1_type& u1_ )
 	u1_unfolded_type* m_lateral = new u1_unfolded_type; // -> u1
 	data_.lateral_unfolding_bwd( *m_lateral );
 	
+	u1_t_unfolded_type* ut  = new u1_t_unfolded_type;
+	m_lateral->transpose_to( *ut );
+	
 	//covariance matrix of unfolded data
 	u1_cov_type* cov  = new u1_cov_type;
-	cov->multiply( *m_lateral, transpose( *m_lateral ));
+	cov->multiply( *m_lateral, *ut );
 	delete m_lateral;
+	delete ut;
 	
 	//compute x largest magnitude eigenvalues; x = R
 	get_eigs_u_red( *cov, u1_ );
@@ -218,10 +226,14 @@ VMML_HOSVD_TEMPLATE_CLASSNAME::eigs_mode2( const t3_type& data_, u2_type& u2_ )
 	u2_unfolded_type* m_frontal = new u2_unfolded_type; // -> u2
 	data_.frontal_unfolding_bwd( *m_frontal );
 	
+	u2_t_unfolded_type* ut  = new u2_t_unfolded_type;
+	m_frontal->transpose_to( *ut );
+
 	//covariance matrix of unfolded data
 	u2_cov_type* cov  = new u2_cov_type;
-	cov->multiply( *m_frontal, transpose( *m_frontal ));
+	cov->multiply( *m_frontal, *ut );
 	delete m_frontal;
+	delete ut;
 	
 	//compute x largest magnitude eigenvalues; x = R
 	get_eigs_u_red( *cov, u2_ );
@@ -237,9 +249,12 @@ VMML_HOSVD_TEMPLATE_CLASSNAME::eigs_mode3( const t3_type& data_, u3_type& u3_)
 	u3_unfolded_type* m_horizontal = new u3_unfolded_type; // -> u3
 	data_.horizontal_unfolding_bwd( *m_horizontal );
 	
+	u3_t_unfolded_type* ut  = new u3_t_unfolded_type;
+	m_horizontal->transpose_to( *ut );
+
 	//covariance matrix of unfolded data
 	u3_cov_type* cov  = new u3_cov_type;
-	cov->multiply( *m_horizontal, transpose( *m_horizontal ));
+	cov->multiply( *m_horizontal, *ut );
 	delete m_horizontal;
 	
 	//compute x largest magnitude eigenvalues; x = R
@@ -313,6 +328,7 @@ VMML_HOSVD_TEMPLATE_CLASSNAME::get_svd_u_red( const matrix< M, N, T >& data_, ma
 	lambdas_type* lambdas  = new lambdas_type;
 	lapack_svd< M, N, T_svd >* svd = new lapack_svd<  M, N, T_svd >();
 	if( svd->compute_and_overwrite_input( *u_double, *lambdas )) {
+		
 		/*		if( _is_quantify_coeff ){
 		 T min_value = 0; T max_value = 0;
 		 u_comp->cast_from( *u_double );

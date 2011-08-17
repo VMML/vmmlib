@@ -114,6 +114,7 @@ namespace vmml
 		
 		
 		//hoeigs test
+		u1_hosvd.zero(); u2_hosvd.zero(); u3_hosvd.zero();
 		matrix<3, 3, double> u1_hoeigs_check;
 		matrix<3, 3, double> u2_hoeigs_check;
 		matrix<3, 3, double> u3_hoeigs_check;

@@ -1099,6 +1099,25 @@ matrix_test::run()
 		
 	}
 	
+	{
+		//symmetric covariance matrix
+		
+		matrix< 2, 4, float > m_sc;
+		float sc_data[] = { 11, 12, 13, 14, 21, 22, 23, 24 };
+        m_sc = sc_data;
+ 		
+		matrix< 2, 2, float > m_cov;
+		m_sc.symmetric_covariance( m_cov );
+		
+		matrix< 2, 2, float > m_cov_check;
+		float cov_data[] = { 630, 1130, 1130, 2030};
+        m_cov_check = cov_data;
+		
+		ok = m_cov == m_cov_check;
+		log( "symmetric covariance matrix" , ok  );
+		
+	}
+	
     return ok;
 }
 

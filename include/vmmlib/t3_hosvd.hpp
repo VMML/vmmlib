@@ -256,6 +256,7 @@ VMML_HOSVD_TEMPLATE_CLASSNAME::eigs_mode3( const t3_type& data_, u3_type& u3_)
 	u3_cov_type* cov  = new u3_cov_type;
 	cov->multiply( *m_horizontal, *ut );
 	delete m_horizontal;
+	delete ut;
 	
 	//compute x largest magnitude eigenvalues; x = R
 	get_eigs_u_red( *cov, u3_ );

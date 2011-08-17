@@ -162,6 +162,10 @@ public:
 
     // copies a transposed version of *this into transposedMatrix
     void transpose_to( matrix< N, M, T >& transpose_ ) const;	
+	
+	//symmetric covariance matrix of a right matrix multiplication: MxN x NxM = MxM
+	void	symmetric_covariance( matrix< M, M, T >& cov_m_ ) const;
+	
 
     const matrix& operator=( const matrix& source_ );
     
@@ -1241,6 +1245,27 @@ transpose_to( matrix< N, M, T >& tM ) const
     }
 }
 
+template< size_t M, size_t N, typename T >
+void
+matrix< M, N, T >::
+symmetric_covariance( matrix< M, M, T >& cov_m_ ) const
+{
+	T tmp = 0;
+	for( size_t row = 0; row < M; ++row )
+	{
+		for( size_t col = 0; col < M; ++col )
+		{
+			for ( size_t k = 0; k < N; ++k )
+			{
+				tmp += (at( row, k ) * at( col, k ));
+			}
+			
+			cov_m_.at( row, col ) = tmp;
+			tmp = 0;
+		}
+	}
+}
+	
 
 
 template< size_t M, size_t N, typename T >

@@ -1253,7 +1253,7 @@ symmetric_covariance( matrix< M, M, T >& cov_m_ ) const
 	T tmp = 0;
 	for( size_t row = 0; row < M; ++row )
 	{
-		for( size_t col = 0; col < M; ++col )
+		for( size_t col = row; col < M; ++col )
 		{
 			for ( size_t k = 0; k < N; ++k )
 			{
@@ -1261,6 +1261,7 @@ symmetric_covariance( matrix< M, M, T >& cov_m_ ) const
 			}
 			
 			cov_m_.at( row, col ) = tmp;
+			cov_m_.at( col, row ) = tmp;
 			tmp = 0;
 		}
 	}

@@ -2030,7 +2030,7 @@ VMML_TEMPLATE_CLASSNAME::read_from_raw( const std::string& dir_, const std::stri
 			}
 		}
 		
-		delete data;
+		delete[] data;
 		infile.close();
 	} else {
 		std::cout << "no file open" << std::endl;

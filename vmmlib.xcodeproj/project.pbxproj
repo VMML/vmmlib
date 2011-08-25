@@ -48,6 +48,7 @@
 		CFD85C551399060300266D85 /* t3_hosvd_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CFD85C541399060300266D85 /* t3_hosvd_test.cpp */; };
 		CFD85C81139909EF00266D85 /* t3_hooi_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CFD85C80139909EF00266D85 /* t3_hooi_test.cpp */; };
 		CFD85C8413990A0E00266D85 /* t3_hopm_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CFD85C8313990A0E00266D85 /* t3_hopm_test.cpp */; };
+		CFF0C1FA1406E55200C3ADDB /* blas_dgemm_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CFF0C1F81406E55200C3ADDB /* blas_dgemm_test.cpp */; };
 		CFF95533131CECD100071FB3 /* lapack_sym_eigs_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CFF95532131CECD100071FB3 /* lapack_sym_eigs_test.cpp */; };
 /* End PBXBuildFile section */
 
@@ -138,6 +139,11 @@
 		CFD85C80139909EF00266D85 /* t3_hooi_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = t3_hooi_test.cpp; path = tests/t3_hooi_test.cpp; sourceTree = "<group>"; };
 		CFD85C8213990A0E00266D85 /* t3_hopm_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = t3_hopm_test.hpp; path = tests/t3_hopm_test.hpp; sourceTree = "<group>"; };
 		CFD85C8313990A0E00266D85 /* t3_hopm_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = t3_hopm_test.cpp; path = tests/t3_hopm_test.cpp; sourceTree = "<group>"; };
+		CFF0C1F21406E4DC00C3ADDB /* blas_dgemm.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = blas_dgemm.hpp; path = include/vmmlib/blas_dgemm.hpp; sourceTree = "<group>"; };
+		CFF0C1F31406E4DC00C3ADDB /* blas_includes.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = blas_includes.hpp; path = include/vmmlib/blas_includes.hpp; sourceTree = "<group>"; };
+		CFF0C1F41406E4DC00C3ADDB /* blas_types.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = blas_types.hpp; path = include/vmmlib/blas_types.hpp; sourceTree = "<group>"; };
+		CFF0C1F81406E55200C3ADDB /* blas_dgemm_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = blas_dgemm_test.cpp; path = tests/blas_dgemm_test.cpp; sourceTree = "<group>"; };
+		CFF0C1F91406E55200C3ADDB /* blas_dgemm_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = blas_dgemm_test.hpp; path = tests/blas_dgemm_test.hpp; sourceTree = "<group>"; };
 		CFF952C41312B52C00071FB3 /* lapack_sym_eigs.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = lapack_sym_eigs.hpp; path = include/vmmlib/lapack_sym_eigs.hpp; sourceTree = "<group>"; };
 		CFF95531131CECD100071FB3 /* lapack_sym_eigs_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = lapack_sym_eigs_test.hpp; path = tests/lapack_sym_eigs_test.hpp; sourceTree = "<group>"; };
 		CFF95532131CECD100071FB3 /* lapack_sym_eigs_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lapack_sym_eigs_test.cpp; path = tests/lapack_sym_eigs_test.cpp; sourceTree = "<group>"; };
@@ -224,6 +230,7 @@
 				98596E630FB48923006CA0F8 /* misc */,
 				98596E740FB489AC006CA0F8 /* frustum */,
 				984763FD110DDB210024A1F8 /* tensor */,
+				CFF0C1F11406E4BA00C3ADDB /* blas */,
 				9839FE5C0E2BB59800A16721 /* lapack */,
 				984F581111B8CFB50027D673 /* boost la */,
 			);
@@ -372,6 +379,8 @@
 				CFD85C80139909EF00266D85 /* t3_hooi_test.cpp */,
 				CFD85C8213990A0E00266D85 /* t3_hopm_test.hpp */,
 				CFD85C8313990A0E00266D85 /* t3_hopm_test.cpp */,
+				CFF0C1F91406E55200C3ADDB /* blas_dgemm_test.hpp */,
+				CFF0C1F81406E55200C3ADDB /* blas_dgemm_test.cpp */,
 			);
 			name = "unit tests";
 			sourceTree = "<group>";
@@ -385,6 +394,16 @@
 				9839FEF60E2BC67400A16721 /* svd_lapack_vs_old.cpp */,
 			);
 			name = "performance tests";
+			sourceTree = "<group>";
+		};
+		CFF0C1F11406E4BA00C3ADDB /* blas */ = {
+			isa = PBXGroup;
+			children = (
+				CFF0C1F21406E4DC00C3ADDB /* blas_dgemm.hpp */,
+				CFF0C1F31406E4DC00C3ADDB /* blas_includes.hpp */,
+				CFF0C1F41406E4DC00C3ADDB /* blas_types.hpp */,
+			);
+			name = blas;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -523,6 +542,7 @@
 				CFD85C551399060300266D85 /* t3_hosvd_test.cpp in Sources */,
 				CFD85C81139909EF00266D85 /* t3_hooi_test.cpp in Sources */,
 				CFD85C8413990A0E00266D85 /* t3_hopm_test.cpp in Sources */,
+				CFF0C1FA1406E55200C3ADDB /* blas_dgemm_test.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

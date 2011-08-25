@@ -24,6 +24,12 @@
 #include "lapack_sym_eigs_test.hpp"
 #endif
 
+#define VMMLIB_USE_BLAS 1
+
+#ifdef VMMLIB_USE_BLAS
+#include "blas_dgemm_test.hpp"
+#endif
+
 void
 run_and_log( vmml::unit_test& test )
 {
@@ -63,6 +69,13 @@ main( int argc, const char* argv[] )
 	vmml::lapack_sym_eigs_test lapack_sym_eigs_test_;
     run_and_log( lapack_sym_eigs_test_ );
 
+#endif
+	
+#ifdef VMMLIB_USE_BLAS
+
+    vmml::blas_dgemm_test blas_mm;
+    run_and_log( blas_mm );
+	
 #endif
 	
 	//problems on some unix machines

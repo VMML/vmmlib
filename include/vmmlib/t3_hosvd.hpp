@@ -20,6 +20,7 @@
 #include <vmmlib/tensor3.hpp>
 #include <vmmlib/lapack_svd.hpp>
 #include <vmmlib/lapack_sym_eigs.hpp>
+#include <vmmlib/blas_dgemm.hpp>
 
 namespace vmml
 {
@@ -239,7 +240,13 @@ VMML_HOSVD_TEMPLATE_CLASSNAME::eigs_mode3( const t3_type& data_, u3_type& u3_)
 	
 	//covariance matrix of unfolded data
 	u3_cov_type* cov  = new u3_cov_type;
+#if 1
 	m_horizontal->symmetric_covariance( *cov );
+#else	
+	blas_dgemm< I3, I1*I2, I3, T>* blas_cov = new blas_dgemm< I3, I1*I2, I3, T>;
+	blas_cov->compute( *m_horizontal, *cov );
+#endif
+	
 	delete m_horizontal;
 	
 	//compute x largest magnitude eigenvalues; x = R

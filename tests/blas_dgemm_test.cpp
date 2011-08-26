@@ -31,7 +31,8 @@ namespace vmml
 			std::stringstream ss;
 			ss
             << "input matrix " << A << "\n"
-            << "covariance matrix " << C << "\n"
+            << "covariance matrix should be\n" << C_check << "\n"
+            << "covariance matrix is\n" << C << "\n"
             << std::endl;
 			log_error( ss.str() );
             

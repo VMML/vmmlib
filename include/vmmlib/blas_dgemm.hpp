@@ -41,6 +41,7 @@
  **
  */
 
+
 namespace vmml
 {
 	
@@ -173,7 +174,7 @@ namespace vmml
 		blas_dgemm();
 		~blas_dgemm() {};
 		
-		bool compute( const matrix_left_t& A, const matrix_right_t& B, matrix_out_t& C );
+		//bool compute( const matrix_left_t& A, const matrix_right_t& B, matrix_out_t& C );
 		bool compute( const matrix_left_t& ABT, matrix_out_t& C );
 				
 		//inline bool test_success( blas::lapack_int info );
@@ -197,16 +198,17 @@ namespace vmml
 		p.n          = N;
 		p.alpha      = 1;
 		p.a          = 0;
-		p.lda        = M;
+		p.lda        = K;
 		p.b          = 0;
-		p.ldb        = K;
+		p.ldb        = N;
 		p.beta       = 1;
 		p.c          = 0;
-		p.ldc        = M;
+		p.ldc        = N;
 	}
 	
 	
 		
+#if 0
 	template< size_t M, size_t K, size_t N, typename float_t >
 	bool
 	blas_dgemm< M, K, N, float_t >::compute( const matrix_left_t& A, 
@@ -218,18 +220,15 @@ namespace vmml
 		matrix_right_t BB( B );
 		
 		p.a         = AA.array;
-		p.lda       = M;
 		p.b         = BB.array;
-		p.ldb       = K;
 		p.c         = C.array;
-		p.ldc       = M;
 		
 		blas::dgemm_call< float_t >( p );
 		
 		return true;
 				
 	}	
-	
+#endif	
 	template< size_t M, size_t K, size_t N, typename float_t >
 	bool
 	blas_dgemm< M, K, N, float_t >::compute( const matrix_left_t& ABT, matrix_out_t& C )
@@ -237,29 +236,23 @@ namespace vmml
 		// lapack destroys the contents of the input matrix
 		matrix_left_t* AA = new matrix_left_t( ABT );
 		matrix_right_t* BB = new matrix_right_t;
-		
 		AA->transpose_to( *BB );
 		
-		matrix_out_t* CC = new matrix_out_t( C );
+		//std::cout << "input matrix a:\n" << *AA << std::endl;
+		//std::cout << "input matrix b:\n" << *BB << std::endl;
 		
 		//p.trans_b    = CblasTrans;
 		p.a         = AA->array;
-		p.lda       = M;
 		p.b         = BB->array;
-		p.ldb       = K;
-		p.c         = CC->array;
-		p.ldc       = M;
-
+		p.c         = C.array;
 		
 		blas::dgemm_call< float_t >( p );
 		
-		//std::cout << "dgemm params " << p << std::endl;
-		//std::cout << *CC << std::endl;
+		//std::cout << *p.c << std::endl;
+		//std::cout << "output matrix c:\n" << C << std::endl;
 		
-		C = *CC;
-		
+
 		delete AA;
-		delete CC;
 		delete BB;
 		
 		return true;

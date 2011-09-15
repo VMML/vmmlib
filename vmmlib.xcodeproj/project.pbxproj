@@ -45,6 +45,7 @@
 		CF2DD265126C91670036DE05 /* cp3_tensor_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CF2DD264126C91670036DE05 /* cp3_tensor_test.cpp */; };
 		CF42E5EA125F738600C0A38E /* matrix_pseudoinverse_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CF42E5E9125F738600C0A38E /* matrix_pseudoinverse_test.cpp */; };
 		CF7FA8D5114EB617003076E4 /* tucker3_tensor_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CF7FA8D4114EB617003076E4 /* tucker3_tensor_test.cpp */; };
+		CFA7FE4B14225C03001EE112 /* t3_ihopm_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CFA7FE4A14225C03001EE112 /* t3_ihopm_test.cpp */; };
 		CFD85C551399060300266D85 /* t3_hosvd_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CFD85C541399060300266D85 /* t3_hosvd_test.cpp */; };
 		CFD85C81139909EF00266D85 /* t3_hooi_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CFD85C80139909EF00266D85 /* t3_hooi_test.cpp */; };
 		CFD85C8413990A0E00266D85 /* t3_hopm_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CFD85C8313990A0E00266D85 /* t3_hopm_test.cpp */; };
@@ -130,6 +131,9 @@
 		CF7FA84C114AAC01003076E4 /* tucker3_tensor.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = tucker3_tensor.hpp; path = include/vmmlib/tucker3_tensor.hpp; sourceTree = "<group>"; };
 		CF7FA8D4114EB617003076E4 /* tucker3_tensor_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = tucker3_tensor_test.cpp; path = tests/tucker3_tensor_test.cpp; sourceTree = "<group>"; };
 		CF7FA8D9114EB696003076E4 /* tucker3_tensor_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = tucker3_tensor_test.hpp; path = tests/tucker3_tensor_test.hpp; sourceTree = "<group>"; };
+		CFA7FE00142242BD001EE112 /* t3_ihopm.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = t3_ihopm.hpp; path = include/vmmlib/t3_ihopm.hpp; sourceTree = "<group>"; };
+		CFA7FE4914225C03001EE112 /* t3_ihopm_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = t3_ihopm_test.hpp; path = tests/t3_ihopm_test.hpp; sourceTree = "<group>"; };
+		CFA7FE4A14225C03001EE112 /* t3_ihopm_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = t3_ihopm_test.cpp; path = tests/t3_ihopm_test.cpp; sourceTree = "<group>"; };
 		CFD85BC61398E2A100266D85 /* t3_hosvd.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = t3_hosvd.hpp; path = include/vmmlib/t3_hosvd.hpp; sourceTree = "<group>"; };
 		CFD85BC71398E2BE00266D85 /* t3_hooi.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = t3_hooi.hpp; path = include/vmmlib/t3_hooi.hpp; sourceTree = "<group>"; };
 		CFD85BC81398E2D400266D85 /* t3_hopm.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = t3_hopm.hpp; path = include/vmmlib/t3_hopm.hpp; sourceTree = "<group>"; };
@@ -257,11 +261,12 @@
 			children = (
 				984763FE110DDB3C0024A1F8 /* tensor3.hpp */,
 				CF2DD25B126C8E530036DE05 /* tensor3_iterator.hpp */,
+				CF7FA84C114AAC01003076E4 /* tucker3_tensor.hpp */,
+				CF2DD1EF126C7A4A0036DE05 /* cp3_tensor.hpp */,
 				CFD85BC61398E2A100266D85 /* t3_hosvd.hpp */,
 				CFD85BC71398E2BE00266D85 /* t3_hooi.hpp */,
 				CFD85BC81398E2D400266D85 /* t3_hopm.hpp */,
-				CF7FA84C114AAC01003076E4 /* tucker3_tensor.hpp */,
-				CF2DD1EF126C7A4A0036DE05 /* cp3_tensor.hpp */,
+				CFA7FE00142242BD001EE112 /* t3_ihopm.hpp */,
 			);
 			name = tensor;
 			sourceTree = "<group>";
@@ -379,6 +384,8 @@
 				CFD85C80139909EF00266D85 /* t3_hooi_test.cpp */,
 				CFD85C8213990A0E00266D85 /* t3_hopm_test.hpp */,
 				CFD85C8313990A0E00266D85 /* t3_hopm_test.cpp */,
+				CFA7FE4914225C03001EE112 /* t3_ihopm_test.hpp */,
+				CFA7FE4A14225C03001EE112 /* t3_ihopm_test.cpp */,
 				CFF0C1F91406E55200C3ADDB /* blas_dgemm_test.hpp */,
 				CFF0C1F81406E55200C3ADDB /* blas_dgemm_test.cpp */,
 			);
@@ -543,6 +550,7 @@
 				CFD85C81139909EF00266D85 /* t3_hooi_test.cpp in Sources */,
 				CFD85C8413990A0E00266D85 /* t3_hopm_test.cpp in Sources */,
 				CFF0C1FA1406E55200C3ADDB /* blas_dgemm_test.cpp in Sources */,
+				CFA7FE4B14225C03001EE112 /* t3_ihopm_test.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

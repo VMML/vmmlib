@@ -2,7 +2,6 @@
 #define __VMML__T3_HOPM_TEST__HPP__
 
 #include "unit_test.hpp"
-
 #include <string>
 
 namespace vmml

@@ -1,6 +1,5 @@
 #include "t3_hopm_test.hpp"
 #include "vmmlib/t3_hopm.hpp"
-
 #include <sstream>
 
 namespace vmml

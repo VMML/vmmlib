@@ -3,20 +3,19 @@
  *  
  * @author Susanne Suter
  *
- * the higher-order power method (HOPM) is also known as CP-ALS
+ * the higher-order power method (HOPM) is also known as CP-ALS (ALS: alternating least squares)
  * CP stands for Candecomp/Parafac (1970)
  * references:
- * - Carroll & Chang, 1970: Analysis of Individual Differences in Multidimensional Scaling via an N-way generalization of ``Eckart--Young'' decompositions, Psychometrika
- * - Harshman, 1970: Foundations of the PARAFAC procedure: Models and conditions for an 'explanatory' multi-modal factor analysis,
+ * - Carroll & Chang, 1970: Analysis of Individual Differences in Multidimensional Scaling via an N-way generalization of ``Eckart--Young'' decompositions, Psychometrika.
+ * - Harshman, 1970: Foundations of the PARAFAC procedure: Models and conditions for an 'explanatory' multi-modal factor analysis, UCLA Working Papers in Phonetics.
  * - De Lathauwer, De Moor, Vandewalle, 2000: A multilinear singular value decomposition, SIAM J. Matrix Anal. Appl.
- * - Kolda and Bader, 2009: Tensor Decompositions and Applications, SIAM Review.
+ * - Kolda & Bader, 2009: Tensor Decompositions and Applications, SIAM Review.
  * 
  */
 
 #ifndef __VMML__T3_HOPM__HPP__
 #define __VMML__T3_HOPM__HPP__
 
-#include <vmmlib/tensor3.hpp>
 #include <vmmlib/t3_hosvd.hpp>
 #include <vmmlib/matrix_pseudoinverse.hpp>
 

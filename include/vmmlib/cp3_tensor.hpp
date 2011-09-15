@@ -9,7 +9,7 @@
  * - Carroll & Chang, 1970: Analysis of Individual Differences in Multidimensional Scaling via an N-way generalization of ``Eckart--Young'' decompositions, Psychometrika.
  * - Harshman, 1970: Foundations of the PARAFAC procedure: Models and conditions for an 'explanatory' multi-modal factor analysis,UCLA Working Papers in Phonetics.
  * - De Lathauwer, De Moor, Vandewalle, 2000: A multilinear singular value decomposition, SIAM J. Matrix Anal. Appl.
- * - Kolda and Bader, 2009: Tensor Decompositions and Applications, SIAM Review.
+ * - Kolda & Bader, 2009: Tensor Decompositions and Applications, SIAM Review.
  * 
  */
 

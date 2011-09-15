@@ -9,6 +9,7 @@
 #include "t3_hosvd_test.hpp"
 #include "t3_hooi_test.hpp"
 #include "t3_hopm_test.hpp"
+#include "t3_ihopm_test.hpp"
 #include "tucker3_tensor_test.hpp"
 #include "cp3_tensor_test.hpp"
 #include "matrix_pseudoinverse_test.hpp"
@@ -25,7 +26,6 @@
 #endif
 
 #define VMMLIB_USE_BLAS 1
-
 #ifdef VMMLIB_USE_BLAS
 #include "blas_dgemm_test.hpp"
 #endif
@@ -96,6 +96,9 @@ main( int argc, const char* argv[] )
 
 	vmml::t3_hopm_test t3hopm;
     run_and_log( t3hopm );
+	
+	vmml::t3_ihopm_test t3ihopm;
+    run_and_log( t3ihopm );
 	
     vmml::tucker3_tensor_test tt3t;
     run_and_log( tt3t );

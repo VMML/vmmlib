@@ -113,7 +113,7 @@ namespace vmml
 		inline void
 		dgemm_call( dgemm_params< float >& p )
 		{
-			std::cout << "calling blas sgemm (single precision) " << std::endl;
+			//std::cout << "calling blas sgemm (single precision) " << std::endl;
 			cblas_sgemm( 
 					p.order,
 					p.trans_a,
@@ -138,7 +138,7 @@ namespace vmml
 		inline void
 		dgemm_call( dgemm_params< double >& p )
 		{
-			std::cout << "calling blas dgemm (double precision) " << std::endl;
+			//std::cout << "calling blas dgemm (double precision) " << std::endl;
 			cblas_dgemm( 
 				   p.order,
 				   p.trans_a,
@@ -174,8 +174,8 @@ namespace vmml
 		blas_dgemm();
 		~blas_dgemm() {};
 		
-		//bool compute( const matrix_left_t& A, const matrix_right_t& B, matrix_out_t& C );
-		bool compute( const matrix_left_t& ABT, matrix_out_t& C );
+		bool compute( const matrix_left_t& A, const matrix_right_t& B, matrix_out_t& C );
+		bool compute( const matrix_left_t& AB, matrix_out_t& C );
 				
 		//inline bool test_success( blas::lapack_int info );
 		
@@ -208,7 +208,6 @@ namespace vmml
 	
 	
 		
-#if 0
 	template< size_t M, size_t K, size_t N, typename float_t >
 	bool
 	blas_dgemm< M, K, N, float_t >::compute( const matrix_left_t& A, 
@@ -216,25 +215,31 @@ namespace vmml
 									  matrix_out_t& C )
 	{
 		// lapack destroys the contents of the input matrix
-		matrix_left_t AA( A );
-		matrix_right_t BB( B );
+		matrix_left_t* AA = new matrix_left_t( A );
+		matrix_right_t* BB = new matrix_right_t( B );
 		
-		p.a         = AA.array;
-		p.b         = BB.array;
+		p.a         = AA->array;
+		p.b         = BB->array;
 		p.c         = C.array;
 		
 		blas::dgemm_call< float_t >( p );
 		
+		//std::cout << p << std::endl; //debug
+		
+		delete AA;
+		delete BB;
+		
 		return true;
 				
 	}	
-#endif	
+
+	
 	template< size_t M, size_t K, size_t N, typename float_t >
 	bool
-	blas_dgemm< M, K, N, float_t >::compute( const matrix_left_t& ABT, matrix_out_t& C )
+	blas_dgemm< M, K, N, float_t >::compute( const matrix_left_t& AB, matrix_out_t& C )
 	{
 		// lapack destroys the contents of the input matrix
-		matrix_left_t* AA = new matrix_left_t( ABT );
+		matrix_left_t* AA = new matrix_left_t( AB );
 		
 		p.trans_b   = CblasTrans;
 		p.a         = AA->array;

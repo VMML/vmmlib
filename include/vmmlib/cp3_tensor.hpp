@@ -10,8 +10,6 @@
  * Psychometrika 35: 283–319, 1970
  * - R. A. Harshman: Foundations of the PARAFAC procedure: Models and conditions for an 'explanatory' multi-modal factor analysis,
  * UCLA Working Papers in Phonetics, Vol. 16, No. 1., 1970
- * - De Lathauwer L., De Moor B., Vandewalle J., ``On the Best rank-1 and Rank-$(R_1, R_2, ..., R_N)$ Approximation and Applications of Higher-Order Tensors'', 
- * SIAM J. Matrix Anal. Appl., vol. 21, no. 4, Apr. 2000, pp. 1324-1342.
  * - T. G. Kolda and B. W. Bader. Tensor Decompositions and Applications. 
  * SIAM Review, Volume 51, Number 3, Pages 455-500, September 2009.
  * 

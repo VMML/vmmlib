@@ -3,7 +3,9 @@
  *  
  * @author Susanne Suter
  *
- * The tucker3 tensor class is consists of the same components (core tensor, basis matrices u1-u3) as the tucker3 model described in:
+ * The higher-order orthogonal iteration (HOOI) is also known as Tucker-ALS (Tuck-ALS)
+ * The t3_hooi implements a HOOI for a third-order tensor
+ * references:
  * - Tucker,  “Some mathematical notes on three-mode factor analysis”, Psychometrika, vol. 31, no. 3, pp. 279–311., 1966 Sep.
  * - De Lathauwer L., De Moor B., Vandewalle J., ``A multilinear singular value decomposition'', 
  * SIAM J. Matrix Anal. Appl., vol. 21, no. 4, Apr. 2000, pp. 1253-1278.

@@ -3,13 +3,15 @@
  *  
  * @author Susanne Suter
  *
- * The tucker3 tensor class is consists of the same components (core tensor, basis matrices u1-u3) as the tucker3 model described in:
- * - Tucker,  “Some mathematical notes on three-mode factor analysis”, Psychometrika, vol. 31, no. 3, pp. 279–311., 1966 Sep.
+ * the higher-order power method (HOPM) is also known as CP-ALS
+ * CP stands for Candecomp/Parafac (1970)
+ * references:
+ * - Carroll, J. and Chang, Jih-Jie: Analysis of Individual Differences in Multidimensional Scaling via an N-way generalization of ``Eckart--Young'' decompositions,
+ * Psychometrika 35: 283–319, 1970
+ * - R. A. Harshman: Foundations of the PARAFAC procedure: Models and conditions for an 'explanatory' multi-modal factor analysis,
  * - De Lathauwer L., De Moor B., Vandewalle J., ``A multilinear singular value decomposition'', 
  * SIAM J. Matrix Anal. Appl., vol. 21, no. 4, Apr. 2000, pp. 1253-1278.
- * - De Lathauwer L., De Moor B., Vandewalle J., ``On the Best rank-1 and Rank-$(R_1, R_2, ..., R_N)$ Approximation and Applications of Higher-Order Tensors'', 
- * SIAM J. Matrix Anal. Appl., vol. 21, no. 4, Apr. 2000, pp. 1324-1342.
- * - T. G. Kolda and B. W. Bader. Tensor Decompositions and Applications. 
+ * - T. G. Kolda and B. W. Bader. Tensor Decompositions and Applications, 
  * SIAM Review, Volume 51, Number 3, Pages 455-500, September 2009.
  * 
  */

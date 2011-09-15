@@ -64,8 +64,8 @@ namespace vmml
 			CBLAS_TRANSPOSE trans_a;
 			CBLAS_TRANSPOSE trans_b;
 			blas_int 		m;
-			blas_int		k;
 			blas_int		n;
+			blas_int		k;
 			float_t			alpha;
 			float_t*        a;
 			blas_int        lda; //leading dimension of input array matrix left
@@ -83,8 +83,8 @@ namespace vmml
 				<< " (2)\ttrans_a "    << p.trans_a << std::endl
 				<< " (3)\ttrans_b "     << p.trans_b << std::endl
 				<< " (4)\tm "        << p.m << std::endl
-				<< " (5)\tk "        << p.k << std::endl
 				<< " (6)\tn "      << p.n << std::endl
+				<< " (5)\tk "        << p.k << std::endl
 				<< " (7)\talpha "       << p.alpha << std::endl 
 				<< " (8)\ta "       << p.a << std::endl
 				<< " (9)\tlda "       << p.lda << std::endl
@@ -113,14 +113,14 @@ namespace vmml
 		inline void
 		dgemm_call( dgemm_params< float >& p )
 		{
-			//std::cout << "calling blas sgemm (single precision) " << std::endl;
+			std::cout << "calling blas sgemm (single precision) " << std::endl;
 			cblas_sgemm( 
 					p.order,
 					p.trans_a,
 					p.trans_b,
 					p.m,
-					p.k,
 					p.n,
+					p.k,
 					p.alpha,
 					p.a,
 					p.lda,
@@ -138,14 +138,14 @@ namespace vmml
 		inline void
 		dgemm_call( dgemm_params< double >& p )
 		{
-			//std::cout << "calling blas dgemm (double precision) " << std::endl;
+			std::cout << "calling blas dgemm (double precision) " << std::endl;
 			cblas_dgemm( 
 				   p.order,
 				   p.trans_a,
 				   p.trans_b,
 				   p.m,
-				   p.k,
 				   p.n,
+				   p.k,
 				   p.alpha,
 				   p.a,
 				   p.lda,
@@ -194,16 +194,16 @@ namespace vmml
 		p.trans_a    = CblasNoTrans;
 		p.trans_b    = CblasNoTrans;
 		p.m          = M;
-		p.k          = K;
 		p.n          = N;
+		p.k          = K;
 		p.alpha      = 1;
 		p.a          = 0;
-		p.lda        = K;
+		p.lda        = M;
 		p.b          = 0;
-		p.ldb        = N;
+		p.ldb        = K; //no transpose
 		p.beta       = 1;
 		p.c          = 0;
-		p.ldc        = N;
+		p.ldc        = M;
 	}
 	
 	
@@ -235,25 +235,18 @@ namespace vmml
 	{
 		// lapack destroys the contents of the input matrix
 		matrix_left_t* AA = new matrix_left_t( ABT );
-		matrix_right_t* BB = new matrix_right_t;
-		AA->transpose_to( *BB );
 		
-		//std::cout << "input matrix a:\n" << *AA << std::endl;
-		//std::cout << "input matrix b:\n" << *BB << std::endl;
-		
-		//p.trans_b    = CblasTrans;
+		p.trans_b   = CblasTrans;
 		p.a         = AA->array;
-		p.b         = BB->array;
+		p.b         = AA->array;
+		p.ldb       = N; 
 		p.c         = C.array;
 		
 		blas::dgemm_call< float_t >( p );
 		
-		//std::cout << *p.c << std::endl;
-		//std::cout << "output matrix c:\n" << C << std::endl;
-		
+		//std::cout << p << std::endl; //debug
 
 		delete AA;
-		delete BB;
 		
 		return true;
 	}	

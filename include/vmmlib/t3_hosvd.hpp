@@ -4,11 +4,9 @@
  * @author Susanne Suter
  *
  * The tucker3 tensor class is consists of the same components (core tensor, basis matrices u1-u3) as the tucker3 model described in:
- * - Tucker,  “Some mathematical notes on three-mode factor analysis”, Psychometrika, vol. 31, no. 3, pp. 279–311., 1966 Sep.
- * - De Lathauwer L., De Moor B., Vandewalle J., ``A multilinear singular value decomposition'', 
- * SIAM J. Matrix Anal. Appl., vol. 21, no. 4, Apr. 2000, pp. 1253-1278.
- * - T. G. Kolda and B. W. Bader. Tensor Decompositions and Applications. 
- * SIAM Review, Volume 51, Number 3, Pages 455-500, September 2009.
+ * - Tucker, 1966: Some mathematical notes on three-mode factor analysis, Psychometrika.
+ * - De Lathauwer, De Moor, Vandewalle, 2000a: A multilinear singular value decomposition, SIAM J. Matrix Anal. Appl.
+ * - Kolda & Bader, 2009: Tensor Decompositions and Applications, SIAM Review.
  * 
  */
 

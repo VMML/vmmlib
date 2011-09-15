@@ -6,13 +6,10 @@
  * The higher-order orthogonal iteration (HOOI) is also known as Tucker-ALS (Tuck-ALS)
  * The t3_hooi implements a HOOI for a third-order tensor
  * references:
- * - Tucker,  “Some mathematical notes on three-mode factor analysis”, Psychometrika, vol. 31, no. 3, pp. 279–311., 1966 Sep.
- * - De Lathauwer L., De Moor B., Vandewalle J., ``A multilinear singular value decomposition'', 
- * SIAM J. Matrix Anal. Appl., vol. 21, no. 4, Apr. 2000, pp. 1253-1278.
- * - De Lathauwer L., De Moor B., Vandewalle J., ``On the Best rank-1 and Rank-$(R_1, R_2, ..., R_N)$ Approximation and Applications of Higher-Order Tensors'', 
- * SIAM J. Matrix Anal. Appl., vol. 21, no. 4, Apr. 2000, pp. 1324-1342.
- * - T. G. Kolda and B. W. Bader. Tensor Decompositions and Applications. 
- * SIAM Review, Volume 51, Number 3, Pages 455-500, September 2009.
+ * - Tucker, 1966: Some mathematical notes on three-mode factor analysis, Psychometrika.
+ * - De Lathauwer, De Moor, Vandewalle, 2000a: A multilinear singular value decomposition, SIAM J. Matrix Anal. Appl.
+ * - De Lathauwer, De Moor, Vandewalle, 2000b: On the Best rank-1 and Rank-(R_1, R_2, ..., R_N) Approximation and Applications of Higher-Order Tensors, SIAM J. Matrix Anal. Appl.
+ * - Kolda & Bader, 2009: Tensor Decompositions and Applications, SIAM Review.
  * 
  */
 

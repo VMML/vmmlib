@@ -6,12 +6,10 @@
  *
  * The cp3 tensor class is consists of three basis matrices u1-u3 and R lambda values for a given rank-R approximation
  * CP stands for Candecomp/Parafac (1970)
- * - Carroll, J. and Chang, Jih-Jie: Analysis of Individual Differences in Multidimensional Scaling via an N-way generalization of ``Eckart--Young'' decompositions,
- * Psychometrika 35: 283–319, 1970
- * - R. A. Harshman: Foundations of the PARAFAC procedure: Models and conditions for an 'explanatory' multi-modal factor analysis,
- * UCLA Working Papers in Phonetics, Vol. 16, No. 1., 1970
- * - T. G. Kolda and B. W. Bader. Tensor Decompositions and Applications. 
- * SIAM Review, Volume 51, Number 3, Pages 455-500, September 2009.
+ * - Carroll & Chang, 1970: Analysis of Individual Differences in Multidimensional Scaling via an N-way generalization of ``Eckart--Young'' decompositions, Psychometrika.
+ * - Harshman, 1970: Foundations of the PARAFAC procedure: Models and conditions for an 'explanatory' multi-modal factor analysis,UCLA Working Papers in Phonetics.
+ * - De Lathauwer, De Moor, Vandewalle, 2000: A multilinear singular value decomposition, SIAM J. Matrix Anal. Appl.
+ * - Kolda and Bader, 2009: Tensor Decompositions and Applications, SIAM Review.
  * 
  */
 

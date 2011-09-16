@@ -70,9 +70,9 @@ VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::als( const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, lambda_type& lambdas_, const size_t max_iterations_ )
 {
-	t3_type approximated_data;
-	t3_type residual_data;
-	residual_data.zero();
+	t3_type* approximated_data = new t3_type;
+	t3_type* residual_data = new t3_type;
+	residual_data->zero();
 	
 	double approx_norm = 0;
 	double max_f_norm = data_.frobenius_norm();
@@ -103,10 +103,10 @@ VMML_TEMPLATE_CLASSNAME::als( const t3_type& data_, u1_type& u1_, u2_type& u2_, 
 		optimize_mode3( data_, u1_, u2_, u3_, lambdas_ );
 		
 		//Reconstruct cptensor and measure norm of approximation
-		reconstruct( approximated_data, u1_, u2_, u3_, lambdas_ );
-		approx_norm = approximated_data.frobenius_norm();
-		residual_data = data_ - approximated_data;
-		normresidual = residual_data.frobenius_norm();
+		reconstruct( *approximated_data, u1_, u2_, u3_, lambdas_ );
+		approx_norm = approximated_data->frobenius_norm();
+		*residual_data = data_ - *approximated_data;
+		normresidual = residual_data->frobenius_norm();
 		fit = 1 - ( normresidual / max_f_norm ); 
 		fitchange = fabs(fitold - fit);
 		
@@ -117,7 +117,9 @@ VMML_TEMPLATE_CLASSNAME::als( const t3_type& data_, u1_type& u1_, u2_type& u2_, 
 #endif
 		++i;
 	} // end ALS
-	
+
+	delete residual_data;
+	delete approximated_data;
 }
 
 VMML_TEMPLATE_STRING

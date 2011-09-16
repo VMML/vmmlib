@@ -57,9 +57,9 @@ namespace vmml
 		t3_hopm< 4, 4, 4, 4, double >::als( t3_cp_input, u1, u2, u3, lambda, 100 );
 				
 		ok = u1.equals( u1_check, precision );
-		ok = u2.equals( u2_check, precision );
-		ok = u3.equals( u3_check, precision );
-		ok = lambda.equals( lambda_check, precision );
+		ok = u2.equals( u2_check, precision ) && ok;
+		ok = u3.equals( u3_check, precision ) && ok;
+		ok = lambda.equals( lambda_check, precision ) && ok;
 		
 		if( ok)
 		{	
@@ -114,9 +114,9 @@ namespace vmml
 		
 		precision = 0.0001;
 		ok = u1_2.equals( u1_check2, precision );
-		ok = u2_2.equals( u2_check2, precision );
-		ok = u3_2.equals( u3_check2, precision );
-		ok = lambda_2.equals( lambda_check2, precision );
+		ok = u2_2.equals( u2_check2, precision ) && ok;
+		ok = u3_2.equals( u3_check2, precision ) && ok;
+		ok = lambda_2.equals( lambda_check2, precision ) && ok;
 		
 		if( ok)
 		{	
@@ -177,9 +177,9 @@ namespace vmml
 		t3_hopm< 6, 4, 4, 4, double >::als( t3_cp_input, u1_3, u2_3, u3_3, lambda_3, 50 );
 		
 		ok = u1_3.equals( u1_check3, precision );
-		ok = u2_3.equals( u2_check3, precision );
-		ok = u3_3.equals( u3_check3, precision );
-		ok = lambda_3.equals( lambda_check3, precision );
+		ok = u2_3.equals( u2_check3, precision ) && ok;
+		ok = u3_3.equals( u3_check3, precision ) && ok;
+		ok = lambda_3.equals( lambda_check3, precision ) && ok;
 		if( ok)
 		{	
 			log( "HOPM: rank-R approximation (R > I) (ALS)", ok  );

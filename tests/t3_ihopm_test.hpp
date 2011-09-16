@@ -10,7 +10,7 @@ namespace vmml
 	class t3_ihopm_test : public unit_test
 	{
 	public:
-		t3_ihopm_test() : unit_test( "tensor3 incremental rank-r CP-ALS (or HOPM)" ) {}
+		t3_ihopm_test() : unit_test( "tensor3 incremental rank-r CP-ALS (or iHOPM)" ) {}
 		bool run();
 		
 	protected:

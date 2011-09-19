@@ -19,6 +19,12 @@
 #include <vmmlib/t3_hosvd.hpp>
 #include <vmmlib/matrix_pseudoinverse.hpp>
 
+enum init_type {
+	init_hosvd_e,
+	init_rand_e,
+	init_dct_e
+}; 
+
 namespace vmml
 {
 	
@@ -26,7 +32,6 @@ namespace vmml
 	class t3_hopm
 	{
 	public:    
-		
 		typedef tensor3< I1, I2, I3, T > t3_type;
 		
 		typedef vector< R, T > lambda_type;
@@ -50,8 +55,21 @@ namespace vmml
 		//higher-order power method (lathauwer et al., 2000b)
 		static void als( const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, lambda_type& lambdas_, const size_t max_iterations_ = 100 );
 		static void reconstruct( t3_type& data_, const u1_type& u1_, const u2_type& u2_, const u3_type& u3_, const lambda_type& lambdas_ );
+
+		// only the factor matrices u2, u3 are initialized since we get u1 from the first optimization iteration
+		static void init( const t3_type& data_, u2_type& u2_, u3_type& u3_, init_type init_type_ );
+		static void init_hosvd( const t3_type& data_, u2_type& u2_, u3_type& u3_ );
+		static void init_random( const t3_type& data_, u2_type& u2_, u3_type& u3_ );
+		static void init_dct( const t3_type& data_, u2_type& u2_, u3_type& u3_ );
+
 		
 	protected:
+				
+		template< size_t M, size_t N >
+        static void fill_random_2d( int seed, matrix< M, N, T >& u );
+		
+		template< size_t M, size_t N >
+        static void fill_dct_matrix( matrix< M, N, T >& u );
 		
 		static void optimize_mode1( const t3_type& data_, u1_type& u1, const u2_type& u2_, const u3_type& u3_, lambda_type& lambdas_ );
 		static void optimize_mode2( const t3_type& data_, const u1_type& u1_, u2_type& u2_, const u3_type& u3_, lambda_type& lambdas_ );		
@@ -66,6 +84,94 @@ namespace vmml
 #define VMML_TEMPLATE_CLASSNAME     t3_hopm< R, I1, I2, I3, T >
 
 
+VMML_TEMPLATE_STRING
+void 
+VMML_TEMPLATE_CLASSNAME::init( const t3_type& data_, u2_type& u2_, u3_type& u3_, init_type init_type_  )
+{	
+	switch ( init_type_ )
+	{
+		case 0:
+			init_hosvd( data_, u2_, u3_ );
+            break;
+		case 1:
+			init_random( data_, u2_, u3_ );
+            break;
+		case 2:
+			init_dct( data_, u2_, u3_ );
+           break;
+		default:
+			init_hosvd( data_, u2_, u3_ );
+	}
+}	
+	
+
+
+VMML_TEMPLATE_STRING
+template< size_t M, size_t N >
+void 
+VMML_TEMPLATE_CLASSNAME::fill_dct_matrix( matrix< M, N, T >& u )
+{
+	double weight = 0.0f;
+	double	fill_value = 0.0f;
+	for( size_t row = 0; row < M; ++row )
+	{
+		//todo: weight = (row > 1) ? (1/M) : (2/M);
+		weight = 1 / static_cast< double >(M);
+		for( size_t col = 0; col < N; ++col )
+		{
+			fill_value = (2 * col + 1) * row * (M_PI / (2*M));
+			fill_value = cos( fill_value );
+			fill_value *= weight * fill_value;
+			u.at( row, col ) = static_cast< T >( fill_value )  ;
+		}
+	}
+}		
+	
+VMML_TEMPLATE_STRING
+void 
+VMML_TEMPLATE_CLASSNAME::init_dct( const t3_type& data_, u2_type& u2_, u3_type& u3_ )
+{	
+	fill_dct_matrix( u2_ );
+	fill_dct_matrix( u3_ );
+}		
+
+VMML_TEMPLATE_STRING
+void 
+VMML_TEMPLATE_CLASSNAME::init_hosvd( const t3_type& data_, u2_type& u2_, u3_type& u3_ )
+{	
+	t3_hosvd< R, R, R, I1, I2, I3, T >::apply_mode2( data_, u2_ );
+	t3_hosvd< R, R, R, I1, I2, I3, T >::apply_mode3( data_, u3_ );
+}	
+
+VMML_TEMPLATE_STRING
+void 
+VMML_TEMPLATE_CLASSNAME::init_random( const t3_type& data_, u2_type& u2_, u3_type& u3_ )
+{	
+	int seed = time(NULL);
+	fill_random_2d(seed, u2_ );
+	fill_random_2d(rand(), u3_ );
+}	
+	
+VMML_TEMPLATE_STRING
+template< size_t M, size_t N >
+void 
+VMML_TEMPLATE_CLASSNAME::fill_random_2d( int seed, matrix< M, N, T >& u)
+{
+	double fillValue = 0.0f;
+	srand(seed);
+	for( size_t row = 0; row < M; ++row )
+	{
+		for( size_t col = 0; col < N; ++col )
+		{
+			fillValue = rand();
+			fillValue /= RAND_MAX;
+			u.at( row, col ) = -1.0 + 2.0 * static_cast< double >( fillValue )  ;
+		}
+	}
+}	
+	
+	
+	
 VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::als( const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, lambda_type& lambdas_, const size_t max_iterations_ )
@@ -85,10 +191,10 @@ VMML_TEMPLATE_CLASSNAME::als( const t3_type& data_, u1_type& u1_, u2_type& u2_, 
 	double fitchange_tolerance = 1.0e-4;
 	
 	//intialize u1-u3
-	//hosvd_mode1( data_, _u1 ); inital guess not needed for u1 since it will be computed in the first optimization step
-	t3_hosvd< R, R, R, I1, I2, I3, T >::apply_mode2( data_, u2_ );
-	t3_hosvd< R, R, R, I1, I2, I3, T >::apply_mode3( data_, u3_ );
-	
+	//inital guess not needed for u1 since it will be computed in the first optimization step
+	init( data_, u2_, u3_, init_hosvd_e );
+
+//#define	 CP_LOG 1
 #if CP_LOG
 	std::cout << "CP ALS: HOPM (for tensor3) " << std::endl;
 #endif	

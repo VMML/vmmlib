@@ -54,7 +54,7 @@ namespace vmml
 		cp1_u_type u1;
 		cp1_u_type u2;
 		cp1_u_type u3;
-		t3_hopm< 4, 4, 4, 4, double >::als( t3_cp_input, u1, u2, u3, lambda, 100 );
+		t3_hopm< 4, 4, 4, 4, double >::als( t3_cp_input, u1, u2, u3, lambda, init_hosvd_e, 100 );
 				
 		ok = u1.equals( u1_check, precision );
 		ok = u2.equals( u2_check, precision ) && ok;
@@ -110,7 +110,7 @@ namespace vmml
 		cp2_u_type u2_2;
 		cp2_u_type u3_2;
 		
-		t3_hopm< 2, 4, 4, 4, double >::als( t3_cp_input, u1_2, u2_2, u3_2, lambda_2, 50 );
+		t3_hopm< 2, 4, 4, 4, double >::als( t3_cp_input, u1_2, u2_2, u3_2, lambda_2, init_hosvd_e, 50 );
 		
 		precision = 0.0001;
 		ok = u1_2.equals( u1_check2, precision );
@@ -174,7 +174,7 @@ namespace vmml
 		cp3_u_type u2_3;
 		cp3_u_type u3_3;
 		
-		t3_hopm< 6, 4, 4, 4, double >::als( t3_cp_input, u1_3, u2_3, u3_3, lambda_3, 50 );
+		t3_hopm< 6, 4, 4, 4, double >::als( t3_cp_input, u1_3, u2_3, u3_3, lambda_3, init_hosvd_e, 50 );
 		
 		ok = u1_3.equals( u1_check3, precision );
 		ok = u2_3.equals( u2_check3, precision ) && ok;

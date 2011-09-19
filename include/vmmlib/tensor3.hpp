@@ -14,6 +14,7 @@
 #include <fstream>   // file I/O
 #include <vmmlib/tensor3_iterator.hpp>
 #include <vmmlib/enable_if.hpp>
+#include <vmmlib/blas_dgemm.hpp>
 
 namespace vmml
 {
@@ -1242,15 +1243,19 @@ template< size_t J1, size_t J2, size_t J3 >
 void
 VMML_TEMPLATE_CLASSNAME::multiply_horizontal_bwd( const tensor3< J1, J2, J3, T >& other, const matrix< I3, J3, T >& other_slice_ )
 {
-	matrix< J3, J2, T>* slice = new matrix< J3, J2, T>();
-	matrix< I3, J2, T>* slice_new = new matrix< I3, J2, T>();
-	for (size_t i1 = 0; i1 < J1; ++i1)
+	matrix< J3, J2, T >* slice = new matrix< J3, J2, T >;
+	matrix< I3, J2, T >* slice_new = new matrix< I3, J2, T >;
+	blas_dgemm< I3, J3, J2, T >* blas_dgemm1 = new blas_dgemm< I3, J3, J2, T >;
+	for ( size_t i1 = 0; i1 < J1; ++i1 )
 	{
 		other.get_horizontal_slice_bwd( i1, *slice );
+		//todo: blas_dgemm not implemented for uint types
+		//blas_dgemm1->compute( other_slice_, *slice, *slice_new );
 		slice_new->multiply( other_slice_, *slice );
 		set_horizontal_slice_bwd( i1, *slice_new );		
 	}
 	
+	delete blas_dgemm1;	
 	delete slice;
 	delete slice_new;
 }

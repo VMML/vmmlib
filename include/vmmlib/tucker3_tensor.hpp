@@ -607,7 +607,7 @@ VMML_TEMPLATE_CLASSNAME::tucker_als( const t3_type& data_ )
 	t3_comp_type data;
 	data.cast_from( data_ );
 
-	t3_hooi< R1, R2, R3, I1, I2, I3, T_internal >::als( data, *_u1_comp, *_u2_comp, *_u3_comp, _core_comp ); 
+	t3_hooi< R1, R2, R3, I1, I2, I3, T_internal >::als( data, *_u1_comp, *_u2_comp, *_u3_comp, _core_comp, init_hosvd_e ); 
 
 	cast_members();
 }

@@ -107,7 +107,7 @@ VMML_TEMPLATE_CLASSNAME::incremental_als( const t3_type& data_, u1_type& u1_, u2
 		
 		res = res - tensor(P);*/
 		
-		t3_hopm< R, I1, I2, I3, T_coeff >::als( *residual_data, *u1_tmp, *u2_tmp, *u3_tmp, *lambdas_tmp );
+		t3_hopm< R, I1, I2, I3, T_coeff >::als( *residual_data, *u1_tmp, *u2_tmp, *u3_tmp, *lambdas_tmp, init_hosvd_e );
 		
 		//set lambdas und us to appropriate position
 		size_t r_incr = 0;

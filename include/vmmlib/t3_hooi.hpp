@@ -20,6 +20,13 @@
 #include <vmmlib/t3_hosvd.hpp>
 //#include <vmmlib/matrix_pseudoinverse.hpp>
 
+enum init_mode {
+	init_hosvd_e,
+	init_rand_e,
+	init_dct_e
+}; 
+
+
 namespace vmml
 {
 	
@@ -47,10 +54,10 @@ namespace vmml
 		 (b) by performing a 2D SVD on the matricization of every mode. Matrix matricization means that a tensor I1xI2xI3 is unfolded/sliced into one matrix
 		 with the dimensions I1xI2I3, which corresponds to a matrizitation alonge mode I1.
 		 */
-		static void als(  const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, t3_core_type& core_ );
+		static void als( const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, t3_core_type& core_, init_mode init_mode_ );
 
 		
- 		static void init( const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_ );
+ 		static void init( const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, init_mode init_mode_ );
 		static void init_random( const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_ );
 
 		/* derive core
@@ -80,13 +87,19 @@ namespace vmml
 	
 VMML_HOOI_TEMPLATE_STRING
 void 
-VMML_HOOI_TEMPLATE_CLASSNAME::init( const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_ )
+VMML_HOOI_TEMPLATE_CLASSNAME::init( const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, init_mode init_mode_ )
 {	
-#if RAND_INIT
-	init_random( data_, u1_, u2_, u3_ );
-#else
-	t3_hosvd< R1, R2, R3, I1, I2, I3, T >::apply_all( data_, u1_, u2_, u3_ );
-#endif
+	switch ( init_mode_ )
+	{
+		case 0:
+			t3_hosvd< R1, R2, R3, I1, I2, I3, T >::apply_all( data_, u1_, u2_, u3_ );
+            break;
+		case 1:
+			init_random( data_, u1_, u2_, u3_ );
+            break;
+		default:
+			t3_hosvd< R1, R2, R3, I1, I2, I3, T >::apply_all( data_, u1_, u2_, u3_ );
+	}
 }	
 	
 
@@ -123,10 +136,13 @@ VMML_HOOI_TEMPLATE_CLASSNAME::fill_random_2d( int seed, matrix< M, N, T >& u)
 	
 VMML_HOOI_TEMPLATE_STRING
 void 
-VMML_HOOI_TEMPLATE_CLASSNAME::als( const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, t3_core_type& core_ )
+VMML_HOOI_TEMPLATE_CLASSNAME::als( const t3_type& data_, 
+								  u1_type& u1_, u2_type& u2_, u3_type& u3_, 
+								  t3_core_type& core_,
+								  init_mode init_mode_ )
 {
 	//intialize basis matrices
-	init( data_, u1_, u2_, u3_ );
+	init( data_, u1_, u2_, u3_, init_mode_ );
 	
 	//derve core from initialized matrices
 	derive_core_orthogonal_bases( data_, u1_, u2_, u3_, core_ );

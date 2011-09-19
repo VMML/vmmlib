@@ -25,19 +25,48 @@ namespace vmml
 		
 		ok = C == C_check;
 		
-		log( "symmetric matrix matrix multiplication (MxK) x (KxN) = (MxN), while M=N", ok );
+		log( "symmetric matrix-matrix multiplication (input left matrix) (MxK) x (KxN) = (MxN), while M=N", ok );
 		if ( ! ok )
 		{
 			std::stringstream ss;
 			ss
-            << "input matrix\n" << A << "\n"
+            << "input matrix (left matrix)\n" << A << "\n"
             << "covariance matrix should be\n" << C_check << "\n"
-            << "covariance matrixis\n" << C << "\n"
+            << "covariance matrix is\n" << C << "\n"
             << std::endl;
 			log_error( ss.str() );
             
 		}
 		
+		//A*B = D (MxK, KxN, MxN) (input right matrix)
+		matrix< 6, 3, double > E;
+		matrix< 3, 3, double > F;
+		matrix< 3, 3, double > F_check;
+		
+		double EData[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 };
+		E = EData;
+		
+		blas_dgemm< 3, 6, 3, double > blas_cov3;
+		blas_cov3.compute_t( E, F );
+		
+		double FData[] = { 591, 642, 693, 642, 699, 756, 693, 756, 819 };
+		F_check = FData;
+		
+		ok = F == F_check;
+		
+		log( "symmetric matrix-matrix multiplication (input right matrix) (MxK) x (KxN) = (MxN), while M=N", ok );
+		if ( ! ok )
+		{
+			std::stringstream ss;
+			ss
+            << "input matrix (right matrix) \n" << E << "\n"
+            << "covariance matrix should be\n" << F_check << "\n"
+            << "covariance matrix is\n" << F << "\n"
+            << std::endl;
+			log_error( ss.str() );
+            
+		}
+
 		//A*B = D (MxK, KxN, MxN)
 		matrix< 6, 2, double > B;
 		matrix< 3, 2, double > D;
@@ -54,7 +83,7 @@ namespace vmml
 		
 		ok = D == D_check;
 		
-		log( "matrix matrix multiplication (MxK) x (KxN) = (MxN)", ok );
+		log( "matrix-matrix multiplication (MxK) x (KxN) = (MxN)", ok );
 		if ( ! ok )
 		{
 			std::stringstream ss;
@@ -68,10 +97,37 @@ namespace vmml
             
 		}
 		
+		//A*B = D (MxK, KxN, MxN) (input B is given as transpose)
+		matrix< 2, 6, double > B_t;
+		matrix< 3, 2, double > G;
+		matrix< 3, 2, double > G_check;
 		
+		double BtData[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
+		B_t = BtData;
+		
+		blas_dgemm< 3, 6, 2, double > blas_dgemm5;
+		blas_dgemm5.compute_bt( A, B_t, G );
+		
+		double GData[] = { 91, 217, 217, 559, 343, 901 };
+		G_check = GData;
+		
+		ok = G == G_check;
+		
+		log( "matrix-matrix multiplication (input B is transpose) (MxK) x (NxK) = (MxN)", ok );
+		if ( ! ok )
+		{
+			std::stringstream ss;
+			ss
+            << "input matrix A\n" << A << "\n"
+            << "input matrix B_t\n" << B_t << "\n"
+            << "matrix C should be\n" << G_check << "\n"
+            << "matrix C is\n" << G << "\n"
+            << std::endl;
+			log_error( ss.str() );
+            
+		}
 		
 		return ok;
-		return true;
 	}
 	
 	

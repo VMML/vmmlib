@@ -167,6 +167,7 @@ namespace vmml
 		
 		typedef matrix< M, K, float_t > matrix_left_t;
 		typedef matrix< K, N, float_t > matrix_right_t;
+		typedef matrix< N, K, float_t > matrix_right_t_t;
 		typedef matrix< M, N, float_t > matrix_out_t;
 		//typedef typename evalues_type::const_iterator evalue_const_iterator;
 		
@@ -174,8 +175,10 @@ namespace vmml
 		blas_dgemm();
 		~blas_dgemm() {};
 		
-		bool compute( const matrix_left_t& A, const matrix_right_t& B, matrix_out_t& C );
-		bool compute( const matrix_left_t& AB, matrix_out_t& C );
+		bool compute( const matrix_left_t& A_, const matrix_right_t& B_, matrix_out_t& C_ );
+		bool compute( const matrix_left_t& A_, matrix_out_t& C_ );
+		bool compute_t( const matrix_right_t& At_, matrix_out_t& C_ );
+		bool compute_bt( const matrix_left_t& A_, const matrix_right_t_t& Bt_, matrix_out_t& C_ );
 				
 		//inline bool test_success( blas::lapack_int info );
 		
@@ -210,17 +213,20 @@ namespace vmml
 		
 	template< size_t M, size_t K, size_t N, typename float_t >
 	bool
-	blas_dgemm< M, K, N, float_t >::compute( const matrix_left_t& A, 
-									  const matrix_right_t& B,
-									  matrix_out_t& C )
+	blas_dgemm< M, K, N, float_t >::compute( 
+												const matrix_left_t& A_, 
+												const matrix_right_t& B_,
+												matrix_out_t& C_ 
+											)
 	{
 		// lapack destroys the contents of the input matrix
-		matrix_left_t* AA = new matrix_left_t( A );
-		matrix_right_t* BB = new matrix_right_t( B );
+		matrix_left_t* AA = new matrix_left_t( A_ );
+		matrix_right_t* BB = new matrix_right_t( B_ );
+		C_.zero();
 		
 		p.a         = AA->array;
 		p.b         = BB->array;
-		p.c         = C.array;
+		p.c         = C_.array;
 		
 		blas::dgemm_call< float_t >( p );
 		
@@ -230,22 +236,22 @@ namespace vmml
 		delete BB;
 		
 		return true;
-				
 	}	
 
 	
 	template< size_t M, size_t K, size_t N, typename float_t >
 	bool
-	blas_dgemm< M, K, N, float_t >::compute( const matrix_left_t& AB, matrix_out_t& C )
+	blas_dgemm< M, K, N, float_t >::compute( const matrix_left_t& A_, matrix_out_t& C_ )
 	{
 		// lapack destroys the contents of the input matrix
-		matrix_left_t* AA = new matrix_left_t( AB );
+		matrix_left_t* AA = new matrix_left_t( A_ );
+		C_.zero();
 		
 		p.trans_b   = CblasTrans;
 		p.a         = AA->array;
 		p.b         = AA->array;
 		p.ldb       = N; 
-		p.c         = C.array;
+		p.c         = C_.array;
 		
 		blas::dgemm_call< float_t >( p );
 		
@@ -256,8 +262,56 @@ namespace vmml
 		return true;
 	}	
 	
+	template< size_t M, size_t K, size_t N, typename float_t >
+	bool
+	blas_dgemm< M, K, N, float_t >::compute_t( const matrix_right_t& At_, matrix_out_t& C_ )
+	{
+		// lapack destroys the contents of the input matrix
+		matrix_right_t* AA = new matrix_right_t( At_ );
+		C_.zero();
+		
+		p.trans_a   = CblasTrans;
+		p.a         = AA->array;
+		p.b         = AA->array;
+		p.lda       = K; 
+		p.c         = C_.array;
+		
+		blas::dgemm_call< float_t >( p );
+		
+		//std::cout << p << std::endl; //debug
+		
+		delete AA;
+		
+		return true;
+	}	
 	
-	
+	template< size_t M, size_t K, size_t N, typename float_t >
+	bool
+	blas_dgemm< M, K, N, float_t >::compute_bt( 
+											const matrix_left_t& A_, 
+											const matrix_right_t_t& Bt_,
+											matrix_out_t& C_ )
+	{
+		// lapack destroys the contents of the input matrix
+		matrix_left_t* AA = new matrix_left_t( A_ );
+		matrix_right_t_t* BB = new matrix_right_t_t( Bt_ );
+		C_.zero();
+		
+		p.trans_b   = CblasTrans;
+		p.a         = AA->array;
+		p.b         = BB->array;
+		p.c         = C_.array;
+		p.ldb       = N; 
+		
+		blas::dgemm_call< float_t >( p );
+		
+		//std::cout << p << std::endl; //debug
+		
+		delete AA;
+		delete BB;
+		
+		return true;
+	}		
 	
 } // namespace vmml
 

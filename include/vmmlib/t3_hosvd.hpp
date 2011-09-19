@@ -201,14 +201,9 @@ VMML_HOSVD_TEMPLATE_CLASSNAME::eigs_mode1( const t3_type& data_, u1_type& u1_ )
 	
 	//covariance matrix of unfolded data
 	u1_cov_type* cov  = new u1_cov_type;
-
-#if 1
-	m_lateral->symmetric_covariance( *cov );
-#else
 	blas_dgemm< I1, I2*I3, I1, T>* blas_cov = new blas_dgemm< I1, I2*I3, I1, T>;
 	blas_cov->compute( *m_lateral, *cov );
 	delete blas_cov;
-#endif
 	delete m_lateral;
 
 	//compute x largest magnitude eigenvalues; x = R
@@ -227,15 +222,9 @@ VMML_HOSVD_TEMPLATE_CLASSNAME::eigs_mode2( const t3_type& data_, u2_type& u2_ )
 	
 	//covariance matrix of unfolded data
 	u2_cov_type* cov  = new u2_cov_type;
-
-#if 1
-	m_frontal->symmetric_covariance( *cov );
-#else
 	blas_dgemm< I2, I1*I3, I2, T>* blas_cov = new blas_dgemm< I2, I1*I3, I2, T>;
 	blas_cov->compute( *m_frontal, *cov );
 	delete blas_cov;
-#endif
-	
 	delete m_frontal;
 	
 	//compute x largest magnitude eigenvalues; x = R
@@ -254,14 +243,9 @@ VMML_HOSVD_TEMPLATE_CLASSNAME::eigs_mode3( const t3_type& data_, u3_type& u3_)
 	
 	//covariance matrix of unfolded data
 	u3_cov_type* cov  = new u3_cov_type;
-
-#if 1
-	m_horizontal->symmetric_covariance( *cov );
-#else
 	blas_dgemm< I3, I1*I2, I3, T>* blas_cov = new blas_dgemm< I3, I1*I2, I3, T>;
 	blas_cov->compute( *m_horizontal, *cov );
 	delete blas_cov;
-#endif
 	delete m_horizontal;
 	
 	//compute x largest magnitude eigenvalues; x = R

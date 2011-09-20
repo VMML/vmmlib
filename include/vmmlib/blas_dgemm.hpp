@@ -107,7 +107,7 @@ namespace vmml
 		{
 			VMMLIB_ERROR( "not implemented for this type.", VMMLIB_HERE );
 		}
-		
+
 		
 		template<>
 		inline void
@@ -132,7 +132,6 @@ namespace vmml
 					);
 			
 		}
-		
 		
 		template<>
 		inline void
@@ -169,7 +168,6 @@ namespace vmml
 		typedef matrix< K, N, float_t > matrix_right_t;
 		typedef matrix< N, K, float_t > matrix_right_t_t;
 		typedef matrix< M, N, float_t > matrix_out_t;
-		//typedef typename evalues_type::const_iterator evalue_const_iterator;
 		
 		
 		blas_dgemm();
@@ -180,7 +178,6 @@ namespace vmml
 		bool compute_t( const matrix_right_t& At_, matrix_out_t& C_ );
 		bool compute_bt( const matrix_left_t& A_, const matrix_right_t_t& Bt_, matrix_out_t& C_ );
 				
-		//inline bool test_success( blas::lapack_int info );
 		
 		blas::dgemm_params< float_t > p;
 		
@@ -219,7 +216,7 @@ namespace vmml
 												matrix_out_t& C_ 
 											)
 	{
-		// lapack destroys the contents of the input matrix
+		// blas needs non-const data
 		matrix_left_t* AA = new matrix_left_t( A_ );
 		matrix_right_t* BB = new matrix_right_t( B_ );
 		C_.zero();
@@ -243,7 +240,7 @@ namespace vmml
 	bool
 	blas_dgemm< M, K, N, float_t >::compute( const matrix_left_t& A_, matrix_out_t& C_ )
 	{
-		// lapack destroys the contents of the input matrix
+		// blas needs non-const data
 		matrix_left_t* AA = new matrix_left_t( A_ );
 		C_.zero();
 		
@@ -266,7 +263,7 @@ namespace vmml
 	bool
 	blas_dgemm< M, K, N, float_t >::compute_t( const matrix_right_t& At_, matrix_out_t& C_ )
 	{
-		// lapack destroys the contents of the input matrix
+		// blas needs non-const data
 		matrix_right_t* AA = new matrix_right_t( At_ );
 		C_.zero();
 		
@@ -292,7 +289,7 @@ namespace vmml
 											const matrix_right_t_t& Bt_,
 											matrix_out_t& C_ )
 	{
-		// lapack destroys the contents of the input matrix
+		// blas needs non-const data
 		matrix_left_t* AA = new matrix_left_t( A_ );
 		matrix_right_t_t* BB = new matrix_right_t_t( Bt_ );
 		C_.zero();

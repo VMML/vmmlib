@@ -95,17 +95,9 @@ VMML_TEMPLATE_CLASSNAME::incremental_als( const t3_type& data_, u1_type& u1_, u2
 	
 	for ( size_t i= 0; i < R_incr; ++i )
 	{
-/*			% Results of the given iteration with the current residual as input
-		P = cp_als(res, R);
-		
-		Pfull.lambda((iter-1)*R+1:iter*R)=P.lambda;
-		
-		Pfull.u{1}(:,(iter-1)*R+1:iter*R)=P.u{1};
-		Pfull.u{2}(:,(iter-1)*R+1:iter*R)=P.u{2};
-		Pfull.u{3}(:,(iter-1)*R+1:iter*R)=P.u{3};
-		% Storage of the data
-		
-		res = res - tensor(P);*/
+		//init all values to zero
+		u1_tmp->zero(); u2_tmp->zero(); u3_tmp->zero(); *lambdas_tmp = 0.0;
+		approx_data->zero();
 		
 		t3_hopm< R, I1, I2, I3, T_coeff >::als( *residual_data, *u1_tmp, *u2_tmp, *u3_tmp, *lambdas_tmp, init_hosvd_e );
 		
@@ -127,10 +119,10 @@ VMML_TEMPLATE_CLASSNAME::incremental_als( const t3_type& data_, u1_type& u1_, u2
 			//set lambda
 		}
 		
-		t3_hopm< R*R_incr, I1, I2, I3, T_coeff >::reconstruct( *approx_data, *u1_incr, *u2_incr, *u3_incr, *lambdas_incr );
+		
+		t3_hopm< R, I1, I2, I3, T_coeff >::reconstruct( *approx_data, *u1_tmp, *u2_tmp, *u3_tmp, *lambdas_tmp );
 		
 		*residual_data = *residual_data - *approx_data;
-	
 	}
 	
 	u1_.cast_from( *u1_incr );

@@ -48,10 +48,12 @@ namespace vmml
 		typedef matrix< I1, I2*I3, T > mode1_matricization_type;
 		typedef matrix< I2, I1*I3, T > mode2_matricization_type;
 		typedef matrix< I3, I1*I2, T > mode3_matricization_type;	
-		
 
 		typedef matrix< R, R , T > m_r2_type;
 
+		typedef typename lambda_type::iterator lvalue_iterator;
+		typedef typename lambda_type::const_iterator lvalue_const_iterator;
+		typedef std::pair< T, size_t >  lambda_pair_type;
 		
 		//higher-order power method (lathauwer et al., 2000b)
 		static void als( const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, lambda_type& lambdas_, init_mode init_mode_, const size_t max_iterations_ = 100 );
@@ -76,7 +78,16 @@ namespace vmml
 		static void optimize_mode2( const t3_type& data_, const u1_type& u1_, u2_type& u2_, const u3_type& u3_, lambda_type& lambdas_ );		
 		static void optimize_mode3( const t3_type& data_, const u1_type& u1_, const u2_type& u2_, u3_type& u3_, lambda_type& lambdas_ );
 		
+		static void sort_dec( u1_type& u1_, u2_type& u2_, u3_type& u3_, lambda_type& lambdas_ );
 		
+		// comparison functor 
+		struct lambda_compare
+		{
+			inline bool operator()( const lambda_pair_type& a, const lambda_pair_type& b )
+			{
+				return fabs( a.first ) > fabs( b.first );
+			}
+		};
 	};
 	
 
@@ -221,13 +232,17 @@ VMML_TEMPLATE_CLASSNAME::als( const t3_type& data_,
 		fitchange = fabs(fitold - fit);
 		
 #if CP_LOG
-		std::cout << "iteration '" << i << "', fit: " << fit 
+		std::cout << "iteration '" << i 
+		<< "', fit: " << fit 
 		<< ", fitdelta: " << fitchange 
 		<< ", frobenius norm: " << approx_norm << std::endl;		
 #endif
 		++i;
 	} // end ALS
 
+	//sort lambdas by decreasing magnitude
+	sort_dec( u1_, u2_, u3_, lambdas_ );
+	
 	delete residual_data;
 	delete approximated_data;
 }
@@ -427,6 +442,52 @@ VMML_TEMPLATE_CLASSNAME::reconstruct( t3_type& data_, const u1_type& u1_, const 
 	delete u3_t;
 }
 
+
+VMML_TEMPLATE_STRING
+void 
+VMML_TEMPLATE_CLASSNAME::sort_dec( u1_type& u1_, u2_type& u2_, u3_type& u3_, lambda_type& lambdas_ ) 
+{
+	//keep copy of original matrices
+	u1_type *orig_u1 = new u1_type( u1_ );
+	u2_type *orig_u2 = new u2_type( u2_ );
+	u3_type *orig_u3 = new u3_type( u3_ );
+	lambda_type sorted_lvalues;
+	
+	//(1) store permutations of the lambdas (According to larges magnitude
+	std::vector< lambda_pair_type > lambda_permut;
+	
+	lvalue_const_iterator it = lambdas_.begin(), it_end = lambdas_.end();
+	size_t counter = 0;
+	for( ; it != it_end; ++it, ++counter )
+	{
+		 lambda_permut.push_back(  lambda_pair_type ( *it, counter ) );
+	}
+    
+    std::sort(
+			   lambda_permut.begin(),
+			   lambda_permut.end(), 
+			   lambda_compare()
+			  );
+	
+	//(2) sort the matrix vectors according to lambda permutations and set sorted lambdas
+	typename std::vector< lambda_pair_type >::const_iterator it2 = lambda_permut.begin(), it2_end = lambda_permut.end();
+	lvalue_iterator lvalues_it = lambdas_.begin();
+	for( counter = 0; it2 != it2_end; ++it2, ++counter, ++lvalues_it )
+	{
+		*lvalues_it = it2->first;
+		u1_.set_column( counter, orig_u1->get_column( it2->second ));
+		u2_.set_column( counter, orig_u2->get_column( it2->second ));
+		u3_.set_column( counter, orig_u3->get_column( it2->second ));
+	}	
+		
+	delete orig_u1;
+	delete orig_u2;
+	delete orig_u3;
+}	
+	
+	
+	
+	
 	
 #undef VMML_TEMPLATE_STRING
 #undef VMML_TEMPLATE_CLASSNAME

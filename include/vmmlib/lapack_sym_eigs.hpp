@@ -196,7 +196,7 @@ struct lapack_sym_eigs
     
 	typedef matrix< N, N, float_t > evectors_type;
 
-        typedef std::pair< float_t, size_t >  eigv_pair_type;
+    typedef std::pair< float_t, size_t >  eigv_pair_type;
     
 	lapack_sym_eigs();
 	~lapack_sym_eigs();
@@ -329,11 +329,11 @@ lapack_sym_eigs< N, float_t >::compute_x(
 		eig_permutations.push_back( eigv_pair_type( *it, counter ) );
 	}
     
-        std::sort(
+    std::sort(
                 eig_permutations.begin(),
                 eig_permutations.end(), 
                 eigenvalue_compare()
-        );
+			  );
 
 	//sort the eigenvectors according to eigenvalue permutations
 	evectors_type* sorted_eigvectors = new evectors_type();

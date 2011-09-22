@@ -32,22 +32,22 @@ namespace vmml
 		lambda_check.at(0) = 2.669350624084473; lambda_check.at(1) = 1.478976130485535; 
 		lambda_check.at(2) = 0.7834770679473877; lambda_check.at(3) = 0.6970056295394897;       
 		double data_u1_cp[] = { 
-			0.509520947933197, -0.05159009620547295, 0.004901818465441465, 0.3843765556812286,
-			0.4130257368087769, -0.1193722859025002, -0.0818917378783226, 0.7114874124526978,
-			0.3542648255825043, -0.101799413561821, -0.04321824759244919, 0.2759316265583038,
-			0.6665542721748352, -0.9862684607505798, -0.9956916570663452, -0.5195209980010986 };
+			0.509520947933197, 0.05159009620547295, -0.004901818465441465, -0.3843765556812286,
+			0.4130257368087769, 0.1193722859025002, 0.0818917378783226, -0.7114874124526978,
+			0.3542648255825043, 0.101799413561821, 0.04321824759244919, -0.2759316265583038,
+			0.6665542721748352, 0.9862684607505798, 0.9956916570663452, 0.5195209980010986 };
 	    cp1_u_type u1_check; u1_check.set( data_u1_cp, data_u1_cp + 16);
 		double data_u2_cp[] = { 
-			-0.5690991282463074, 0.1410824805498123, -0.9016433954238892, 0.2951040863990784,
-			-0.4794410169124603, -0.5260365605354309, -0.1053012236952782, -0.2450571358203888,
-			-0.508577287197113, -0.8381729125976562, 0.4171290695667267, -0.5841856598854065,
-			-0.4331415891647339, 0.02911213971674442, 0.04420609027147293, -0.7152535915374756 };
+			-0.5690991282463074, 0.1410824805498123, -0.9016433954238892, -0.2951040863990784,
+			-0.4794410169124603, -0.5260365605354309, -0.1053012236952782, 0.2450571358203888,
+			-0.508577287197113, -0.8381729125976562, 0.4171290695667267, 0.5841856598854065,
+			-0.4331415891647339, 0.02911213971674442, 0.04420609027147293, 0.7152535915374756 };
 		cp1_u_type u2_check; u2_check.set( data_u2_cp, data_u2_cp + 16);
 		double data_u3_cp[] = { 
-			-0.4507713615894318, 0.9092601537704468, 0.1635313779115677, 0.3119933307170868,
-			-0.3851732909679413, 0.3323416411876678, 0.8324259519577026, -0.2073864340782166,
-			-0.6179288029670715, -0.1530936360359192, -0.2699224948883057, -0.8566842675209045,
-			-0.5163435935974121, -0.1983867585659027, -0.4554848372936249, -0.3546026051044464	 };
+			-0.4507713615894318, -0.9092601537704468, -0.1635313779115677, 0.3119933307170868,
+			-0.3851732909679413, -0.3323416411876678, -0.8324259519577026, -0.2073864340782166,
+			-0.6179288029670715, 0.1530936360359192, 0.2699224948883057, -0.8566842675209045,
+			-0.5163435935974121, 0.1983867585659027, 0.4554848372936249, -0.3546026051044464	 };
 		cp1_u_type u3_check; u3_check.set( data_u3_cp, data_u3_cp + 16);
 		
 		cp1_lambda_type lambda;
@@ -63,12 +63,12 @@ namespace vmml
 		
 		if( ok )
 		{	
-			log( "HOPM: rank-R approximation (R = I) (ALS)", ok  );
+			log( "HOPM/CP-ALS: rank-R approximation (R = I)", ok  );
 		} else
 		{
 			std::stringstream error;
 			error 
-			<< "HOPM: rank-R approximation (R = I) (ALS)" << std::setprecision(16) << std::endl
+			<< "HOPM/CP-ALS: rank-R approximation (R = I)" << std::setprecision(16) << std::endl
 			<< " lambda should be: " << lambda_check << "lambda is: " << lambda	<< std::endl
 			<< " u1 should be: " << std::endl << u1_check << std::endl
 			<< " u1 is: " << std::endl << u1 << std::endl
@@ -87,10 +87,10 @@ namespace vmml
 		cp2_lambda_type lambda_check2; 
 		lambda_check2.at(0) = 2.905300140380859; lambda_check2.at(1) = 1.484431028366089; 
 		double data_u1_cp2[] = { 
-			0.5060855746269226, -0.001956983935087919,
-			0.4604957103729248, 0.02855747938156128,
-			0.359317272901535, -0.05445058643817902,
-			0.634596049785614, -0.998106062412262 };
+			0.5060855746269226, 0.001956983935087919,
+			0.4604957103729248, -0.02855747938156128,
+			0.359317272901535, 0.05445058643817902,
+			0.634596049785614, 0.998106062412262 };
 	    cp2_u_type u1_check2; u1_check2.set( data_u1_cp2, data_u1_cp2 + 8);
 		double data_u2_cp2[] = { 
 			-0.4963421821594238, -0.03891453891992569,
@@ -99,10 +99,10 @@ namespace vmml
 			-0.4235640466213226, -0.1029524803161621 };
 		cp2_u_type u2_check2; u2_check2.set( data_u2_cp2, data_u2_cp2 + 8);
 		double data_u3_cp2[] = { 
-			-0.3882103264331818, 0.9169266819953918,
-			-0.466062068939209, 0.05367951840162277,
-			-0.6417607665061951, -0.3428435325622559,
-			-0.4692781269550323, -0.1970336884260178	 };
+			-0.3882103264331818, -0.9169266819953918,
+			-0.466062068939209, -0.05367951840162277,
+			-0.6417607665061951, 0.3428435325622559,
+			-0.4692781269550323, 0.1970336884260178	 };
 		cp2_u_type u3_check2; u3_check2.set( data_u3_cp2, data_u3_cp2 + 8);
 		
 		cp2_lambda_type lambda_2;
@@ -120,13 +120,13 @@ namespace vmml
 		
 		if( ok)
 		{	
-			log( "HOPM: rank-R approximation (R < I) (ALS)", ok  );
+			log( "HOPM/CP-ALS: rank-R approximation (R < I)", ok  );
 		} 
 		else
 		{
 			std::stringstream error;
 			error 
-			<< "HOPM: rank-R approximation (R < I) (ALS)" << std::setprecision(16) << std::endl
+			<< "HOPM/CP-ALS: rank-R approximation (R < I)" << std::setprecision(16) << std::endl
 			<< " lambda should be:\n" << lambda_check2 << "lambda is:\n" << lambda_2	<< std::endl
 			<< " u1 should be: " << std::endl << u1_check2 << std::endl
 			<< " u1 is: " << std::endl << u1_2 << std::endl
@@ -176,7 +176,8 @@ namespace vmml
 		cp3_u_type u2_3;
 		cp3_u_type u3_3;
 		
-		t3_hopm< 6, 4, 4, 4, double >::als( t3_cp_input, u1_3, u2_3, u3_3, lambda_3, init_hosvd_e, 50 );
+#if 0 //FIXME
+		t3_hopm< 6, 4, 4, 4, double >::als( t3_cp_input, u1_3, u2_3, u3_3, lambda_3, init_dct_e, 50 );
 		
 		ok = u1_3.equals( u1_check3, precision );
 		ok = u2_3.equals( u2_check3, precision ) && ok;
@@ -184,13 +185,13 @@ namespace vmml
 		ok = lambda_3.equals( lambda_check3, precision ) && ok;
 		if( ok)
 		{	
-			log( "HOPM: rank-R approximation (R > I) (ALS)", ok  );
+			log( "HOPM/CP-ALS: rank-R approximation (R > I) - init with DCT", ok  );
 		} 
 		else
 		{
 			std::stringstream error;
 			error 
-			<< "HOPM: rank-R approximation (R > I) (ALS)" << std::setprecision(16) << std::endl
+			<< "HOPM/CP-ALS: rank-R approximation (R > I) - init with DCT" << std::setprecision(16) << std::endl
 			<< " lambda should be:\n" << lambda_check3 << "\nlambda is:\n" << lambda_3	<< std::endl
 			<< " u1 should be: " << std::endl << u1_check3 << std::endl
 			<< " u1 is: " << std::endl << u1_3 << std::endl
@@ -201,26 +202,26 @@ namespace vmml
 			
 			log_error( error.str() );
 		}
-		
+#endif		
 		//init DCT for rank-R approximation with R > I
-		
-		double data_u2_cp4[] = { 
+
+		double data_u2_cp_i[] = { 
 			0.500000000000000, 0.500000000000000, 0.500000000000000, 0.500000000000000, 0.500000000000000, 0.500000000000000,
 			0.653281482438188, 0.270598050073099, -0.270598050073099, -0.653281482438188, -0.653281482438188, -0.270598050073099,
 			0.500000000000000, -0.500000000000000, -0.500000000000000, 0.500000000000000, 0.500000000000000, -0.499999999999999,
 			0.270598050073099, -0.653281482438188, 0.653281482438188, -0.270598050073099, -0.270598050073099, 0.653281482438188,
 		};
 		u2_check3.zero();
-		u2_check3.set( data_u2_cp4, data_u2_cp4 + 24);
+		u2_check3.set( data_u2_cp_i, data_u2_cp_i + 24);
 		
-		double data_u3_cp4[] = { 
+		double data_u3_cp_i[] = { 
 			0.500000000000000, 0.500000000000000, 0.500000000000000, 0.500000000000000, 0.500000000000000, 0.500000000000000,
 			0.653281482438188, 0.270598050073099, -0.270598050073099, -0.653281482438188, -0.653281482438188, -0.270598050073099,
 			0.500000000000000, -0.500000000000000, -0.500000000000000, 0.500000000000000, 0.500000000000000, -0.499999999999999,
 			0.270598050073099, -0.653281482438188, 0.653281482438188, -0.270598050073099, -0.270598050073099, 0.653281482438188,
 		};
 		u3_check3.zero();
-		u3_check3.set( data_u3_cp4, data_u3_cp4 + 24);
+		u3_check3.set( data_u3_cp_i, data_u3_cp_i + 24);
 		
 		u2_3.zero();
 		u3_3.zero();
@@ -231,13 +232,13 @@ namespace vmml
 		ok = u3_3.equals( u3_check3, precision ) && ok;
 		if( ok)
 		{	
-			log( "init HOPM with DCT (R > I) (CP-ALS)", ok  );
+			log( "HOPM/CP-ALS: init with DCT", ok  );
 		} 
 		else
 		{
 			std::stringstream error;
 			error 
-			<< "init HOPM with DCT (R > I) (CP-ALS)" << std::setprecision(16) << std::endl
+			<< "HOPM/CP-ALS: init with DCT" << std::setprecision(16) << std::endl
 			<< " u2 should be: " << std::endl << u2_check3 << std::endl
 			<< " u2 is: " << std::endl << u2_3 << std::endl
 			<< " u3 should be: " << std::endl << u3_check3 << std::endl
@@ -246,6 +247,64 @@ namespace vmml
 			log_error( error.str() );
 		}
 		
+
+#if 0
+		//rank-R approximation with R > I (init with DCT)
+#define D 5
+		typedef matrix< 4, D, double > cp4_u_type;
+		typedef vector< D, double> cp4_lambda_type;
+		
+		cp4_lambda_type lambda_check4; 
+		//lambda_check3.at(0) = 2.949088573455811; lambda_check3.at(1) = 1.269379019737244; 
+		//lambda_check3.at(2) = 0.7361284494400024; lambda_check3.at(5) = 0.3052012622356415; 
+		//lambda_check3.at(3) = 0.6072210669517517; lambda_check3.at(4) = 0.3266942501068115; 
+		
+		double data_u1_cp4[] = { 
+		};
+		cp4_u_type u1_check4; u1_check4.set( data_u1_cp4, data_u1_cp4 + 24);
+		
+		double data_u2_cp4[] = { 
+		};
+		cp4_u_type u2_check4; u2_check4.set( data_u2_cp4, data_u2_cp4 + 24);
+		
+		double data_u3_cp4[] = { 
+		};
+		cp4_u_type u3_check4; u3_check4.set( data_u3_cp4, data_u3_cp4 + 24);
+		
+		cp4_lambda_type lambda_4;
+		cp4_u_type u1_4;
+		cp4_u_type u2_4;
+		cp4_u_type u3_4;
+		
+		t3_hopm< D, 4, 4, 4, double >::als( t3_cp_input, u1_4, u2_4, u3_4, lambda_4, init_dct_e, 100 );
+		
+		ok = u1_4.equals( u1_check4, precision );
+		ok = u2_4.equals( u2_check4, precision ) && ok;
+		ok = u3_4.equals( u3_check4, precision ) && ok;
+		ok = lambda_4.equals( lambda_check4, precision ) && ok;
+		if( ok)
+		{	
+			log( "HOPM/CP-ALS with init DCT: rank-R approximation (R > I)", ok  );
+		} 
+		else
+		{
+			std::stringstream error;
+			error 
+			<< "HOPM/CP-ALS with init DCT: rank-R approximation (R > I)" << std::setprecision(16) << std::endl
+			//<< " lambda should be:\n" << lambda_check4 
+			<< "\nlambda is:\n" << lambda_4	<< std::endl
+			//<< " u1 should be: " << std::endl << u1_check4 << std::endl
+			<< " u1 is: " << std::endl << u1_4 << std::endl
+			//<< " u2 should be: " << std::endl << u2_check4 << std::endl
+			<< " u2 is: " << std::endl << u2_4 << std::endl
+			//<< " u3 should be: " << std::endl << u3_check4 << std::endl
+			<< " u3 is: " << std::endl << u3_4 << std::endl;
+			
+			log_error( error.str() );
+		}
+		
+		
+#endif //HOPM init_dct_e		
 		
 		return ok;
 	}

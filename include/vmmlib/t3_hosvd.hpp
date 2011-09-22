@@ -11,8 +11,6 @@
  * 
  */
 
-//TODO: check (fix?) test for HOSVD by EIGS with blas_dgemm covariance matrix
-
 #ifndef __VMML__T3_HOSVD__HPP__
 #define __VMML__T3_HOSVD__HPP__
 
@@ -20,6 +18,12 @@
 #include <vmmlib/lapack_svd.hpp>
 #include <vmmlib/lapack_sym_eigs.hpp>
 #include <vmmlib/blas_dgemm.hpp>
+
+enum hosvd_method {
+	eigs_e,
+	svd_e
+}; 
+
 
 namespace vmml
 {
@@ -53,13 +57,11 @@ namespace vmml
 		 other known names for HOSVD: n-mode SVD, 3-mode factor analysis (3MFA, tucker3), 3M-PCA, n-mode PCA, higher-order SVD
 		 */
 
-		//FIXME: hosvd_mode1 -> fixme names, e.g., apply_mode1 -> choose either svd_mode1, eigs_mode1
+		static void apply_mode1( const t3_type& data_, u1_type& u1_, hosvd_method method_ = eigs_e );
+		static void apply_mode2( const t3_type& data_, u2_type& u2_, hosvd_method method_ = eigs_e );
+		static void apply_mode3( const t3_type& data_, u3_type& u3_, hosvd_method method_ = eigs_e );
 		
-		static void apply_mode1( const t3_type& data_, u1_type& u1_ );
-		static void apply_mode2( const t3_type& data_, u2_type& u2_ );
-		static void apply_mode3( const t3_type& data_, u3_type& u3_ );
-		
-		static void apply_all( const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_ );
+		static void apply_all( const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, hosvd_method method_ = eigs_e );
 		static void hosvd( const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_ );
 		static void hoeigs( const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_ );
 		
@@ -108,47 +110,65 @@ VMML_HOSVD_TEMPLATE_CLASSNAME::hoeigs( const t3_type& data_, u1_type& u1_, u2_ty
 	
 VMML_HOSVD_TEMPLATE_STRING
 void 
-VMML_HOSVD_TEMPLATE_CLASSNAME::apply_all( const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_ )
+VMML_HOSVD_TEMPLATE_CLASSNAME::apply_all( const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, hosvd_method method_ )
 {
-	apply_mode1( data_, u1_ );
-	apply_mode2( data_, u2_ );
-	apply_mode3( data_, u3_ );
+	apply_mode1( data_, u1_, method_ );
+	apply_mode2( data_, u2_, method_ );
+	apply_mode3( data_, u3_, method_ );
 }	
 	
 VMML_HOSVD_TEMPLATE_STRING
 void 
-VMML_HOSVD_TEMPLATE_CLASSNAME::apply_mode1( const t3_type& data_, u1_type& u1_ )
+VMML_HOSVD_TEMPLATE_CLASSNAME::apply_mode1( const t3_type& data_, u1_type& u1_, hosvd_method method_ )
 {
-#ifdef HOEIGS
-	eigs_mode1( data_, u1_ );
-#else
-	svd_mode1( data_, u1_ );
-#endif
+	switch ( method_ )
+	{
+		case 0:
+			eigs_mode1( data_, u1_ );
+            break;
+		case 1:
+			svd_mode1( data_, u1_ );
+            break;
+		default:
+			eigs_mode1( data_, u1_ );
+	}
 }	
 
 
 VMML_HOSVD_TEMPLATE_STRING
 void 
-VMML_HOSVD_TEMPLATE_CLASSNAME::apply_mode2( const t3_type& data_, u2_type& u2_ )
+VMML_HOSVD_TEMPLATE_CLASSNAME::apply_mode2( const t3_type& data_, u2_type& u2_, hosvd_method method_ )
 {
-#ifdef HOEIGS
-	eigs_mode2( data_, u2_ );
-#else
-	svd_mode2( data_, u2_ );
-#endif
+	switch ( method_ )
+	{
+		case 0:
+			eigs_mode2( data_, u2_ );
+            break;
+		case 1:
+			svd_mode2( data_, u2_ );
+            break;
+		default:
+			eigs_mode2( data_, u2_ );
+	}
 }
 
 
 
 VMML_HOSVD_TEMPLATE_STRING
 void 
-VMML_HOSVD_TEMPLATE_CLASSNAME::apply_mode3( const t3_type& data_, u3_type& u3_ )
+VMML_HOSVD_TEMPLATE_CLASSNAME::apply_mode3( const t3_type& data_, u3_type& u3_, hosvd_method method_ )
 {
-#ifdef HOEIGS
-	eigs_mode3( data_, u3_ );
-#else
-	svd_mode3( data_, u3_ );
-#endif
+	switch ( method_ )
+	{
+		case 0:
+			eigs_mode3( data_, u3_ );
+            break;
+		case 1:
+			svd_mode3( data_, u3_ );
+            break;
+		default:
+			eigs_mode3( data_, u3_ );
+	}
 }
 	
 /* SVD along mode 1, 2, and 3*/ 

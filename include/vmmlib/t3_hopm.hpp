@@ -20,7 +20,7 @@
 #include <vmmlib/matrix_pseudoinverse.hpp>
 #include <vmmlib/blas_dgemm.hpp>
 
-enum init_mode {
+enum init_method {
 	init_hosvd_e,
 	init_rand_e,
 	init_dct_e
@@ -56,11 +56,11 @@ namespace vmml
 		typedef std::pair< T, size_t >  lambda_pair_type;
 		
 		//higher-order power method (lathauwer et al., 2000b)
-		static void als( const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, lambda_type& lambdas_, init_mode init_mode_, const size_t max_iterations_ = 100 );
+		static void als( const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, lambda_type& lambdas_, init_method init_method_, const size_t max_iterations_ = 100 );
 		static void reconstruct( t3_type& data_, const u1_type& u1_, const u2_type& u2_, const u3_type& u3_, const lambda_type& lambdas_ );
 
 		// only the factor matrices u2, u3 are initialized since we get u1 from the first optimization iteration
-		static void init( const t3_type& data_, u2_type& u2_, u3_type& u3_, init_mode init_mode_ );
+		static void init( const t3_type& data_, u2_type& u2_, u3_type& u3_, init_method init_method_ );
 		static void init_hosvd( const t3_type& data_, u2_type& u2_, u3_type& u3_ );
 		static void init_random( const t3_type& data_, u2_type& u2_, u3_type& u3_ );
 		static void init_dct( const t3_type& data_, u2_type& u2_, u3_type& u3_ );
@@ -98,9 +98,9 @@ namespace vmml
 
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::init( const t3_type& data_, u2_type& u2_, u3_type& u3_, init_mode init_mode_  )
+VMML_TEMPLATE_CLASSNAME::init( const t3_type& data_, u2_type& u2_, u3_type& u3_, init_method init_method_  )
 {	
-	switch ( init_mode_ )
+	switch ( init_method_ )
 	{
 		case 0:
 			init_hosvd( data_, u2_, u3_ );
@@ -189,7 +189,7 @@ void
 VMML_TEMPLATE_CLASSNAME::als( const t3_type& data_, 
 							 u1_type& u1_, u2_type& u2_, u3_type& u3_, 
 							 lambda_type& lambdas_, 
-							 init_mode init_mode_,
+							 init_method init_method_,
 							 const size_t max_iterations_ )
 {
 	t3_type* approximated_data = new t3_type;
@@ -208,8 +208,8 @@ VMML_TEMPLATE_CLASSNAME::als( const t3_type& data_,
 	
 	//intialize u1-u3
 	//inital guess not needed for u1 since it will be computed in the first optimization step
-	init( data_, u2_, u3_, init_mode_ );
-
+	init( data_, u2_, u3_, init_method_ );
+	
 #if CP_LOG
 	std::cout << "CP ALS: HOPM (for tensor3) " << std::endl;
 #endif	

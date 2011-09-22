@@ -190,6 +190,9 @@ public:
     template< typename input_iterator_t >
     void set( input_iterator_t begin_, input_iterator_t end_, 
         bool row_major_layout = true );
+	
+	void set_random( int seed ); //sets all matrix values with random
+	void set_dct(); //sets all matrix values with discrete cosine transform coefficients (receive orthonormal coefficients)
         
     void zero();
     void identity();
@@ -2587,7 +2590,49 @@ matrix< M, N, T >::diag( const vector< R, T >& diag_values_ )
 	{
 		at(r, r) = static_cast< T >( diag_values_.at(r) );
 	}
+	return 0;
 }	
+	
+	
+template< size_t M, size_t N, typename T >
+void 
+matrix< M, N, T >::set_dct()
+{
+	double weight = 0.0f;
+	double num_rows = M;
+	double fill_value = 0.0f;
+	for( size_t row = 0; row < M; ++row )
+	{
+		weight = ( row == 0.0 )  ? sqrt(1/num_rows) : sqrt(2/num_rows); //to reiceive orthonormality
+		for( size_t col = 0; col < N; ++col )
+		{
+			fill_value = (2 * col + 1) * row * M_PI / (2*M);
+			fill_value = cos( fill_value );
+			fill_value *= weight;
+			at( row, col ) = static_cast< T >( fill_value )  ;
+		}
+	}
+}		
+
+
+template< size_t M, size_t N, typename T >
+void 
+matrix< M, N, T >::set_random( int seed )
+{
+	double fillValue = 0.0f;
+	srand( seed );
+	for( size_t row = 0; row < M; ++row )
+	{
+		for( size_t col = 0; col < N; ++col )
+		{
+			fillValue = rand();
+			fillValue /= RAND_MAX;
+			at( row, col ) = -1.0 + 2.0 * static_cast< double >( fillValue )  ;
+		}
+	}
+}	
+	
+	
 	
 } // namespace vmml
 

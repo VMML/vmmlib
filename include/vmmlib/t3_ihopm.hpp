@@ -91,13 +91,15 @@ VMML_TEMPLATE_CLASSNAME::incremental_als( const t3_type& data_, u1_type& u1_, u2
 	u2_1col_type* u2_1col = new u2_1col_type;
 	u3_1col_type* u3_1col = new u3_1col_type;
 	
+	typedef t3_hopm< R, I1, I2, I3, T_coeff > hopm_type;
+
 	for ( size_t i= 0; i < R_incr; ++i )
 	{
 		//init all values to zero
 		u1_tmp->zero(); u2_tmp->zero(); u3_tmp->zero(); *lambdas_tmp = 0.0;
 		approx_data->zero();
 		
-		t3_hopm< R, I1, I2, I3, T_coeff >::als( *residual_data, *u1_tmp, *u2_tmp, *u3_tmp, *lambdas_tmp, init_hosvd_e );
+		hopm_type::als( *residual_data, *u1_tmp, *u2_tmp, *u3_tmp, *lambdas_tmp, typename hopm_type::init_hosvd() );
 		
 		//set lambdas und us to appropriate position
 		size_t r_incr = 0;

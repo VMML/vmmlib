@@ -779,12 +779,12 @@ matrix_test::run()
     
     
     {
-        bool ok = true;
+       // bool ok = true;
         matrix< 4, 4, double > m;
         identity( m );
         
         vector< 3, double >  v;
-        double scale[] = { 1.0, 0.0, 0.0 };
+        //double scale[] = { 1.0, 0.0, 0.0 };
         m.pre_rotate_x( 2.3 );
         //m.scale( scale );
         

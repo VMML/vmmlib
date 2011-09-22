@@ -70,8 +70,6 @@ VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::incremental_als( const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, lambda_type& lambdas_ )
 {
-	t3_coeff_type* data = new t3_coeff_type;
-	data->cast_from( data_ );
 	t3_coeff_type* approx_data = new t3_coeff_type;
 	approx_data->zero();
 	t3_coeff_type* residual_data = new t3_coeff_type;
@@ -142,7 +140,6 @@ VMML_TEMPLATE_CLASSNAME::incremental_als( const t3_type& data_, u1_type& u1_, u2
 	delete u3_incr;
 	delete lambdas_incr;
 	delete residual_data;
-	delete data;
 	delete approx_data;
 }
 

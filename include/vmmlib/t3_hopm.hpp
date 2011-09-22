@@ -124,16 +124,16 @@ void
 VMML_TEMPLATE_CLASSNAME::fill_dct_matrix( matrix< M, N, T >& u )
 {
 	double weight = 0.0f;
-	double	fill_value = 0.0f;
+	double num_rows = M;
+	double fill_value = 0.0f;
 	for( size_t row = 0; row < M; ++row )
 	{
-		//todo: weight = (row > 1) ? (1/M) : (2/M);
-		weight = 1 / static_cast< double >(M);
+		weight = ( row == 0.0 )  ? sqrt(1/num_rows) : sqrt(2/num_rows); //to reiceive orthonormality
 		for( size_t col = 0; col < N; ++col )
 		{
-			fill_value = (2 * col + 1) * row * (M_PI / (2*M));
+			fill_value = (2 * col + 1) * row * M_PI / (2*M);
 			fill_value = cos( fill_value );
-			fill_value *= weight * fill_value;
+			fill_value *= weight;
 			u.at( row, col ) = static_cast< T >( fill_value )  ;
 		}
 	}

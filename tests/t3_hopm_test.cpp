@@ -61,7 +61,7 @@ namespace vmml
 		ok = u3.equals( u3_check, precision ) && ok;
 		ok = lambda.equals( lambda_check, precision ) && ok;
 		
-		if( ok)
+		if( ok )
 		{	
 			log( "HOPM: rank-R approximation (R = I) (ALS)", ok  );
 		} else
@@ -201,6 +201,51 @@ namespace vmml
 			
 			log_error( error.str() );
 		}
+		
+		//init DCT for rank-R approximation with R > I
+		
+		double data_u2_cp4[] = { 
+			0.500000000000000, 0.500000000000000, 0.500000000000000, 0.500000000000000, 0.500000000000000, 0.500000000000000,
+			0.653281482438188, 0.270598050073099, -0.270598050073099, -0.653281482438188, -0.653281482438188, -0.270598050073099,
+			0.500000000000000, -0.500000000000000, -0.500000000000000, 0.500000000000000, 0.500000000000000, -0.499999999999999,
+			0.270598050073099, -0.653281482438188, 0.653281482438188, -0.270598050073099, -0.270598050073099, 0.653281482438188,
+		};
+		u2_check3.zero();
+		u2_check3.set( data_u2_cp4, data_u2_cp4 + 24);
+		
+		double data_u3_cp4[] = { 
+			0.500000000000000, 0.500000000000000, 0.500000000000000, 0.500000000000000, 0.500000000000000, 0.500000000000000,
+			0.653281482438188, 0.270598050073099, -0.270598050073099, -0.653281482438188, -0.653281482438188, -0.270598050073099,
+			0.500000000000000, -0.500000000000000, -0.500000000000000, 0.500000000000000, 0.500000000000000, -0.499999999999999,
+			0.270598050073099, -0.653281482438188, 0.653281482438188, -0.270598050073099, -0.270598050073099, 0.653281482438188,
+		};
+		u3_check3.zero();
+		u3_check3.set( data_u3_cp4, data_u3_cp4 + 24);
+		
+		u2_3.zero();
+		u3_3.zero();
+		
+		t3_hopm< 6, 4, 4, 4, double >::init_dct( t3_cp_input, u2_3, u3_3 );
+		
+		ok = u2_3.equals( u2_check3, precision ) && ok;
+		ok = u3_3.equals( u3_check3, precision ) && ok;
+		if( ok)
+		{	
+			log( "init HOPM with DCT (R > I) (CP-ALS)", ok  );
+		} 
+		else
+		{
+			std::stringstream error;
+			error 
+			<< "init HOPM with DCT (R > I) (CP-ALS)" << std::setprecision(16) << std::endl
+			<< " u2 should be: " << std::endl << u2_check3 << std::endl
+			<< " u2 is: " << std::endl << u2_3 << std::endl
+			<< " u3 should be: " << std::endl << u3_check3 << std::endl
+			<< " u3 is: " << std::endl << u3_3 << std::endl;
+			
+			log_error( error.str() );
+		}
+		
 		
 		return ok;
 	}

@@ -19,7 +19,6 @@
 #define CORE_RANGE 127
 
 
-#include <vmmlib/t3_hosvd.hpp>
 #include <vmmlib/t3_hooi.hpp>
 
 namespace vmml
@@ -74,6 +73,7 @@ public:
 	tucker3_tensor();
 	tucker3_tensor( t3_core_type& core );
 	tucker3_tensor( t3_core_type& core, u1_type& U1, u2_type& U2, u3_type& U3 );
+	tucker3_tensor( const t3_type& data_, u1_type& U1, u2_type& U2, u3_type& U3 );
 	tucker3_tensor( const tucker3_type& other );
 	~tucker3_tensor();
 		
@@ -287,9 +287,28 @@ VMML_TEMPLATE_CLASSNAME::tucker3_tensor( t3_core_type& core, u1_type& U1, u2_typ
 }
 
 VMML_TEMPLATE_STRING
+VMML_TEMPLATE_CLASSNAME::tucker3_tensor( const t3_type& data_, u1_type& U1, u2_type& U2, u3_type& U3 )
+: _is_quantify_coeff( false ), _is_quantify_hot( false ), _hottest_core_value( 0 )
+, _is_quantify_linear( false ), _is_quantify_log( false )
+{
+	_u1 = new u1_type( U1 );
+	_u2 = new u2_type( U2 );
+	_u3 = new u3_type( U3 );
+	_u1_comp = new u1_comp_type(); 
+	_u2_comp = new u2_comp_type(); 
+	_u3_comp = new u3_comp_type(); 	
+	
+	t3_hooi< R1, R2, R3, I1, I2, I3, T_coeff >::derive_core(  data_, *_u1, *_u2, *_u3, _core );
+	
+	cast_comp_members();
+	
+	_signs.zero();
+}
+	
+VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::tucker3_tensor( const tucker3_type& other )
-	: _is_quantify_coeff( false ), _is_quantify_hot( false ), _hottest_core_value( 0 )
-	, _is_quantify_linear( false ), _is_quantify_log( false )
+: _is_quantify_coeff( false ), _is_quantify_hot( false ), _hottest_core_value( 0 )
+, _is_quantify_linear( false ), _is_quantify_log( false )
 {
 	_u1 = new u1_type();
 	_u2 = new u2_type();
@@ -302,12 +321,13 @@ VMML_TEMPLATE_CLASSNAME::tucker3_tensor( const tucker3_type& other )
 	other.get_u1( *_u1 );
 	other.get_u2( *_u2 );
 	other.get_u3( *_u3 );
-
+	
 	cast_comp_members();
 	
 	_signs.zero();
 }
-		
+	
+	
 	
 VMML_TEMPLATE_STRING
 void

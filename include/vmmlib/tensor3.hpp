@@ -932,6 +932,8 @@ VMML_TEMPLATE_CLASSNAME::diag( const vector< R, T >& diag_values_ )
 	{
 		at(r, r, r) = static_cast< T >( diag_values_.at(r) );
 	}
+	
+	return 0;
 }
 	
 	
@@ -1898,6 +1900,8 @@ const VMML_TEMPLATE_CLASSNAME&
 VMML_TEMPLATE_CLASSNAME::operator=( const VMML_TEMPLATE_CLASSNAME& source_ )
 {
     memcpy( _array, source_._array, I1 * I2 * I3 * sizeof( T ) );
+	
+	return *this;
 }
 
 

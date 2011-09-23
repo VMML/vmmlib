@@ -554,7 +554,7 @@ vector_test::run()
     {
         vector< 4, double > v;
         double* array               = v;
-        const double* const_array   = v;
+        //const double* const_array   = v;
 
         array[ 1 ]          = 2.0;
         //const_array[ 2 ]    = 3.0;

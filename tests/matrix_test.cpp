@@ -805,7 +805,7 @@ matrix_test::run()
     
         matrix< 4, 4, double > m;
         double* array               = m;
-        const double* const_array   = m;
+        //const double* const_array   = m;
         
         array[ 3 ] = 1.0;
         //const_array[ 3 ] = 1.0;

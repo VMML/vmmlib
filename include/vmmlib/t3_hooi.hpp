@@ -20,12 +20,6 @@
 #include <vmmlib/t3_hosvd.hpp>
 //#include <vmmlib/matrix_pseudoinverse.hpp>
 
-enum init_method {
-	init_hosvd_e,
-	init_rand_e,
-	init_dct_e
-}; 
-
 
 namespace vmml
 {
@@ -54,11 +48,8 @@ namespace vmml
 		 (b) by performing a 2D SVD on the matricization of every mode. Matrix matricization means that a tensor I1xI2xI3 is unfolded/sliced into one matrix
 		 with the dimensions I1xI2I3, which corresponds to a matrizitation alonge mode I1.
 		 */
-		static void als( const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, t3_core_type& core_, init_method init_method_ );
-
-		
- 		static void init( const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, init_method init_method_ );
-		static void init_random( const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_ );
+		template< typename T_init>
+		static void als( const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, t3_core_type& core_, T_init init );
 
 		/* derive core
 		 implemented accodring to core = data x_1 U1_pinv x_2 U2_pinv x_3 U3_pinv, 
@@ -69,12 +60,33 @@ namespace vmml
 		//faster: but only if basis matrices are orthogonal
 		static void derive_core_orthogonal_bases(  const t3_type& data_, const u1_type& u1_, const u2_type& u2_, const u3_type& u3_, t3_core_type& core_  );
 		
+		// init functors 
+		struct init_hosvd
+		{
+			inline void operator()( const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_ )
+			{
+				t3_hosvd< R1, R2, R3, I1, I2, I3, T >::apply_mode1( data_, u1_ );
+				t3_hosvd< R1, R2, R3, I1, I2, I3, T >::apply_mode2( data_, u2_ );
+				t3_hosvd< R1, R2, R3, I1, I2, I3, T >::apply_mode3( data_, u3_ );
+			}
+		};
+		
+		struct init_random
+		{
+			inline void operator()( const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_ )
+			{
+				int seed = time( NULL );
+				u1_.set_random( seed );
+				u2_.set_random( rand() );
+				u3_.set_random( rand() );
+			}
+		};
+		
+		
 		
 	protected:
 	
-		template< size_t M, size_t N >
-        static void fill_random_2d( int seed, matrix< M, N, T >& u );
-				
+			
         static void optimize_mode1( const t3_type& data_, const u2_type& u2_, const u3_type& u3_, tensor3< I1, R2, R3, T >& projection_ );
         static void optimize_mode2( const t3_type& data_, const u1_type& u1_, const u3_type& u3_, tensor3< R1, I2, R3, T >& projection_ );		
         static void optimize_mode3( const t3_type& data_, const u1_type& u1_, const u2_type& u2_, tensor3< R1, R2, I3, T >& projection_ );
@@ -86,63 +98,15 @@ namespace vmml
 
 	
 VMML_HOOI_TEMPLATE_STRING
-void 
-VMML_HOOI_TEMPLATE_CLASSNAME::init( const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, init_method init_method_ )
-{	
-	switch ( init_method_ )
-	{
-		case 0:
-			t3_hosvd< R1, R2, R3, I1, I2, I3, T >::apply_all( data_, u1_, u2_, u3_ );
-            break;
-		case 1:
-			init_random( data_, u1_, u2_, u3_ );
-            break;
-		default:
-			t3_hosvd< R1, R2, R3, I1, I2, I3, T >::apply_all( data_, u1_, u2_, u3_ );
-	}
-}	
-	
-
-VMML_HOOI_TEMPLATE_STRING
-void 
-VMML_HOOI_TEMPLATE_CLASSNAME::init_random( const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_ )
-{	
-	int seed = time(NULL);
-	fill_random_2d(seed, u1_ );
-	fill_random_2d(rand(), u2_ );
-	fill_random_2d(rand(), u3_ );
-}	
-	
-VMML_HOOI_TEMPLATE_STRING
-template< size_t M, size_t N >
-void 
-VMML_HOOI_TEMPLATE_CLASSNAME::fill_random_2d( int seed, matrix< M, N, T >& u)
-{
-	double fillValue = 0.0f;
-	srand(seed);
-	for( size_t row = 0; row < M; ++row )
-	{
-		for( size_t col = 0; col < N; ++col )
-		{
-			fillValue = rand();
-			fillValue /= RAND_MAX;
-			u.at( row, col ) = -1.0 + 2.0 * static_cast< double >( fillValue )  ;
-		}
-	}
-}	
-	
-	
-	
-	
-VMML_HOOI_TEMPLATE_STRING
+template< typename T_init>
 void 
 VMML_HOOI_TEMPLATE_CLASSNAME::als( const t3_type& data_, 
 								  u1_type& u1_, u2_type& u2_, u3_type& u3_, 
 								  t3_core_type& core_,
-								  init_method init_method_ )
+								  T_init init )
 {
 	//intialize basis matrices
-	init( data_, u1_, u2_, u3_, init_method_ );
+	init( data_, u1_, u2_, u3_ );
 	
 	//derve core from initialized matrices
 	derive_core_orthogonal_bases( data_, u1_, u2_, u3_, core_ );

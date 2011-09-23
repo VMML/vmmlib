@@ -41,7 +41,8 @@ namespace vmml
 		double data_core[] = { -10.14733447424582, 0.0, 0.0, -2.760705584847321 };
 		core_check.set( data_core, data_core + 4);
 		
-		t3_hooi< 2, 2, 1, 3, 2, 2, double >::als( t3_data, u1, u2, u3, core, init_hosvd_e );
+		typedef t3_hooi< 2, 2, 1, 3, 2, 2, double > hooi_type;
+		hooi_type::als( t3_data, u1, u2, u3, core, hooi_type::init_hosvd() );
 		
 		ok = u1.equals( u1_check, precision );
 		ok = ok && ( u2.equals( u2_check, precision ) );

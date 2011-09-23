@@ -58,8 +58,8 @@ matrix_test::run()
             
             ok = m2 == m_c2;
             
-            std::cout << m2 << std::endl;
-            std::cout << m_c2 << std::endl;
+            //std::cout << m2 << std::endl;
+            //std::cout << m_c2 << std::endl;
         }
         log( "iterator set", ok );
     
@@ -1116,6 +1116,25 @@ matrix_test::run()
 		ok = m_cov == m_cov_check;
 		log( "symmetric covariance matrix" , ok  );
 		
+	}
+	
+	{
+		//set dct (discrete cosine transform) values
+		
+		matrix< 4, 6, float > m_dct;
+		m_dct.set_dct();
+		
+		matrix< 4, 6, float > m_dct_check;
+		float dct_data[] = {
+			0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 
+			0.653281509876, 0.270598053932, -0.270598053932, -0.653281509876, -0.653281509876, -0.270598053932, 
+			0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 
+			0.270598053932, -0.653281509876, 0.653281509876, -0.270598053932, -0.270598053932, 0.653281509876};
+		m_dct_check = dct_data;
+		
+		ok = m_dct == m_dct_check;
+		log( "set dct coefficients (discrete cosine transform)" , ok  );
+			
 	}
 	
     return ok;

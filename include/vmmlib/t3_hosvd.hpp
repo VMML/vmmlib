@@ -85,41 +85,41 @@ namespace vmml
 		
 	}; //end hosvd class
 	
-#define VMML_HOSVD_TEMPLATE_STRING        template< size_t R1, size_t R2, size_t R3, size_t I1, size_t I2, size_t I3, typename T >
-#define VMML_HOSVD_TEMPLATE_CLASSNAME     t3_hosvd< R1, R2, R3, I1, I2, I3, T >
+#define VMML_TEMPLATE_STRING        template< size_t R1, size_t R2, size_t R3, size_t I1, size_t I2, size_t I3, typename T >
+#define VMML_TEMPLATE_CLASSNAME     t3_hosvd< R1, R2, R3, I1, I2, I3, T >
 
 
 	
-VMML_HOSVD_TEMPLATE_STRING
+VMML_TEMPLATE_STRING
 void 
-VMML_HOSVD_TEMPLATE_CLASSNAME::hosvd( const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_ )
+VMML_TEMPLATE_CLASSNAME::hosvd( const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_ )
 {
 	svd_mode1( data_, u1_ );
 	svd_mode2( data_, u2_ );
 	svd_mode3( data_, u3_ );
 }
 	
-VMML_HOSVD_TEMPLATE_STRING
+VMML_TEMPLATE_STRING
 void 
-VMML_HOSVD_TEMPLATE_CLASSNAME::hoeigs( const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_ )
+VMML_TEMPLATE_CLASSNAME::hoeigs( const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_ )
 {
 	eigs_mode1( data_, u1_ );
 	eigs_mode2( data_, u2_ );
 	eigs_mode3( data_, u3_ );
 }
 	
-VMML_HOSVD_TEMPLATE_STRING
+VMML_TEMPLATE_STRING
 void 
-VMML_HOSVD_TEMPLATE_CLASSNAME::apply_all( const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, hosvd_method method_ )
+VMML_TEMPLATE_CLASSNAME::apply_all( const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, hosvd_method method_ )
 {
 	apply_mode1( data_, u1_, method_ );
 	apply_mode2( data_, u2_, method_ );
 	apply_mode3( data_, u3_, method_ );
 }	
 	
-VMML_HOSVD_TEMPLATE_STRING
+VMML_TEMPLATE_STRING
 void 
-VMML_HOSVD_TEMPLATE_CLASSNAME::apply_mode1( const t3_type& data_, u1_type& u1_, hosvd_method method_ )
+VMML_TEMPLATE_CLASSNAME::apply_mode1( const t3_type& data_, u1_type& u1_, hosvd_method method_ )
 {
 	switch ( method_ )
 	{
@@ -135,9 +135,9 @@ VMML_HOSVD_TEMPLATE_CLASSNAME::apply_mode1( const t3_type& data_, u1_type& u1_, 
 }	
 
 
-VMML_HOSVD_TEMPLATE_STRING
+VMML_TEMPLATE_STRING
 void 
-VMML_HOSVD_TEMPLATE_CLASSNAME::apply_mode2( const t3_type& data_, u2_type& u2_, hosvd_method method_ )
+VMML_TEMPLATE_CLASSNAME::apply_mode2( const t3_type& data_, u2_type& u2_, hosvd_method method_ )
 {
 	switch ( method_ )
 	{
@@ -154,9 +154,9 @@ VMML_HOSVD_TEMPLATE_CLASSNAME::apply_mode2( const t3_type& data_, u2_type& u2_, 
 
 
 
-VMML_HOSVD_TEMPLATE_STRING
+VMML_TEMPLATE_STRING
 void 
-VMML_HOSVD_TEMPLATE_CLASSNAME::apply_mode3( const t3_type& data_, u3_type& u3_, hosvd_method method_ )
+VMML_TEMPLATE_CLASSNAME::apply_mode3( const t3_type& data_, u3_type& u3_, hosvd_method method_ )
 {
 	switch ( method_ )
 	{
@@ -173,9 +173,9 @@ VMML_HOSVD_TEMPLATE_CLASSNAME::apply_mode3( const t3_type& data_, u3_type& u3_, 
 	
 /* SVD along mode 1, 2, and 3*/ 
 	
-VMML_HOSVD_TEMPLATE_STRING
+VMML_TEMPLATE_STRING
 void 
-VMML_HOSVD_TEMPLATE_CLASSNAME::svd_mode1( const t3_type& data_, u1_type& u1_ )
+VMML_TEMPLATE_CLASSNAME::svd_mode1( const t3_type& data_, u1_type& u1_ )
 {
 	u1_unfolded_type* u = new u1_unfolded_type; // -> u1
 	data_.lateral_unfolding_bwd( *u );
@@ -185,9 +185,9 @@ VMML_HOSVD_TEMPLATE_CLASSNAME::svd_mode1( const t3_type& data_, u1_type& u1_ )
 	delete u;
 }	
 
-VMML_HOSVD_TEMPLATE_STRING
+VMML_TEMPLATE_STRING
 void 
-VMML_HOSVD_TEMPLATE_CLASSNAME::svd_mode2( const t3_type& data_, u2_type& u2_ )
+VMML_TEMPLATE_CLASSNAME::svd_mode2( const t3_type& data_, u2_type& u2_ )
 {
 	u2_unfolded_type* u = new u2_unfolded_type; // -> u1
 	data_.frontal_unfolding_bwd( *u );
@@ -197,9 +197,9 @@ VMML_HOSVD_TEMPLATE_CLASSNAME::svd_mode2( const t3_type& data_, u2_type& u2_ )
 	delete u;
 }
 
-VMML_HOSVD_TEMPLATE_STRING
+VMML_TEMPLATE_STRING
 void 
-VMML_HOSVD_TEMPLATE_CLASSNAME::svd_mode3( const t3_type& data_, u3_type& u3_ )
+VMML_TEMPLATE_CLASSNAME::svd_mode3( const t3_type& data_, u3_type& u3_ )
 {
 	u3_unfolded_type* u = new u3_unfolded_type; // -> u1
 	data_.horizontal_unfolding_bwd( *u );
@@ -211,9 +211,9 @@ VMML_HOSVD_TEMPLATE_CLASSNAME::svd_mode3( const t3_type& data_, u3_type& u3_ )
 	
 /* EIGS for mode 1, 2 and 3*/ 	
 	
-VMML_HOSVD_TEMPLATE_STRING
+VMML_TEMPLATE_STRING
 void 
-VMML_HOSVD_TEMPLATE_CLASSNAME::eigs_mode1( const t3_type& data_, u1_type& u1_ )
+VMML_TEMPLATE_CLASSNAME::eigs_mode1( const t3_type& data_, u1_type& u1_ )
 {
 	//unfolding / matricization
 	u1_unfolded_type* m_lateral = new u1_unfolded_type; // -> u1
@@ -232,9 +232,9 @@ VMML_HOSVD_TEMPLATE_CLASSNAME::eigs_mode1( const t3_type& data_, u1_type& u1_ )
 	delete cov;
 }	
 
-VMML_HOSVD_TEMPLATE_STRING
+VMML_TEMPLATE_STRING
 void 
-VMML_HOSVD_TEMPLATE_CLASSNAME::eigs_mode2( const t3_type& data_, u2_type& u2_ )
+VMML_TEMPLATE_CLASSNAME::eigs_mode2( const t3_type& data_, u2_type& u2_ )
 {
 	//unfolding / matricization
 	u2_unfolded_type* m_frontal = new u2_unfolded_type; // -> u2
@@ -253,9 +253,9 @@ VMML_HOSVD_TEMPLATE_CLASSNAME::eigs_mode2( const t3_type& data_, u2_type& u2_ )
 	delete cov;
 }	
 
-VMML_HOSVD_TEMPLATE_STRING
+VMML_TEMPLATE_STRING
 void 
-VMML_HOSVD_TEMPLATE_CLASSNAME::eigs_mode3( const t3_type& data_, u3_type& u3_)
+VMML_TEMPLATE_CLASSNAME::eigs_mode3( const t3_type& data_, u3_type& u3_)
 {
 	//unfolding / matricization
 	u3_unfolded_type* m_horizontal = new u3_unfolded_type; // -> u3
@@ -278,10 +278,10 @@ VMML_HOSVD_TEMPLATE_CLASSNAME::eigs_mode3( const t3_type& data_, u3_type& u3_)
 	
 /* helper methods for SVD and EIGS*/	
 	
-VMML_HOSVD_TEMPLATE_STRING
+VMML_TEMPLATE_STRING
 template< size_t N, size_t R >
 void 
-VMML_HOSVD_TEMPLATE_CLASSNAME::get_eigs_u_red( const matrix< N, N, T >& data_, matrix< N, R, T >& u_ )
+VMML_TEMPLATE_CLASSNAME::get_eigs_u_red( const matrix< N, N, T >& data_, matrix< N, R, T >& u_ )
 {
 	typedef matrix< N, N, T_svd > cov_matrix_type;
 	typedef vector< R, T_svd > eigval_type;
@@ -320,10 +320,10 @@ VMML_HOSVD_TEMPLATE_CLASSNAME::get_eigs_u_red( const matrix< N, N, T >& data_, m
 	
 }
 
-VMML_HOSVD_TEMPLATE_STRING
+VMML_TEMPLATE_STRING
 template< size_t M, size_t N, size_t R >
 void 
-VMML_HOSVD_TEMPLATE_CLASSNAME::get_svd_u_red( const matrix< M, N, T >& data_, matrix< M, R, T >& u_ )
+VMML_TEMPLATE_CLASSNAME::get_svd_u_red( const matrix< M, N, T >& data_, matrix< M, R, T >& u_ )
 {
 	typedef	matrix< M, N, T_svd > svd_m_type;
 	//FIXME: typedef	matrix< M, N, T_coeff > coeff_type;

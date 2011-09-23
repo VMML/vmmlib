@@ -93,14 +93,14 @@ namespace vmml
 		
 	};//end class t3_hooi
 	
-#define VMML_HOOI_TEMPLATE_STRING        template< size_t R1, size_t R2, size_t R3, size_t I1, size_t I2, size_t I3, typename T >
-#define VMML_HOOI_TEMPLATE_CLASSNAME     t3_hooi< R1, R2, R3, I1, I2, I3, T >
+#define VMML_TEMPLATE_STRING        template< size_t R1, size_t R2, size_t R3, size_t I1, size_t I2, size_t I3, typename T >
+#define VMML_TEMPLATE_CLASSNAME     t3_hooi< R1, R2, R3, I1, I2, I3, T >
 
 	
-VMML_HOOI_TEMPLATE_STRING
+VMML_TEMPLATE_STRING
 template< typename T_init>
 void 
-VMML_HOOI_TEMPLATE_CLASSNAME::als( const t3_type& data_, 
+VMML_TEMPLATE_CLASSNAME::als( const t3_type& data_, 
 								  u1_type& u1_, u2_type& u2_, u3_type& u3_, 
 								  t3_core_type& core_,
 								  T_init init )
@@ -171,9 +171,9 @@ VMML_HOOI_TEMPLATE_CLASSNAME::als( const t3_type& data_,
 
 
 
-VMML_HOOI_TEMPLATE_STRING
+VMML_TEMPLATE_STRING
 void 
-VMML_HOOI_TEMPLATE_CLASSNAME::optimize_mode1( const t3_type& data_, const u2_type& u2_, const u3_type& u3_, tensor3< I1, R2, R3, T >& projection_ )
+VMML_TEMPLATE_CLASSNAME::optimize_mode1( const t3_type& data_, const u2_type& u2_, const u3_type& u3_, tensor3< I1, R2, R3, T >& projection_ )
 {
 	u2_inv_type* u2_inv = new u2_inv_type();
 	*u2_inv = transpose( u2_ );
@@ -191,9 +191,9 @@ VMML_HOOI_TEMPLATE_CLASSNAME::optimize_mode1( const t3_type& data_, const u2_typ
 }
 
 
-VMML_HOOI_TEMPLATE_STRING
+VMML_TEMPLATE_STRING
 void 
-VMML_HOOI_TEMPLATE_CLASSNAME::optimize_mode2( const t3_type& data_, const u1_type& u1_, const u3_type& u3_, tensor3< R1, I2, R3, T >& projection_ )
+VMML_TEMPLATE_CLASSNAME::optimize_mode2( const t3_type& data_, const u1_type& u1_, const u3_type& u3_, tensor3< R1, I2, R3, T >& projection_ )
 {
 	u1_inv_type* u1_inv = new u1_inv_type();
 	*u1_inv = transpose( u1_ );
@@ -211,9 +211,9 @@ VMML_HOOI_TEMPLATE_CLASSNAME::optimize_mode2( const t3_type& data_, const u1_typ
 }
 
 
-VMML_HOOI_TEMPLATE_STRING
+VMML_TEMPLATE_STRING
 void 
-VMML_HOOI_TEMPLATE_CLASSNAME::optimize_mode3( const t3_type& data_, const u1_type& u1_, const u2_type& u2_, tensor3< R1, R2, I3, T >& projection_ )
+VMML_TEMPLATE_CLASSNAME::optimize_mode3( const t3_type& data_, const u1_type& u1_, const u2_type& u2_, tensor3< R1, R2, I3, T >& projection_ )
 {
 	u1_inv_type* u1_inv = new u1_inv_type();
 	*u1_inv = transpose( u1_ );
@@ -232,9 +232,9 @@ VMML_HOOI_TEMPLATE_CLASSNAME::optimize_mode3( const t3_type& data_, const u1_typ
 	
 	
 	
-VMML_HOOI_TEMPLATE_STRING
+VMML_TEMPLATE_STRING
 void 
-VMML_HOOI_TEMPLATE_CLASSNAME::derive_core_orthogonal_bases( const t3_type& data_, const u1_type& u1_, const u2_type& u2_, const u3_type& u3_, t3_core_type& core_ )
+VMML_TEMPLATE_CLASSNAME::derive_core_orthogonal_bases( const t3_type& data_, const u1_type& u1_, const u2_type& u2_, const u3_type& u3_, t3_core_type& core_ )
 {
 	u1_inv_type* u1_inv = new u1_inv_type();
 	*u1_inv = transpose( u1_ );
@@ -251,9 +251,9 @@ VMML_HOOI_TEMPLATE_CLASSNAME::derive_core_orthogonal_bases( const t3_type& data_
 }
 
 
-VMML_HOOI_TEMPLATE_STRING
+VMML_TEMPLATE_STRING
 void 
-VMML_HOOI_TEMPLATE_CLASSNAME::derive_core( const t3_type& data_, const u1_type& u1_, const u2_type& u2_, const u3_type& u3_, t3_core_type& core_ )
+VMML_TEMPLATE_CLASSNAME::derive_core( const t3_type& data_, const u1_type& u1_, const u2_type& u2_, const u3_type& u3_, t3_core_type& core_ )
 {
 	
 #if 0
@@ -313,8 +313,8 @@ VMML_HOOI_TEMPLATE_CLASSNAME::derive_core( const t3_type& data_, const u1_type& 
 }
 
 	
-#undef VMML_HOOI_TEMPLATE_STRING
-#undef VMML_HOOI_TEMPLATE_CLASSNAME
+#undef VMML_TEMPLATE_STRING
+#undef VMML_TEMPLATE_CLASSNAME
 	
 	
 }//end vmml namespace

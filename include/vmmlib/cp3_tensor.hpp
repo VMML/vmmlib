@@ -110,8 +110,8 @@ namespace vmml
 	}; // class cp3_tensor
 	
 	
-#define VMML_TEMPLATE_STRING			template< size_t I1, size_t I2, size_t I3, size_t R, typename T_value, typename T_coeff >
-#define VMML_TEMPLATE_CLASSNAME			cp3_tensor< I1, I2, I3, R, T_value, T_coeff >
+#define VMML_TEMPLATE_STRING			template< size_t R, size_t I1, size_t I2, size_t I3, typename T_value, typename T_coeff >
+#define VMML_TEMPLATE_CLASSNAME			cp3_tensor< R, I1, I2, I3, T_value, T_coeff >
 	
 	
 VMML_TEMPLATE_STRING
@@ -225,7 +225,8 @@ VMML_TEMPLATE_CLASSNAME::cp_als( const t3_type& data_, const size_t max_iteratio
 	t3_comp_type data;
 	data.cast_from( data_ );
 	
-	t3_hopm< R, I1, I2, I3, T_internal >::als( data, *_u1_comp, *_u2_comp, *_u3_comp, *_lambdas_comp, max_iterations_ );
+	typedef t3_hopm< R, I1, I2, I3, T_internal > hopm_type;
+	hopm_type::als( data, *_u1_comp, *_u2_comp, *_u3_comp, *_lambdas_comp, hopm_type::init_random(), max_iterations_ );
 	
  	cast_members();
 }

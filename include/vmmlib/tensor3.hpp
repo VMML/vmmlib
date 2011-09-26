@@ -41,17 +41,18 @@ public:
     typedef matrix< I3, I1, T >        lat_slice_type;
     typedef matrix< I2, I3, T >        horiz_slice_type;
 
+    typedef matrix< I1, I2*I3, T >     fwd_front_unfolding_type;
+    typedef matrix< I3, I1*I2, T >     fwd_lat_unfolding_type;
+    typedef matrix< I2, I3*I1, T >     fwd_horiz_unfolding_type;
+
     typedef matrix< I2, I1, T >        bwd_front_slice_type; //bwd: backward cylcling (after lathauwer et al., 2000a)
     typedef matrix< I1, I3, T >        bwd_lat_slice_type;
     typedef matrix< I3, I2, T >        bwd_horiz_slice_type;
 
-    typedef matrix< I1, I2*I3, T >     bwd_lat_unfolding_type;
     typedef matrix< I2, I1*I3, T >     bwd_front_unfolding_type;
+    typedef matrix< I1, I2*I3, T >     bwd_lat_unfolding_type;
     typedef matrix< I3, I1*I2, T >     bwd_horiz_unfolding_type;
 	
-    typedef matrix< I1, I3*I2, T >     fwd_lat_unfolding_type;
-    typedef matrix< I2, I3*I1, T >     fwd_front_unfolding_type;
-    typedef matrix< I3, I2*I1, T >     fwd_horiz_unfolding_type;
     
     static const size_t ROWS	       = I1;
     static const size_t COLS	       = I2;

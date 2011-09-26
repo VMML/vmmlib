@@ -189,7 +189,7 @@ VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::svd_mode2( const t3_type& data_, u2_type& u2_ )
 {
-	u2_unfolded_type* u = new u2_unfolded_type; // -> u1
+	u2_unfolded_type* u = new u2_unfolded_type; // -> u2
 	data_.frontal_unfolding_bwd( *u );
 	
 	get_svd_u_red( *u, u2_ );
@@ -201,7 +201,7 @@ VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::svd_mode3( const t3_type& data_, u3_type& u3_ )
 {
-	u3_unfolded_type* u = new u3_unfolded_type; // -> u1
+	u3_unfolded_type* u = new u3_unfolded_type; // -> u3
 	data_.horizontal_unfolding_bwd( *u );
 	
 	get_svd_u_red( *u, u3_ );

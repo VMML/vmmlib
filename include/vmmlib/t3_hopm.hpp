@@ -39,9 +39,9 @@ namespace vmml
 		typedef matrix< R, I2, T > u2_inv_type;
 		typedef matrix< R, I3, T > u3_inv_type;
 
-		typedef matrix< I1, I2*I3, T > mode1_matricization_type;
-		typedef matrix< I2, I1*I3, T > mode2_matricization_type;
-		typedef matrix< I3, I1*I2, T > mode3_matricization_type;	
+		typedef matrix< I1, I2*I3, T > u1_unfolded_type;
+		typedef matrix< I2, I1*I3, T > u2_unfolded_type;
+		typedef matrix< I3, I1*I2, T > u3_unfolded_type;
 
 		typedef matrix< R, R , T > m_r2_type;
 
@@ -178,7 +178,7 @@ VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::optimize_mode1( const t3_type& data_, u1_type& u1_, const u2_type& u2_, const u3_type& u3_, lambda_type& lambdas_ )
 {	
-	mode1_matricization_type* unfolding = new mode1_matricization_type; // -> u1
+	u1_unfolded_type* unfolding = new u1_unfolded_type; // -> u1
 	//data_.horizontal_unfolding_bwd( *unfolding ); //lathauwer
 	data_.frontal_unfolding_fwd( *unfolding ); 
 	
@@ -235,9 +235,9 @@ VMML_TEMPLATE_STRING
 void 
 VMML_TEMPLATE_CLASSNAME::optimize_mode2( const t3_type& data_, const u1_type& u1_, u2_type& u2_, const u3_type& u3_, lambda_type& lambdas_  )
 {
-	mode2_matricization_type* unfolding = new mode2_matricization_type; // -> u2
-	//data_.frontal_unfolding_bwd( *unfolding ); //lathauwer
-	data_.frontal_unfolding_bwd( *unfolding );
+	u2_unfolded_type* unfolding = new u2_unfolded_type; // -> u2
+	data_.frontal_unfolding_bwd( *unfolding ); //lathauwer
+	//data_.horizontal_unfolding_fwd( *unfolding );
 	
 	typedef matrix< I1*I3, R, T > krp_matrix_type;
 	krp_matrix_type* u2_krp  = new krp_matrix_type;
@@ -293,7 +293,7 @@ VMML_TEMPLATE_STRING
 void  
 VMML_TEMPLATE_CLASSNAME::optimize_mode3( const t3_type& data_, const u1_type& u1_, const u2_type& u2_, u3_type& u3_, lambda_type& lambdas_ )
 {
-	mode3_matricization_type* unfolding = new mode3_matricization_type; //-> u3
+	u3_unfolded_type* unfolding = new u3_unfolded_type; //-> u3
 	//data_.horizontal_unfolding_bwd( *unfolding );//lathauwer
 	data_.lateral_unfolding_fwd( *unfolding );
 	

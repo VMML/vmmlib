@@ -226,7 +226,7 @@ VMML_TEMPLATE_CLASSNAME::cp_als( const t3_type& data_, const size_t max_iteratio
 	data.cast_from( data_ );
 	
 	typedef t3_hopm< R, I1, I2, I3, T_internal > hopm_type;
-	hopm_type::als( data, *_u1_comp, *_u2_comp, *_u3_comp, *_lambdas_comp, hopm_type::init_random(), max_iterations_ );
+	hopm_type::als( data, *_u1_comp, *_u2_comp, *_u3_comp, *_lambdas_comp, typename hopm_type::init_random(), max_iterations_ );
 	
  	cast_members();
 }

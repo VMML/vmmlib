@@ -303,7 +303,7 @@ VMML_TEMPLATE_CLASSNAME::nnz() const
 	counter += _u1_comp->nnz();
 	counter += _u2_comp->nnz();
 	counter += _u3_comp->nnz();
-	counter += _lambdas_comp.nnz();
+	counter += _lambdas_comp->nnz();
 	
 	return counter;
 }

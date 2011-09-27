@@ -870,7 +870,7 @@ matrix_test::run()
 			117,140,165,192 };
 		khatri_rao_check = data_khatri_rao;
 		
-		khatri_rao = left.khatri_rao_product( right );
+		left.khatri_rao_product( right, khatri_rao );
 		
 		ok = khatri_rao == khatri_rao_check;
 		if ( ok )

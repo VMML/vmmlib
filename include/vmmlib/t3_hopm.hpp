@@ -184,7 +184,7 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode1( const t3_type& data_, u1_type& u1_, con
 	
 	typedef matrix< I2*I3, R, T > krp_matrix_type;
 	krp_matrix_type* u1_krp  = new krp_matrix_type;
-	*u1_krp =u3_.khatri_rao_product( u2_ );	
+	u3_.khatri_rao_product( u2_, *u1_krp );	
 	u1_type* u_new = new u1_type;
 	
 	blas_dgemm< I1, I2*I3, R, T>* blas_dgemm1 = new blas_dgemm< I1, I2*I3, R, T>;
@@ -241,7 +241,7 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode2( const t3_type& data_, const u1_type& u1
 	
 	typedef matrix< I1*I3, R, T > krp_matrix_type;
 	krp_matrix_type* u2_krp  = new krp_matrix_type;
-	*u2_krp = u3_.khatri_rao_product( u1_ );	
+	u3_.khatri_rao_product( u1_, *u2_krp );	
 	u2_type* u_new = new u2_type;
 	
 	blas_dgemm< I2, I1*I3, R, T>* blas_dgemm1 = new blas_dgemm< I2, I1*I3, R, T>;
@@ -299,7 +299,7 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode3( const t3_type& data_, const u1_type& u1
 	
 	typedef matrix< I1*I2, R, T > krp_matrix_type;
 	krp_matrix_type* u3_krp  = new krp_matrix_type;
-	*u3_krp = u2_.khatri_rao_product( u1_ );	
+	u2_.khatri_rao_product( u1_, *u3_krp );	
 	u3_type* u_new = new u3_type;
 	
 	blas_dgemm< I3, I1*I2, R, T>* blas_dgemm1 = new blas_dgemm< I3, I1*I2, R, T>;

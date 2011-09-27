@@ -254,6 +254,7 @@ public:
     
     //error computation 
     double frobenius_norm() const;
+    double frobenius_norm( const tensor3< I1, I2, I3, T >& other ) const;
 	double avg_frobenius_norm() const;
     double rmse( const tensor3< I1, I2, I3, T >& other ) const; //root mean-squared error
     double compute_psnr( const tensor3< I1, I2, I3, T >& other, const T& max_value_ ) const; //peak signal-to-noise ratio
@@ -1513,6 +1514,22 @@ VMML_TEMPLATE_CLASSNAME::negate() const
     return result;
 }
 
+VMML_TEMPLATE_STRING
+double 
+VMML_TEMPLATE_CLASSNAME::frobenius_norm( const tensor3< I1, I2, I3, T>& other_ ) const
+{
+	double f_norm = 0.0;
+	T abs_diff = 0;
+	const_iterator it = begin(), it_end = end(); 
+	const_iterator it_other = other_.begin(); 
+	for( ; it != it_end; ++it, ++it_other )
+	{
+		abs_diff = fabs( *it ) - fabs( *it_other );
+		f_norm += abs_diff * abs_diff;
+	}
+	
+	return sqrt(f_norm);
+}
 
 VMML_TEMPLATE_STRING
 double 

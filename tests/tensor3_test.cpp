@@ -691,7 +691,20 @@ tensor3_test::run()
 	t3.fill_increasing_values();
 	double f_norm = t3.frobenius_norm();
 	
-	if ( f_norm == f_norm_check )
+	ok = f_norm == f_norm_check;
+	
+	//compute frobenius norm of the difference of a tensor3 and another tensor3
+	f_norm_check = 10;
+	
+	t3.fill_increasing_values();
+	t3_tmp.fill_increasing_values();
+	t3_tmp.at(1,1,1) = 0;
+	
+	f_norm = t3.frobenius_norm( t3_tmp );
+	
+	ok = (f_norm == f_norm_check ) && ok;
+
+	if ( ok )
 	{	
 		log( "compute frobenius norm", true  );
 	} else

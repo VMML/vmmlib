@@ -90,6 +90,13 @@ namespace vmml
 		static void optimize_mode2( const t3_type& data_, const u1_type& u1_, u2_type& u2_, const u3_type& u3_, lambda_type& lambdas_ );		
 		static void optimize_mode3( const t3_type& data_, const u1_type& u1_, const u2_type& u2_, u3_type& u3_, lambda_type& lambdas_ );
 		
+		template< size_t J, size_t K, size_t L >
+		static void optimize( const matrix< J, K*L, T >& unfolding_, 
+							 matrix< J, R, T >& uj_, 
+							 const matrix< K, R, T >& uk_, const matrix< L, R, T >& ul_,
+							 vector< R, T>& lambdas_ 
+							 );	
+		
 		static void sort_dec( u1_type& u1_, u2_type& u2_, u3_type& u3_, lambda_type& lambdas_ );
 		
 		// comparison functor 
@@ -137,7 +144,6 @@ VMML_TEMPLATE_CLASSNAME::als( const t3_type& data_,
 	//inital guess not needed for u1 since it will be computed in the first optimization step
 	init( data_, u2_, u3_ );
 
-#define CP_LOG 1	
 #if CP_LOG
 	std::cout << "CP ALS: HOPM (for tensor3) " << std::endl;
 #endif	
@@ -183,52 +189,7 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode1( const t3_type& data_, u1_type& u1_, con
 	//data_.horizontal_unfolding_bwd( *unfolding ); //lathauwer
 	data_.frontal_unfolding_fwd( *unfolding ); 
 	
-	typedef matrix< I2*I3, R, T > krp_matrix_type;
-	krp_matrix_type* u1_krp  = new krp_matrix_type;
-	u3_.khatri_rao_product( u2_, *u1_krp );	
-	u1_type* u_new = new u1_type;
-	
-	blas_dgemm< I1, I2*I3, R, T>* blas_dgemm1 = new blas_dgemm< I1, I2*I3, R, T>;
-	blas_dgemm1->compute( *unfolding, *u1_krp, *u_new );
-	delete blas_dgemm1;	
-	
-	//square matrix of u2 and u3
-	m_r2_type* u2_r = new m_r2_type;
-	m_r2_type* u3_r = new m_r2_type;
-	blas_dgemm< R, I2, R, T> blas_dgemm2;
-	blas_dgemm2.compute_t( u2_, *u2_r );
-	blas_dgemm< R, I3, R, T> blas_dgemm3;
-	blas_dgemm3.compute_t( u3_, *u3_r );
-	
-	u2_r->multiply_piecewise( *u3_r );
-	
-	m_r2_type* pinv_t = new m_r2_type;
-	compute_pseudoinverse< m_r2_type > compute_pinv;
-	compute_pinv( *u2_r, *pinv_t );
-	
-	blas_dgemm< I1, R, R, T> blas_dgemm4;
-	blas_dgemm4.compute_bt( *u_new, *pinv_t, u1_ );
-	
-	*u_new = u1_;
-	u_new->multiply_piecewise( *u_new ); //2 norm
-	u_new->columnwise_sum( lambdas_ );
-	lambdas_.sqrt_elementwise();
-	lambda_type* tmp = new lambda_type;
-	*tmp = lambdas_;
-	tmp->reciprocal();
-	m_r2_type* diag_lambdas = new m_r2_type;
-	diag_lambdas->diag( *tmp );
-	
-	blas_dgemm4.compute( u1_, *diag_lambdas, u1_ );
-	
-	delete unfolding;
-	delete u1_krp;
-	delete u2_r;
-	delete u3_r;
-	delete pinv_t;
-	delete u_new;
-	delete diag_lambdas;
-	delete tmp;
+	optimize( *unfolding, u1_, u2_, u3_, lambdas_ );
 }
 
 
@@ -240,53 +201,7 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode2( const t3_type& data_, const u1_type& u1
 	data_.frontal_unfolding_bwd( *unfolding ); //lathauwer
 	//data_.horizontal_unfolding_fwd( *unfolding );
 	
-	typedef matrix< I1*I3, R, T > krp_matrix_type;
-	krp_matrix_type* u2_krp  = new krp_matrix_type;
-	u3_.khatri_rao_product( u1_, *u2_krp );	
-	u2_type* u_new = new u2_type;
-	
-	blas_dgemm< I2, I1*I3, R, T>* blas_dgemm1 = new blas_dgemm< I2, I1*I3, R, T>;
-	blas_dgemm1->compute( *unfolding, *u2_krp, *u_new );
-	delete blas_dgemm1;	
-	
-	//square matrix of u1 and u3
-	m_r2_type* u1_r = new m_r2_type;
-	m_r2_type* u3_r = new m_r2_type;
-	blas_dgemm< R, I1, R, T> blas_dgemm2;
-	blas_dgemm2.compute_t( u1_, *u1_r );
-	blas_dgemm< R, I3, R, T> blas_dgemm3;
-	blas_dgemm3.compute_t( u3_, *u3_r );
-
-	u1_r->multiply_piecewise( *u3_r );
-	
-	m_r2_type* pinv_t = new m_r2_type;
-	compute_pseudoinverse< m_r2_type > compute_pinv;
-	compute_pinv( *u1_r, *pinv_t );
-	
-	blas_dgemm< I2, R, R, T> blas_dgemm4;
-	blas_dgemm4.compute_bt( *u_new, *pinv_t, u2_ );
-	
-	//normalize with lambdas
-	*u_new = u2_;
-	u_new->multiply_piecewise( *u_new ); //2 norm
-	u_new->columnwise_sum( lambdas_ );
-	lambdas_.sqrt_elementwise();
-	lambda_type* tmp = new lambda_type;
-	*tmp = lambdas_;
-	tmp->reciprocal();
-	m_r2_type* diag_lambdas = new m_r2_type;
-	diag_lambdas->diag( *tmp );
-	
-	blas_dgemm4.compute( u2_, *diag_lambdas, u2_ );
-	
-	delete unfolding;
-	delete u2_krp;
-	delete u1_r;
-	delete u3_r;
-	delete pinv_t;
-	delete u_new;
-	delete diag_lambdas;
-	delete tmp;
+	optimize( *unfolding, u2_, u1_, u3_, lambdas_ );
 }	
 
 
@@ -298,34 +213,46 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode3( const t3_type& data_, const u1_type& u1
 	//data_.horizontal_unfolding_bwd( *unfolding );//lathauwer
 	data_.lateral_unfolding_fwd( *unfolding );
 	
-	typedef matrix< I1*I2, R, T > krp_matrix_type;
-	krp_matrix_type* u3_krp  = new krp_matrix_type;
-	u2_.khatri_rao_product( u1_, *u3_krp );	
-	u3_type* u_new = new u3_type;
+	optimize( *unfolding, u3_, u1_, u2_, lambdas_ );
+}
 	
-	blas_dgemm< I3, I1*I2, R, T>* blas_dgemm1 = new blas_dgemm< I3, I1*I2, R, T>;
-	blas_dgemm1->compute( *unfolding, *u3_krp, *u_new );
+VMML_TEMPLATE_STRING
+template< size_t J, size_t K, size_t L >
+void
+VMML_TEMPLATE_CLASSNAME::optimize( 
+								  const matrix< J, K*L, T >& unfolding_, 
+								  matrix< J, R, T >& uj_, 
+								  const matrix< K, R, T >& uk_, const matrix< L, R, T >& ul_,
+								  vector< R, T>& lambdas_ 
+								  )	
+{
+	typedef matrix< K*L, R, T > krp_matrix_type;
+	krp_matrix_type* krp_prod  = new krp_matrix_type;
+	ul_.khatri_rao_product( uk_, *krp_prod );	
+	matrix< J, R, T >* u_new = new matrix< J, R, T >;
+	
+	blas_dgemm< J, K*L, R, T>* blas_dgemm1 = new blas_dgemm< J, K*L, R, T>;
+	blas_dgemm1->compute( unfolding_, *krp_prod, *u_new );
 	delete blas_dgemm1;	
 	
-	//square matrix of u1 and u3
-	m_r2_type* u1_r = new m_r2_type;
-	m_r2_type* u2_r = new m_r2_type;
-	blas_dgemm< R, I1, R, T> blas_dgemm2;
-	blas_dgemm2.compute_t( u1_, *u1_r );
-	blas_dgemm< R, I2, R, T> blas_dgemm3;
-	blas_dgemm3.compute_t( u2_, *u2_r );
+	//square matrix of U_l and U_k
+	m_r2_type* uk_r = new m_r2_type;
+	m_r2_type* ul_r = new m_r2_type;
+	blas_dgemm< R, K, R, T> blas_dgemm2;
+	blas_dgemm2.compute_t( uk_, *uk_r );
+	blas_dgemm< R, L, R, T> blas_dgemm3;
+	blas_dgemm3.compute_t( ul_, *ul_r );
 	
-	u1_r->multiply_piecewise( *u2_r );
+	uk_r->multiply_piecewise( *ul_r );
 	
 	m_r2_type* pinv_t = new m_r2_type;
 	compute_pseudoinverse< m_r2_type > compute_pinv;
-	compute_pinv( *u1_r, *pinv_t );
+	compute_pinv( *uk_r, *pinv_t );
 	
-	blas_dgemm< I3, R, R, T> blas_dgemm4;
-	blas_dgemm4.compute_bt( *u_new, *pinv_t, u3_ );
+	blas_dgemm< J, R, R, T> blas_dgemm4;
+	blas_dgemm4.compute_bt( *u_new, *pinv_t, uj_ );
 	
-	//normalize with lambdas
-	*u_new = u3_;
+	*u_new = uj_;
 	u_new->multiply_piecewise( *u_new ); //2 norm
 	u_new->columnwise_sum( lambdas_ );
 	lambdas_.sqrt_elementwise();
@@ -335,14 +262,13 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode3( const t3_type& data_, const u1_type& u1
 	m_r2_type* diag_lambdas = new m_r2_type;
 	diag_lambdas->diag( *tmp );
 	
-	blas_dgemm4.compute( u3_, *diag_lambdas, u3_ );
+	blas_dgemm4.compute( uj_, *diag_lambdas, uj_ );
 	
-	delete unfolding;
-	delete u3_krp;
-	delete u1_r;
-	delete u2_r;
+	delete krp_prod;
+	delete uk_r;
+	delete ul_r;
 	delete pinv_t;
-	delete u_new;	
+	delete u_new;
 	delete diag_lambdas;
 	delete tmp;
 }

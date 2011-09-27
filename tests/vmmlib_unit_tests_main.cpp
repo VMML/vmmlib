@@ -28,6 +28,7 @@
 #define VMMLIB_USE_BLAS 1
 #ifdef VMMLIB_USE_BLAS
 #include "blas_dgemm_test.hpp"
+#include "blas_dot_test.hpp"
 #endif
 
 void
@@ -75,6 +76,9 @@ main( int argc, const char* argv[] )
 
     vmml::blas_dgemm_test blas_mm;
     run_and_log( blas_mm );
+	
+    vmml::blas_dot_test blas_vvi;
+    run_and_log( blas_vvi );
 	
 #endif
 	

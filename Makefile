@@ -21,6 +21,7 @@ VMMLIB_UNIT_TESTS =\
     tests/t3_ihopm_test.cpp \
     tests/matrix_pseudoinverse_test.cpp \
     tests/blas_dgemm_test.cpp \
+    tests/blas_dot_test.cpp \
 
 VMMLIB_UNIT_TESTS_OBJECTS = ${VMMLIB_UNIT_TESTS:%.cpp=%.o}  
 

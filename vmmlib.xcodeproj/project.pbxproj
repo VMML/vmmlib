@@ -44,6 +44,7 @@
 		CF2DD25E126C8EAE0036DE05 /* tensor3_iterator_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CF2DD25D126C8EAE0036DE05 /* tensor3_iterator_test.cpp */; };
 		CF2DD265126C91670036DE05 /* cp3_tensor_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CF2DD264126C91670036DE05 /* cp3_tensor_test.cpp */; };
 		CF42E5EA125F738600C0A38E /* matrix_pseudoinverse_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CF42E5E9125F738600C0A38E /* matrix_pseudoinverse_test.cpp */; };
+		CF75FFF51432383D00CFD46E /* blas_dot_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CF75FFF41432383D00CFD46E /* blas_dot_test.cpp */; };
 		CF7FA8D5114EB617003076E4 /* tucker3_tensor_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CF7FA8D4114EB617003076E4 /* tucker3_tensor_test.cpp */; };
 		CFA7FE4B14225C03001EE112 /* t3_ihopm_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CFA7FE4A14225C03001EE112 /* t3_ihopm_test.cpp */; };
 		CFD85C551399060300266D85 /* t3_hosvd_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CFD85C541399060300266D85 /* t3_hosvd_test.cpp */; };
@@ -128,6 +129,9 @@
 		CF42E5E7125F736E00C0A38E /* matrix_pseudoinverse_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = matrix_pseudoinverse_test.hpp; path = tests/matrix_pseudoinverse_test.hpp; sourceTree = "<group>"; };
 		CF42E5E9125F738600C0A38E /* matrix_pseudoinverse_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = matrix_pseudoinverse_test.cpp; path = tests/matrix_pseudoinverse_test.cpp; sourceTree = "<group>"; };
 		CF42E65B125F7F2100C0A38E /* matrix_pseudoinverse.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = matrix_pseudoinverse.hpp; path = include/vmmlib/matrix_pseudoinverse.hpp; sourceTree = "<group>"; };
+		CF75FFD11432315C00CFD46E /* blas_dot.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = blas_dot.hpp; path = include/vmmlib/blas_dot.hpp; sourceTree = "<group>"; };
+		CF75FFF31432383D00CFD46E /* blas_dot_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = blas_dot_test.hpp; path = tests/blas_dot_test.hpp; sourceTree = "<group>"; };
+		CF75FFF41432383D00CFD46E /* blas_dot_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = blas_dot_test.cpp; path = tests/blas_dot_test.cpp; sourceTree = "<group>"; };
 		CF7FA84C114AAC01003076E4 /* tucker3_tensor.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = tucker3_tensor.hpp; path = include/vmmlib/tucker3_tensor.hpp; sourceTree = "<group>"; };
 		CF7FA8D4114EB617003076E4 /* tucker3_tensor_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = tucker3_tensor_test.cpp; path = tests/tucker3_tensor_test.cpp; sourceTree = "<group>"; };
 		CF7FA8D9114EB696003076E4 /* tucker3_tensor_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = tucker3_tensor_test.hpp; path = tests/tucker3_tensor_test.hpp; sourceTree = "<group>"; };
@@ -388,6 +392,8 @@
 				CFA7FE4A14225C03001EE112 /* t3_ihopm_test.cpp */,
 				CFF0C1F91406E55200C3ADDB /* blas_dgemm_test.hpp */,
 				CFF0C1F81406E55200C3ADDB /* blas_dgemm_test.cpp */,
+				CF75FFF31432383D00CFD46E /* blas_dot_test.hpp */,
+				CF75FFF41432383D00CFD46E /* blas_dot_test.cpp */,
 			);
 			name = "unit tests";
 			sourceTree = "<group>";
@@ -407,6 +413,7 @@
 			isa = PBXGroup;
 			children = (
 				CFF0C1F21406E4DC00C3ADDB /* blas_dgemm.hpp */,
+				CF75FFD11432315C00CFD46E /* blas_dot.hpp */,
 				CFF0C1F31406E4DC00C3ADDB /* blas_includes.hpp */,
 				CFF0C1F41406E4DC00C3ADDB /* blas_types.hpp */,
 			);
@@ -551,6 +558,7 @@
 				CFD85C8413990A0E00266D85 /* t3_hopm_test.cpp in Sources */,
 				CFF0C1FA1406E55200C3ADDB /* blas_dgemm_test.cpp in Sources */,
 				CFA7FE4B14225C03001EE112 /* t3_ihopm_test.cpp in Sources */,
+				CF75FFF51432383D00CFD46E /* blas_dot_test.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -136,7 +136,8 @@ VMML_TEMPLATE_CLASSNAME::als( const t3_type& data_,
 	//intialize u1-u3
 	//inital guess not needed for u1 since it will be computed in the first optimization step
 	init( data_, u2_, u3_ );
-	
+
+#define CP_LOG 1	
 #if CP_LOG
 	std::cout << "CP ALS: HOPM (for tensor3) " << std::endl;
 #endif	

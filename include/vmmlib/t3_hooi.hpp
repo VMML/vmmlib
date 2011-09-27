@@ -237,11 +237,12 @@ void
 VMML_TEMPLATE_CLASSNAME::derive_core_orthogonal_bases( const t3_type& data_, const u1_type& u1_, const u2_type& u2_, const u3_type& u3_, t3_core_type& core_ )
 {
 	u1_inv_type* u1_inv = new u1_inv_type();
-	*u1_inv = transpose( u1_ );
 	u2_inv_type* u2_inv = new u2_inv_type();
-	*u2_inv = transpose( u2_ );
 	u3_inv_type* u3_inv = new u3_inv_type();
-	*u3_inv = transpose( u3_ );
+	
+	u1_.transpose_to( *u1_inv );
+	u2_.transpose_to( *u2_inv );
+	u3_.transpose_to( *u3_inv );
 	
 	core_.full_tensor3_matrix_multiplication( data_, *u1_inv, *u2_inv, *u3_inv );
 	

@@ -284,9 +284,9 @@ VMML_TEMPLATE_CLASSNAME::reconstruct( t3_type& data_, const u1_type& u1_, const 
 	typedef matrix<  R, I2 * I3, T > m_temp_type;
 	m_temp_type* temp =  new m_temp_type; 
 	
-	*u1_t = transpose( u1_ );
-	*u2_t = transpose( u2_ );
-	*u3_t = transpose( u3_ );
+	u1_.transpose_to( *u1_t );
+	u2_.transpose_to( *u2_t );
+	u3_.transpose_to( *u3_t );
 	
 	data_.reconstruct_CP( lambdas_, *u1_t, *u2_t, *u3_t, *temp );
 	

@@ -273,6 +273,8 @@ public:
 	template< typename TT >
 	void cast_from( const vector< M, TT >& other );
 	
+	size_t nnz() const;
+	
     
     friend std::ostream& operator<< ( std::ostream& os, const vector& vector_ )
     {
@@ -1668,6 +1670,24 @@ vector< M, T >::cast_from( const vector< M, TT >& other )
     {
         *it = static_cast< T >( *other_it );
     }	
+}
+	
+template< size_t M, typename T >
+size_t
+vector< M, T >::nnz() const
+{
+	size_t counter = 0;
+	
+	const_iterator  it = begin(),
+	it_end = end();
+	for( ; it != it_end; ++it)
+	{		
+		if ( *it != 0 ) {
+			++counter;
+		}
+	}
+	
+	return counter;
 }
 	
 } // namespace vmml

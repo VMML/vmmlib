@@ -89,6 +89,8 @@ namespace vmml
 		void decompose( const t3_type& data_, const size_t max_iterations_ = 100 ); 
 		void cp_als( const t3_type& data_, const size_t max_iterations_ = 100 );
 		
+		size_t nnz() const;
+		
 	protected:
 		cp3_tensor( const cp3_tensor< R, I1, I1, I1, T_value, T_coeff >& other ) {};
 		cp3_tensor< R, I1, I1, I1, T_value, T_coeff > operator=( const cp3_tensor< R, I1, I1, I1, T_value, T_coeff >& other ) { return *this; };
@@ -292,6 +294,20 @@ VMML_TEMPLATE_CLASSNAME::import_from( std::vector< T_coeff >& data_ )
 	
 }	
 
+VMML_TEMPLATE_STRING
+size_t
+VMML_TEMPLATE_CLASSNAME::nnz() const
+{
+	size_t counter = 0;
+	
+	counter += _u1_comp->nnz();
+	counter += _u2_comp->nnz();
+	counter += _u3_comp->nnz();
+	counter += _lambdas_comp.nnz();
+	
+	return counter;
+}
+	
 
 		
 #undef VMML_TEMPLATE_STRING

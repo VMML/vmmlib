@@ -130,7 +130,6 @@ namespace vmml
 		//A*B = H (MxK, KxN, MxN) (input A+B are given as transpose)
 		matrix< 2, 5, double > At;
 		matrix< 6, 2, double > Bt;
-		
 		matrix< 5, 6, double > H;
 		matrix< 5, 6, double > H_check;
 		
@@ -139,7 +138,7 @@ namespace vmml
 		
 		blas_dgemm< 5, 2, 6, double > blas_dgemm6;
 		blas_dgemm6.compute_t( At, Bt, H );
-		
+
 		double HData[] = { 
 			13, 27, 41, 55, 69, 83,
 			16, 34, 52, 70, 88, 106,
@@ -149,6 +148,23 @@ namespace vmml
 		H_check = HData;
 		
 		ok = H == H_check;
+				
+		vector< 5, double > vAt;
+		vector< 6, double > vBt;
+		vAt = BtData;
+		vBt = BtData;
+		blas_dgemm< 5, 1, 6, double > blas_dgemm7;
+		blas_dgemm7.compute_t( vAt, vBt, H );
+		
+		double H2Data[] = {
+			1, 2, 3, 4, 5, 6,
+			2, 4, 6, 8, 10, 12,
+			3, 6, 9, 12, 15, 18,
+			4, 8, 12, 16, 20, 24,
+			5, 10, 15, 20, 25, 30};
+		H_check = H2Data;
+				
+		ok = (H == H_check) && ok;
 		
 		log( "matrix-matrix multiplication (input A+B are transpose) (MxK) x (NxK) = (MxN)", ok );
 		if ( ! ok )
@@ -157,8 +173,8 @@ namespace vmml
 			ss
             << "input matrix A\n" << At << "\n"
             << "input matrix B_t\n" << Bt << "\n"
-            << "matrix C should be\n" << H_check << "\n"
-            << "matrix C is\n" << H << "\n"
+            << "matrix H should be\n" << H_check << "\n"
+            << "matrix H is\n" << H << "\n"
             << std::endl;
 			log_error( ss.str() );
             

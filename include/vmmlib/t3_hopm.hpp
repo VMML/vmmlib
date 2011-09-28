@@ -190,6 +190,8 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode1( const t3_type& data_, u1_type& u1_, con
 	data_.frontal_unfolding_fwd( *unfolding ); 
 	
 	optimize( *unfolding, u1_, u2_, u3_, lambdas_ );
+	
+	delete unfolding;
 }
 
 
@@ -202,6 +204,8 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode2( const t3_type& data_, const u1_type& u1
 	//data_.horizontal_unfolding_fwd( *unfolding );
 	
 	optimize( *unfolding, u2_, u1_, u3_, lambdas_ );
+	
+	delete unfolding;
 }	
 
 
@@ -214,6 +218,8 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode3( const t3_type& data_, const u1_type& u1
 	data_.lateral_unfolding_fwd( *unfolding );
 	
 	optimize( *unfolding, u3_, u1_, u2_, lambdas_ );
+	
+	delete unfolding;
 }
 	
 VMML_TEMPLATE_STRING

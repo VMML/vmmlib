@@ -119,7 +119,8 @@ VMML_TEMPLATE_CLASSNAME::als( const t3_type& data_,
 	double max_f_norm = data_.frobenius_norm();
 	double normresidual  = sqrt( (max_f_norm * max_f_norm) - (f_norm * f_norm));
 	double fit = 0;
-	if (max_f_norm != 0 ) {
+	if ( (max_f_norm != 0) && (max_f_norm > f_norm) ) 
+	{
 		fit = 1 - (normresidual / max_f_norm);
 	} else { 
 		fit = 1;

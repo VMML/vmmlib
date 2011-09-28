@@ -40,9 +40,10 @@ namespace vmml
 		double data_core_hooi[] = { -10.14733447424582, 0.0, 0.0, -2.760705584847321 };
 		core_hooi_check.set( data_core_hooi, data_core_hooi + 4);
 		
+		typedef t3_hooi< 2, 2, 1, 3, 2, 2, float > hooi_type;
 		tucker3_tensor< 2, 2, 1, 3, 2, 2, double, double > tuck3_hooi;
 		
-		tuck3_hooi.tucker_als( t3_data_als );
+		tuck3_hooi.tucker_als( t3_data_als, hooi_type::init_hosvd() );
 		tuck3_hooi.get_u1( u1_hooi );
 		tuck3_hooi.get_u2( u2_hooi );
 		tuck3_hooi.get_u3( u3_hooi );

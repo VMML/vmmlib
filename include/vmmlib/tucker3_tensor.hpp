@@ -157,8 +157,10 @@ public:
 					   T_internal& u_min_, T_internal& u_max_,
 					   T_internal& core_min_, T_internal& core_max_ ); 
 		
-	void tucker_als( const t3_type& data_ );	
-	void incr_block_diag_als( const t3_type& data_ );	
+	template< typename T_init>
+	void tucker_als( const t3_type& data_, T_init init  );	
+	template< typename T_init>
+	void incr_block_diag_als( const t3_type& data_, T_init init  );	
 		
 		
 	template< size_t K1, size_t K2, size_t K3>
@@ -589,7 +591,8 @@ void
 VMML_TEMPLATE_CLASSNAME::decompose( const t3_type& data_ ) 
 
 {
-	tucker_als( data_ );
+	typedef t3_hooi< R1, R2, R3, I1, I2, I3, T_internal > hooi_type;
+	tucker_als( data_, typename hooi_type::init_hosvd() );
 }
 	
 VMML_TEMPLATE_STRING
@@ -622,21 +625,23 @@ VMML_TEMPLATE_CLASSNAME::decompose( const t3_type& data_,
 	
 
 VMML_TEMPLATE_STRING
+template< typename T_init >
 void 
-VMML_TEMPLATE_CLASSNAME::tucker_als( const t3_type& data_ )
+VMML_TEMPLATE_CLASSNAME::tucker_als( const t3_type& data_, T_init init )
 {
 	t3_comp_type data;
 	data.cast_from( data_ );
 
 	typedef t3_hooi< R1, R2, R3, I1, I2, I3, T_internal > hooi_type;
-	hooi_type::als( data, *_u1_comp, *_u2_comp, *_u3_comp, _core_comp, typename hooi_type::init_hosvd() ); 
+	hooi_type::als( data, *_u1_comp, *_u2_comp, *_u3_comp, _core_comp, init ); 
 
 	cast_members();
 }
 	
 VMML_TEMPLATE_STRING
+template< typename T_init >
 void 
-VMML_TEMPLATE_CLASSNAME::incr_block_diag_als( const t3_type& data_ )
+VMML_TEMPLATE_CLASSNAME::incr_block_diag_als( const t3_type& data_, T_init init )
 {
 	t3_comp_type data;
 	data.cast_from( data_ );
@@ -644,7 +649,7 @@ VMML_TEMPLATE_CLASSNAME::incr_block_diag_als( const t3_type& data_ )
 	//for number of increments, do a block of tucker with size R1=R2=R3 and set core only in diagonal, all other core values = zero; first approach
 	
 	typedef t3_hooi< R1, R2, R3, I1, I2, I3, T_internal > hooi_type;
-	hooi_type::als( data, *_u1_comp, *_u2_comp, *_u3_comp, _core_comp, typename hooi_type::init_hosvd() ); 
+	hooi_type::als( data, *_u1_comp, *_u2_comp, *_u3_comp, _core_comp, init ); 
 	
 	cast_members();
 }

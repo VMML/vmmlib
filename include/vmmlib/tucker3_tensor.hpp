@@ -147,15 +147,20 @@ public:
 					 const T_internal& core_min_, const T_internal& core_max_ ); 
 	void reconstruct( t3_type& data_ ); 
 		
-	void decompose( const t3_type& data_ );
+	template< typename T_init>
+	void decompose( const t3_type& data_, T_init init );
+	template< typename T_init>
 	void decompose( const t3_type& data_, 
 				   T_internal& u1_min_, T_internal& u1_max_,
 				   T_internal& u2_min_, T_internal& u2_max_,
 				   T_internal& u3_min_, T_internal& u3_max_,
-				   T_internal& core_min_, T_internal& core_max_ ); 
+				   T_internal& core_min_, T_internal& core_max_,
+				   T_init init ); 
+	template< typename T_init>
 	void decompose( const t3_type& data_, 
-					   T_internal& u_min_, T_internal& u_max_,
-					   T_internal& core_min_, T_internal& core_max_ ); 
+				   T_internal& u_min_, T_internal& u_max_,
+				   T_internal& core_min_, T_internal& core_max_, 
+				   T_init init ); 
 		
 	template< typename T_init>
 	void tucker_als( const t3_type& data_, T_init init  );	
@@ -587,37 +592,41 @@ VMML_TEMPLATE_CLASSNAME::threshold_core( const T_coeff& threshold_value_, size_t
 	
 	
 VMML_TEMPLATE_STRING
+template< typename T_init>
 void 
-VMML_TEMPLATE_CLASSNAME::decompose( const t3_type& data_ ) 
+VMML_TEMPLATE_CLASSNAME::decompose( const t3_type& data_, T_init init ) 
 
 {
-	typedef t3_hooi< R1, R2, R3, I1, I2, I3, T_internal > hooi_type;
-	tucker_als( data_, typename hooi_type::init_hosvd() );
+	tucker_als( data_, init );
 }
 	
 VMML_TEMPLATE_STRING
+template< typename T_init>
 void 
 VMML_TEMPLATE_CLASSNAME::decompose( const t3_type& data_, 
 								   T_internal& u1_min_, T_internal& u1_max_,
 								   T_internal& u2_min_, T_internal& u2_max_,
 								   T_internal& u3_min_, T_internal& u3_max_,
-								   T_internal& core_min_, T_internal& core_max_ ) 
+								   T_internal& core_min_, T_internal& core_max_,
+								   T_init init ) 
 	
 {
-    decompose( data_ );
+    decompose( data_, init );
 	
 	quantize_basis_matrices( u1_min_, u1_max_, u2_min_, u2_max_, u3_min_, u3_max_ );
 	quantize_core(core_min_, core_max_ );			
 }
 
 VMML_TEMPLATE_STRING
+template< typename T_init>
 void 
 VMML_TEMPLATE_CLASSNAME::decompose( const t3_type& data_, 
 								   T_internal& u_min_, T_internal& u_max_,
-								   T_internal& core_min_, T_internal& core_max_ ) 
+								   T_internal& core_min_, T_internal& core_max_,
+								   T_init init ) 
 
 {
-	decompose( data_ );
+	decompose( data_, init );
 	
 	quantize_basis_matrices( u_min_, u_max_ );
 	quantize_core(core_min_, core_max_ );		

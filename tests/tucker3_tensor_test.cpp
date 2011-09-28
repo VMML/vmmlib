@@ -92,8 +92,9 @@ namespace vmml
 		float u1_min, u1_max, u2_min, u2_max, u3_min, u3_max, core_min, core_max, u_min, u_max;
 		
 		//std::cout << "start quant" << std::endl;
+		typedef t3_hooi< 2, 2, 2, 3, 2, 2, float > hooi_type1;
 		tuck3_hooi_3.enable_quantify_linear();
-		tuck3_hooi_3.decompose( t3_data_hooi_3, u1_min, u1_max, u2_min, u2_max, u3_min, u3_max, core_min, core_max );
+		tuck3_hooi_3.decompose( t3_data_hooi_3, u1_min, u1_max, u2_min, u2_max, u3_min, u3_max, core_min, core_max, hooi_type1::init_hosvd() );
 		//std::cout << "Tucker3 is : " << std::endl << tuck3_hooi_3 << std::endl;
 		
 		/*std::cout
@@ -107,7 +108,7 @@ namespace vmml
 		double rmse_check = 5.392896562454479; 
 		//std::cout << "reco : " << std::endl << t3_data_hooi_3_reco << std::endl;
 		
-		tuck3_hooi_3.decompose( t3_data_hooi_3, u_min, u_max, core_min, core_max );
+		tuck3_hooi_3.decompose( t3_data_hooi_3, u_min, u_max, core_min, core_max, hooi_type1::init_hosvd() );
 		//std::cout << "Tucker3 is (1 u min/max) : " << std::endl << tuck3_hooi_3 << std::endl;
 		//std::cout
 		//<< "u_min: " << u_min << ", u_max: " << u_max << std::endl;
@@ -297,7 +298,7 @@ namespace vmml
 		//export bytes for TtM 
 		std::vector<unsigned char> export_data_vec4;
 		tuck3_hooi_3.enable_quantify_log();
-		tuck3_hooi_3.decompose( t3_data_hooi_3, u_min, u_max, core_min, core_max );
+		tuck3_hooi_3.decompose( t3_data_hooi_3, u_min, u_max, core_min, core_max, hooi_type1::init_hosvd() );
 		tuck3_hooi_3.export_ttm_quantized_to( export_data_vec4 );
 				
 		tucker3_tensor< 2, 2, 2, 3, 2, 2, unsigned char, unsigned short > tuck3_import4;

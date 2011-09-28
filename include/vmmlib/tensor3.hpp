@@ -2201,6 +2201,7 @@ reconstruct_CP(
 
 	vector< R, T > ui;
 	vector< R, T > tmpi;
+	blas_dot< R, T > bdot;
     for (size_t k = 0; k < I3; k++)
     {
         for (size_t j = 0; j < I2; j++)
@@ -2212,8 +2213,7 @@ reconstruct_CP(
 				
 				ui = U.get_column( i );
 				tmpi = temp.get_column( j + k *I2 );
-				blas_dot< R, T >* bdot = new blas_dot< R, T >;
-				bdot->compute( ui, tmpi, value );
+				bdot.compute( ui, tmpi, value );
             }
         }
     }

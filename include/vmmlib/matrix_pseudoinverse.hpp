@@ -7,6 +7,7 @@
 #include <cstddef>
 #include <functional>
 #include <vmmlib/lapack_svd.hpp>
+#include <vmmlib/blas_dgemm.hpp>
 //#include <vmmlib/enable_if.hpp>
 
 /* 
@@ -76,22 +77,23 @@ namespace vmml
 			matrix< T::COLS, T::ROWS, float_t > tmp;
 			sigmas.reciprocal();
 			//double sigma_inv = 0;
+
 			matrix< 1, T::COLS, float_t > vt_i;
 			matrix< T::COLS, 1, float_t > v_i;
 			matrix< T::ROWS, 1, float_t > u_i;
 			matrix< 1, T::ROWS, float_t > ut_i;
+
+			blas_dgemm< T::COLS, 1, T::ROWS, float_t > blas_dgemm1;
+
 			if ( num_sigmas >= 1 ) {
 				
 				it = sigmas.begin();
 				for( size_t i = 0 ;  i < num_sigmas && it != it_end; ++it, ++i ) {
-					Vt.get_sub_matrix(vt_i, i);
-					v_i = transpose(vt_i);
-					U.get_sub_matrix(u_i, 0, i); 
-					ut_i = transpose(u_i);
-					
-					//build outer product of v1_i and ut_i
-					tmp.multiply(v_i, ut_i);
-					
+
+					Vt.get_sub_matrix( vt_i, i );
+					U.get_sub_matrix( u_i, 0, i ); 
+					blas_dgemm1.compute_t( vt_i, u_i, tmp );
+
 					//sigma value inverted: 1 / *it;
 					//sigma_inv = (1 / *it );
 					tmp *= *it ;
@@ -99,7 +101,7 @@ namespace vmml
 					
 				}
 				pseudoinverse.cast_from( result );
-				pseudoinverse_transposed = transpose( pseudoinverse );
+				pseudoinverse.transpose_to( pseudoinverse_transposed );
 				
 			} else {
 				pseudoinverse_transposed.zero(); //return matrix with zeros

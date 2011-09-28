@@ -149,12 +149,27 @@ namespace vmml
 		
 		ok = H == H_check;
 				
-		vector< 5, double > vAt;
-		vector< 6, double > vBt;
-		vAt = BtData;
-		vBt = BtData;
+		log( "matrix-matrix multiplication (input A+B are transpose) (MxK) x (NxK) = (MxN)", ok );
+		if ( ! ok )
+		{
+			std::stringstream ss;
+			ss
+            << "input matrix A\n" << A << "\n"
+            << "input matrix B_t\n" << B << "\n"
+            << "matrix H should be\n" << H_check << "\n"
+            << "matrix H is\n" << H << "\n"
+            << std::endl;
+			log_error( ss.str() );
+            
+		}
+	
+		//vector vector outer product
+		vector< 5, double > vA;
+		vector< 6, double > vB;
+		vA = BtData;
+		vB = BtData;
 		blas_dgemm< 5, 1, 6, double > blas_dgemm7;
-		blas_dgemm7.compute_t( vAt, vBt, H );
+		blas_dgemm7.compute_vv_outer( vA, vB, H );
 		
 		double H2Data[] = {
 			1, 2, 3, 4, 5, 6,
@@ -163,16 +178,17 @@ namespace vmml
 			4, 8, 12, 16, 20, 24,
 			5, 10, 15, 20, 25, 30};
 		H_check = H2Data;
-				
-		ok = (H == H_check) && ok;
 		
-		log( "matrix-matrix multiplication (input A+B are transpose) (MxK) x (NxK) = (MxN)", ok );
+	
+		ok = (H == H_check) ;
+		
+		log( "vector vector outer product with dgemm (M)' x (N) = (MxN)", ok );
 		if ( ! ok )
 		{
 			std::stringstream ss;
 			ss
-            << "input matrix A\n" << At << "\n"
-            << "input matrix B_t\n" << Bt << "\n"
+            << "input vector A\n" << vA << "\n"
+            << "input vector B_t\n" << vB << "\n"
             << "matrix H should be\n" << H_check << "\n"
             << "matrix H is\n" << H << "\n"
             << std::endl;
@@ -180,6 +196,7 @@ namespace vmml
             
 		}
 		
+
 		return ok;
 	}
 	

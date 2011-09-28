@@ -78,22 +78,20 @@ namespace vmml
 			sigmas.reciprocal();
 			//double sigma_inv = 0;
 
-			matrix< 1, T::COLS, float_t > vt_i;
-			matrix< T::COLS, 1, float_t > v_i;
-			matrix< T::ROWS, 1, float_t > u_i;
-			matrix< 1, T::ROWS, float_t > ut_i;
-
+			vector< T::COLS, float_t> vt_i;
+			vector< T::ROWS, float_t> u_i;
 			blas_dgemm< T::COLS, 1, T::ROWS, float_t > blas_dgemm1;
 
 			if ( num_sigmas >= 1 ) {
 				
 				it = sigmas.begin();
-				for( size_t i = 0 ;  i < num_sigmas && it != it_end; ++it, ++i ) {
+				for( size_t i = 0 ;  i < num_sigmas && it != it_end; ++it, ++i ) 
+				{
+					Vt.get_row( i, vt_i);
+					U.get_column( i, u_i );
 
-					Vt.get_sub_matrix( vt_i, i );
-					U.get_sub_matrix( u_i, 0, i ); 
-					blas_dgemm1.compute_t( vt_i, u_i, tmp );
-
+					blas_dgemm1.compute_vv_outer( vt_i, u_i, tmp );
+					
 					//sigma value inverted: 1 / *it;
 					//sigma_inv = (1 / *it );
 					tmp *= *it ;

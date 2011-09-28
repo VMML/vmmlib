@@ -15,6 +15,7 @@
 #include <vmmlib/tensor3_iterator.hpp>
 #include <vmmlib/enable_if.hpp>
 #include <vmmlib/blas_dgemm.hpp>
+#include <vmmlib/blas_dot.hpp>
 
 namespace vmml
 {
@@ -2185,7 +2186,7 @@ reconstruct_CP(
         {
             for (size_t r = 0; r < R; r++)
             {
-                temp(r, j + k * I2) = V(r, j) * W(r, k);
+				temp(r, j + k * I2) = V(r, j) * W(r, k);
             }
         }
     }
@@ -2198,6 +2199,8 @@ reconstruct_CP(
         }
     }
 
+	vector< R, T > ui;
+	vector< R, T > tmpi;
     for (size_t k = 0; k < I3; k++)
     {
         for (size_t j = 0; j < I2; j++)
@@ -2206,11 +2209,11 @@ reconstruct_CP(
             {
                 T& value = at( i, j, k );
                 value = static_cast< T >( 0.0 );
-            
-                for (size_t r = 0; r < R; r++)
-                {
-                    value += U(r, i) * temp(r, j + k * I2);
-                }
+				
+				ui = U.get_column( i );
+				tmpi = temp.get_column( j + k *I2 );
+				blas_dot< R, T >* bdot = new blas_dot< R, T >;
+				bdot->compute( ui, tmpi, value );
             }
         }
     }

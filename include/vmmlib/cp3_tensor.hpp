@@ -183,27 +183,9 @@ VMML_TEMPLATE_CLASSNAME::reconstruct( t3_type& data_ ) const
     t3_comp_type data;
     data.cast_from( data_ );
 	
-	typedef matrix< R, I1, T_internal > u1_comp_t_type;
-	typedef matrix< R, I2, T_internal > u2_comp_t_type;
-	typedef matrix< R, I3, T_internal > u3_comp_t_type;
-	
-	u1_comp_t_type* u1_t = new u1_comp_t_type;
-	u2_comp_t_type* u2_t = new u2_comp_t_type;
-	u3_comp_t_type* u3_t = new u3_comp_t_type;
-	typedef 	matrix<  R, I2 * I3, T_internal > m_temp_type;
-	m_temp_type* temp =  new m_temp_type; 
-	
-	*u1_t = transpose(*_u1_comp);
-	*u2_t = transpose(*_u2_comp);
-	*u3_t = transpose(*_u3_comp);
-	
-    data.reconstruct_CP( *_lambdas_comp, *u1_t, *u2_t, *u3_t, *temp );
-	
-	delete temp;
-	delete u1_t;
-	delete u2_t;
-	delete u3_t;
- 
+	typedef t3_hopm< R, I1, I2, I3, T_internal > hopm_type;
+	hopm_type::reconstruct( data, *_u1_comp, *_u2_comp, *_u3_comp, *_lambdas_comp );
+	 
      //convert reconstructed data, which is in type T_internal (double, float) to T_value (uint8 or uint16)
     if( (sizeof(T_value) == 1) || (sizeof(T_value) == 2) ){
 	data_.float_t_to_uint_t( data );

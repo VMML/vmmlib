@@ -165,6 +165,7 @@ namespace vmml
 	{
 		
 		typedef matrix< M, K, float_t > matrix_left_t;
+		typedef matrix< K, M, float_t > matrix_left_t_t;
 		typedef matrix< K, N, float_t > matrix_right_t;
 		typedef matrix< N, K, float_t > matrix_right_t_t;
 		typedef matrix< M, N, float_t > matrix_out_t;
@@ -177,6 +178,7 @@ namespace vmml
 		bool compute( const matrix_left_t& A_, matrix_out_t& C_ );
 		bool compute_t( const matrix_right_t& At_, matrix_out_t& C_ );
 		bool compute_bt( const matrix_left_t& A_, const matrix_right_t_t& Bt_, matrix_out_t& C_ );
+		bool compute_t( const matrix_left_t_t& At_, const matrix_right_t_t& Bt_, matrix_out_t& C_ );
 				
 		
 		blas::dgemm_params< float_t > p;
@@ -309,6 +311,37 @@ namespace vmml
 		
 		return true;
 	}		
+
+	template< size_t M, size_t K, size_t N, typename float_t >
+	bool
+	blas_dgemm< M, K, N, float_t >::compute_t( 
+											   const matrix_left_t_t& At_, 
+											   const matrix_right_t_t& Bt_,
+											   matrix_out_t& C_ )
+	{
+		// blas needs non-const data
+		matrix_left_t_t* AA = new matrix_left_t_t( At_ );
+		matrix_right_t_t* BB = new matrix_right_t_t( Bt_ );
+		C_.zero();
+		
+		p.trans_a   = CblasTrans;
+		p.trans_b   = CblasTrans;
+		p.a         = AA->array;
+		p.b         = BB->array;
+		p.c         = C_.array;
+		p.ldb       = N; 
+		p.lda       = K; 
+		
+		blas::dgemm_call< float_t >( p );
+		
+		//std::cout << p << std::endl; //debug
+		
+		delete AA;
+		delete BB;
+		
+		return true;
+	}		
+	
 	
 } // namespace vmml
 

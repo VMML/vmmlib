@@ -127,6 +127,43 @@ namespace vmml
             
 		}
 		
+		//A*B = H (MxK, KxN, MxN) (input A+B are given as transpose)
+		matrix< 2, 5, double > At;
+		matrix< 6, 2, double > Bt;
+		
+		matrix< 5, 6, double > H;
+		matrix< 5, 6, double > H_check;
+		
+		Bt = BtData;
+		At = BtData;
+		
+		blas_dgemm< 5, 2, 6, double > blas_dgemm6;
+		blas_dgemm6.compute_t( At, Bt, H );
+		
+		double HData[] = { 
+			13, 27, 41, 55, 69, 83,
+			16, 34, 52, 70, 88, 106,
+			19, 41, 63, 85, 107, 129,
+			22, 48, 74, 100, 126, 152,
+			25, 55, 85, 115, 145, 175 };
+		H_check = HData;
+		
+		ok = H == H_check;
+		
+		log( "matrix-matrix multiplication (input A+B are transpose) (MxK) x (NxK) = (MxN)", ok );
+		if ( ! ok )
+		{
+			std::stringstream ss;
+			ss
+            << "input matrix A\n" << At << "\n"
+            << "input matrix B_t\n" << Bt << "\n"
+            << "matrix C should be\n" << H_check << "\n"
+            << "matrix C is\n" << H << "\n"
+            << std::endl;
+			log_error( ss.str() );
+            
+		}
+		
 		return ok;
 	}
 	

@@ -86,8 +86,10 @@ namespace vmml
 		void import_from( std::vector< T_coeff >& data_ );	
 		
 		void reconstruct( t3_type& data_ ) const;
-		void decompose( const t3_type& data_, const size_t max_iterations_ = 100 ); 
-		void cp_als( const t3_type& data_, const size_t max_iterations_ = 100 );
+		template< typename T_init >
+		void decompose( const t3_type& data_, T_init init, const size_t max_iterations_ = 100 ); 
+		template< typename T_init >
+		void cp_als( const t3_type& data_, T_init init, const size_t max_iterations_ = 100 );
 		
 		size_t nnz() const;
 		
@@ -196,21 +198,23 @@ VMML_TEMPLATE_CLASSNAME::reconstruct( t3_type& data_ ) const
 
 
 VMML_TEMPLATE_STRING
+template< typename T_init >
 void 
-VMML_TEMPLATE_CLASSNAME::decompose( const t3_type& data_, const size_t max_iterations_  )
+VMML_TEMPLATE_CLASSNAME::decompose( const t3_type& data_, T_init init, const size_t max_iterations_  )
 {
-	cp_als( data_, max_iterations_ );
+	cp_als( data_, init, max_iterations_ );
 }
 
 VMML_TEMPLATE_STRING
+template< typename T_init >
 void 
-VMML_TEMPLATE_CLASSNAME::cp_als( const t3_type& data_, const size_t max_iterations_  )
+VMML_TEMPLATE_CLASSNAME::cp_als( const t3_type& data_, T_init init, const size_t max_iterations_  )
 {
 	t3_comp_type data;
 	data.cast_from( data_ );
 	
 	typedef t3_hopm< R, I1, I2, I3, T_internal > hopm_type;
-	hopm_type::als( data, *_u1_comp, *_u2_comp, *_u3_comp, *_lambdas_comp, typename hopm_type::init_random(), max_iterations_ );
+	hopm_type::als( data, *_u1_comp, *_u2_comp, *_u3_comp, *_lambdas_comp, init, max_iterations_ );
 	
  	cast_members();
 }

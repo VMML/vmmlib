@@ -316,7 +316,30 @@ namespace vmml
 			log_error( error.str() );
 		}
 		
+		double check_norm = 3.401071120277306;
+		double nrm = hopm4_type::norm_ktensor( u1_4, u2_4, u3_4, lambda_4 );
+		
+		precision = 0.0000000001;
+		ok = (check_norm - nrm < precision );
+		
+		if( ok)
+		{	
+			log( "norm ktensor", ok  );
+		} 
+		else
+		{
+			std::stringstream error;
+			error 
+			<< "norm ktensor" << std::setprecision(16) << std::endl
+			<< "should be: " << check_norm << std::endl
+			<< "is: " << nrm
+			<< std::endl;
 			
+			log_error( error.str() );
+		}
+		
+		
+		
 		return ok;
 	}
 	

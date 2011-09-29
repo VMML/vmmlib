@@ -210,6 +210,7 @@ public:
 		void dequantize( matrix< M, N, TT >& quantized_, const TT& min_value, const TT& max_value ) const;
 
 	void columnwise_sum( vector< N, T>& summed_columns_ ) const;
+	double sum_elements() const;
 	
 	template< size_t R >
     typename enable_if< R == M && R == N >::type* 
@@ -2574,6 +2575,21 @@ matrix< M, N, T >::columnwise_sum( vector< N, T>& summed_columns_ ) const
 		}
 		summed_columns_.at( n ) = value;
 	}
+}	
+	
+template< size_t M, size_t N, typename T >
+double 
+matrix< M, N, T >::sum_elements( ) const
+{
+	double sum = 0.0;
+	
+	const_iterator it = begin(), it_end = end(); 
+	for( ; it != it_end; ++it )
+	{
+		sum += *it;
+	}
+	
+	return sum;
 }	
 	
 template< size_t M, size_t N, typename T >

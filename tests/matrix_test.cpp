@@ -1098,6 +1098,19 @@ matrix_test::run()
 		log( "summed columns" , ok  );
 		
 	}
+	{
+		//columnwise sum
+		
+		matrix< 4, 3, float > m;
+		m.fill( 3 );
+		
+		double sum = m.sum_elements();
+		double sum_check = 36;
+		
+		ok = sum == sum_check;
+		log( "sum elements" , ok  );
+		
+	}
 	
 	{
 		//symmetric covariance matrix

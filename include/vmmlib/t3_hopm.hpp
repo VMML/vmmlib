@@ -19,6 +19,7 @@
 #include <vmmlib/t3_hosvd.hpp>
 #include <vmmlib/matrix_pseudoinverse.hpp>
 #include <vmmlib/blas_dgemm.hpp>
+#include <vmmlib/blas_dot.hpp>
 
 namespace vmml
 {
@@ -54,6 +55,9 @@ namespace vmml
 		static void als( const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, lambda_type& lambdas_, T_init init, const size_t max_iterations_ = 100 );
 		static void reconstruct( t3_type& data_, const u1_type& u1_, const u2_type& u2_, const u3_type& u3_, const lambda_type& lambdas_ );
 		
+		//ktensor = kruskal tensor, i.e., lambda, U1, U2, U3
+		static double norm_ktensor( const u1_type& u1_, const u2_type& u2_, const u3_type& u3_, const lambda_type& lambdas_ );
+		
 		// init functors 
 		struct init_hosvd
 		{
@@ -85,7 +89,7 @@ namespace vmml
 		
 		
 	protected:
-		
+
 		static void optimize_mode1( const t3_type& data_, u1_type& u1, const u2_type& u2_, const u3_type& u3_, lambda_type& lambdas_ );
 		static void optimize_mode2( const t3_type& data_, const u1_type& u1_, u2_type& u2_, const u3_type& u3_, lambda_type& lambdas_ );		
 		static void optimize_mode3( const t3_type& data_, const u1_type& u1_, const u2_type& u2_, u3_type& u3_, lambda_type& lambdas_ );
@@ -301,6 +305,56 @@ VMML_TEMPLATE_CLASSNAME::reconstruct( t3_type& data_, const u1_type& u1_, const 
 	delete u2_t;
 	delete u3_t;
 }
+
+VMML_TEMPLATE_STRING
+double 
+VMML_TEMPLATE_CLASSNAME::norm_ktensor( const u1_type& u1_, const u2_type& u2_, const u3_type& u3_, const lambda_type& lambdas_ ) 
+{
+
+	
+/*	% Compute the matrix of correlation coefficients
+	coefMatrix = A.lambda * A.lambda';
+	for i = 1:ndims(A)
+	    coefMatrix = coefMatrix .* (U{i}'*U{i}); //(RxR) .x (RxR)
+	end
+	
+	nrm = sqrt(sum(coefMatrix(:))); */
+
+	m_r2_type* coeff2_matrix = new m_r2_type;
+	m_r2_type* cov_u1 = new m_r2_type;
+	m_r2_type* cov_u2 = new m_r2_type;
+	m_r2_type* cov_u3 = new m_r2_type;
+	
+	blas_dgemm< R, 1, R, T >* blas_l2 = new blas_dgemm< R, 1, R, T>;
+	blas_l2->compute_vv_outer( lambdas_, lambdas_, *coeff2_matrix );
+	delete blas_l2;
+	
+	blas_dgemm< R, I1, R, T >* blas_u1cov = new blas_dgemm< R, I1, R, T>;
+	blas_u1cov->compute_t( u1_, *cov_u1 );
+	delete blas_u1cov;
+	
+	blas_dgemm< R, I2, R, T >* blas_u2cov = new blas_dgemm< R, I2, R, T>;
+	blas_u2cov->compute_t( u2_, *cov_u2 );
+	delete blas_u2cov;
+
+	blas_dgemm< R, I3, R, T >* blas_u3cov = new blas_dgemm< R, I3, R, T>;
+	blas_u3cov->compute_t( u3_, *cov_u3 );
+	delete blas_u3cov;
+	
+	coeff2_matrix->multiply_piecewise( *cov_u1 );
+	coeff2_matrix->multiply_piecewise( *cov_u2 );
+	coeff2_matrix->multiply_piecewise( *cov_u3 );
+
+	double nrm = coeff2_matrix->sum_elements();
+		
+	delete coeff2_matrix;
+	delete cov_u1;
+	delete cov_u2;
+	delete cov_u3;
+	
+	return sqrt( nrm);
+}
+	
 
 
 VMML_TEMPLATE_STRING

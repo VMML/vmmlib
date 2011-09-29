@@ -177,7 +177,7 @@ namespace vmml
 		
 		bool compute( const matrix_left_t& A_, const matrix_right_t& B_, matrix_out_t& C_ );
 		bool compute( const matrix_left_t& A_, matrix_out_t& C_ );
-		bool compute_t( const matrix_right_t& At_, matrix_out_t& C_ );
+		bool compute_t( const matrix_right_t& B_, matrix_out_t& C_ );
 		bool compute_bt( const matrix_left_t& A_, const matrix_right_t_t& Bt_, matrix_out_t& C_ );
 		bool compute_t( const matrix_left_t_t& A_, const matrix_right_t_t& B_, matrix_out_t& C_ );
 		bool compute_vv_outer( const vector_left_t& A_, const vector_right_t& B_, matrix_out_t& C_ );
@@ -265,15 +265,15 @@ namespace vmml
 	
 	template< size_t M, size_t K, size_t N, typename float_t >
 	bool
-	blas_dgemm< M, K, N, float_t >::compute_t( const matrix_right_t& At_, matrix_out_t& C_ )
+	blas_dgemm< M, K, N, float_t >::compute_t( const matrix_right_t& B_, matrix_out_t& C_ )
 	{
 		// blas needs non-const data
-		matrix_right_t* AA = new matrix_right_t( At_ );
+		matrix_right_t* BB = new matrix_right_t( B_ );
 		C_.zero();
 		
 		p.trans_a   = CblasTrans;
-		p.a         = AA->array;
-		p.b         = AA->array;
+		p.a         = BB->array;
+		p.b         = BB->array;
 		p.lda       = K; 
 		p.c         = C_.array;
 		
@@ -281,7 +281,7 @@ namespace vmml
 		
 		//std::cout << p << std::endl; //debug
 		
-		delete AA;
+		delete BB;
 		
 		return true;
 	}	

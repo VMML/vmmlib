@@ -8,6 +8,7 @@
  * - Kroonenberg & De Leeuw, 1980: Principal component analysis of three-mode data by means of alternating least squares algorithms. Psychometrika. (TUCKALS)
  * - De Lathauwer, De Moor, Vandewalle, 2000a: A multilinear singular value decomposition, SIAM J. Matrix Anal. Appl.
  * - Kolda & Bader, 2009: Tensor Decompositions and Applications, SIAM Review.
+ * - Bader & Kolda, 2006: Algorithm 862: Matlab tensor classes for fast algorithm prototyping. ACM Transactions on Mathematical Software.
  * 
  */
 

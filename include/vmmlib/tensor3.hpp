@@ -250,9 +250,9 @@ public:
 	template< size_t R, typename TT >
 	T tensor_inner_product(
         const vmml::vector< R, TT>& lambda,
-        vmml::matrix< I1, R, TT >& U,
+        const vmml::matrix< I1, R, TT >& U,
         const vmml::matrix< I2, R, TT >& V,
-        const vmml::matrix< I3, R, TT >& W );    
+        const vmml::matrix< I3, R, TT >& W ) const;    
     
     //error computation 
     double frobenius_norm() const;
@@ -2273,9 +2273,9 @@ template< size_t R, typename TT >
 T
 VMML_TEMPLATE_CLASSNAME::tensor_inner_product(
 		const vmml::vector< R, TT>& lambda,
-        vmml::matrix< I1, R, TT >& U,
+        const vmml::matrix< I1, R, TT >& U,
         const vmml::matrix< I2, R, TT >& V,
-        const vmml::matrix< I3, R, TT >& W )
+        const vmml::matrix< I3, R, TT >& W ) const
 {
 	T inner_prod;
 	for (size_t r = 0; r < R; ++r)

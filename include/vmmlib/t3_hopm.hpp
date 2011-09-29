@@ -10,6 +10,7 @@
  * - Harshman, 1970: Foundations of the PARAFAC procedure: Models and conditions for an 'explanatory' multi-modal factor analysis, UCLA Working Papers in Phonetics.
  * - De Lathauwer, De Moor, Vandewalle, 2000: A multilinear singular value decomposition, SIAM J. Matrix Anal. Appl.
  * - Kolda & Bader, 2009: Tensor Decompositions and Applications, SIAM Review.
+ * - Bader & Kolda, 2006: Algorithm 862: Matlab tensor classes for fast algorithm prototyping. ACM Transactions on Mathematical Software.
  * 
  */
 
@@ -134,9 +135,11 @@ VMML_TEMPLATE_CLASSNAME::als( const t3_type& data_,
 	t3_type* residual_data = new t3_type;
 	residual_data->zero();
 	
-	double approx_norm = 0;
 	double max_f_norm = data_.frobenius_norm();
 	double normresidual  = 0;
+	double norm1  = 0;
+	double norm2  = 0;
+	double norm3  = 0;
 	double fit = 0;
 	if (max_f_norm == 0 )
 		fit = 1;
@@ -153,7 +156,6 @@ VMML_TEMPLATE_CLASSNAME::als( const t3_type& data_,
 #endif	
 	
 	size_t i = 0;
-	//size_t max_iterations = 100;
 	while( (fitchange >= fitchange_tolerance) && ( i < max_iterations_ ) ) //do until converges
 	{
 		fitold = fit;
@@ -161,11 +163,23 @@ VMML_TEMPLATE_CLASSNAME::als( const t3_type& data_,
 		optimize_mode2( data_, u1_, u2_, u3_, lambdas_ );
 		optimize_mode3( data_, u1_, u2_, u3_, lambdas_ );
 		
-		//Reconstruct cptensor and measure norm of approximation
+#if 0
+		//Reconstruct tensor and measure norm of approximation
+		//slower version since cp reconstruction is slow
 		reconstruct( *approximated_data, u1_, u2_, u3_, lambdas_ );
 		approx_norm = approximated_data->frobenius_norm();
 		*residual_data = data_ - *approximated_data;
 		normresidual = residual_data->frobenius_norm();
+#else
+		//normresidual = sqrt( normX^2 + norm(P)^2 - 2 * innerprod(X,P) );
+		norm1 = data_.frobenius_norm();
+		norm1 *= norm1;
+		norm2 = norm_ktensor( u1_, u2_, u3_, lambdas_);
+		norm2 *= norm2;
+		norm3 = 2* data_.tensor_inner_product( lambdas_, u1_, u2_, u3_ );
+		normresidual = sqrt(norm1 + norm2 - norm3);
+#endif
+		
 		fit = 1 - ( normresidual / max_f_norm ); 
 		fitchange = fabs(fitold - fit);
 		
@@ -173,7 +187,8 @@ VMML_TEMPLATE_CLASSNAME::als( const t3_type& data_,
 		std::cout << "iteration '" << i 
 		<< "', fit: " << fit 
 		<< ", fitdelta: " << fitchange 
-		<< ", frobenius norm: " << approx_norm << std::endl;		
+		<< ", normresidual: " << normresidual 
+		<< std::endl;		
 #endif
 		++i;
 	} // end ALS
@@ -310,16 +325,6 @@ VMML_TEMPLATE_STRING
 double 
 VMML_TEMPLATE_CLASSNAME::norm_ktensor( const u1_type& u1_, const u2_type& u2_, const u3_type& u3_, const lambda_type& lambdas_ ) 
 {
-
-	
-/*	% Compute the matrix of correlation coefficients
-	coefMatrix = A.lambda * A.lambda';
-	for i = 1:ndims(A)
-	    coefMatrix = coefMatrix .* (U{i}'*U{i}); //(RxR) .x (RxR)
-	end
-	
-	nrm = sqrt(sum(coefMatrix(:))); */
-
 	m_r2_type* coeff2_matrix = new m_r2_type;
 	m_r2_type* cov_u1 = new m_r2_type;
 	m_r2_type* cov_u2 = new m_r2_type;

@@ -272,6 +272,7 @@ public:
 	void write_to_raw( const std::string& dir_, const std::string& filename_ ) const;
 	void read_from_raw( const std::string& dir_, const std::string& filename_ ) ;
 	void write_datfile( const std::string& dir_, const std::string& filename_ ) const;
+	void write_csv_file( const std::string& dir_, const std::string& filename_ ) const;
 	    
     inline tensor3 operator+( T scalar ) const;
     inline tensor3 operator-( T scalar ) const;
@@ -2025,6 +2026,39 @@ VMML_TEMPLATE_CLASSNAME::write_to_raw( const std::string& dir_, const std::strin
 	}
 }	
 
+VMML_TEMPLATE_STRING
+void
+VMML_TEMPLATE_CLASSNAME::write_csv_file( const std::string& dir_, const std::string& filename_ ) const
+{	
+	int dir_length = dir_.size() -1;
+	int last_separator = dir_.find_last_of( "/");
+	std::string path = dir_;
+	if (last_separator < dir_length ) {
+		path.append( "/" );
+	}
+	path.append( filename_ );
+	//check for format
+	if( filename_.find( "csv", filename_.size() -3) == (-1)) {
+		path.append( ".");
+		path.append( "csv" );
+	}
+			
+	std::ofstream outfile;	
+	outfile.open( path.c_str() );
+	if( outfile.is_open() ) {
+		
+		for(size_t i = 0; i < I3; ++i)
+        {
+            outfile << get_frontal_slice_fwd( i )  << std::endl;
+        }	
+
+		outfile.close();
+	} else {
+		std::cout << "no file open" << std::endl;
+	}
+
+}		
+	
 
 VMML_TEMPLATE_STRING
 void

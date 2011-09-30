@@ -17,6 +17,8 @@
 #include <algorithm>
 #include <string>
 #include <cstring>
+#include <fstream>   // file I/O
+
 
 namespace vmml
 {
@@ -201,6 +203,8 @@ public:
 	
 	template< typename TT >
 	void cast_from( const matrix< M, N, TT >& other );
+	
+	void write_csv_file( const std::string& dir_, const std::string& filename_ ) const;
 	
 	template< typename TT >
 		void quantize_to( matrix< M, N, TT >& quantized_, const T& min_value, const T& max_value ) const;
@@ -2644,6 +2648,36 @@ matrix< M, N, T >::set_random( int seed )
 	}
 }	
 	
+
+	
+
+template< size_t M, size_t N, typename T >
+void
+matrix< M, N, T >::write_csv_file( const std::string& dir_, const std::string& filename_ ) const
+{	
+	int dir_length = dir_.size() -1;
+	int last_separator = dir_.find_last_of( "/");
+	std::string path = dir_;
+	if (last_separator < dir_length ) {
+		path.append( "/" );
+	}
+	path.append( filename_ );
+	//check for format
+	if( filename_.find( "csv", filename_.size() -3) == (-1)) {
+		path.append( ".");
+		path.append( "csv" );
+	}
+	
+	std::ofstream outfile;	
+	outfile.open( path.c_str() );
+	if( outfile.is_open() ) {
+		outfile << *this  << std::endl;		
+		outfile.close();
+	} else {
+		std::cout << "no file open" << std::endl;
+	}
+	
+}		
 	
 	
 } // namespace vmml

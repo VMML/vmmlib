@@ -268,7 +268,13 @@ public:
     void perturb( T perturbation = 0.0001 );
 	
 	void sqrt_elementwise();
+
+    // computes the reciprocal value for each component, x = 1/x;
+    // WARNING: might result in nans if division by 0!
 	void reciprocal();
+    // computes the reciprocal value for each component, x = 1/x;
+    // checks every component for 0, sets to max value if zero.    
+    void reciprocal_safe(); 
 	
 	template< typename TT >
 	void cast_from( const vector< M, TT >& other );
@@ -1647,6 +1653,8 @@ vector< M, T >::sqrt_elementwise()
 	}
 }
 	
+
+
 template< size_t M, typename T >
 void
 vector< M, T >::reciprocal()
@@ -1656,6 +1664,24 @@ vector< M, T >::reciprocal()
 		(*it) = static_cast< T >( 1.0 ) / (*it);
 	}
 }
+
+
+
+template< size_t M, typename T >
+void
+vector< M, T >::reciprocal_safe()
+{
+	for( iterator it = begin(), it_end = end(); it != it_end; ++it )
+	{
+        T& v = *it;
+
+        if ( v == static_cast< T >( 0 ) )
+            v = std::numeric_limits< T >::max();
+        else
+            v = static_cast< T >( 1.0 ) / v;
+	}
+}
+
 
 
 template< size_t M, typename T >

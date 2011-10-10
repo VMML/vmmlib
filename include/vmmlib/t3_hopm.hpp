@@ -151,6 +151,9 @@ VMML_TEMPLATE_CLASSNAME::als( const t3_type& data_,
 	//inital guess not needed for u1 since it will be computed in the first optimization step
 	init( data_, u2_, u3_ );
 
+    assert( u2_.is_valid() && u3_.is_valid() );
+    assert( lambdas_.is_valid() );
+
 #if CP_LOG
 	std::cout << "CP ALS: HOPM (for tensor3) " << std::endl;
 #endif	
@@ -159,6 +162,7 @@ VMML_TEMPLATE_CLASSNAME::als( const t3_type& data_,
 	while( (fitchange >= fitchange_tolerance) && ( i < max_iterations_ ) ) //do until converges
 	{
 		fitold = fit;
+        
 		optimize_mode1( data_, u1_, u2_, u3_, lambdas_ );
 		optimize_mode2( data_, u1_, u2_, u3_, lambdas_ );
 		optimize_mode3( data_, u1_, u2_, u3_, lambdas_ );
@@ -207,6 +211,8 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode1( const t3_type& data_, u1_type& u1_, con
 	u1_unfolded_type* unfolding = new u1_unfolded_type; // -> u1
 	//data_.horizontal_unfolding_bwd( *unfolding ); //lathauwer
 	data_.frontal_unfolding_fwd( *unfolding ); 
+    
+    assert( u2_.is_valid() && u3_.is_valid() );
 	
 	optimize( *unfolding, u1_, u2_, u3_, lambdas_ );
 	
@@ -221,6 +227,8 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode2( const t3_type& data_, const u1_type& u1
 	u2_unfolded_type* unfolding = new u2_unfolded_type; // -> u2
 	data_.frontal_unfolding_bwd( *unfolding ); //lathauwer
 	//data_.horizontal_unfolding_fwd( *unfolding );
+
+    assert( u1_.is_valid() && u3_.is_valid() );
 	
 	optimize( *unfolding, u2_, u1_, u3_, lambdas_ );
 	
@@ -235,6 +243,8 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode3( const t3_type& data_, const u1_type& u1
 	u3_unfolded_type* unfolding = new u3_unfolded_type; //-> u3
 	//data_.horizontal_unfolding_bwd( *unfolding );//lathauwer
 	data_.lateral_unfolding_fwd( *unfolding );
+
+    assert( u1_.is_valid() && u2_.is_valid() );
 	
 	optimize( *unfolding, u3_, u1_, u2_, lambdas_ );
 	
@@ -251,43 +261,60 @@ VMML_TEMPLATE_CLASSNAME::optimize(
 								  vector< R, T>& lambdas_ 
 								  )	
 {
-	typedef matrix< K*L, R, T > krp_matrix_type;
-	krp_matrix_type* krp_prod  = new krp_matrix_type;
+    typedef matrix< K*L, R, T > krp_matrix_type;
+	krp_matrix_type* krp_prod   = new krp_matrix_type;
+	assert( uk_.is_valid() && ul_.is_valid() );
+    
 	ul_.khatri_rao_product( uk_, *krp_prod );	
-	matrix< J, R, T >* u_new = new matrix< J, R, T >;
-	
-	blas_dgemm< J, K*L, R, T>* blas_dgemm1 = new blas_dgemm< J, K*L, R, T>;
-	blas_dgemm1->compute( unfolding_, *krp_prod, *u_new );
-	delete blas_dgemm1;	
+
+	matrix< J, R, T >* u_new    = new matrix< J, R, T >;
+    
+    blas_dgemm< J, K*L, R, T> blas_dgemm1;
+    blas_dgemm1.compute( unfolding_, *krp_prod, *u_new );
 	
 	//square matrix of U_l and U_k
 	m_r2_type* uk_r = new m_r2_type;
 	m_r2_type* ul_r = new m_r2_type;
+
 	blas_dgemm< R, K, R, T> blas_dgemm2;
 	blas_dgemm2.compute_t( uk_, *uk_r );
+    assert( uk_r->is_valid() );
+
 	blas_dgemm< R, L, R, T> blas_dgemm3;
 	blas_dgemm3.compute_t( ul_, *ul_r );
-	
+    assert( ul_r->is_valid() );
+
 	uk_r->multiply_piecewise( *ul_r );
-	
+    assert( uk_r->is_valid() );
+    
 	m_r2_type* pinv_t = new m_r2_type;
 	compute_pseudoinverse< m_r2_type > compute_pinv;
 	compute_pinv( *uk_r, *pinv_t );
 	
 	blas_dgemm< J, R, R, T> blas_dgemm4;
 	blas_dgemm4.compute_bt( *u_new, *pinv_t, uj_ );
+    assert( uj_.is_valid() );
 	
 	*u_new = uj_;
 	u_new->multiply_piecewise( *u_new ); //2 norm
 	u_new->columnwise_sum( lambdas_ );
+    
+    assert( lambdas_.is_valid() );
+    
 	lambdas_.sqrt_elementwise();
 	lambda_type* tmp = new lambda_type;
 	*tmp = lambdas_;
-	tmp->reciprocal();
+	tmp->reciprocal_safe();
+
+    assert( tmp->is_valid() );
+
 	m_r2_type* diag_lambdas = new m_r2_type;
 	diag_lambdas->diag( *tmp );
-	
-	blas_dgemm4.compute( uj_, *diag_lambdas, uj_ );
+    
+    matrix< J, R, T >* tmp_uj = new matrix< J, R, T >( uj_ );
+	blas_dgemm4.compute( *tmp_uj, *diag_lambdas, uj_ );
+
+    assert( uj_.is_valid() );
 	
 	delete krp_prod;
 	delete uk_r;
@@ -296,6 +323,8 @@ VMML_TEMPLATE_CLASSNAME::optimize(
 	delete u_new;
 	delete diag_lambdas;
 	delete tmp;
+    delete tmp_uj;
+    
 }
 	
 	

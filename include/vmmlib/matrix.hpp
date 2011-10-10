@@ -363,6 +363,10 @@ public:
     inline T& y();
     inline T& z();
     
+    
+    // tests every component for isnan && isinf
+    inline bool is_valid() const; 
+    
 	// legacy/compatibility accessor
 	struct row_accessor
 	{
@@ -2678,7 +2682,30 @@ matrix< M, N, T >::write_csv_file( const std::string& dir_, const std::string& f
 	}
 	
 }		
-	
+
+
+
+template< size_t M, size_t N, typename T >
+bool
+matrix< M, N, T >::is_valid() const
+{
+    bool valid = true;
+    for( const_iterator it = begin(); valid && it != end(); ++it )
+    {
+        if ( std::isnan( *it ) )
+            valid = false;
+        if ( std::isinf( *it ) )
+            valid = false;
+    }
+
+    #ifdef VMMLIB_THROW_EXCEPTIONS
+    if ( ! valid )
+        VMMLIB_ERROR( "matrix contains nan or inf.", VMMLIB_HERE );
+    #endif
+
+    return valid;
+}
+
 	
 } // namespace vmml
 

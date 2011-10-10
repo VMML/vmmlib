@@ -274,7 +274,9 @@ public:
 	void cast_from( const vector< M, TT >& other );
 	
 	size_t nnz() const;
-	
+
+    // test each component of the vector for isnan and isinf
+    inline bool is_valid() const;
     
     friend std::ostream& operator<< ( std::ostream& os, const vector& vector_ )
     {
@@ -1651,7 +1653,7 @@ vector< M, T >::reciprocal()
 {
 	for( iterator it = begin(), it_end = end(); it != it_end; ++it )
 	{
-		(*it) = 1/(*it);
+		(*it) = static_cast< T >( 1.0 ) / (*it);
 	}
 }
 
@@ -1689,6 +1691,30 @@ vector< M, T >::nnz() const
 	
 	return counter;
 }
+
+
+
+template< size_t M, typename T >
+bool
+vector< M, T >::is_valid() const
+{
+    bool valid = true;
+    for( const_iterator it = begin(); valid && it != end(); ++it )
+    {
+        if ( std::isnan( *it ) )
+            valid = false;
+        if ( std::isinf( *it ) )
+            valid = false;
+    }
+
+    #ifdef VMMLIB_THROW_EXCEPTIONS
+    if ( ! valid )
+        VMMLIB_ERROR( "matrix contains nan or inf.", VMMLIB_HERE );
+    #endif
+
+    return valid;
+}
+
 	
 } // namespace vmml
 

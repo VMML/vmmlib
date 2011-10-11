@@ -2245,9 +2245,16 @@ reconstruct_CP(
                 T& value = at( i, j, k );
                 value = static_cast< T >( 0.0 );
 				
+#if 0
 				ui = U.get_column( i );
 				tmpi = temp.get_column( j + k *I2 );
 				bdot.compute( ui, tmpi, value );
+				
+#else
+				for( size_t r = 0; r < R; ++r )
+					value += U(r, i) * temp(r, j + k * I2);
+				
+#endif
             }
         }
     }

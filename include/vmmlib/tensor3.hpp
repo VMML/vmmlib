@@ -272,7 +272,7 @@ public:
 	void write_to_raw( const std::string& dir_, const std::string& filename_ ) const;
 	void read_from_raw( const std::string& dir_, const std::string& filename_ ) ;
 	void write_datfile( const std::string& dir_, const std::string& filename_ ) const;
-	void write_csv_file( const std::string& dir_, const std::string& filename_ ) const;
+	void write_to_csv( const std::string& dir_, const std::string& filename_ ) const;
 	void remove_normals_from_raw( const std::string& dir_, const std::string& filename_ ) ;
 	    
     inline tensor3 operator+( T scalar ) const;
@@ -2029,7 +2029,7 @@ VMML_TEMPLATE_CLASSNAME::write_to_raw( const std::string& dir_, const std::strin
 
 VMML_TEMPLATE_STRING
 void
-VMML_TEMPLATE_CLASSNAME::write_csv_file( const std::string& dir_, const std::string& filename_ ) const
+VMML_TEMPLATE_CLASSNAME::write_to_csv( const std::string& dir_, const std::string& filename_ ) const
 {	
 	int dir_length = dir_.size() -1;
 	int last_separator = dir_.find_last_of( "/");
@@ -2071,15 +2071,7 @@ VMML_TEMPLATE_CLASSNAME::write_datfile( const std::string& dir_, const std::stri
 	if (last_separator < dir_length ) {
 		path.append( "/" );
 	}
-	path.append( filename_ );
-	//check for format
-	if( filename_.find( "dat", filename_.size() -3) == (-1)) {
-		path.append( ".");
-		path.append( "dat" );
-	}
-	
-	std::string path_dat = path;
-
+		
 	std::string filename = "";
 	int pos = filename_.size() -4;
 	if( ( filename_.find(".raw", pos ) == pos) || ( filename_.find(".dat", pos ) == pos) ) {
@@ -2087,6 +2079,15 @@ VMML_TEMPLATE_CLASSNAME::write_datfile( const std::string& dir_, const std::stri
 	} else {
 		filename = filename_;
 	}
+	
+	path.append( filename );
+	//check for format
+	if( filename_.find( "dat", filename_.size() -3) == (-1)) {
+		path.append( ".");
+		path.append( "dat" );
+	}
+	
+	std::string path_dat = path;
 	
 	const char* format = (sizeof(T) == 2) ? "USHORT": "UCHAR";
 	
@@ -2161,8 +2162,10 @@ VMML_TEMPLATE_CLASSNAME::remove_normals_from_raw( const std::string& dir_, const
 	}
 	path.append( filename_ );
 	
-	size_t max_file_len = 2147483648 - sizeof(T) ;
-	size_t len_data = sizeof(T) * SIZE *4; //three normals per scalar value
+	size_t len_value = sizeof(T) * 4; //three normals per scalar value
+	
+	size_t max_file_len = 2147483648 - len_value ;
+	size_t len_data = len_value * SIZE;
 	size_t len_read = 0;
 	char* data = new char[ len_data ];
 	std::ifstream infile;
@@ -2173,6 +2176,7 @@ VMML_TEMPLATE_CLASSNAME::remove_normals_from_raw( const std::string& dir_, const
 		iterator  it = begin(),
 		it_end = end();
 		
+		size_t counter = 0;
 		while ( len_data > 0 ) 
 		{
 			len_read = (len_data % max_file_len ) > 0 ? len_data % max_file_len : len_data;
@@ -2180,9 +2184,14 @@ VMML_TEMPLATE_CLASSNAME::remove_normals_from_raw( const std::string& dir_, const
 			infile.read( data, len_read );
 			
 			T* T_ptr = (T*)&(data[0]);
-			for( ; (it != it_end) && (len_read > 0); it +=4, len_read -= sizeof(T) )
+			for( ; (it != it_end) && (len_read > 0); ++it, len_read -= len_value )
 			{
-				*it = *T_ptr; ++T_ptr;
+				++T_ptr;
+				++T_ptr;
+				++T_ptr;
+				*it = *T_ptr;
+				++T_ptr;
+				++counter;
 			}
 		}
 		
@@ -2192,7 +2201,14 @@ VMML_TEMPLATE_CLASSNAME::remove_normals_from_raw( const std::string& dir_, const
 		std::cout << "no file open" << std::endl;
 	}
 	
-	write_datfile( dir_, filename_ );
+	std::cout << "convertd normals" << std::endl;
+	
+	std::string filename = "";
+	filename = filename_.substr(0, filename_.size() -6);
+
+	
+	write_datfile( ".", filename );
+	write_to_raw( ".", filename );
 }	
 
 	

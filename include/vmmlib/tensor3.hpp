@@ -273,6 +273,7 @@ public:
 	void read_from_raw( const std::string& dir_, const std::string& filename_ ) ;
 	void write_datfile( const std::string& dir_, const std::string& filename_ ) const;
 	void write_csv_file( const std::string& dir_, const std::string& filename_ ) const;
+	void remove_normals_from_raw( const std::string& dir_, const std::string& filename_ ) ;
 	    
     inline tensor3 operator+( T scalar ) const;
     inline tensor3 operator-( T scalar ) const;
@@ -2142,8 +2143,60 @@ VMML_TEMPLATE_CLASSNAME::read_from_raw( const std::string& dir_, const std::stri
 	} else {
 		std::cout << "no file open" << std::endl;
 	}
+	
+}	
+	
+	
+	
+	
+VMML_TEMPLATE_STRING
+void
+VMML_TEMPLATE_CLASSNAME::remove_normals_from_raw( const std::string& dir_, const std::string& filename_ ) 
+{	
+	int dir_length = dir_.size() -1;
+	int last_separator = dir_.find_last_of( "/");
+	std::string path = dir_;
+	if (last_separator < dir_length ) {
+		path.append( "/" );
+	}
+	path.append( filename_ );
+	
+	size_t max_file_len = 2147483648 - sizeof(T) ;
+	size_t len_data = sizeof(T) * SIZE *4; //three normals per scalar value
+	size_t len_read = 0;
+	char* data = new char[ len_data ];
+	std::ifstream infile;
+	infile.open( path.c_str(), std::ios::in); 
+	
+	if( infile.is_open())
+	{
+		iterator  it = begin(),
+		it_end = end();
+		
+		while ( len_data > 0 ) 
+		{
+			len_read = (len_data % max_file_len ) > 0 ? len_data % max_file_len : len_data;
+			len_data -= len_read;
+			infile.read( data, len_read );
+			
+			T* T_ptr = (T*)&(data[0]);
+			for( ; (it != it_end) && (len_read > 0); it +=4, len_read -= sizeof(T) )
+			{
+				*it = *T_ptr; ++T_ptr;
+			}
+		}
+		
+		delete[] data;
+		infile.close();
+	} else {
+		std::cout << "no file open" << std::endl;
+	}
+	
+	write_datfile( dir_, filename_ );
 }	
 
+	
+	
 
 VMML_TEMPLATE_STRING
 vmml::matrix< I1, I2, T >&

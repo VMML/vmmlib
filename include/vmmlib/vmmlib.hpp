@@ -6,6 +6,7 @@
 * @author Renato Pajarola
 * @author David H. Eberly ( Wild Magic )
 * @author Andrew Willmott ( VL )
+* @author Susanne Suter
 *
 * @license revised BSD license, check LICENSE
 *

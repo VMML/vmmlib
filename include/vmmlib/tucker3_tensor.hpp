@@ -28,29 +28,28 @@ namespace vmml
 	class tucker3_tensor
 	{
 public:    
-	
 	typedef float T_internal;	
-		
+	
 	typedef tucker3_tensor< R1, R2, R3, I1, I2, I3, T_value, T_coeff > tucker3_type;
-		
+	
 	typedef tensor3< I1, I2, I3, T_value > t3_type;
 	typedef typename t3_type::iterator t3_iterator;
 	typedef typename t3_type::const_iterator t3_const_iterator;
-		
+	
 	typedef tensor3< I1, I2, I3, T_coeff > t3_coeff_type;
 	typedef typename t3_coeff_type::iterator t3_coeff_iterator;
 	typedef typename t3_coeff_type::const_iterator t3_coeff_const_iterator;
-		
+	
 	typedef tensor3< R1, R2, R3, T_coeff > t3_core_type;
 	typedef typename t3_core_type::iterator t3_core_iterator;
 	typedef typename t3_core_type::const_iterator t3_core_const_iterator;
-		
+	
 	typedef matrix< R1, R2, T_coeff >        front_core_slice_type; //fwd: forward cylcling (after kiers et al., 2000)
-
+	
 	typedef matrix< I1, R1, T_coeff > u1_type;
 	typedef typename u1_type::iterator u1_iterator;
 	typedef typename u1_type::const_iterator u1_const_iterator;
-
+	
 	typedef matrix< I2, R2, T_coeff > u2_type;
 	typedef typename u2_type::iterator u2_iterator;
 	typedef typename u2_type::const_iterator u2_const_iterator;
@@ -62,11 +61,13 @@ public:
 	typedef tensor3< I1, I2, I3, T_internal > t3_comp_type;
 	typedef typename t3_comp_type::iterator t3_comp_iterator;
 	typedef typename t3_comp_type::const_iterator t3_comp_const_iterator;
-		
+	
 	typedef tensor3< R1, R2, R3, T_internal > t3_core_comp_type;
 	typedef matrix< I1, R1, T_internal > u1_comp_type;
 	typedef matrix< I2, R2, T_internal > u2_comp_type;
 	typedef matrix< I3, R3, T_internal > u3_comp_type;
+		
+	typedef tensor3< R1, R2, R3, char > t3_core_signs_type;
 	
 	static const size_t SIZE = R1*R2*R3 + I1*R1 + I2*R2 + I3*R3;
 		
@@ -86,13 +87,16 @@ public:
 	void enable_quantify_log() { _is_quantify_log = true; _is_quantify_coeff = true; _is_quantify_hot = false;};
 	void disable_quantify_log() { _is_quantify_log = false; _is_quantify_coeff = false;} ;
 		
-	tensor3< R1, R2, R3, char> get_core_signs() { return _signs; };
-	void set_core_signs(	const tensor3< R1, R2, R3, char> signs_ ) { _signs = signs_; } ;
-		
+	void get_core_signs( t3_core_signs_type& signs_ ) { signs_ = _signs; };
+	void set_core_signs( const t3_core_signs_type signs_ ) { _signs = signs_; } ;
+
+	T_internal get_hottest_value() { return _hottest_core_value; };
+	void set_hottest_value( const T_internal value_ ) { _hottest_core_value = value_; } ;
+
 	void set_core( t3_core_type& core )  { _core = t3_core_type( core ); _core_comp.cast_from( core ); } ;
 	void set_u1( u1_type& U1 ) { *_u1 = U1; _u1_comp->cast_from( U1 ); } ;
-	void set_u2( u2_type& U2 ) { *_u2 = U2; _u1_comp->cast_from( U2 ); } ;
-	void set_u3( u3_type& U3 ) { *_u3 = U3; _u1_comp->cast_from( U3 ); } ;
+	void set_u2( u2_type& U2 ) { *_u2 = U2; _u2_comp->cast_from( U2 ); } ;
+	void set_u3( u3_type& U3 ) { *_u3 = U3; _u3_comp->cast_from( U3 ); } ;
 	
 	void get_core( t3_core_type& data_ ) const { data_ = _core; } ;
 	void get_u1( u1_type& U1 ) const { U1 = *_u1; } ;
@@ -108,25 +112,6 @@ public:
 	void get_u1_comp( u1_comp_type& U1 ) const { U1 = *_u1_comp; } ;
 	void get_u2_comp( u2_comp_type& U2 ) const { U2 = *_u2_comp; } ;
 	void get_u3_comp( u3_comp_type& U3 ) const { U3 = *_u3_comp; } ;
-		
-	template< typename T >
-	void export_to( std::vector< T >& data_ );
-	template< typename T >
-	void import_from( const std::vector< T >& data_ );
-		
-	//previous version, but works only with 16bit quantization
-	void export_quantized_to(  std::vector<unsigned char>& data_out_  );
-	void import_quantized_from( const std::vector<unsigned char>& data_in_ );
-		
-	//use this version, works with a better quantization for the core tensor:
-	//logarithmic quantization and separate high energy core vale
-    //suitable for voxelwise reconstruction
-	void export_hot_quantized_to(  std::vector<unsigned char>& data_out_  );
-	void import_hot_quantized_from( const std::vector<unsigned char>& data_in_ );
-		
-	//use this version for the ttm export/import (core: backward cyclic), without plain hot value 
-	void export_ttm_quantized_to(  std::vector<unsigned char>& data_out_  );
-	void import_ttm_quantized_from( const std::vector<unsigned char>& data_in_ );
 		
 	//get number of nonzeros for tensor decomposition
 	size_t nnz() const;
@@ -202,12 +187,6 @@ public:
 	}
 		
 		
-		
-protected:
-		tucker3_type operator=( const tucker3_type& other ) { return (*this); };
-        		
-private:
-        
         void cast_members();
         void cast_comp_members();
         void quantize_basis_matrices( T_internal& u_min_, T_internal& u_max_ );
@@ -216,7 +195,11 @@ private:
         void dequantize_basis_matrices( const T_internal& u1_min_, const T_internal& u1_max_, const T_internal& u2_min_, const T_internal& u2_max_, const T_internal& u3_min_, const T_internal& u3_max_ );
         void dequantize_core( const T_internal& core_min_, const T_internal& core_max_ );
 		
-        //t3_core_type* _core ;
+protected:
+		tucker3_type operator=( const tucker3_type& other ) { return (*this); };
+		
+private:
+       //t3_core_type* _core ;
         u1_type* _u1 ;
         u2_type* _u2 ;
         u3_type* _u3 ;
@@ -229,7 +212,7 @@ private:
         u3_comp_type* _u3_comp ;
 		
 		T_internal _hottest_core_value;
-		tensor3< R1, R2, R3, char> _signs;
+		t3_core_signs_type _signs;
 		
 		bool _is_quantify_coeff; 
 		bool _is_quantify_hot; 
@@ -870,492 +853,6 @@ VMML_TEMPLATE_CLASSNAME::region_of_interest( const tucker3_tensor< R1, R2, R3, K
 	delete u2;
 	delete u3;
 }
-	
-	
-VMML_TEMPLATE_STRING
-template< typename T >
-void
-VMML_TEMPLATE_CLASSNAME::export_to( std::vector< T >& data_ )
-{
-	
-	data_.clear();
-    
-	cast_members();
-	u1_const_iterator  it = _u1->begin(),
-    it_end = _u1->end();
-    for( ; it != it_end; ++it )
-    {
-        data_.push_back( static_cast< T >( *it) );
-    }
-    
-    u2_const_iterator  u2_it = _u2->begin(),
-    u2_it_end = _u2->end();
-    for( ; u2_it != u2_it_end; ++u2_it )
-    {
-        data_.push_back(static_cast< T >(*u2_it) );
-    }
-
-    u3_const_iterator  u3_it = _u3->begin(),
-    u3_it_end = _u3->end();
-    for( ; u3_it != u3_it_end; ++u3_it )
-    {
-        data_.push_back(static_cast< T >( *u3_it) );
-    }
-    
-    t3_core_iterator  it_core = _core.begin(),
-    it_core_end = _core.end();
-    for( ; it_core != it_core_end; ++it_core )
-    {
-        data_.push_back(static_cast< T >( *it_core) );
-    }
-}
-	
-	
-VMML_TEMPLATE_STRING
-template< typename T >
-void
-VMML_TEMPLATE_CLASSNAME::import_from( const std::vector< T >& data_ )
-{
-    size_t i = 0; //iterator over data_
-    size_t data_size = (size_t) data_.size();
-
-    if ( data_size != SIZE  )
-        VMMLIB_ERROR( "import_from: the input data must have the size R1xR2xR3 + R1xI1 + R2xI2 + R3xI3 ", VMMLIB_HERE );
-	
-    u1_iterator  it = _u1->begin(),
-    it_end = _u1->end();
-    for( ; it != it_end; ++it, ++i )
-    {
-            *it = static_cast< T >( data_.at(i));
-    }
-    
-    u2_iterator  u2_it = _u2->begin(),
-    u2_it_end = _u2->end();
-    for( ; u2_it != u2_it_end; ++u2_it, ++i )
-    {
-            *u2_it = static_cast< T >( data_.at(i));
-    }
-    
-    u3_iterator  u3_it = _u3->begin(),
-    u3_it_end = _u3->end();
-    for( ; u3_it != u3_it_end; ++u3_it, ++i )
-    {
-            *u3_it = static_cast< T >( data_.at(i));
-    }
-    
-    t3_core_iterator  it_core = _core.begin(),
-    it_core_end = _core.end();
-    for( ; it_core != it_core_end; ++it_core, ++i )
-    {
-            *it_core = static_cast< T >( data_.at(i));
-    }
-	
-	cast_comp_members();
-}
-	
-	
-VMML_TEMPLATE_STRING
-void
-VMML_TEMPLATE_CLASSNAME::export_quantized_to( std::vector<unsigned char>& data_out_ )
-{
-	enable_quantify_coeff();
-	//quantize tucker3 components (u1-u3 and core)
-	size_t len_export_data = SIZE * sizeof(T_coeff) + 8*sizeof(T_internal);
-	char * data = new char[ len_export_data ];
-	size_t end_data = 0;
-	size_t len_t_comp = sizeof( T_internal );
-	
-	//quantize basis matrices and copy min-max values
-#if CODE_ALL_U_MIN_MAX	
-	T_internal u1_min, u1_max, u2_min, u2_max, u3_min, u3_max;
-	quantize_basis_matrices( u1_min, u1_max, u2_min, u2_max, u3_min, u3_max );
-	memcpy( data, &u1_min, len_t_comp ); end_data = len_t_comp;
-	memcpy( data + end_data, &u1_max, len_t_comp ); end_data += len_t_comp;
-	memcpy( data + end_data, &u2_min, len_t_comp ); end_data += len_t_comp;
-	memcpy( data + end_data, &u2_max, len_t_comp ); end_data += len_t_comp;
-	memcpy( data + end_data, &u3_min, len_t_comp ); end_data += len_t_comp;
-	memcpy( data + end_data, &u3_max, len_t_comp ); end_data += len_t_comp;
-#else
-	T_internal u_min, u_max;
-	quantize_basis_matrices( u_min, u_max);
-	memcpy( data, &u_min, len_t_comp ); end_data = len_t_comp;
-	memcpy( data + end_data, &u_max, len_t_comp ); end_data += len_t_comp;
-#endif
-	
-	//quantize core and copy min-max values
-	T_internal core_min, core_max;
-	quantize_core( core_min, core_max );		
-	memcpy( data + end_data, &core_min, len_t_comp ); end_data += len_t_comp;
-	memcpy( data + end_data, &core_max, len_t_comp ); end_data += len_t_comp;
-	
-	//copy data for u1
-	size_t len_u1 = I1 * R1 * sizeof( T_coeff );
-	memcpy( data + end_data, _u1, len_u1 ); end_data += len_u1;
-	
-	//copy data for u2
-	size_t len_u2 = I2 * R2 * sizeof( T_coeff );
-	memcpy( data + end_data, _u2, len_u2 ); end_data += len_u2;
-	
-	//copy data for u3
-	size_t len_u3 = I3 * R3 * sizeof( T_coeff );
-	memcpy( data + end_data, _u3, len_u3 ); end_data += len_u3;
-
-	//copy data for core
-	size_t len_core_slice = R1 * R2 * sizeof( T_coeff );
-	for (size_t r3 = 0; r3 < R3; ++r3 ) {
-		memcpy( data + end_data, _core.get_frontal_slice_fwd( r3 ), len_core_slice );
-		end_data += len_core_slice;
-	}
-	
-	data_out_.clear();
-	for( size_t byte = 0; byte < len_export_data; ++byte )
-	{
-		data_out_.push_back( data[byte] );
-	}
-	delete[] data;
-	
-}
-
-
-VMML_TEMPLATE_STRING
-void
-VMML_TEMPLATE_CLASSNAME::import_quantized_from( const std::vector<unsigned char>& data_in_  )
-{
-	enable_quantify_coeff();
-	size_t end_data = 0;
-	size_t len_t_comp = sizeof( T_internal );
-	size_t len_export_data = SIZE * sizeof(T_coeff) + 8*sizeof(T_internal);
-	unsigned char * data = new unsigned char[ len_export_data ];
-	for( size_t byte = 0; byte < len_export_data; ++byte )
-	{
-		data[byte] = data_in_.at(byte);
-	}
-	
-	//copy min and max values: u1_min, u1_max, u2_min, u2_max, u3_min, u3_max, core_min, core_max
-#if CODE_ALL_U_MIN_MAX	
-	T_internal u1_min = 0; T_internal u1_max = 0;
-	T_internal u2_min = 0; T_internal u2_max = 0;
-	T_internal u3_min = 0; T_internal u3_max = 0;
-	memcpy( &u1_min, data, len_t_comp ); end_data = len_t_comp;
-	memcpy( &u1_max, data + end_data, len_t_comp ); end_data += len_t_comp;
-	memcpy( &u2_min, data + end_data, len_t_comp ); end_data += len_t_comp;
-	memcpy( &u2_max, data + end_data, len_t_comp ); end_data += len_t_comp;
-	memcpy( &u3_min, data + end_data, len_t_comp ); end_data += len_t_comp;
-	memcpy( &u3_max, data + end_data, len_t_comp ); end_data += len_t_comp;
-#else
-	T_internal u_min = 0; T_internal u_max = 0;
-	memcpy( &u_min, data, len_t_comp ); end_data = len_t_comp;
-	memcpy( &u_max, data + end_data, len_t_comp ); end_data += len_t_comp;
-#endif
-	
-	T_internal core_min = 0; T_internal core_max = 0;
-	memcpy( &core_min, data + end_data, len_t_comp ); end_data += len_t_comp;
-	memcpy( &core_max, data + end_data, len_t_comp ); end_data += len_t_comp;
-		
-	//copy data to u1
-	size_t len_u1 = I1 * R1 * sizeof( T_coeff );
-	memcpy( _u1, data + end_data, len_u1 ); end_data += len_u1;
-	
-	//copy data to u2
-	size_t len_u2 = I2 * R2 * sizeof( T_coeff );
-	memcpy( _u2, data + end_data, len_u2 ); end_data += len_u2;
-	
-	//copy data to u3
-	size_t len_u3 = I3 * R3 * sizeof( T_coeff );
-	memcpy( _u3, data + end_data, len_u3 ); end_data += len_u3;
-	
-	//copy data to core
-	size_t len_core_slice = R1 * R2 * sizeof( T_coeff );
-	front_core_slice_type* slice = new front_core_slice_type();
-	for (size_t r3 = 0; r3 < R3; ++r3 ) {
-		memcpy( slice, data + end_data, len_core_slice );
-		_core.set_frontal_slice_fwd( r3, *slice );
-		end_data += len_core_slice;
-	}
-	delete slice;
-	delete[] data;
-	
-	//dequantize tucker3 components (u1-u3 and core)
-#if CODE_ALL_U_MIN_MAX	
-	dequantize_basis_matrices( u1_min, u1_max, u2_min, u2_max, u3_min, u3_max );
-#else
-	dequantize_basis_matrices( u_min, u_max, u_min, u_max, u_min, u_max  );
-#endif
-	
-	dequantize_core( core_min, core_max );	
-	
-#if 0
-        std::cout << "dequantized: " << std::endl << "u1-u3: " << std::endl
-        << *_u1 << std::endl << *_u1_comp << std::endl
-        << *_u2 << std::endl << *_u2_comp << std::endl
-        << *_u3 << std::endl << *_u3_comp << std::endl
-        << " core " << std::endl
-        << _core << std::endl
-        << " core_comp " << std::endl
-        << _core_comp << std::endl;
-#endif
-}
-
-VMML_TEMPLATE_STRING
-void
-VMML_TEMPLATE_CLASSNAME::export_hot_quantized_to( std::vector<unsigned char>& data_out_ )
-{
-	enable_quantify_hot();
-	//quantize tucker3 components (u1-u3 and core)
-	size_t len_export_data = R1*R2*R3 + (R1*I1 + R2*I2 + R3*I3) * sizeof(T_coeff) + 4*sizeof(T_internal);
-	char * data = new char[ len_export_data ];
-	size_t end_data = 0;
-	size_t len_t_comp = sizeof( T_internal );
-	
-	//quantize basis matrices and copy min-max values
-	T_internal u_min, u_max;
-	quantize_basis_matrices( u_min, u_max);
-	memcpy( data, &u_min, len_t_comp ); end_data = len_t_comp;
-	memcpy( data + end_data, &u_max, len_t_comp ); end_data += len_t_comp;
-	
-	//quantize core and copy min-max values
-	T_internal core_min, core_max;
-	quantize_core( core_min, core_max );		
-	//memcpy( data + end_data, &core_min, len_t_comp ); end_data += len_t_comp; min_value is always zero in log quant
-	memcpy( data + end_data, &core_max, len_t_comp ); end_data += len_t_comp;
-	
-	//copy first value of core tensor separately as a float
-	memcpy( data + end_data, &_hottest_core_value, len_t_comp ); end_data += len_t_comp;
-	
-	//copy data for u1
-	size_t len_u1 = I1 * R1 * sizeof( T_coeff );
-	memcpy( data + end_data, _u1, len_u1 ); end_data += len_u1;
-	
-	//copy data for u2
-	size_t len_u2 = I2 * R2 * sizeof( T_coeff );
-	memcpy( data + end_data, _u2, len_u2 ); end_data += len_u2;
-	
-	//copy data for u3
-	size_t len_u3 = I3 * R3 * sizeof( T_coeff );
-	memcpy( data + end_data, _u3, len_u3 ); end_data += len_u3;
-	
-	//copy data for core
-	size_t len_core_el = 1; //currently 1 bit for sign and 7 bit for values
-	
-	//colume-first iteration
-	unsigned char core_el;
-	for (size_t r3 = 0; r3 < R3; ++r3 ) {
-		for (size_t r2 = 0; r2 < R2; ++r2 ) {
-			for (size_t r1 = 0; r1 < R1; ++r1 ) {
-				core_el = (_core.at( r1, r2, r3 ) | (_signs.at( r1, r2, r3) * 0x80 ));
-				/*std::cout << "value: " << int(_core.at( r1, r2, r3 )) << " bit " << int( core_el ) 
-				<< " sign: " << int(_signs.at( r1, r2, r3)) << std::endl;*/
-				memcpy( data + end_data, &core_el, len_core_el );
-				++end_data;
-			}
-		}
-	} 
-		
-	data_out_.clear();
-	for( size_t byte = 0; byte < len_export_data; ++byte )
-	{
-		data_out_.push_back( data[byte] );
-	}
-	delete[] data;
-}
-	
-	
-	
-	
-VMML_TEMPLATE_STRING
-void
-VMML_TEMPLATE_CLASSNAME::import_hot_quantized_from( const std::vector<unsigned char>& data_in_  )
-{
-	enable_quantify_hot();
-	size_t end_data = 0;
-	size_t len_t_comp = sizeof( T_internal );
-	size_t len_export_data = R1*R2*R3 + (R1*I1 + R2*I2 + R3*I3) * sizeof(T_coeff) + 4*sizeof(T_internal);
-	unsigned char * data = new unsigned char[ len_export_data ];
-	for( size_t byte = 0; byte < len_export_data; ++byte )
-	{
-		data[byte] = data_in_.at(byte);
-	}
-	
-	//copy min and max values: u1_min, u1_max, u2_min, u2_max, u3_min, u3_max, core_min, core_max
-	T_internal u_min = 0; T_internal u_max = 0;
-	memcpy( &u_min, data, len_t_comp ); end_data = len_t_comp;
-	memcpy( &u_max, data + end_data, len_t_comp ); end_data += len_t_comp;
-	
-	T_internal core_min = 0; T_internal core_max = 0; //core_min is 0
-	//memcpy( &core_min, data + end_data, len_t_comp ); end_data += len_t_comp;
-	memcpy( &core_max, data + end_data, len_t_comp ); end_data += len_t_comp;
-	//copy first value of core tensor separately as a float
-	memcpy( &_hottest_core_value, data + end_data, len_t_comp ); end_data += len_t_comp;
-	
-	//copy data to u1
-	size_t len_u1 = I1 * R1 * sizeof( T_coeff );
-	memcpy( _u1, data + end_data, len_u1 ); end_data += len_u1;
-	
-	//copy data to u2
-	size_t len_u2 = I2 * R2 * sizeof( T_coeff );
-	memcpy( _u2, data + end_data, len_u2 ); end_data += len_u2;
-	
-	//copy data to u3
-	size_t len_u3 = I3 * R3 * sizeof( T_coeff );
-	memcpy( _u3, data + end_data, len_u3 ); end_data += len_u3;
-	
-	//copy data to core
-	size_t len_core_el = 1; //currently 1 bit for sign and 7 bit for values
-
-	unsigned char core_el;
-	for (size_t r3 = 0; r3 < R3; ++r3 ) {
-		for (size_t r2 = 0; r2 < R2; ++r2 ) {
-			for (size_t r1 = 0; r1 < R1; ++r1 ) {
-				memcpy( &core_el, data + end_data, len_core_el );
-				_signs.at( r1, r2, r3 ) = (core_el & 0x80)/128;
-				_core.at( r1, r2, r3 ) = core_el & 0x7f ;
-				++end_data;
-			}
-		}
-	} 
-	//std::cout << "signs: " << _signs << std::endl;
-	//std::cout << "_core: " << _core << std::endl;
-	
-	delete[] data;
-	
-	//dequantize tucker3 components (u1-u3 and core)
-	dequantize_basis_matrices( u_min, u_max, u_min, u_max, u_min, u_max  );
-	
-	dequantize_core( core_min, core_max );	
-	
-#if 0
-	std::cout << "dequantized: " << std::endl << "u1-u3: " << std::endl
-	<< *_u1 << std::endl << *_u1_comp << std::endl
-	<< *_u2 << std::endl << *_u2_comp << std::endl
-	<< *_u3 << std::endl << *_u3_comp << std::endl
-	<< " core " << std::endl
-	<< _core << std::endl
-	<< " core_comp " << std::endl
-	<< _core_comp << std::endl;
-#endif
-}
-	
-VMML_TEMPLATE_STRING
-void
-VMML_TEMPLATE_CLASSNAME::export_ttm_quantized_to( std::vector<unsigned char>& data_out_ )
-{
-	enable_quantify_log();
-	//quantize tucker3 components (u1-u3 and core)
-	size_t len_export_data = R1*R2*R3 + (R1*I1 + R2*I2 + R3*I3) * sizeof(T_coeff) + 3*sizeof(T_internal);
-	char * data = new char[ len_export_data ];
-	size_t end_data = 0;
-	size_t len_t_comp = sizeof( T_internal );
-	
-	//quantize basis matrices and copy min-max values
-	T_internal u_min, u_max;
-	quantize_basis_matrices( u_min, u_max);
-	memcpy( data, &u_min, len_t_comp ); end_data = len_t_comp;
-	memcpy( data + end_data, &u_max, len_t_comp ); end_data += len_t_comp;
-	
-	//quantize core and copy min-max values
-	T_internal core_min, core_max;
-	quantize_core( core_min, core_max );		
-	//memcpy( data + end_data, &core_min, len_t_comp ); end_data += len_t_comp; min_value is always zero in log quant
-	memcpy( data + end_data, &core_max, len_t_comp ); end_data += len_t_comp;
-	
-	//copy data for u1
-	size_t len_u1 = I1 * R1 * sizeof( T_coeff );
-	memcpy( data + end_data, _u1, len_u1 ); end_data += len_u1;
-	
-	//copy data for u2
-	size_t len_u2 = I2 * R2 * sizeof( T_coeff );
-	memcpy( data + end_data, _u2, len_u2 ); end_data += len_u2;
-	
-	//copy data for u3
-	size_t len_u3 = I3 * R3 * sizeof( T_coeff );
-	memcpy( data + end_data, _u3, len_u3 ); end_data += len_u3;
-	
-	//copy data for core
-	size_t len_core_el = 1; //currently 1 bit for sign and 7 bit for values
-	
-	//colume-first iteration
-	//backward cylcling after lathauwer et al. 
-	unsigned char core_el;
-	for (size_t r2 = 0; r2 < R2; ++r2 ) {
-		for (size_t r3 = 0; r3 < R3; ++r3 ) {
-			for (size_t r1 = 0; r1 < R1; ++r1 ) {
-				core_el = (_core.at( r1, r2, r3 ) | (_signs.at( r1, r2, r3) * 0x80 ));
-				/*std::cout << "value: " << int(_core.at( r1, r2, r3 )) << " bit " << int( core_el ) 
-				 << " sign: " << int(_signs.at( r1, r2, r3)) << std::endl;*/
-				memcpy( data + end_data, &core_el, len_core_el );
-				++end_data;
-			}
-		}
-	} 
-	
-	data_out_.clear();
-	for( size_t byte = 0; byte < len_export_data; ++byte )
-	{
-		data_out_.push_back( data[byte] );
-	}
-	delete[] data;
-}
-
-VMML_TEMPLATE_STRING
-void
-VMML_TEMPLATE_CLASSNAME::import_ttm_quantized_from( const std::vector<unsigned char>& data_in_  )
-{
-	enable_quantify_log();
-	size_t end_data = 0;
-	size_t len_t_comp = sizeof( T_internal );
-	size_t len_export_data = R1*R2*R3 + (R1*I1 + R2*I2 + R3*I3) * sizeof(T_coeff) + 3*sizeof(T_internal);
-	unsigned char * data = new unsigned char[ len_export_data ];
-	for( size_t byte = 0; byte < len_export_data; ++byte )
-	{
-		data[byte] = data_in_.at(byte);
-	}
-	
-	//copy min and max values: u1_min, u1_max, u2_min, u2_max, u3_min, u3_max, core_min, core_max
-	T_internal u_min = 0; T_internal u_max = 0;
-	memcpy( &u_min, data, len_t_comp ); end_data = len_t_comp;
-	memcpy( &u_max, data + end_data, len_t_comp ); end_data += len_t_comp;
-	
-	T_internal core_min = 0; T_internal core_max = 0; //core_min is 0
-	//memcpy( &core_min, data + end_data, len_t_comp ); end_data += len_t_comp;
-	memcpy( &core_max, data + end_data, len_t_comp ); end_data += len_t_comp;
-	
-	//copy data to u1
-	size_t len_u1 = I1 * R1 * sizeof( T_coeff );
-	memcpy( _u1, data + end_data, len_u1 ); end_data += len_u1;
-	
-	//copy data to u2
-	size_t len_u2 = I2 * R2 * sizeof( T_coeff );
-	memcpy( _u2, data + end_data, len_u2 ); end_data += len_u2;
-	
-	//copy data to u3
-	size_t len_u3 = I3 * R3 * sizeof( T_coeff );
-	memcpy( _u3, data + end_data, len_u3 ); end_data += len_u3;
-	
-	//copy data to core
-	size_t len_core_el = 1; //currently 1 bit for sign and 7 bit for values
-	
-	//backward cyclic after lathauwer et al. 
-	unsigned char core_el;
-	for (size_t r2 = 0; r2 < R2; ++r2 ) {
-		for (size_t r3 = 0; r3 < R3; ++r3 ) {
-			for (size_t r1 = 0; r1 < R1; ++r1 ) {
-				memcpy( &core_el, data + end_data, len_core_el );
-				_signs.at( r1, r2, r3 ) = (core_el & 0x80)/128;
-				_core.at( r1, r2, r3 ) = core_el & 0x7f ;
-				++end_data;
-			}
-		}
-	} 
-	//std::cout << "signs: " << _signs << std::endl;
-	//std::cout << "_core: " << _core << std::endl;
-	
-	delete[] data;
-	
-	//dequantize tucker3 components (u1-u3 and core)
-	dequantize_basis_matrices( u_min, u_max, u_min, u_max, u_min, u_max  );
-	dequantize_core( core_min, core_max );	
-}
-	
 	
 	
 VMML_TEMPLATE_STRING

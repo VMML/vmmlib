@@ -3,7 +3,7 @@
  *  
  * @author Susanne Suter
  *
- * The tucker3 tensor class is consists of the same components (core tensor, basis matrices u1-u3) as the tucker3 model described in:
+ * The Tucker3 tensor class is consists of the same components (core tensor, basis matrices u1-u3) as the tucker3 model described in:
  * - Tucker, 1966: Some mathematical notes on three-mode factor analysis, Psychometrika.
  * - Kroonenberg & De Leeuw, 1980: Principal component analysis of three-mode data by means of alternating least squares algorithms. Psychometrika. (TUCKALS)
  * - De Lathauwer, De Moor, Vandewalle, 2000a: A multilinear singular value decomposition, SIAM J. Matrix Anal. Appl.

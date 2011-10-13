@@ -3,6 +3,8 @@
 #include <vmmlib/tucker3_importer.hpp>
 #include <sstream>
 
+//@SUS: check hot core quantization, is it correctly implementented
+
 namespace vmml
 {
 	
@@ -103,13 +105,19 @@ namespace vmml
 		}		
 		
 		//tests for quantized exports
-		
-		typedef tensor3< 3, 2, 2, unsigned char> t3q_type; 
-		typedef qtucker3_tensor< 2, 2, 2, 3, 2, 2, unsigned char, unsigned short > tuck3q_type; 
+		typedef unsigned char T_value;
+		typedef unsigned short T_coeff;
+		typedef tensor3< 3, 2, 2, T_value> t3q_type; 
+		typedef qtucker3_tensor< 2, 2, 2, 3, 2, 2, T_value, T_coeff > tuck3q_type; 
 		typedef t3_hooi< 2, 2, 2, 3, 2, 2, float > hooi_type1;
-		typedef tucker3_exporter< 2, 2, 2, 3, 2, 2, unsigned char, unsigned short > tuck3q_exporter_t;
-		typedef tucker3_importer< 2, 2, 2, 3, 2, 2, unsigned char, unsigned short > tuck3q_importer_t;
-		typedef std::vector<unsigned char> out_vecq_type;
+		typedef tucker3_exporter< 2, 2, 2, 3, 2, 2, T_value, T_coeff > tuck3q_exporter_t;
+		typedef tucker3_importer< 2, 2, 2, 3, 2, 2, T_value, T_coeff > tuck3q_importer_t;
+		typedef std::vector<T_value> out_vecq_type;
+		typedef matrix< 3, 2, T_coeff > u1q_type;
+		typedef matrix< 2, 2, T_coeff > u2q_type;
+		typedef matrix< 2, 2, T_coeff > u3q_type;
+		typedef tensor3< 2, 2, 2, T_coeff > coreq_type;
+		
 		
 		unsigned char data_2[] = { 0, 13, 122, 123, 124, 95, 10, 40, 25, 54, 33, 76};
 		t3q_type t3_data2;
@@ -125,10 +133,6 @@ namespace vmml
 		t3q_type t3_reco2;
 		tuck3q.reconstruct( t3_reco2, u_min, u_max, core_min, core_max );
 		
-		double rmse = t3_reco2.rmse( t3_data2 );
-		double rmse_check = 5.392896562454479; 
-	
-
 		//export bytes (for one min/max value for all Us)
 		out_vecq_type export_vec;
 		tuck3q_exporter_t::export_quantized_to( export_vec, tuck3q );
@@ -197,17 +201,39 @@ namespace vmml
 		
 		
 		
+		//prepare check data
+		T_coeff du1[] = { 24791, 63293, 0, 12525, 969, 40502 };
+		u1q_type u1q_check; 
+		u1q_check.set(du1, du1 + 6);
+		
+		T_coeff du2[] = { 56365, 57497, 57497, 921 };
+		u2q_type u2q_check;
+		u2q_check.set(du2, du2 + 4);
+		
+		T_coeff du3[] = { 65535, 13150, 44136, 65535 };
+		u3q_type u3q_check;
+		u3q_check.set(du3, du3 + 4);
+		
+		T_coeff dco[] = { 0, 56087, 56016, 54573, 56556, 65535, 64473, 52911 };
+		coreq_type coreq_check;
+		coreq_check.set(dco, dco + 8);
+		
+		u1q_type u1q; u2q_type u2q; u3q_type u3q;
+		coreq_type coreq;
+		
 		//do import from bytes
 		tuck3q_type tuck3qi;
-		tuck3qi.enable_quantify_coeff();
 		tuck3q_importer_t::import_quantized_from( export_vec, tuck3qi );
 		
-		t3q_type reco;
-		tuck3qi.reconstruct( reco );
-		rmse = reco.rmse( t3_data2 );
-		rmse_check = 5.392896562454479; 
+		tuck3qi.get_u1( u1q ); tuck3qi.get_u2( u2q ); tuck3qi.get_u3( u3q );
+		tuck3qi.get_core( coreq );
 		
-		if ( (rmse <= rmse_check+0.5)&& rmse > 0 )
+		ok = u1q == u1q_check;
+		ok = ok && (u2q == u2q_check);
+		ok = ok && (u3q == u3q_check);
+		ok = ok && (coreq == coreq_check);
+		
+		if (ok)
 		{
 			log( "import tucker3 (bytes)" , true  );
 		} else
@@ -215,13 +241,19 @@ namespace vmml
 			std::stringstream error;
 			error 
 			<< "import tucker3 (bytes): " << std::endl
-			<< "RMSE should be: " << rmse_check << ", is: " << rmse << std::endl
 			<< "Tucker3 is: " << std::endl << tuck3q << std::endl;
 			
 			log_error( error.str() );
 		}	
 				
 		
+		//prepare check data
+	
+		T_coeff dcho[] = { 65285, 40, 43, 79, 4, 127, 123, 98 };
+		coreq_check.zero();
+		coreq_check.set(dcho, dcho + 8);
+		
+
 		//export bytes (with optimized quantization of core) 
 		out_vecq_type export_vec_2;
 		tuck3q_exporter_t::export_hot_quantized_to( export_vec_2, tuck3q );
@@ -229,13 +261,32 @@ namespace vmml
 		tuck3q_type tuck3qi_2;
 		tuck3q_importer_t::import_hot_quantized_from( export_vec_2, tuck3qi_2 );
 		
-		t3q_type reco_2;
-		tuck3qi_2.reconstruct( reco_2 );
-		rmse = reco_2.rmse( t3_data2 );
-		rmse_check = 5.400617248673217; 
+		tuck3qi_2.get_u1( u1q ); tuck3qi_2.get_u2( u2q ); tuck3qi_2.get_u3( u3q );
+		tuck3qi_2.get_core( coreq );
 		
-		ok = (rmse <= rmse_check+0.5)&& rmse > 0;
-		log( "export/import tucker3 (bytes) with hot core quantization" , ok  );
+		ok = u1q == u1q_check;
+		ok = ok && (u2q == u2q_check);
+		ok = ok && (u3q == u3q_check);
+		ok = ok && (coreq == coreq_check);
+
+		if (ok)
+		{
+			log( "export/import tucker3 (bytes) with hot core quantization" , true  );
+		} else
+		{
+			std::stringstream error;
+			error 
+			<< "export/import tucker3 (bytes) with hot core quantization: " << std::endl
+			<< "Tucker3 is: " << std::endl << tuck3qi_2 << std::endl;
+			
+			log_error( error.str() );
+		}	
+		
+		//prepare check data
+		T_coeff dchlo[] = { 127, 26, 28, 52, 0, 85, 82, 65 };
+		coreq_check.zero();
+		coreq_check.set(dchlo, dchlo + 8);
+		
 		
 		//export bytes for TTM 
 		out_vecq_type export_vec_3;
@@ -246,14 +297,27 @@ namespace vmml
 		tuck3q_type tuck3qi_3;
 		tuck3q_importer_t::import_ttm_quantized_from( export_vec_3, tuck3qi_3 );
 		
-		t3q_type reco_3;
-		tuck3qi_3.reconstruct( reco_3 );
-		rmse = reco_3.rmse( t3_data2 );
-		rmse_check = 5.400617248673217; 
+		tuck3qi_3.get_u1( u1q ); tuck3qi_3.get_u2( u2q ); tuck3qi_3.get_u3( u3q );
+		tuck3qi_3.get_core( coreq );
 		
-		ok = (rmse <= rmse_check+0.5)&& rmse > 0;
-		log( "export/import TTM tucker3 (bytes)" , ok  );
+		ok = u1q == u1q_check;
+		ok = ok && (u2q == u2q_check);
+		ok = ok && (u3q == u3q_check);
+		ok = ok && (coreq == coreq_check);
 		
+		if (ok)
+		{
+			log( "export/import TTM tucker3 (bytes)" , true  );
+		} else
+		{
+			std::stringstream error;
+			error 
+			<< "export/import TTM tucker3 (bytes): " << std::endl
+			<< "Tucker3 is: " << std::endl << tuck3qi_3 << std::endl;
+			
+			log_error( error.str() );
+		}	
+	
 		
 		return ok;
 	}

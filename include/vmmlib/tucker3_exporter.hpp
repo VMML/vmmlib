@@ -135,8 +135,9 @@ VMML_TEMPLATE_STRING
 void
 VMML_TEMPLATE_CLASSNAME::export_quantized_to( std::vector<unsigned char>& data_out_, qtucker3_type& tuck3_data_  )
 {
+#if FIXME
 	tuck3_data_.enable_quantify_coeff();
-
+#endif
 	//quantize tucker3 components (u1-u3 and core)
 	size_t len_t_comp = sizeof( T_internal );
 	size_t len_export_data = tuck3_data_.SIZE * sizeof(T_coeff) + 8 * len_t_comp;

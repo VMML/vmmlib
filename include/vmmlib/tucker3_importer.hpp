@@ -143,7 +143,9 @@ VMML_TEMPLATE_STRING
 void
 VMML_TEMPLATE_CLASSNAME::import_quantized_from( const std::vector<unsigned char>& data_in_, qtucker3_type& tuck3_data_   )
 {
+#if FIXME
 	tuck3_data_.enable_quantify_coeff();
+#endif
 	size_t end_data = 0;
 	size_t len_t_comp = sizeof( T_internal );
 	size_t len_export_data = tuck3_data_.SIZE * sizeof(T_coeff) + 8 * len_t_comp;

@@ -157,146 +157,15 @@ namespace vmml
 		t3r_type t3_reco;
 		
 		tuck3r_type tuck3( core, u1, u2, u3 );
-		tuck3.reconstruct( t3_reco );
+		tuck3.reconstruct( t3_reco, 2, 2, 3, 3, 1, 1, 0, 23 );
 		
 		t3r_type t3_reco_check;
 		t3_reco_check.fill(1656);
 		
-		//thresholded tucker
-		tuck3r_type tuck3_copy( tuck3 );
+	
+		ok = t3_reco_check == t3_reco ;
+		log( "tucker3 reconstruction", ok );
 		
-		t3r_type  t3_reco_thresh1;
-		t3r_type  t3_reco_thresh2;
-		size_t nnz_core = 0;
-		tuck3_copy.threshold_core( 4, nnz_core );
-		tuck3_copy.reconstruct( t3_reco_thresh1 );
-		tuck3_copy.threshold_core( 12, nnz_core );
-		tuck3_copy.reconstruct( t3_reco_thresh2 );
-		
-		t3r_type t3_reco_thresh1_check;
-		t3_reco_thresh1_check.fill(1596);
-		t3r_type t3_reco_thresh2_check;
-		t3_reco_thresh2_check.fill(1188);
-		
-		ok = ( t3_reco_check == t3_reco ) && ( t3_reco_thresh1 == t3_reco_thresh1_check ) && ( t3_reco_thresh2 == t3_reco_thresh2_check);
-		log( "tucker3 reconstruction (incl. core thresholding)", ok );
-		
-		
-		//rank reduction
-		typedef tensor3< 6, 7, 5, T_value_3 > t3rr_type;
-		typedef tensor3< 1, 2, 3, T_coeff_3 > t3rr_core_type;
-		typedef matrix< 6, 1, T_coeff_3 > u1rr_type;
-		typedef matrix< 7, 2, T_coeff_3 > u2rr_type;
-		typedef matrix< 5, 3, T_coeff_3 > u3rr_type;
-		typedef qtucker3_tensor< 1, 2, 3, 6, 7, 5, T_value_3, T_coeff_3 > tuck3rr_type;
-
-		u1rr_type u1_red; u1_red.fill(2);
-		u2rr_type u2_red; u2_red.fill(3);
-		u3rr_type u3_red; u3_red.fill(1);
-		
-		T_value_3 data[] = { 0, 1, 6, 7, 12, 13 };
-		t3rr_core_type core_red;
-		core_red.set(data, data + 6);		
-		
-		t3rr_core_type core_red2;
-		u1rr_type u1_red2;
-		u2rr_type u2_red2;
-		u3rr_type u3_red2;
-		
-		tuck3rr_type tuck3_red( core_red, u1_red, u2_red, u3_red );
-		tuck3_red.reduce_ranks( tuck3 );
-		
-		tuck3_red.get_u1( u1_red2 ); tuck3_red.get_u2( u2_red2 ); tuck3_red.get_u3( u3_red2 ); tuck3_red.get_core( core_red2 );
-		
-		if (  u1_red2 == u1_red && u2_red2 == u2_red && u3_red2 == u3_red && core_red2 == core_red)
-		{	
-			log( "tucker3 reduce ranks", true  );
-		} else
-		{
-			std::stringstream error;
-			error 
-			<< "Tucker3 reduce ranks: " << std::endl
-			<< "u1 should be: " << u1_red << std::endl
-			<< "u1 is: " << u1_red2 << std::endl
-			<< "u2 should be: " <<  u2_red << std::endl
-			<< "u2 is: " <<  u2_red2 << std::endl
-			<< "u3 should be: " << u3_red << std::endl
-			<< "u3 is: " << u3_red2 << std::endl
-			<< "core should be: " << core_red << std::endl
-			<< "core is: " << core_red2 << std::endl;
-			
-			log_error( error.str() );
-		}
-		
-		
-		//factor matrices subsampling
-		typedef tensor3< 3, 4, 3, T_value_3 > t3s_type;
-		typedef qtucker3_tensor< 2, 3, 4, 3, 4, 3, T_value_3, T_coeff_3 > tuck3s_type;
-		
-		t3s_type t3_sub;
-		tuck3s_type tuck3_sub; 
-		
-		tuck3_sub.subsampling( tuck3, 2);
-		tuck3_sub.reconstruct( t3_sub );
-		
-		t3s_type t3_sub_check;
-		t3_sub_check.fill(1656);
-		if ( t3_sub_check == t3_sub )
-		{	
-			log( "factor matrices subsampling", true  );
-		} else
-		{
-			std::stringstream error;
-			error 
-			<< "factor matrices subsampling with factor 2: " << std::endl << t3_sub
-			<< std::endl;
-			log_error( error.str() );
-		}
-		
-		//factor matrices subsampling, average data
-		t3s_type t3_sub_avg;
-		tuck3s_type tuck3_sub_avg;
-		
-		tuck3_sub_avg.subsampling_on_average( tuck3, 2);
-		tuck3_sub_avg.reconstruct( t3_sub_avg );
-		
-		t3_sub_check.fill(1656);
-		if ( t3_sub_check == t3_sub_avg )
-		{	
-			log( "factor matrices subsampling on average", true  );
-		} else
-		{
-			std::stringstream error;
-			error 
-			<< "factor matrices subsampling on average with factor 2: " << std::endl << t3_sub_avg
-			<< std::endl;
-			log_error( error.str() );
-		}
-		
-		
-		//factor matrices region of interest selection
-		typedef qtucker3_tensor< 2, 3, 4, 1, 1, 3, T_value_3, T_coeff_3 > tuck3_roi_type;
-		typedef tensor3< 1, 1, 3, T_value_3 > t3_roi_type;
-		
-		t3_roi_type t3_roi;
-		tuck3_roi_type tuck3_roi;
-		
-		tuck3_roi.region_of_interest( tuck3, 0, 1, 1, 2, 1, 4);
-		tuck3_roi.reconstruct( t3_roi );
-		
-		t3_roi_type t3_roi_test;
-		t3_roi_test.fill(1656);
-		if ( t3_roi_test == t3_roi)
-		{	
-			log( "factor matrices region of interest selection", true  );
-		} else
-		{
-			std::stringstream error;
-			error 
-			<< "factor matrices region of interest selection: " << std::endl << t3_roi
-			<< std::endl;
-			log_error( error.str() );
-		}
 		
 		
 		return ok;

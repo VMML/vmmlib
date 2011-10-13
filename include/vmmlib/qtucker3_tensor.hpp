@@ -60,14 +60,12 @@ namespace vmml
 		qtucker3_tensor( const tucker3_type& other );
 		~qtucker3_tensor();
 		
-		void enable_quantify_coeff() { _is_quantify_coeff = true; };
-		void disable_quantify_coeff() { _is_quantify_coeff = false; } ;
-		void enable_quantify_hot() { _is_quantify_hot = true; _is_quantify_coeff = true; _is_quantify_log = false; _is_quantify_linear = false;};
-		void disable_quantify_hot() { _is_quantify_hot = false; _is_quantify_coeff = false;} ;
-		void enable_quantify_linear() { _is_quantify_linear = true; _is_quantify_coeff = true; _is_quantify_hot = false;};
-		void disable_quantify_linear() { _is_quantify_linear = false; _is_quantify_coeff = false;} ;
-		void enable_quantify_log() { _is_quantify_log = true; _is_quantify_coeff = true; _is_quantify_hot = false;};
-		void disable_quantify_log() { _is_quantify_log = false; _is_quantify_coeff = false;} ;
+		void enable_quantify_hot() { _is_quantify_hot = true; _is_quantify_log = false; _is_quantify_linear = false;};
+		void disable_quantify_hot() { _is_quantify_hot = false; } ;
+		void enable_quantify_linear() { _is_quantify_linear = true; _is_quantify_hot = false;};
+		void disable_quantify_linear() { _is_quantify_linear = false; } ;
+		void enable_quantify_log() { _is_quantify_log = true; _is_quantify_hot = false;};
+		void disable_quantify_log() { _is_quantify_log = false; } ;
 		
 		void get_core_signs( t3_core_signs_type& signs_ ) { signs_ = _signs; };
 		void set_core_signs( const t3_core_signs_type signs_ ) { _signs = signs_; } ;
@@ -112,10 +110,7 @@ namespace vmml
 						 const T_internal& u2_min_, const T_internal& u2_max_,
 						 const T_internal& u3_min_, const T_internal& u3_max_,
 						 const T_internal& core_min_, const T_internal& core_max_ ); 
-		void reconstruct( t3_type& data_ ); 
 		
-		template< typename T_init>
-		void decompose( const t3_type& data_, T_init init );
 		template< typename T_init>
 		void decompose( const t3_type& data_, 
 					   T_internal& u1_min_, T_internal& u1_max_,
@@ -131,22 +126,7 @@ namespace vmml
 		
 		template< typename T_init>
 		void tucker_als( const t3_type& data_, T_init init  );	
-		
-		template< size_t K1, size_t K2, size_t K3>
-		void reduce_ranks( const qtucker3_tensor< K1, K2, K3, I1, I2, I3, T_value, T_coeff >& other ); //call TuckerJI.reduce_ranks(TuckerKI) K1 -> R1, K2 -> R2, K3 -> R3
-		
-		template< size_t K1, size_t K2, size_t K3>
-		void subsampling( const qtucker3_tensor< R1, R2, R3, K1, K2, K3, T_value, T_coeff >& other, const size_t& factor  );
-		
-		template< size_t K1, size_t K2, size_t K3>
-		void subsampling_on_average( const qtucker3_tensor< R1, R2, R3, K1, K2, K3, T_value, T_coeff >& other, const size_t& factor  );
-		
-		template< size_t K1, size_t K2, size_t K3>
-		void region_of_interest( const qtucker3_tensor< R1, R2, R3, K1, K2, K3, T_value, T_coeff >& other, 
-								const size_t& start_index1, const size_t& end_index1, 
-								const size_t& start_index2, const size_t& end_index2, 
-								const size_t& start_index3, const size_t& end_index3);
-		
+				
 		friend std::ostream& operator << ( std::ostream& os, const tucker3_type& t3 )
 		{
 			t3_core_type core; t3.get_core( core );
@@ -165,7 +145,6 @@ namespace vmml
 			return os;
 		}
 		
-		
         void cast_members();
         void cast_comp_members();
         void quantize_basis_matrices( T_internal& u_min_, T_internal& u_max_ );
@@ -176,6 +155,10 @@ namespace vmml
 		
 	protected:
 		tucker3_type operator=( const tucker3_type& other ) { return (*this); };
+		
+		template< typename T_init>
+		void decompose( const t3_type& data_, T_init init );
+		void reconstruct( t3_type& data_ ); 
 		
 	private:
 		//t3_core_type* _core ;
@@ -193,7 +176,6 @@ namespace vmml
 		T_internal _hottest_core_value;
 		t3_core_signs_type _signs;
 		
-		bool _is_quantify_coeff; 
 		bool _is_quantify_hot; 
 		bool _is_quantify_log; 
 		bool _is_quantify_linear; 
@@ -207,7 +189,7 @@ namespace vmml
 	
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::qtucker3_tensor( )
-: _is_quantify_coeff( false ), _is_quantify_hot( false ), _hottest_core_value( 0 )
+: _is_quantify_hot( false ), _hottest_core_value( 0 )
 , _is_quantify_linear( false ), _is_quantify_log( false )
 {
 	_core.zero();
@@ -224,7 +206,7 @@ VMML_TEMPLATE_CLASSNAME::qtucker3_tensor( )
 
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::qtucker3_tensor( t3_core_type& core )
-: _is_quantify_coeff( false ), _is_quantify_hot( false ), _hottest_core_value( 0 )
+: _is_quantify_hot( false ), _hottest_core_value( 0 )
 , _is_quantify_linear( false ), _is_quantify_log( false )
 {
 	_core = core;
@@ -241,7 +223,7 @@ VMML_TEMPLATE_CLASSNAME::qtucker3_tensor( t3_core_type& core )
 
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::qtucker3_tensor( t3_core_type& core, u1_type& U1, u2_type& U2, u3_type& U3 )
-: _is_quantify_coeff( false ), _is_quantify_hot( false ), _hottest_core_value( 0 )
+:  _is_quantify_hot( false ), _hottest_core_value( 0 )
 , _is_quantify_linear( false ), _is_quantify_log( false )
 {
 	_core = core;
@@ -258,7 +240,7 @@ VMML_TEMPLATE_CLASSNAME::qtucker3_tensor( t3_core_type& core, u1_type& U1, u2_ty
 
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::qtucker3_tensor( const t3_type& data_, u1_type& U1, u2_type& U2, u3_type& U3 )
-: _is_quantify_coeff( false ), _is_quantify_hot( false ), _hottest_core_value( 0 )
+: _is_quantify_hot( false ), _hottest_core_value( 0 )
 , _is_quantify_linear( false ), _is_quantify_log( false )
 {
 	_u1 = new u1_type( U1 );
@@ -277,7 +259,7 @@ VMML_TEMPLATE_CLASSNAME::qtucker3_tensor( const t3_type& data_, u1_type& U1, u2_
 
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::qtucker3_tensor( const tucker3_type& other )
-: _is_quantify_coeff( false ), _is_quantify_hot( false ), _hottest_core_value( 0 )
+: _is_quantify_hot( false ), _hottest_core_value( 0 )
 , _is_quantify_linear( false ), _is_quantify_log( false )
 {
 	_u1 = new u1_type();
@@ -503,56 +485,6 @@ VMML_TEMPLATE_CLASSNAME::reconstruct( t3_type& data_ )
 }
 
 
-
-
-VMML_TEMPLATE_STRING
-void 
-VMML_TEMPLATE_CLASSNAME::threshold_core( const size_t& nnz_core_, size_t& nnz_core_is_ )
-{
-	nnz_core_is_ = _core_comp.nnz();
-	T_coeff threshold_value = 0.00001;
-	while( nnz_core_is_ > nnz_core_ ) {
-		_core_comp.threshold( threshold_value );
-		nnz_core_is_ = _core_comp.nnz();
-		
-		//threshold value scheme
-		if( threshold_value < 0.01) {
-			threshold_value *= 10;
-		} else if ( threshold_value < 0.2) {
-			threshold_value += 0.05;
-		} else if ( threshold_value < 1) {
-			threshold_value += 0.25;
-		} else if (threshold_value < 10 ) {
-			threshold_value += 1;
-		} else if (threshold_value < 50 ) {
-			threshold_value += 10;
-		} else if (threshold_value < 200 ) {
-			threshold_value += 50;
-		} else if (threshold_value < 500 ) {
-			threshold_value += 100;
-		} else if (threshold_value < 2000 ) {
-			threshold_value += 500;
-		} else if (threshold_value < 5000 ) {
-			threshold_value += 3000;
-		} else if (threshold_value >= 5000 ){
-			threshold_value += 5000;
-		}
-	}
-	_core.cast_from( _core_comp);
-}
-
-
-
-VMML_TEMPLATE_STRING
-void 
-VMML_TEMPLATE_CLASSNAME::threshold_core( const T_coeff& threshold_value_, size_t& nnz_core_ )
-{
-	_core_comp.threshold( threshold_value_ );
-	nnz_core_ = _core_comp.nnz();
-	_core.cast_from( _core_comp);
-}
-
-
 VMML_TEMPLATE_STRING
 template< typename T_init>
 void 
@@ -609,211 +541,6 @@ VMML_TEMPLATE_CLASSNAME::tucker_als( const t3_type& data_, T_init init )
 	cast_members();
 }
 
-
-VMML_TEMPLATE_STRING
-template< size_t K1, size_t K2, size_t K3>
-void 
-VMML_TEMPLATE_CLASSNAME::reduce_ranks( const qtucker3_tensor< K1, K2, K3, I1, I2, I3, T_value, T_coeff >& other )
-//TuckerJI.rank_recuction(TuckerKI) K1 -> R1, K2 -> R2, K3 -> R3; I1, I2, I3 stay the same
-{
-	assert(R1 <= K1);
-	assert(R2 <= K2);
-	assert(R3 <= K3);	
-	
-	//reduce basis matrices
-	matrix< I1, K1, T_coeff >* u1 = new matrix< I1, K1, T_coeff >();
-	other.get_u1( *u1);
-	for( size_t r1 = 0; r1 < R1; ++r1 ) 
-	{
-		_u1->set_column( r1, u1->get_column( r1 ));
-	}
-	
-	matrix< I2, K2, T_coeff >* u2 = new matrix< I2, K2, T_coeff >();
-	other.get_u2( *u2 );
-	for( size_t r2 = 0; r2 < R2; ++r2) 
-	{
-		_u2->set_column( r2, u2->get_column( r2 ));
-	}
-	
-	matrix< I3, K3, T_coeff >* u3 = new matrix< I3, K3, T_coeff >();
-	other.get_u3( *u3 );
-	for( size_t r3 = 0; r3 < R3; ++r3) 
-	{
-		_u3->set_column( r3, u3->get_column( r3 ));
-	}
-	
-	//reduce core
-	tensor3<K1, K2, K3, T_coeff > other_core;
-	other.get_core( other_core );
-	
-	for( size_t r3 = 0; r3 < R3; ++r3 ) 
-	{
-		for( size_t r1 = 0; r1 < R1; ++r1 ) 
-		{
-			for( size_t r2 = 0; r2 < R2; ++r2 ) 
-			{
-				_core.at( r1, r2, r3 ) = other_core.at( r1, r2, r3 );
-			}
-		}
-	}
-	
-	
-	cast_comp_members();
-	
-	delete u1;
-	delete u2;
-	delete u3;
-}
-
-
-
-VMML_TEMPLATE_STRING
-template< size_t K1, size_t K2, size_t K3>
-void 
-VMML_TEMPLATE_CLASSNAME::subsampling( const qtucker3_tensor< R1, R2, R3, K1, K2, K3, T_value, T_coeff >& other, const size_t& factor )
-{
-	assert(I1 <= K1);
-	assert(I1 <= K2);
-	assert(I1 <= K3);	
-	
-	//subsample basis matrices
-	matrix< K1, R1, T_coeff >* u1 = new matrix< K1, R1, T_coeff >();
-	other.get_u1( *u1 );
-	for( size_t i1 = 0, i = 0; i1 < K1; i1 += factor, ++i ) 
-	{
-		_u1->set_row( i, u1->get_row( i1 ));
-	}
-	
-	matrix< K2, R2, T_coeff >* u2 = new matrix< K2, R2, T_coeff >();
-	other.get_u2( *u2 );
-	for( size_t i2 = 0,  i = 0; i2 < K2; i2 += factor, ++i) 
-	{
-		_u2->set_row( i, u2->get_row( i2 ));
-	}
-	
-	matrix< K3, R3, T_coeff >* u3 = new matrix< K3, R3, T_coeff >() ;
-	other.get_u3( *u3 );
-	for( size_t i3 = 0,  i = 0; i3 < K3; i3 += factor, ++i) 
-	{
-		_u3->set_row( i, u3->get_row( i3 ));
-	}
-	
-	other.get_core( _core );
-	
-	cast_comp_members();
-	delete u1;
-	delete u2;
-	delete u3;
-}
-
-
-VMML_TEMPLATE_STRING
-template< size_t K1, size_t K2, size_t K3>
-void 
-VMML_TEMPLATE_CLASSNAME::subsampling_on_average( const qtucker3_tensor< R1, R2, R3, K1, K2, K3, T_value, T_coeff >& other, const size_t& factor )
-{
-	assert(I1 <= K1);
-	assert(I1 <= K2);
-	assert(I1 <= K3);	
-	
-	
-	//subsample basis matrices
-	matrix< K1, R1, T_coeff >* u1 = new matrix< K1, R1, T_coeff >();
-	other.get_u1( *u1 );
-	for( size_t i1 = 0, i = 0; i1 < K1; i1 += factor, ++i )
-	{
-		vector< R1, T_internal > tmp_row = u1->get_row( i1 );
-		T_internal num_items_averaged = 1;
-		for( size_t j = i1+1; (j < (factor+i1)) & (j < K1); ++j, ++num_items_averaged )
-			tmp_row += u1->get_row( j );
-		
-		tmp_row /= num_items_averaged;
-		_u1->set_row( i, tmp_row);
-	}
-	
-	matrix< K2, R2, T_coeff >* u2 = new matrix< K2, R2, T_coeff >();
-	other.get_u2( *u2 );
-	for( size_t i2 = 0,  i = 0; i2 < K2; i2 += factor, ++i) 
-	{
-		vector< R2, T_internal > tmp_row = u2->get_row( i2 );
-		T_internal num_items_averaged = 1;
-		for( size_t j = i2+1; (j < (factor+i2)) & (j < K2); ++j, ++num_items_averaged )
-			tmp_row += u2->get_row( j );
-		
-		tmp_row /= num_items_averaged;
-		_u2->set_row( i, u2->get_row( i2 ));
-	}
-	
-	matrix< K3, R3, T_coeff >* u3  = new matrix< K3, R3, T_coeff >();
-	other.get_u3( *u3 );
-	for( size_t i3 = 0,  i = 0; i3 < K3; i3 += factor, ++i) 
-	{
-		vector< R3, T_internal > tmp_row = u3->get_row( i3 );
-		T_internal num_items_averaged = 1;
-		for( size_t j = i3+1; (j < (factor+i3)) & (j < K3); ++j, ++num_items_averaged )
-			tmp_row += u3->get_row( j );
-		
-		tmp_row /= num_items_averaged;
-		_u3->set_row( i, u3->get_row( i3 ));
-	}
-	
-	other.get_core( _core );
-	cast_comp_members();
-	delete u1;
-	delete u2;
-	delete u3;
-}
-
-
-
-
-VMML_TEMPLATE_STRING
-template< size_t K1, size_t K2, size_t K3>
-void 
-VMML_TEMPLATE_CLASSNAME::region_of_interest( const qtucker3_tensor< R1, R2, R3, K1, K2, K3, T_value, T_coeff >& other, 
-											const size_t& start_index1, const size_t& end_index1, 
-											const size_t& start_index2, const size_t& end_index2, 
-											const size_t& start_index3, const size_t& end_index3)
-{
-	assert(I1 <= K1);
-	assert(I1 <= K2);
-	assert(I1 <= K3);
-	assert(start_index1 < end_index1);
-	assert(start_index2 < end_index2);
-	assert(start_index3 < end_index3);
-	assert(end_index1 < K1);
-	assert(end_index2 < K2);
-	assert(end_index3 < K3);
-	
-	//region_of_interes of basis matrices
-	matrix< K1, R1, T_internal >* u1 = new matrix< K1, R1, T_internal >();
-	other.get_u1_comp( *u1 );
-	for( size_t i1 = start_index1,  i = 0; i1 < end_index1; ++i1, ++i ) 
-	{
-		_u1_comp->set_row( i, u1->get_row( i1 ));
-	}
-	
-	matrix< K2, R2, T_internal>* u2 = new matrix< K2, R2, T_internal>();
-	other.get_u2_comp( *u2 );
-	for( size_t i2 = start_index2,  i = 0; i2 < end_index2; ++i2, ++i) 
-	{
-		_u2_comp->set_row( i, u2->get_row( i2 ));
-	}
-	
-	matrix< K3, R3, T_internal >* u3  = new matrix< K3, R3, T_internal>();
-	other.get_u3_comp( *u3 );
-	for( size_t i3 = start_index3,  i = 0; i3 < end_index3; ++i3, ++i) 
-	{
-		_u3_comp->set_row( i, u3->get_row( i3 ));
-	}
-	
-	other.get_core_comp( _core_comp );
-	
-	//cast_comp_members();
-	delete u1;
-	delete u2;
-	delete u3;
-}
 
 
 VMML_TEMPLATE_STRING

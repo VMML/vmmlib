@@ -11,6 +11,7 @@
 #include "t3_hopm_test.hpp"
 #include "t3_ihopm_test.hpp"
 #include "tucker3_tensor_test.hpp"
+#include "qtucker3_tensor_test.hpp"
 #include "tucker3_exporter_importer_test.hpp"
 #include "cp3_tensor_test.hpp"
 #include "matrix_pseudoinverse_test.hpp"
@@ -107,6 +108,9 @@ main( int argc, const char* argv[] )
 	
     vmml::tucker3_tensor_test tt3t;
     run_and_log( tt3t );
+
+    vmml::qtucker3_tensor_test tt3tq;
+    run_and_log( tt3tq );
 
 	vmml::tucker3_exporter_importer_test tt3ei;
     run_and_log( tt3ei );

@@ -1,13 +1,13 @@
-#include "tucker3_tensor_test.hpp"
+#include "qtucker3_tensor_test.hpp"
 
-#include <vmmlib/tucker3_tensor.hpp>
+#include <vmmlib/qtucker3_tensor.hpp>
 #include <sstream>
 
 namespace vmml
 {
 	
 	bool
-	tucker3_tensor_test::run()
+	qtucker3_tensor_test::run()
 	{
 		bool ok = false;
 		double precision = 0.001;
@@ -111,7 +111,7 @@ namespace vmml
 		
 		t3q_type t3_data_hooi_3_reco;
 		float u1_min, u1_max, u2_min, u2_max, u3_min, u3_max, core_min, core_max;
-		
+
 		tuck3q_type tuck3_hooi_3;
 		tuck3_hooi_3.enable_quantify_linear();
 		tuck3_hooi_3.decompose( t3_data_hooi_3, u1_min, u1_max, u2_min, u2_max, u3_min, u3_max, core_min, core_max, hooi_type1::init_hosvd() );
@@ -191,7 +191,7 @@ namespace vmml
 		typedef matrix< 7, 2, T_coeff_3 > u2rr_type;
 		typedef matrix< 5, 3, T_coeff_3 > u3rr_type;
 		typedef tucker3_tensor< 1, 2, 3, 6, 7, 5, T_value_3, T_coeff_3 > tuck3rr_type;
-		
+
 		u1rr_type u1_red; u1_red.fill(2);
 		u2rr_type u2_red; u2_red.fill(3);
 		u3rr_type u3_red; u3_red.fill(1);
@@ -307,3 +307,4 @@ namespace vmml
 	
 	
 } // namespace vmml
+

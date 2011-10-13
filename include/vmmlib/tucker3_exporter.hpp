@@ -11,7 +11,7 @@
 #ifndef __VMML__TUCK3_EXPORTER__HPP__
 #define __VMML__TUCK3_EXPORTER__HPP__
 
-#include <vmmlib/tucker3_tensor.hpp>
+#include <vmmlib/qtucker3_tensor.hpp>
 
 
 /* FIXME:
@@ -34,6 +34,7 @@ namespace vmml
 		typedef float T_internal; //FIXME! should match with tucker3 tensor
 				
 		typedef tucker3_tensor< R1, R2, R3, I1, I2, I3, T_value, T_coeff > tucker3_type;
+		typedef qtucker3_tensor< R1, R2, R3, I1, I2, I3, T_value, T_coeff > qtucker3_type;
 		
 		typedef tensor3< R1, R2, R3, T_coeff > t3_core_type;
 		typedef typename t3_core_type::iterator t3_core_iterator;
@@ -57,27 +58,22 @@ namespace vmml
 		static void export_to( std::vector< T >& data_, tucker3_type& tuck3_data_ );
 		
 		//previous version, but works only with 16bit quantization
-		static void export_quantized_to(  std::vector<unsigned char>& data_out_, tucker3_type& tuck3_data_   );
+		static void export_quantized_to(  std::vector<unsigned char>& data_out_, qtucker3_type& tuck3_data_   );
 		
 		//use this version, works with a better quantization for the core tensor:
 		//logarithmic quantization and separate high energy core vale
 		//suitable for voxelwise reconstruction
-		static void export_hot_quantized_to(  std::vector<unsigned char>& data_out_, tucker3_type& tuck3_data_   );
+		static void export_hot_quantized_to(  std::vector<unsigned char>& data_out_, qtucker3_type& tuck3_data_   );
 		
 		//use this version for the ttm export/import (core: backward cyclic), without plain hot value 
-		static void export_ttm_quantized_to(  std::vector<unsigned char>& data_out_, tucker3_type& tuck3_data_   );
+		static void export_ttm_quantized_to(  std::vector<unsigned char>& data_out_, qtucker3_type& tuck3_data_   );
 		
-	protected:
-		
-		
-
-		
+	
 	}; //end tucker3 exporter class
 	
 #define VMML_TEMPLATE_STRING        template< size_t R1, size_t R2, size_t R3, size_t I1, size_t I2, size_t I3, typename T_value, typename T_coeff >
 #define VMML_TEMPLATE_CLASSNAME     tucker3_exporter< R1, R2, R3, I1, I2, I3, T_value, T_coeff >
-	
-	
+
 	
 VMML_TEMPLATE_STRING
 template< typename T >
@@ -137,7 +133,7 @@ VMML_TEMPLATE_CLASSNAME::export_to( std::vector< T >& data_, tucker3_type& tuck3
 	
 VMML_TEMPLATE_STRING
 void
-VMML_TEMPLATE_CLASSNAME::export_quantized_to( std::vector<unsigned char>& data_out_, tucker3_type& tuck3_data_  )
+VMML_TEMPLATE_CLASSNAME::export_quantized_to( std::vector<unsigned char>& data_out_, qtucker3_type& tuck3_data_  )
 {
 	tuck3_data_.enable_quantify_coeff();
 
@@ -216,7 +212,7 @@ VMML_TEMPLATE_CLASSNAME::export_quantized_to( std::vector<unsigned char>& data_o
 	
 VMML_TEMPLATE_STRING
 void
-VMML_TEMPLATE_CLASSNAME::export_hot_quantized_to( std::vector<unsigned char>& data_out_, tucker3_type& tuck3_data_  )
+VMML_TEMPLATE_CLASSNAME::export_hot_quantized_to( std::vector<unsigned char>& data_out_, qtucker3_type& tuck3_data_  )
 {
 	tuck3_data_.enable_quantify_hot();
 	//quantize tucker3 components (u1-u3 and core)
@@ -301,7 +297,7 @@ VMML_TEMPLATE_CLASSNAME::export_hot_quantized_to( std::vector<unsigned char>& da
 	
 VMML_TEMPLATE_STRING
 void
-VMML_TEMPLATE_CLASSNAME::export_ttm_quantized_to( std::vector<unsigned char>& data_out_, tucker3_type& tuck3_data_  )
+VMML_TEMPLATE_CLASSNAME::export_ttm_quantized_to( std::vector<unsigned char>& data_out_, qtucker3_type& tuck3_data_  )
 {
 	tuck3_data_.enable_quantify_log();
 	//quantize tucker3 components (u1-u3 and core)

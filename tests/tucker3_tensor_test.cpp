@@ -95,52 +95,6 @@ namespace vmml
 		ok = ( number_nonzeros == 16 ) && (number_nonzeros2 == 12);
 		log( "get number of nonzeros" , ok  );
 		
-		//quantization
-		
-		typedef unsigned char T_value_2;
-		typedef unsigned short T_coeff_2;
-		typedef tensor3< 3, 2, 2, T_value_2 > t3q_type;
-		typedef tucker3_tensor< 2, 2, 2, 3, 2, 2, T_value_2, T_coeff_2 > tuck3q_type;
-		typedef t3_hooi< 2, 2, 2, 3, 2, 2, float > hooi_type1;
-		
-		
-		//fill test data
-		T_value_2 data_hooi_3[] = { 0, 13, 122, 123, 124, 95, 10, 40, 25, 54, 33, 76};
-		t3q_type t3_data_hooi_3;
-		t3_data_hooi_3.set(data_hooi_3, data_hooi_3 + 12);
-		
-		t3q_type t3_data_hooi_3_reco;
-		float u1_min, u1_max, u2_min, u2_max, u3_min, u3_max, core_min, core_max;
-		
-		tuck3q_type tuck3_hooi_3;
-		tuck3_hooi_3.enable_quantify_linear();
-		tuck3_hooi_3.decompose( t3_data_hooi_3, u1_min, u1_max, u2_min, u2_max, u3_min, u3_max, core_min, core_max, hooi_type1::init_hosvd() );
-		tuck3_hooi_3.reconstruct( t3_data_hooi_3_reco, u1_min, u1_max, u2_min, u2_max, u3_min, u3_max, core_min, core_max );
-		double rmse = t3_data_hooi_3_reco.rmse( t3_data_hooi_3 );
-		double rmse_check = 5.392896562454479; 
-		
-		float u_min, u_max;
-		tuck3_hooi_3.decompose( t3_data_hooi_3, u_min, u_max, core_min, core_max, hooi_type1::init_hosvd() );
-		tuck3_hooi_3.reconstruct( t3_data_hooi_3_reco, u_min, u_max, core_min, core_max );
-		double rmse2 = t3_data_hooi_3_reco.rmse( t3_data_hooi_3 );
-		
-		
-		if ( (rmse == rmse_check) && (rmse != 0) && (rmse2 == rmse_check))
-		{	
-			log( "quantized Tucker ALS ank-(2,2,1) approximation" , true  );
-		} else
-		{
-			std::stringstream error;
-			error 
-			<< "quantized Tucker ALS rank-(2,2,1) approximation: " << std::setprecision(16) << std::endl
-			<< "RMSE should be: " << rmse_check << ", is: " << rmse << std::endl
-			<< "Tucker3 is : " << std::endl << tuck3_hooi_3 << std::endl;
-			
-			
-			log_error( error.str() );
-		}		
-		
-		
 		//tucker3 reconstruction
 		typedef int T_value_3;
 		typedef int T_coeff_3;

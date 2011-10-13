@@ -1,5 +1,4 @@
 #include "qtucker3_tensor_test.hpp"
-
 #include <vmmlib/qtucker3_tensor.hpp>
 #include <sstream>
 
@@ -20,7 +19,7 @@ namespace vmml
 		typedef matrix< 2, 1, T_coeff > u3_type;
 		typedef tensor3< 2, 2, 1, T_coeff > core_type;
 		typedef t3_hooi< 2, 2, 1, 3, 2, 2, float > hooi_type;
-		typedef tucker3_tensor< 2, 2, 1, 3, 2, 2, T_value, T_coeff > tuck3_type;
+		typedef qtucker3_tensor< 2, 2, 1, 3, 2, 2, T_value, T_coeff > tuck3_type;
 		
 		
 		//test data from lathauwer et al. 2000b paper (same test as in t3_hooi_test
@@ -96,11 +95,10 @@ namespace vmml
 		log( "get number of nonzeros" , ok  );
 		
 		//quantization
-		
 		typedef unsigned char T_value_2;
 		typedef unsigned short T_coeff_2;
 		typedef tensor3< 3, 2, 2, T_value_2 > t3q_type;
-		typedef tucker3_tensor< 2, 2, 2, 3, 2, 2, T_value_2, T_coeff_2 > tuck3q_type;
+		typedef qtucker3_tensor< 2, 2, 2, 3, 2, 2, T_value_2, T_coeff_2 > tuck3q_type;
 		typedef t3_hooi< 2, 2, 2, 3, 2, 2, float > hooi_type1;
 		
 		
@@ -149,7 +147,7 @@ namespace vmml
 		typedef matrix< 6, 2, T_coeff_3 > u1r_type;
 		typedef matrix< 7, 3, T_coeff_3 > u2r_type;
 		typedef matrix< 5, 4, T_coeff_3 > u3r_type;
-		typedef tucker3_tensor< 2, 3, 4, 6, 7, 5, T_value_3, T_coeff_3 > tuck3r_type;
+		typedef qtucker3_tensor< 2, 3, 4, 6, 7, 5, T_value_3, T_coeff_3 > tuck3r_type;
 		
 		
 		t3r_core_type core; core.fill_increasing_values();
@@ -190,7 +188,7 @@ namespace vmml
 		typedef matrix< 6, 1, T_coeff_3 > u1rr_type;
 		typedef matrix< 7, 2, T_coeff_3 > u2rr_type;
 		typedef matrix< 5, 3, T_coeff_3 > u3rr_type;
-		typedef tucker3_tensor< 1, 2, 3, 6, 7, 5, T_value_3, T_coeff_3 > tuck3rr_type;
+		typedef qtucker3_tensor< 1, 2, 3, 6, 7, 5, T_value_3, T_coeff_3 > tuck3rr_type;
 
 		u1rr_type u1_red; u1_red.fill(2);
 		u2rr_type u2_red; u2_red.fill(3);
@@ -233,7 +231,7 @@ namespace vmml
 		
 		//factor matrices subsampling
 		typedef tensor3< 3, 4, 3, T_value_3 > t3s_type;
-		typedef tucker3_tensor< 2, 3, 4, 3, 4, 3, T_value_3, T_coeff_3 > tuck3s_type;
+		typedef qtucker3_tensor< 2, 3, 4, 3, 4, 3, T_value_3, T_coeff_3 > tuck3s_type;
 		
 		t3s_type t3_sub;
 		tuck3s_type tuck3_sub; 
@@ -277,7 +275,7 @@ namespace vmml
 		
 		
 		//factor matrices region of interest selection
-		typedef tucker3_tensor< 2, 3, 4, 1, 1, 3, T_value_3, T_coeff_3 > tuck3_roi_type;
+		typedef qtucker3_tensor< 2, 3, 4, 1, 1, 3, T_value_3, T_coeff_3 > tuck3_roi_type;
 		typedef tensor3< 1, 1, 3, T_value_3 > t3_roi_type;
 		
 		t3_roi_type t3_roi;

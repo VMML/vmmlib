@@ -4,20 +4,17 @@
  * @author Susanne Suter
  * @author Jonas Boesch
  *
- * The tucker3 tensor class is consists of the same components (core tensor, basis matrices u1-u3) as the tucker3 model described in:
+ * The Tucker3 tensor class is consists of the same components (core tensor, basis matrices u1-u3) as the tucker3 model described in:
  * - Tucker, 1966: Some mathematical notes on three-mode factor analysis, Psychometrika.
  * - De Lathauwer, De Moor, Vandewalle, 2000a: A multilinear singular value decomposition, SIAM J. Matrix Anal. Appl.
  * - De Lathauwer, De Moor, Vandewalle, 2000b: On the Best rank-1 and Rank-(R_1, R_2, ..., R_N) Approximation and Applications of Higher-Order Tensors, SIAM J. Matrix Anal. Appl.
  * - Kolda & Bader, 2009: Tensor Decompositions and Applications, SIAM Review.
  * 
+ * see also quantized Tucker3 tensor (qtucker3_tensor.hpp)
  */
 
 #ifndef __VMML__TUCKER3_TENSOR__HPP__
 #define __VMML__TUCKER3_TENSOR__HPP__
-
-#define CODE_ALL_U_MIN_MAX 0
-#define CORE_RANGE 127
-
 
 #include <vmmlib/t3_hooi.hpp>
 
@@ -31,44 +28,20 @@ public:
 	typedef float T_internal;	
 	
 	typedef tucker3_tensor< R1, R2, R3, I1, I2, I3, T_value, T_coeff > tucker3_type;
+	typedef t3_hooi< R1, R2, R3, I1, I2, I3, T_coeff > t3_hooi_type;
 	
 	typedef tensor3< I1, I2, I3, T_value > t3_type;
-	typedef typename t3_type::iterator t3_iterator;
-	typedef typename t3_type::const_iterator t3_const_iterator;
-	
-	typedef tensor3< I1, I2, I3, T_coeff > t3_coeff_type;
-	typedef typename t3_coeff_type::iterator t3_coeff_iterator;
-	typedef typename t3_coeff_type::const_iterator t3_coeff_const_iterator;
-	
 	typedef tensor3< R1, R2, R3, T_coeff > t3_core_type;
-	typedef typename t3_core_type::iterator t3_core_iterator;
-	typedef typename t3_core_type::const_iterator t3_core_const_iterator;
-	
-	typedef matrix< R1, R2, T_coeff >        front_core_slice_type; //fwd: forward cylcling (after kiers et al., 2000)
-	
 	typedef matrix< I1, R1, T_coeff > u1_type;
-	typedef typename u1_type::iterator u1_iterator;
-	typedef typename u1_type::const_iterator u1_const_iterator;
-	
 	typedef matrix< I2, R2, T_coeff > u2_type;
-	typedef typename u2_type::iterator u2_iterator;
-	typedef typename u2_type::const_iterator u2_const_iterator;
-	
 	typedef matrix< I3, R3, T_coeff > u3_type;
-	typedef typename u3_type::iterator u3_iterator;
-	typedef typename u3_type::const_iterator u3_const_iterator;
 	
 	typedef tensor3< I1, I2, I3, T_internal > t3_comp_type;
-	typedef typename t3_comp_type::iterator t3_comp_iterator;
-	typedef typename t3_comp_type::const_iterator t3_comp_const_iterator;
-	
 	typedef tensor3< R1, R2, R3, T_internal > t3_core_comp_type;
 	typedef matrix< I1, R1, T_internal > u1_comp_type;
 	typedef matrix< I2, R2, T_internal > u2_comp_type;
 	typedef matrix< I3, R3, T_internal > u3_comp_type;
 		
-	typedef tensor3< R1, R2, R3, char > t3_core_signs_type;
-	
 	static const size_t SIZE = R1*R2*R3 + I1*R1 + I2*R2 + I3*R3;
 		
 	tucker3_tensor();
@@ -78,21 +51,6 @@ public:
 	tucker3_tensor( const tucker3_type& other );
 	~tucker3_tensor();
 		
-	void enable_quantify_coeff() { _is_quantify_coeff = true; };
-	void disable_quantify_coeff() { _is_quantify_coeff = false; } ;
-	void enable_quantify_hot() { _is_quantify_hot = true; _is_quantify_coeff = true; _is_quantify_log = false; _is_quantify_linear = false;};
-	void disable_quantify_hot() { _is_quantify_hot = false; _is_quantify_coeff = false;} ;
-	void enable_quantify_linear() { _is_quantify_linear = true; _is_quantify_coeff = true; _is_quantify_hot = false;};
-	void disable_quantify_linear() { _is_quantify_linear = false; _is_quantify_coeff = false;} ;
-	void enable_quantify_log() { _is_quantify_log = true; _is_quantify_coeff = true; _is_quantify_hot = false;};
-	void disable_quantify_log() { _is_quantify_log = false; _is_quantify_coeff = false;} ;
-		
-	void get_core_signs( t3_core_signs_type& signs_ ) { signs_ = _signs; };
-	void set_core_signs( const t3_core_signs_type signs_ ) { _signs = signs_; } ;
-
-	T_internal get_hottest_value() { return _hottest_core_value; };
-	void set_hottest_value( const T_internal value_ ) { _hottest_core_value = value_; } ;
-
 	void set_core( t3_core_type& core )  { _core = t3_core_type( core ); _core_comp.cast_from( core ); } ;
 	void set_u1( u1_type& U1 ) { *_u1 = U1; _u1_comp->cast_from( U1 ); } ;
 	void set_u2( u2_type& U2 ) { *_u2 = U2; _u2_comp->cast_from( U2 ); } ;
@@ -122,30 +80,10 @@ public:
 	
 	void threshold_core( const size_t& nnz_core_, size_t& nnz_core_is_ ); 
 	void threshold_core( const T_coeff& threshold_value_, size_t& nnz_core_ ); 
-	void reconstruct( t3_type& data_,
-					 const T_internal& u_min_, const T_internal& u_max_,
-					 const T_internal& core_min_, const T_internal& core_max_ ); 
-	void reconstruct( t3_type& data_, 
-					 const T_internal& u1_min_, const T_internal& u1_max_,
-					 const T_internal& u2_min_, const T_internal& u2_max_,
-					 const T_internal& u3_min_, const T_internal& u3_max_,
-					 const T_internal& core_min_, const T_internal& core_max_ ); 
 	void reconstruct( t3_type& data_ ); 
 		
 	template< typename T_init>
 	void decompose( const t3_type& data_, T_init init );
-	template< typename T_init>
-	void decompose( const t3_type& data_, 
-				   T_internal& u1_min_, T_internal& u1_max_,
-				   T_internal& u2_min_, T_internal& u2_max_,
-				   T_internal& u3_min_, T_internal& u3_max_,
-				   T_internal& core_min_, T_internal& core_max_,
-				   T_init init ); 
-	template< typename T_init>
-	void decompose( const t3_type& data_, 
-				   T_internal& u_min_, T_internal& u_max_,
-				   T_internal& core_min_, T_internal& core_max_, 
-				   T_init init ); 
 		
 	template< typename T_init>
 	void tucker_als( const t3_type& data_, T_init init  );	
@@ -189,12 +127,7 @@ public:
 		
         void cast_members();
         void cast_comp_members();
-        void quantize_basis_matrices( T_internal& u_min_, T_internal& u_max_ );
-        void quantize_basis_matrices( T_internal& u1_min_, T_internal& u1_max_, T_internal& u2_min_, T_internal& u2_max_, T_internal& u3_min_, T_internal& u3_max_ );
-        void quantize_core( T_internal& core_min_, T_internal& core_max_ );
-        void dequantize_basis_matrices( const T_internal& u1_min_, const T_internal& u1_max_, const T_internal& u2_min_, const T_internal& u2_max_, const T_internal& u3_min_, const T_internal& u3_max_ );
-        void dequantize_core( const T_internal& core_min_, const T_internal& core_max_ );
-		
+ 		
 protected:
 		tucker3_type operator=( const tucker3_type& other ) { return (*this); };
 		
@@ -211,14 +144,6 @@ private:
         u2_comp_type* _u2_comp ;
         u3_comp_type* _u3_comp ;
 		
-		T_internal _hottest_core_value;
-		t3_core_signs_type _signs;
-		
-		bool _is_quantify_coeff; 
-		bool _is_quantify_hot; 
-		bool _is_quantify_log; 
-		bool _is_quantify_linear; 
-		
 }; // class tucker3_tensor
 
 
@@ -228,8 +153,6 @@ private:
 
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::tucker3_tensor( )
-	: _is_quantify_coeff( false ), _is_quantify_hot( false ), _hottest_core_value( 0 )
-	, _is_quantify_linear( false ), _is_quantify_log( false )
 {
 	_core.zero();
 	_u1 = new u1_type(); _u1->zero();
@@ -239,14 +162,10 @@ VMML_TEMPLATE_CLASSNAME::tucker3_tensor( )
 	_u1_comp = new u1_comp_type(); _u1_comp->zero();
 	_u2_comp = new u2_comp_type(); _u2_comp->zero();
 	_u3_comp = new u3_comp_type(); _u3_comp->zero();	
-	
-	_signs.zero();
 }
 	
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::tucker3_tensor( t3_core_type& core )
-	: _is_quantify_coeff( false ), _is_quantify_hot( false ), _hottest_core_value( 0 )
-	, _is_quantify_linear( false ), _is_quantify_log( false )
 {
 	_core = core;
 	_u1 = new u1_type(); _u1->zero();
@@ -256,14 +175,10 @@ VMML_TEMPLATE_CLASSNAME::tucker3_tensor( t3_core_type& core )
 	_u2_comp = new u2_comp_type(); _u2_comp->zero();
 	_u3_comp = new u3_comp_type(); _u3_comp->zero();	
 	_core_comp.cast_from( core );
-	
-	_signs.zero();
 }
 
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::tucker3_tensor( t3_core_type& core, u1_type& U1, u2_type& U2, u3_type& U3 )
-	: _is_quantify_coeff( false ), _is_quantify_hot( false ), _hottest_core_value( 0 )
-	, _is_quantify_linear( false ), _is_quantify_log( false )
 {
 	_core = core;
 	_u1 = new u1_type( U1 );
@@ -273,14 +188,10 @@ VMML_TEMPLATE_CLASSNAME::tucker3_tensor( t3_core_type& core, u1_type& U1, u2_typ
 	_u2_comp = new u2_comp_type(); 
 	_u3_comp = new u3_comp_type(); 	
 	cast_comp_members();
-	
-	_signs.zero();
 }
 
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::tucker3_tensor( const t3_type& data_, u1_type& U1, u2_type& U2, u3_type& U3 )
-: _is_quantify_coeff( false ), _is_quantify_hot( false ), _hottest_core_value( 0 )
-, _is_quantify_linear( false ), _is_quantify_log( false )
 {
 	_u1 = new u1_type( U1 );
 	_u2 = new u2_type( U2 );
@@ -289,17 +200,13 @@ VMML_TEMPLATE_CLASSNAME::tucker3_tensor( const t3_type& data_, u1_type& U1, u2_t
 	_u2_comp = new u2_comp_type(); 
 	_u3_comp = new u3_comp_type(); 	
 	
-	t3_hooi< R1, R2, R3, I1, I2, I3, T_coeff >::derive_core(  data_, *_u1, *_u2, *_u3, _core );
+	t3_hooi_type::derive_core(  data_, *_u1, *_u2, *_u3, _core );
 	
 	cast_comp_members();
-	
-	_signs.zero();
 }
 	
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::tucker3_tensor( const tucker3_type& other )
-: _is_quantify_coeff( false ), _is_quantify_hot( false ), _hottest_core_value( 0 )
-, _is_quantify_linear( false ), _is_quantify_log( false )
 {
 	_u1 = new u1_type();
 	_u2 = new u2_type();
@@ -314,8 +221,6 @@ VMML_TEMPLATE_CLASSNAME::tucker3_tensor( const tucker3_type& other )
 	other.get_u3( *_u3 );
 	
 	cast_comp_members();
-	
-	_signs.zero();
 }
 	
 	
@@ -356,109 +261,6 @@ VMML_TEMPLATE_CLASSNAME::size_core() const
 }
 	
 	
-	
-VMML_TEMPLATE_STRING
-void
-VMML_TEMPLATE_CLASSNAME::quantize_basis_matrices(T_internal& u1_min_, T_internal& u1_max_,
-												 T_internal& u2_min_, T_internal& u2_max_,
-												 T_internal& u3_min_, T_internal& u3_max_ )
-{
-	_u1_comp->quantize( *_u1, u1_min_, u1_max_ );
-	_u2_comp->quantize( *_u2, u2_min_, u2_max_ );
-	_u3_comp->quantize( *_u3, u3_min_, u3_max_ );	
-}
-
-
-VMML_TEMPLATE_STRING
-void
-VMML_TEMPLATE_CLASSNAME::quantize_basis_matrices(T_internal& u_min_, T_internal& u_max_)
-{
-	u_min_ = _u1_comp->get_min();
-	T_internal u2_min = _u2_comp->get_min();
-	T_internal u3_min = _u3_comp->get_min();
-	
-	if ( u2_min < u_min_) {
-		u_min_  = u2_min;
-	}
-	if ( u3_min < u_min_) {
-		u_min_  = u3_min;
-	}
-	
-	u_max_ = _u1_comp->get_max();
-	T_internal u2_max = _u2_comp->get_max();
-	T_internal u3_max = _u3_comp->get_max();
-	
-	if ( u2_max > u_max_ ) {
-		u_max_  = u2_max;
-	}
-	if ( u3_max > u_max_ ) {
-		u_max_  = u3_max;
-	}
-		
-	_u1_comp->quantize_to( *_u1, u_min_, u_max_ );
-	_u2_comp->quantize_to( *_u2, u_min_, u_max_ );
-	_u3_comp->quantize_to( *_u3, u_min_, u_max_ );	
-	
-#if 0
-	std::cout << "quantized (1u): " << std::endl << "u1-u3: " << std::endl
-	<< *_u1 << std::endl << *_u1_comp << std::endl
-	<< *_u2 << std::endl << *_u2_comp << std::endl
-	<< *_u3 << std::endl << *_u3_comp << std::endl
-	<< " core " << std::endl
-	<< _core << std::endl
-	<< " core_comp " << std::endl
-	<< _core_comp << std::endl;
-#endif
-}	
-
-	
-VMML_TEMPLATE_STRING
-void
-VMML_TEMPLATE_CLASSNAME::quantize_core( T_internal& core_min_, T_internal& core_max_ )
-{
-	if ( _is_quantify_hot ) {
-		_hottest_core_value = _core_comp.at(0,0,0);
-		_core_comp.at( 0, 0, 0 ) = 0;		
-		_core_comp.quantize_log( _core, _signs, core_min_, core_max_, T_coeff(CORE_RANGE) );
-	} else if ( _is_quantify_linear ) {
-		_core_comp.quantize( _core, core_min_, core_max_ );
-	} else if ( _is_quantify_log ) {
-		_core_comp.quantize_log( _core, _signs, core_min_, core_max_, T_coeff(CORE_RANGE) );
-	} else {
-		_core_comp.quantize( _core, core_min_, core_max_ );
-		std::cout << "quant.method not specified" << std::endl;
-	}
-}	
-
-
-VMML_TEMPLATE_STRING
-void
-VMML_TEMPLATE_CLASSNAME::dequantize_basis_matrices( const T_internal& u1_min_, const T_internal& u1_max_, 
-													 const T_internal& u2_min_, const T_internal& u2_max_, 
-													 const T_internal& u3_min_, const T_internal& u3_max_ )
-{
-	_u1->dequantize( *_u1_comp, u1_min_, u1_max_ );
-	_u2->dequantize( *_u2_comp, u2_min_, u2_max_ );
-	_u3->dequantize( *_u3_comp, u3_min_, u3_max_ );	
-}	
-
-VMML_TEMPLATE_STRING
-void
-VMML_TEMPLATE_CLASSNAME::dequantize_core( const T_internal& core_min_, const T_internal& core_max_ )
-{
-	if ( _is_quantify_hot ) {
-		_core.dequantize_log( _core_comp, _signs, core_min_, core_max_ );
-		_core.at(0,0,0) = _hottest_core_value;
-		_core_comp.at(0,0,0) = _hottest_core_value;
-	} else if ( _is_quantify_linear ) {
-		_core.dequantize( _core_comp, core_min_, core_max_ );
-	} else if ( _is_quantify_log ) {
-		_core.dequantize_log( _core_comp, _signs, core_min_, core_max_ );
-	} else {
-		_core.dequantize( _core_comp, core_min_, core_max_ );
-	}	
-}		
-	
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::~tucker3_tensor( )
 {
@@ -470,42 +272,6 @@ VMML_TEMPLATE_CLASSNAME::~tucker3_tensor( )
 	delete _u3_comp;
 }
 	
-VMML_TEMPLATE_STRING
-void 
-VMML_TEMPLATE_CLASSNAME::reconstruct( t3_type& data_, 
-									 const T_internal& u_min_, const T_internal& u_max_, 
-									 const T_internal& core_min_, const T_internal& core_max_ )
-{
-	dequantize_basis_matrices( u_min_, u_max_, u_min_, u_max_, u_min_, u_max_ );
-	dequantize_core( core_min_, core_max_ );
-	
-#if 0
-	std::cout << "dequantized (1u): " << std::endl << "u1-u3: " << std::endl
-	<< *_u1 << std::endl << *_u1_comp << std::endl
-	<< *_u2 << std::endl << *_u2_comp << std::endl
-	<< *_u3 << std::endl << *_u3_comp << std::endl
-	<< " core " << std::endl
-	<< _core << std::endl
-	<< " core_comp " << std::endl
-	<< _core_comp << std::endl;
-#endif
-	
-	reconstruct( data_ );
-}
-
-VMML_TEMPLATE_STRING
-void 
-VMML_TEMPLATE_CLASSNAME::reconstruct( t3_type& data_, 
-									 const T_internal& u1_min_, const T_internal& u1_max_,
-									 const T_internal& u2_min_, const T_internal& u2_max_,
-									 const T_internal& u3_min_, const T_internal& u3_max_,
-									 const T_internal& core_min_, const T_internal& core_max_ )
-{
-	dequantize_basis_matrices( u1_min_, u1_max_, u2_min_, u2_max_, u3_min_, u3_max_ );
-	dequantize_core( core_min_, core_max_ );
-	
-    reconstruct( data_ );
-}
 	
 VMML_TEMPLATE_STRING
 void 
@@ -522,8 +288,6 @@ VMML_TEMPLATE_CLASSNAME::reconstruct( t3_type& data_ )
 		data_.cast_from( data );
 	}
 }
-	
-	
 	
 
 VMML_TEMPLATE_STRING
@@ -583,38 +347,6 @@ VMML_TEMPLATE_CLASSNAME::decompose( const t3_type& data_, T_init init )
 	tucker_als( data_, init );
 }
 	
-VMML_TEMPLATE_STRING
-template< typename T_init>
-void 
-VMML_TEMPLATE_CLASSNAME::decompose( const t3_type& data_, 
-								   T_internal& u1_min_, T_internal& u1_max_,
-								   T_internal& u2_min_, T_internal& u2_max_,
-								   T_internal& u3_min_, T_internal& u3_max_,
-								   T_internal& core_min_, T_internal& core_max_,
-								   T_init init ) 
-	
-{
-    decompose( data_, init );
-	
-	quantize_basis_matrices( u1_min_, u1_max_, u2_min_, u2_max_, u3_min_, u3_max_ );
-	quantize_core(core_min_, core_max_ );			
-}
-
-VMML_TEMPLATE_STRING
-template< typename T_init>
-void 
-VMML_TEMPLATE_CLASSNAME::decompose( const t3_type& data_, 
-								   T_internal& u_min_, T_internal& u_max_,
-								   T_internal& core_min_, T_internal& core_max_,
-								   T_init init ) 
-
-{
-	decompose( data_, init );
-	
-	quantize_basis_matrices( u_min_, u_max_ );
-	quantize_core(core_min_, core_max_ );		
-}
-	
 
 VMML_TEMPLATE_STRING
 template< typename T_init >
@@ -645,8 +377,6 @@ VMML_TEMPLATE_CLASSNAME::incr_block_diag_als( const t3_type& data_, T_init init 
 	
 	cast_members();
 }
-
-	
 
 
 VMML_TEMPLATE_STRING

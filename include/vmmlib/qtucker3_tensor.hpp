@@ -3,7 +3,7 @@
  *  
  * @author Susanne Suter
  *
- * Quantized version of Tucker3 Tensor
+ * Quantized version of Tucker3 tensor
  * - 16bit linear factor matrices quantization
  * - 8bit logarithmic core tensor quantization
  *
@@ -152,9 +152,6 @@ namespace vmml
 		
 		template< typename T_init>
 		void tucker_als( const t3_type& data_, T_init init  );	
-		template< typename T_init>
-		void incr_block_diag_als( const t3_type& data_, T_init init  );	
-		
 		
 		template< size_t K1, size_t K2, size_t K3>
 		void reduce_ranks( const qtucker3_tensor< K1, K2, K3, I1, I2, I3, T_value, T_coeff >& other ); //call TuckerJI.reduce_ranks(TuckerKI) K1 -> R1, K2 -> R2, K3 -> R3
@@ -632,24 +629,6 @@ VMML_TEMPLATE_CLASSNAME::tucker_als( const t3_type& data_, T_init init )
 	
 	cast_members();
 }
-
-VMML_TEMPLATE_STRING
-template< typename T_init >
-void 
-VMML_TEMPLATE_CLASSNAME::incr_block_diag_als( const t3_type& data_, T_init init )
-{
-	t3_comp_type data;
-	data.cast_from( data_ );
-	
-	//for number of increments, do a block of tucker with size R1=R2=R3 and set core only in diagonal, all other core values = zero; first approach
-	
-	typedef t3_hooi< R1, R2, R3, I1, I2, I3, T_internal > hooi_type;
-	hooi_type::als( data, *_u1_comp, *_u2_comp, *_u3_comp, _core_comp, init ); 
-	
-	cast_members();
-}
-
-
 
 
 VMML_TEMPLATE_STRING

@@ -11,7 +11,7 @@
 #ifndef __VMML__TUCK3_IMPORTER__HPP__
 #define __VMML__TUCK3_IMPORTER__HPP__
 
-#include <vmmlib/tucker3_tensor.hpp>
+#include <vmmlib/qtucker3_tensor.hpp>
 
 /* FIXME:
  *
@@ -33,6 +33,7 @@ namespace vmml
 		typedef float T_internal; //FIXME! should match with tucker3 tensor
 
 		typedef tucker3_tensor< R1, R2, R3, I1, I2, I3, T_value, T_coeff > tucker3_type;
+		typedef qtucker3_tensor< R1, R2, R3, I1, I2, I3, T_value, T_coeff > qtucker3_type;
 		
 		typedef tensor3< R1, R2, R3, T_coeff > t3_core_type;
 		typedef typename t3_core_type::iterator t3_core_iterator;
@@ -50,7 +51,7 @@ namespace vmml
 		typedef typename u3_type::iterator u3_iterator;
 		typedef typename u3_type::const_iterator u3_const_iterator;
 		
-		typedef matrix< R1, R2, T_coeff >        front_core_slice_type; //fwd: forward cylcling (after kiers et al., 2000)
+		typedef matrix< R1, R2, T_coeff > front_core_slice_type; //fwd: forward cylcling (after kiers et al., 2000)
 
 		typedef tensor3< R1, R2, R3, char > t3_core_signs_type;
 		
@@ -58,28 +59,21 @@ namespace vmml
 		static void import_from( const std::vector< T >& data_, tucker3_type& tuck3_data_ );
 		
 		//previous version, but works only with 16bit quantization
-		static void import_quantized_from( const std::vector<unsigned char>& data_in_, tucker3_type& tuck3_data_  );
+		static void import_quantized_from( const std::vector<unsigned char>& data_in_, qtucker3_type& tuck3_data_  );
 		
 		//use this version, works with a better quantization for the core tensor:
 		//logarithmic quantization and separate high energy core vale
 		//suitable for voxelwise reconstruction
-		static void import_hot_quantized_from( const std::vector<unsigned char>& data_in_, tucker3_type& tuck3_data_  );
+		static void import_hot_quantized_from( const std::vector<unsigned char>& data_in_, qtucker3_type& tuck3_data_  );
 		
 		//use this version for the ttm export/import (core: backward cyclic), without plain hot value 
-		static void import_ttm_quantized_from( const std::vector<unsigned char>& data_in_, tucker3_type& tuck3_data_  );
-		
-	protected:
-		
-		
+		static void import_ttm_quantized_from( const std::vector<unsigned char>& data_in_, qtucker3_type& tuck3_data_  );
 		
 		
 	}; //end tucker3 importer class
 	
 #define VMML_TEMPLATE_STRING        template< size_t R1, size_t R2, size_t R3, size_t I1, size_t I2, size_t I3, typename T_value, typename T_coeff >
 #define VMML_TEMPLATE_CLASSNAME     tucker3_importer< R1, R2, R3, I1, I2, I3, T_value, T_coeff >
-	
-	
-	
 	
 	
 VMML_TEMPLATE_STRING
@@ -147,7 +141,7 @@ VMML_TEMPLATE_CLASSNAME::import_from( const std::vector< T >& data_, tucker3_typ
 
 VMML_TEMPLATE_STRING
 void
-VMML_TEMPLATE_CLASSNAME::import_quantized_from( const std::vector<unsigned char>& data_in_, tucker3_type& tuck3_data_   )
+VMML_TEMPLATE_CLASSNAME::import_quantized_from( const std::vector<unsigned char>& data_in_, qtucker3_type& tuck3_data_   )
 {
 	tuck3_data_.enable_quantify_coeff();
 	size_t end_data = 0;
@@ -235,7 +229,7 @@ VMML_TEMPLATE_CLASSNAME::import_quantized_from( const std::vector<unsigned char>
 
 VMML_TEMPLATE_STRING
 void
-VMML_TEMPLATE_CLASSNAME::import_hot_quantized_from( const std::vector<unsigned char>& data_in_, tucker3_type& tuck3_data_   )
+VMML_TEMPLATE_CLASSNAME::import_hot_quantized_from( const std::vector<unsigned char>& data_in_, qtucker3_type& tuck3_data_   )
 {
 	tuck3_data_.enable_quantify_hot();
 	size_t end_data = 0;
@@ -318,7 +312,7 @@ VMML_TEMPLATE_CLASSNAME::import_hot_quantized_from( const std::vector<unsigned c
 	
 VMML_TEMPLATE_STRING
 void
-VMML_TEMPLATE_CLASSNAME::import_ttm_quantized_from( const std::vector<unsigned char>& data_in_, tucker3_type& tuck3_data_   )
+VMML_TEMPLATE_CLASSNAME::import_ttm_quantized_from( const std::vector<unsigned char>& data_in_, qtucker3_type& tuck3_data_   )
 {
 	tuck3_data_.enable_quantify_log();
 	size_t end_data = 0;

@@ -105,7 +105,7 @@ namespace vmml
 		//tests for quantized exports
 		
 		typedef tensor3< 3, 2, 2, unsigned char> t3q_type; 
-		typedef tucker3_tensor< 2, 2, 2, 3, 2, 2, unsigned char, unsigned short > tuck3q_type; 
+		typedef qtucker3_tensor< 2, 2, 2, 3, 2, 2, unsigned char, unsigned short > tuck3q_type; 
 		typedef t3_hooi< 2, 2, 2, 3, 2, 2, float > hooi_type1;
 		typedef tucker3_exporter< 2, 2, 2, 3, 2, 2, unsigned char, unsigned short > tuck3q_exporter_t;
 		typedef tucker3_importer< 2, 2, 2, 3, 2, 2, unsigned char, unsigned short > tuck3q_importer_t;

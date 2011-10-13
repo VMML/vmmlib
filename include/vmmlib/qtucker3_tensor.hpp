@@ -36,35 +36,14 @@ namespace vmml
 		typedef qtucker3_tensor< R1, R2, R3, I1, I2, I3, T_value, T_coeff > tucker3_type;
 		
 		typedef tensor3< I1, I2, I3, T_value > t3_type;
-		typedef typename t3_type::iterator t3_iterator;
-		typedef typename t3_type::const_iterator t3_const_iterator;
-		
 		typedef tensor3< I1, I2, I3, T_coeff > t3_coeff_type;
-		typedef typename t3_coeff_type::iterator t3_coeff_iterator;
-		typedef typename t3_coeff_type::const_iterator t3_coeff_const_iterator;
-		
 		typedef tensor3< R1, R2, R3, T_coeff > t3_core_type;
-		typedef typename t3_core_type::iterator t3_core_iterator;
-		typedef typename t3_core_type::const_iterator t3_core_const_iterator;
-		
-		typedef matrix< R1, R2, T_coeff >        front_core_slice_type; //fwd: forward cylcling (after kiers et al., 2000)
 		
 		typedef matrix< I1, R1, T_coeff > u1_type;
-		typedef typename u1_type::iterator u1_iterator;
-		typedef typename u1_type::const_iterator u1_const_iterator;
-		
 		typedef matrix< I2, R2, T_coeff > u2_type;
-		typedef typename u2_type::iterator u2_iterator;
-		typedef typename u2_type::const_iterator u2_const_iterator;
-		
 		typedef matrix< I3, R3, T_coeff > u3_type;
-		typedef typename u3_type::iterator u3_iterator;
-		typedef typename u3_type::const_iterator u3_const_iterator;
-		
 		typedef tensor3< I1, I2, I3, T_internal > t3_comp_type;
-		typedef typename t3_comp_type::iterator t3_comp_iterator;
-		typedef typename t3_comp_type::const_iterator t3_comp_const_iterator;
-		
+
 		typedef tensor3< R1, R2, R3, T_internal > t3_core_comp_type;
 		typedef matrix< I1, R1, T_internal > u1_comp_type;
 		typedef matrix< I2, R2, T_internal > u2_comp_type;

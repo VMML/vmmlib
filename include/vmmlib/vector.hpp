@@ -194,6 +194,8 @@ public:
     // note: there's also a free function:
     // vector<> normalize( const vector<> );
     inline T normalize();
+	
+	void set_random( int seed ); //sets all matrix values with random values
     
     inline T length() const;
     inline T squared_length() const;
@@ -1757,6 +1759,20 @@ vector< M, T >::norm( ) const
 	
 	return sqrt(norm);
 }	
+
+template< size_t M, typename T >
+void 
+vector< M, T >::set_random( int seed )
+{
+	double fillValue = 0.0f;
+	srand( seed );
+	for( size_t i = 0; i < M; ++i )
+	{
+		fillValue = rand();
+		fillValue /= RAND_MAX;
+		at( i ) = -1.0 + 2.0 * static_cast< double >( fillValue )  ;
+	}
+}		
 
 	
 } // namespace vmml

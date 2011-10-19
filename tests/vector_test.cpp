@@ -580,6 +580,17 @@ vector_test::run()
 				
 		log( "reciprocal ", ok );
     }
+    {
+		//l2 norm
+        vector< 4, float > vr( 9.0, 4.0, 1.0, 2.0 );
+		double v_norm_check = 10.09950493836208;
+		double v_norm = vr.norm();
+			
+        bool ok = ((v_norm - v_norm_check) < 0.0001);
+		
+		log( "l2 norm ", ok );
+    }
+	
 	
     return ok;
 }

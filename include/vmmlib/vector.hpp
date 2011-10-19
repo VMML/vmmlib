@@ -268,6 +268,7 @@ public:
     void perturb( T perturbation = 0.0001 );
 	
 	void sqrt_elementwise();
+	double norm() const; //l2 norm
 
     // computes the reciprocal value for each component, x = 1/x;
     // WARNING: might result in nans if division by 0!
@@ -1740,6 +1741,22 @@ vector< M, T >::is_valid() const
 
     return valid;
 }
+
+	
+template< size_t M, typename T >
+double 
+vector< M, T >::norm( ) const
+{
+	double norm = 0.0;
+	
+	const_iterator it = begin(), it_end = end(); 
+	for( ; it != it_end; ++it )
+	{
+		norm += *it * *it;
+	}
+	
+	return sqrt(norm);
+}	
 
 	
 } // namespace vmml

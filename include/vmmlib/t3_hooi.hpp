@@ -76,10 +76,10 @@ namespace vmml
 		{
 			inline void operator()( const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_ )
 			{
-				int seed = time( NULL );
-				u1_.set_random( seed );
-				u2_.set_random( rand() );
-				u3_.set_random( rand() );
+				srand( time(NULL) );
+				u1_.set_random();
+				u2_.set_random();
+				u3_.set_random();
 			}
 		};
 		

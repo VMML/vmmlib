@@ -73,9 +73,9 @@ namespace vmml
 		{
 			inline void operator()( const t3_type& data_, u2_type& u2_, u3_type& u3_ )
 			{
-				int seed = time( NULL );
-				u2_.set_random( seed );
-				u3_.set_random( rand() );
+				srand( time(NULL) );
+				u2_.set_random();
+				u3_.set_random();
 			}
 		};
 

@@ -195,8 +195,12 @@ public:
     // vector<> normalize( const vector<> );
     inline T normalize();
 	
-	void set_random( int seed ); //sets all matrix values with random values
-    
+	//sets all matrix values with random values
+	//remember to set srand( seed );
+	//if seed is set to -1, srand( seed ) was set outside set_random
+	//otherwise srand( seed ) will be called with the given seed
+	void set_random( int seed = -1 );   
+	
     inline T length() const;
     inline T squared_length() const;
     
@@ -1764,8 +1768,10 @@ template< size_t M, typename T >
 void 
 vector< M, T >::set_random( int seed )
 {
+	if ( seed >= 0 )
+		srand( seed );
+	
 	double fillValue = 0.0f;
-	srand( seed );
 	for( size_t i = 0; i < M; ++i )
 	{
 		fillValue = rand();

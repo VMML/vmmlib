@@ -153,8 +153,13 @@ public:
 	// sets all elements to fill_value
     void operator=( T fill_value ); //@SUS: todo
     void fill( T fill_value ); //special case of set method (all values are set to the same value!)
-    void fill_random( );
-    void fill_random_signed( );
+	
+	//sets all tensor values with random values
+	//set srand(time(NULL)) or srand( seed )
+	//if seed is set to -1, srand( seed ) was set outside set_random
+	//otherwise srand( seed ) will be called with the given seed
+    void fill_random( int seed = -1 );
+    void fill_random_signed( int seed = -1 );
     void fill_increasing_values( );
     
     const tensor3& operator=( const tensor3& source_ );
@@ -834,11 +839,12 @@ fill( T fillValue )
 VMML_TEMPLATE_STRING
 void
 VMML_TEMPLATE_CLASSNAME::
-fill_random( )
+fill_random( int seed )
 {
+	if ( seed >= 0 )
+		srand( seed );
+	
 	double fillValue = 0.0f;
-	srand(time(NULL));
-    
     for( size_t index = 0; index < I1 * I2 * I3; ++index )
     {
         fillValue = rand();
@@ -867,10 +873,12 @@ fill_random( )
 VMML_TEMPLATE_STRING
 void
 VMML_TEMPLATE_CLASSNAME::
-fill_random_signed( )
+fill_random_signed( int seed )
 {
+	if ( seed >= 0 )
+		srand( seed );
+
 	double fillValue = 0.0f;
-	srand(time(NULL));
 	for( size_t i3 = 0; i3 < I3; ++i3 )
 	{
 		for( size_t i1 = 0; i1 < I1; ++i1 )

@@ -193,9 +193,15 @@ public:
     void set( input_iterator_t begin_, input_iterator_t end_, 
         bool row_major_layout = true );
 	
-	void set_random( int seed ); //sets all matrix values with random
-	void set_dct(); //sets all matrix values with discrete cosine transform coefficients (receive orthonormal coefficients)
-        
+	//sets all matrix values with random values
+	//remember to set srand( seed );
+	//if seed is set to -1, srand( seed ) was set outside set_random
+	//otherwise srand( seed ) will be called with the given seed
+	void set_random( int seed = -1 ); 
+
+	//sets all matrix values with discrete cosine transform coefficients (receive orthonormal coefficients)
+	void set_dct();   
+	
     void zero();
     void identity();
 	
@@ -2639,8 +2645,10 @@ template< size_t M, size_t N, typename T >
 void 
 matrix< M, N, T >::set_random( int seed )
 {
+	if ( seed >= 0 )
+		srand( seed );
+	
 	double fillValue = 0.0f;
-	srand( seed );
 	for( size_t row = 0; row < M; ++row )
 	{
 		for( size_t col = 0; col < N; ++col )

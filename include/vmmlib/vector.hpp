@@ -1753,15 +1753,15 @@ template< size_t M, typename T >
 double 
 vector< M, T >::norm( ) const
 {
-	double norm = 0.0;
+	double norm_v = 0.0;
 	
 	const_iterator it = begin(), it_end = end(); 
 	for( ; it != it_end; ++it )
 	{
-		norm += *it * *it;
+		norm_v += *it * *it;
 	}
-	
-	return sqrt(norm);
+		
+	return sqrt(norm_v);
 }	
 
 template< size_t M, typename T >

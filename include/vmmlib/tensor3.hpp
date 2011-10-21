@@ -369,9 +369,11 @@ template< typename U >
 VMML_TEMPLATE_CLASSNAME::tensor3( const tensor3< I1, I2, I3, U >& source_ )
 {
     tensor3_allocate_data( _array );
+	const U* s_array = source_.get_array_ptr();
     for( size_t index = 0; index < I1 * I2 * I3; ++index )
     {
-        _array[ index ] = static_cast< T >( source_._array[ index ] );
+        _array[ index ] = static_cast< T >( s_array[ index ] );
+        //_array[ index ] = static_cast< T >( source_._array[ index ] );
     }
 }
 	

@@ -41,7 +41,7 @@ public:
     typedef vector< 4, T >  super;
 
     using super::operator();
-    using super::operator=;
+    //using super::operator=;
     using super::at;
     using super::x;
     using super::y;
@@ -78,12 +78,15 @@ public:
 
     template< typename input_iterator_t >
     void set( input_iterator_t begin_, input_iterator_t end_ );
-
+    
 	bool operator==( const T& a ) const;
 	bool operator!=( const T& a ) const;
 	
 	bool operator==( const quaternion& a ) const;
 	bool operator!=( const quaternion& a ) const;
+
+	bool operator==( const vector< 4, T >& a ) const;
+	bool operator!=( const vector< 4, T >& a ) const;
 
 	bool is_akin( const quaternion& a, 
 				 const T& delta = std::numeric_limits< T >::epsilon() );
@@ -99,6 +102,9 @@ public:
 
 	quaternion negate() const;
 	quaternion operator-() const;
+    
+    const quaternion& operator=(const quaternion& other);
+    const vector< 4, T >& operator=( const vector< 4, T >& other );
 
     //
 	// quaternion/quaternion operations
@@ -400,6 +406,24 @@ template < typename T >
 bool quaternion< T >::operator!=( const T& a ) const
 {
 	return ( w() != a || x() != 0 || y() != 0 || z() != 0 );
+}
+
+
+template < typename T >
+bool
+quaternion< T >::operator==( const vector< 4, T >& a ) const
+{
+    return this->operator==( 
+        reinterpret_cast< const quaternion< T >& >( a ) 
+            );
+}
+
+
+template < typename T >
+bool
+quaternion< T >::operator!=( const vector< 4, T >& a ) const
+{
+	return ! this->operator==( a );
 }
 
 
@@ -940,6 +964,26 @@ slerp( T a, const quaternion< T >& p, const quaternion< T >& q )
 		return quat_u;
 	}
 }
+
+
+
+template < typename T >
+const quaternion< T >&
+quaternion< T >::operator=(const quaternion& other)
+{
+    memcpy( array, other.array, 4 * sizeof( T ) );
+    return *this;
+}
+
+
+template < typename T >
+const vector< 4, T >&
+quaternion< T >::operator=( const vector< 4, T >& other )
+{
+    memcpy( array, other.array, 4 * sizeof( T ) );
+    return other;
+}
+
 
 }
 #endif

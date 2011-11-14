@@ -123,6 +123,9 @@ public:
     matrix operator*( T scalar );
     void operator*=( T scalar );
 
+    matrix operator/( T scalar );
+    void operator/=( T scalar );
+
 	//
 	// matrix-vector operations
     //
@@ -1099,6 +1102,39 @@ matrix< M, N, T >::operator*=( const matrix< O, P, TT >& right )
     return 0;
 }
 
+template< size_t M, size_t N, typename T >
+matrix< M, N, T >
+matrix< M, N, T >::operator/( T scalar )
+{
+	matrix< M, N, T > result;
+	
+	for( size_t row_index = 0; row_index < M; ++row_index )
+	{
+		for( size_t col_index = 0; col_index < N; ++col_index )
+		{
+			result.at( row_index, col_index ) = at( row_index, col_index ) / scalar;
+		}
+	}
+	return result;
+}
+
+
+
+template< size_t M, size_t N, typename T >
+void
+matrix< M, N, T >::operator/=( T scalar )
+{
+	for( size_t row_index = 0; row_index < M; ++row_index )
+	{
+		for( size_t col_index = 0; col_index < N; ++col_index )
+		{
+			at( row_index, col_index ) /= scalar;
+		}
+	}
+}
+
+	
+	
 
 
 template< size_t M, size_t N, typename T >

@@ -131,7 +131,7 @@ VMML_TEMPLATE_CLASSNAME::als( const t3_type& data_,
 		fit = 1;
 	}
 	
-	double fitchange = fit;
+	double fitchange = 1;
 	double fitold = fit;
 	double fitchange_tolerance = 1.0e-4;
 	

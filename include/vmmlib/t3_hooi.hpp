@@ -80,6 +80,10 @@ namespace vmml
 				u1_.set_random();
 				u2_.set_random();
 				u3_.set_random();
+				
+				u1_ /= u1_.frobenius_norm();
+				u2_ /= u2_.frobenius_norm();
+				u3_ /= u3_.frobenius_norm();
 			}
 		};
 		

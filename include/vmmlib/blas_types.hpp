@@ -14,7 +14,7 @@ namespace vmml
 		
 #else
 		
-		typedef integer         blas_int;
+		typedef int  blas_int;
 		
 #endif
 		

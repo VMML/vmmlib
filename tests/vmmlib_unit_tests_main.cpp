@@ -27,7 +27,6 @@
 #include "lapack_sym_eigs_test.hpp"
 #endif
 
-#define VMMLIB_USE_BLAS 1
 #ifdef VMMLIB_USE_BLAS
 #include "blas_dgemm_test.hpp"
 #include "blas_dot_test.hpp"

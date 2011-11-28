@@ -32,13 +32,15 @@ CXXFLAGS += -I. -Iinclude
 # on mac we want to use the frameworks, not the unix style libs 
 ARCH = $(shell uname)
 ifeq "$(ARCH)" "Darwin"
-CXXFLAGS += -framework Accelerate -DVMMLIB_USE_LAPACK
+CXXFLAGS += -framework Accelerate -DVMMLIB_USE_LAPACK -DVMMLIB_USE_BLAS
 LDFLAGS += -framework Accelerate
 
 else
-CXXFLAGS += -DVMMLIB_USE_LAPACK 
+CXXFLAGS += -DVMMLIB_USE_LAPACK -DVMMLIB_USE_BLAS
 LDFLAGS +=
-LIBS += -lclapack -lf2c
+LIBS += -lclapack -lf2c -lcblas
+
+
 
 endif
 

@@ -279,6 +279,7 @@ public:
 	void write_datfile( const std::string& dir_, const std::string& filename_ ) const;
 	void write_to_csv( const std::string& dir_, const std::string& filename_ ) const;
 	void remove_normals_from_raw( const std::string& dir_, const std::string& filename_ ) ;
+	void remove_uct_cylinder( const size_t radius_offset_ ) ;
 	    
     inline tensor3 operator+( T scalar ) const;
     inline tensor3 operator-( T scalar ) const;
@@ -2221,7 +2222,32 @@ VMML_TEMPLATE_CLASSNAME::remove_normals_from_raw( const std::string& dir_, const
 	write_to_raw( ".", filename );
 }	
 
-	
+VMML_TEMPLATE_STRING
+void
+VMML_TEMPLATE_CLASSNAME::remove_uct_cylinder( const size_t radius_offset_ ) 
+{	
+	double length = 0;
+	double radius = (I1-1.0)/2.0 - radius_offset_;
+	radius *= radius;
+	double k1 = 0;
+	double k2 = 0;
+	for( size_t i3 = 0; i3 < I3; ++i3 )
+	{
+		for( size_t i1 = 0; i1 < I1; i1++ )
+		{
+			k1 = i1 - (I1-1.0)/2.0;
+			for( size_t i2 = 0; i2 < I2; i2++ )
+			{
+				k2 = i2 - (I2-1.0)/2.0;
+				length = k1*k1 + k2*k2 ;
+				if ( length >= radius )
+				{
+					at( i1, i2, i3 ) = static_cast<T> ( 0.0 );
+				}
+			}			
+		}
+	}
+}		
 	
 
 VMML_TEMPLATE_STRING

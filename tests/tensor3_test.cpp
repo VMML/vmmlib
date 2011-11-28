@@ -1165,7 +1165,56 @@ tensor3_test::run()
             log_error( error.str() );
         }
     }
-
+	
+	
+	{
+		
+		
+		uint8_t data_uct[] = { 
+			0, 0, 0, 0, 0, 0, 0, 0, 
+			0, 0, 7, 7, 7, 7, 0, 0,
+			0, 7, 7, 7, 7, 7, 7, 0,
+			0, 7, 7, 7, 7, 7, 7, 0,
+			0, 7, 7, 7, 7, 7, 7, 0,
+			0, 7, 7, 7, 7, 7, 7, 0,
+			0, 0, 7, 7, 7, 7, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 
+			0, 0, 7, 7, 7, 7, 0, 0,
+			0, 7, 7, 7, 7, 7, 7, 0,
+			0, 7, 7, 7, 7, 7, 7, 0,
+			0, 7, 7, 7, 7, 7, 7, 0,
+			0, 7, 7, 7, 7, 7, 7, 0,
+			0, 0, 7, 7, 7, 7, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0 
+		};
+		
+		tensor3< 8,8, 2, uint8_t > uct_t3_check;
+		uct_t3_check.set( data_uct, data_uct + 128);
+		
+		tensor3< 8,8, 2, uint8_t > uct_t3;
+		uct_t3.fill(7);
+		uct_t3.remove_uct_cylinder( 0 );
+		
+		ok = uct_t3 == uct_t3_check;
+		
+		if ( ok )	{	
+			log( "remove uct ring" , ok  );
+		} else
+		{
+			std::stringstream error;
+			error 
+			<< "remove uct ring " << std::endl
+			<< "t3 is: " << std::endl << uct_t3 << std::endl 
+			<< "t3 should be: " << std::endl << uct_t3_check 
+			<< std::endl;
+			
+			log_error( error.str() );
+		}	
+		
+	}
+	
+	
 	
 	ok = true;
     return ok;

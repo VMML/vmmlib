@@ -2125,8 +2125,12 @@ VMML_TEMPLATE_CLASSNAME::read_from_raw( const std::string& dir_, const std::stri
 	}
 	path.append( filename_ );
 	
-	size_t max_file_len = 2147483648 - sizeof(T) ;
+	size_t max_file_len_32bit = 2147483648;
 	size_t len_data = sizeof(T) * SIZE;
+
+	if (sizeof( void* ) < 8 && len_data > max_file_len_32bit )
+		std::cout << "Warning: max filesize is: " << max_file_len_32bit << std::endl;
+	
 	size_t len_read = 0;
 	char* data = new char[ len_data ];
 	std::ifstream infile;
@@ -2139,7 +2143,8 @@ VMML_TEMPLATE_CLASSNAME::read_from_raw( const std::string& dir_, const std::stri
 		
 		while ( len_data > 0 ) 
 		{
-            len_read = (len_data % max_file_len ) > 0 ? len_data % max_file_len : len_data;
+            //len_read = (len_data % max_file_len ) > 0 ? len_data % max_file_len : len_data;
+			len_read = len_data;
 			len_data -= len_read;
 			infile.read( data, len_read );
 			
@@ -2173,10 +2178,14 @@ VMML_TEMPLATE_CLASSNAME::remove_normals_from_raw( const std::string& dir_, const
 	}
 	path.append( filename_ );
 	
-	size_t len_value = sizeof(T) * 4; //three normals per scalar value
 	
-	size_t max_file_len = 2147483648 - len_value ;
-	size_t len_data = len_value * SIZE;
+	size_t max_file_len_32bit = 2147483648;
+	size_t len_data = sizeof(T) * SIZE;
+	
+	if (sizeof( void* ) < 8 && len_data > max_file_len_32bit )
+		std::cout << "Warning: max filesize is: " << max_file_len_32bit << std::endl;
+
+	size_t len_value = sizeof(T) * 4; //three normals per scalar value
 	size_t len_read = 0;
 	char* data = new char[ len_data ];
 	std::ifstream infile;
@@ -2190,7 +2199,8 @@ VMML_TEMPLATE_CLASSNAME::remove_normals_from_raw( const std::string& dir_, const
 		size_t counter = 0;
 		while ( len_data > 0 ) 
 		{
-			len_read = (len_data % max_file_len ) > 0 ? len_data % max_file_len : len_data;
+			//len_read = (len_data % max_file_len ) > 0 ? len_data % max_file_len : len_data;
+			len_read = len_data;
 			len_data -= len_read;
 			infile.read( data, len_read );
 			

@@ -197,7 +197,7 @@ tensor3_test::run()
 		0.176921194126, 0.243116716007, 0.176921194126, 0.243116716007, 0.367879404384, 0.243116716007, 0.176921194126, 0.243116716007, 0.176921194126};
 	t3_result_sw_check.set(data_sw, data_sw + 27);
 	
-	tensor3< 3,3,3, uint8_t > t3_sw;
+	tensor3< 3,3,3, unsigned int > t3_sw;
 	tensor3< 3,3,3, double > t3_result_sw;
 	t3_sw.fill( 1 );
 	t3_sw.apply_spherical_weights( t3_result_sw );
@@ -1170,7 +1170,7 @@ tensor3_test::run()
 	{
 		
 		
-		uint8_t data_uct[] = { 
+		unsigned int data_uct[] = { 
 			0, 0, 0, 0, 0, 0, 0, 0, 
 			0, 0, 7, 7, 7, 7, 0, 0,
 			0, 7, 7, 7, 7, 7, 7, 0,
@@ -1189,10 +1189,10 @@ tensor3_test::run()
 			0, 0, 0, 0, 0, 0, 0, 0 
 		};
 		
-		tensor3< 8,8, 2, uint8_t > uct_t3_check;
+		tensor3< 8,8, 2, unsigned int > uct_t3_check;
 		uct_t3_check.set( data_uct, data_uct + 128);
 		
-		tensor3< 8,8, 2, uint8_t > uct_t3;
+		tensor3< 8,8, 2, unsigned int > uct_t3;
 		uct_t3.fill(7);
 		uct_t3.remove_uct_cylinder( 0 );
 		

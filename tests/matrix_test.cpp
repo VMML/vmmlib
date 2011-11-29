@@ -412,7 +412,7 @@ matrix_test::run()
             1. };
         v_correct_result = vResultData;
         
-        ok = v_result == v_correct_result;
+		ok = v_result.equals( v_correct_result, 1e-12 );
         
         log( "matrix * vector multiplication", ok );
         if ( ! ok )
@@ -460,8 +460,8 @@ matrix_test::run()
         };
         v_correct_result = vResultData;
         
-        ok = v_result.equals( v_correct_result );
-        
+ 		ok = v_result.equals( v_correct_result, 1e-12 );
+       
         log( "matrix4x4 * vector3 ( m4x4 * v4( v3.xyz, 1.0 ) ) multiplication", ok );
         if ( ! ok )
         {

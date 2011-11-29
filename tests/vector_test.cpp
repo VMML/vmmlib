@@ -218,32 +218,32 @@ vector_test::run()
         v_result = v / v_other;
 		for( size_t index = 0; ok && index < 4; ++index )
 		{
-            ok = v_result.at( index ) == 0.5;
+            ok = ( v_result.at( index ) - 0.5 ) < 1e-12;
 		}
 
         v_result = v;
         v_result /= v_other;
 		for( size_t index = 0; ok && index < 4; ++index )
 		{
-            ok = v_result.at( index ) == 0.5;
+            ok = ( v_result.at( index ) - 0.5 ) < 1e-12;
 		}
 
 
         v_result = v / 1.5;
 		for( size_t index = 0; ok && index < 4; ++index )
 		{
-            ok = v_result.at( index ) == v.at( index ) / 1.5;
+            ok = ( v_result.at( index ) - ( v.at( index ) / 1.5 ) ) < 1e-12;
 		}
 
         v_result = v;
         v_result /= 1.5;
 		for( size_t index = 0; ok && index < 4; ++index )
 		{
-            ok = v_result.at( index ) == v.at( index ) / 1.5;
+            ok = ( v_result.at( index ) - ( v.at( index ) / 1.5 ) ) < 1e-12;
 		}
 
 		log( "operator/, operator/=", ok  );
-		if ( ! ok )
+		if ( !ok )
 		{
 			std::stringstream error;
 			error 

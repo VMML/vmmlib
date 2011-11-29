@@ -413,7 +413,13 @@ public:
 		#endif
 		return row_accessor( array + row_index );
 	}
-
+	
+	// this is a hack to remove a warning about implicit conversions
+	inline row_accessor operator[]( int row_index )
+	{
+		return ( *this )[ size_t ( row_index ) ];
+	}
+	
     friend std::ostream& operator << ( std::ostream& os, 
         const matrix< M, N, T >& matrix )
     {

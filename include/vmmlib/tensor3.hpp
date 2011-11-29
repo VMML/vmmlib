@@ -2125,7 +2125,7 @@ VMML_TEMPLATE_CLASSNAME::read_from_raw( const std::string& dir_, const std::stri
 	}
 	path.append( filename_ );
 	
-	size_t max_file_len = 2147483648 - sizeof(T) ;
+	size_t max_file_len = 2147483648u - sizeof(T) ;
 	size_t len_data = sizeof(T) * SIZE;
 	size_t len_read = 0;
 	char* data = new char[ len_data ];
@@ -2174,7 +2174,7 @@ VMML_TEMPLATE_CLASSNAME::remove_normals_from_raw( const std::string& dir_, const
 	path.append( filename_ );
 	
 	
-	size_t max_file_len = 2147483648 - sizeof(T) ;
+	size_t max_file_len = 2147483648u - sizeof(T) ;
 	size_t len_data = sizeof(T) * SIZE;
 	size_t len_value = sizeof(T) * 4; //three normals per scalar value
 	size_t len_read = 0;

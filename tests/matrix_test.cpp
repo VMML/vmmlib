@@ -1150,6 +1150,47 @@ matrix_test::run()
 			
 	}
 	
+	
+	{
+		// sum rows / sum columns
+		matrix< 5, 7, unsigned int > m1;
+		unsigned int m_data[] = {
+			0, 1, 2, 3, 4, 5, 6, 
+			7, 8, 9, 10, 11, 12, 13,
+			14, 15, 16, 17, 18, 19, 20,
+			21, 22, 23, 24, 25, 26, 27,
+			28, 29, 30, 31, 32, 33, 34
+		};
+		m1.set( m_data, m_data + 35 );
+		matrix< 2, 7, unsigned int> m2;
+		matrix< 2, 7, unsigned int> m2_check;
+		unsigned int m2_data[] = {
+			7, 9, 11, 13, 15, 17, 19,
+			35, 37, 39, 41, 43, 45, 47			
+		};
+		m2_check.set( m2_data, m2_data + 14 );
+		
+		m1.sum_rows( m2 );
+		
+		matrix< 5, 3, unsigned int> m3;
+		matrix< 5, 3, unsigned int> m3_check;
+		unsigned int m3_data[] = {
+			1, 5, 9, 
+			15, 19, 23,
+			29, 33, 37,
+			43, 47, 51,
+			57, 61, 65
+		};
+		m3_check.set( m3_data, m3_data + 15 );
+		
+		m1.sum_columns( m3 );
+		
+		ok = ( m2 == m2_check ) && (m3 == m3_check) ;
+		
+		log( "sum rows/columns" , ok  );
+		
+	}
+	
     return ok;
 }
 

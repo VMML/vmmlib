@@ -169,6 +169,10 @@ public:
 	 diag( const vector< R, T >& diag_values_ );
 	
     void range_threshold(tensor3< I1, I2, I3, T >& other_, const T& start_value, const T& end_value) const;
+	
+	template< size_t K1, size_t K2, size_t K3 >
+	void average_8to1( tensor3< K1, K2, K3, T >& other ) const;
+	
     
     // note: this function copies elements until either the matrix is full or
     // the iterator equals end_.
@@ -2439,6 +2443,56 @@ VMML_TEMPLATE_CLASSNAME::tensor_inner_product(
 	}
 	return inner_prod;
 }	
+	
+	
+VMML_TEMPLATE_STRING
+template< size_t K1, size_t K2, size_t K3 >
+void 
+VMML_TEMPLATE_CLASSNAME::average_8to1( tensor3< K1, K2, K3, T >& other ) const
+{
+	assert(I1/2 >= K1);
+	assert(I2/2 >= K2);
+	assert(I3/2 >= K3);	
+	
+	typedef matrix< K1, K2, T > other_slice_type;
+	typedef matrix< K1, K2, float > other_slice_float_type;
+	typedef matrix< K1, I2, T> sub_row_slice_type;
+	
+	front_slice_type* slice0 = new front_slice_type;
+	front_slice_type* slice1 = new front_slice_type;
+	sub_row_slice_type* sub_row_slice = new sub_row_slice_type;
+	other_slice_type* slice_other = new other_slice_type;
+	other_slice_float_type* slice_float_other = new other_slice_float_type;
+	
+	other.zero();
+
+	for ( size_t i3 = 0, k3 = 0; i3 < I3; ++i3, ++k3 )
+	{
+		get_frontal_slice_fwd( i3++, *slice0 );
+		if ( i3 < I3)
+		{
+			get_frontal_slice_fwd( i3, *slice1 );
+			
+			*slice0 += *slice1;
+			slice0->sum_rows( *sub_row_slice );
+			sub_row_slice->sum_columns( *slice_other );
+			
+			*slice_float_other = *slice_other;
+			*slice_float_other /= 8.0;
+			*slice_float_other += 0.5;
+			
+			slice_other->cast_from( *slice_float_other );
+			
+			other.set_frontal_slice_fwd( k3, *slice_other );
+		}
+	}
+		
+	delete slice0;
+	delete slice1;
+	delete slice_other;
+	delete sub_row_slice;
+}
+		
 	
 #undef VMML_TEMPLATE_STRING
 #undef VMML_TEMPLATE_CLASSNAME

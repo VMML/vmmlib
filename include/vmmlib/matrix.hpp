@@ -112,7 +112,10 @@ public:
 
 	void operator+=( const matrix& other );
 	void operator-=( const matrix& other );
-    
+	
+	void operator+=( T scalar );
+	void operator-=( T scalar );
+
 	template< size_t O, size_t P, size_t Q, size_t R >
     typename enable_if< M == O + Q && N == P + R >::type* 
     direct_sum( const matrix< O, P, T >& m0, const matrix< Q, R, T >& m1 );
@@ -224,6 +227,9 @@ public:
 
 	void columnwise_sum( vector< N, T>& summed_columns_ ) const;
 	double sum_elements() const;
+	
+	void sum_rows( matrix< M/2, N, T>& other ) const;
+	void sum_columns( matrix< M, N/2, T>& other ) const;
 	
 	template< size_t R >
     typename enable_if< R == M && R == N >::type* 
@@ -1648,6 +1654,16 @@ operator+=( const matrix< M, N, T >& other )
 }
 
 
+template< size_t M, size_t N, typename T >
+void
+matrix< M, N, T >::operator+=( T scalar )
+{
+	iterator it = begin(), it_end = end(); 
+	for( ; it != it_end; ++it )
+	{
+		*it += scalar;
+	}
+}
 
 template< size_t M, size_t N, typename T >
 inline matrix< M, N, T > 
@@ -1674,7 +1690,17 @@ operator-=( const matrix< M, N, T >& other )
     }
 }
 
-
+template< size_t M, size_t N, typename T >
+void
+matrix< M, N, T >::operator-=( T scalar )
+{
+	iterator it = begin(), it_end = end(); 
+	for( ; it != it_end; ++it )
+	{
+		*it -= scalar;
+	}
+}
+	
 
 template< size_t M, size_t N, typename T >
 template< size_t O, size_t P, size_t Q, size_t R >
@@ -2755,6 +2781,60 @@ matrix< M, N, T >::is_valid() const
 
     return valid;
 }
+	
+	
+template< size_t M, size_t N, typename T >
+void 
+matrix< M, N, T >::sum_rows( matrix< M/2, N, T>& other ) const
+{
+	typedef vector< N, T > row_type;
+	
+	row_type* row0 = new row_type;
+	row_type* row1 = new row_type;
+	
+	other.zero();
+	
+	for ( size_t row = 0; row < M; ++row )
+	{
+		get_row( row++, *row0 ); 
+		if ( row < M ) 
+		{
+			get_row( row, *row1 );
+			*row0 += *row1;
+			other.set_row( row/2 , *row0 );
+		}
+	}
+	
+	delete row0;
+	delete row1;
+}
+	
+template< size_t M, size_t N, typename T >
+void 
+matrix< M, N, T >::sum_columns( matrix< M, N/2, T>& other ) const
+{
+	typedef vector< M, T > col_type;
+	
+	col_type* col0 = new col_type;
+	col_type* col1 = new col_type;
+	
+	other.zero();
+	
+	for ( size_t col = 0; col< N; ++col )
+	{
+		get_column( col++, *col0 );
+		if ( col < N )
+		{
+			get_column( col, *col1 );
+			*col0 += *col1;
+			other.set_column( col/2, *col0 );
+		}
+	}
+	
+	delete col0;
+	delete col1;
+}
+	
 
 	
 } // namespace vmml

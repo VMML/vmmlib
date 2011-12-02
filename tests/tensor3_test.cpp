@@ -1214,6 +1214,23 @@ tensor3_test::run()
 		
 	}
 	
+	{
+		//average 8voxels to 1voxel
+		tensor3< 5, 5, 5, unsigned int > t3;
+		t3.fill_increasing_values();
+		tensor3< 2, 2, 2,  unsigned int > t3_sub_check;
+		unsigned int t3_sub_data[] = { 16, 18, 26, 28, 66, 68, 76, 78 }; 
+		t3_sub_check.set( t3_sub_data, t3_sub_data + 8 );
+		
+		tensor3< 2, 2, 2, unsigned int > t3_sub;
+		t3.average_8to1( t3_sub );
+						
+		ok = ( t3_sub == t3_sub_check ) ;
+		
+		log( "subsample tensor3 (average 8 voxels to 1 voxel)" , ok  );
+		
+	}
+	
 	
 	
 	ok = true;

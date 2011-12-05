@@ -2216,7 +2216,7 @@ VMML_TEMPLATE_CLASSNAME::remove_normals_from_raw( const std::string& dir_, const
 		std::cout << "no file open" << std::endl;
 	}
 	
-	std::cout << "convertd normals" << std::endl;
+	std::cout << "converted normals" << std::endl;
 	
 	std::string filename = "";
 	filename = filename_.substr(0, filename_.size() -6);

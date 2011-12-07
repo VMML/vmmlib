@@ -161,7 +161,9 @@ public:
     void fill_random( int seed = -1 );
     void fill_random_signed( int seed = -1 );
     void fill_increasing_values( );
-    
+    void fill_rand_sym_slices( int seed = -1 );
+    void fill_rand_sym( int seed = -1 );
+	
     const tensor3& operator=( const tensor3& source_ );
 	
     template< size_t R >
@@ -903,6 +905,78 @@ fill_random_signed( int seed )
 	}
 }
 
+VMML_TEMPLATE_STRING
+void
+VMML_TEMPLATE_CLASSNAME::
+fill_rand_sym( int seed )
+{
+	if ( seed >= 0 )
+		srand( seed );
+	assert(I1 == I2);
+	assert(I1 == I3);
+	
+	double fillValue = 0.0f;
+	T t_fill_value = 0;
+	for( size_t i3 = 0; i3 < I3; ++i3 )
+	{
+		for( size_t i1 = i3; i1 < I1; ++i1 )
+		{
+			for( size_t i2 = i1; i2 < I2; ++i2 )
+			{
+				fillValue = rand();
+				fillValue /= RAND_MAX;
+				fillValue *= std::numeric_limits< T >::max(); //add fillValue += 0.5; for rounding
+				t_fill_value = static_cast< T >( fillValue );
+				
+				at( i1, i2, i3 ) = t_fill_value;
+				
+				if ( i1 != i2 || i1 != i3 || i2 != i3 )
+				{
+					if ( i1 != i2 )
+						at( i2, i1, i3 ) = t_fill_value;
+					if (i2 != i3 )
+						at( i1, i3, i2 ) = t_fill_value;
+					if ( i1 != i3 )
+						at( i3, i2, i1 ) = t_fill_value;
+						
+					if ( i1 != i2 && i1 != i3 && i2 != i3 )
+					{
+						at( i2, i3, i1 ) = t_fill_value;
+						at( i3, i1, i2 ) = t_fill_value;
+					}
+				}
+			}
+		}
+	}	
+}	
+	
+VMML_TEMPLATE_STRING
+void
+VMML_TEMPLATE_CLASSNAME::
+fill_rand_sym_slices( int seed )
+{
+	if ( seed >= 0 )
+		srand( seed );
+	assert(I1 == I2);
+	
+	double fillValue = 0.0f;
+	for( size_t i3 = 0; i3 < I3; ++i3 )
+	{
+		for( size_t i1 = 0; i1 < I1; ++i1 )
+		{
+			for( size_t i2 = i1; i2 < I2; ++i2 )
+			{
+				fillValue = rand();
+				fillValue /= RAND_MAX;
+				fillValue *= std::numeric_limits< T >::max();
+				at( i1, i2, i3 ) = static_cast< T >( fillValue );
+				at( i2, i1, i3 ) = static_cast< T >( fillValue );
+			}
+		}
+	}	
+}	
+	
+	
 
 VMML_TEMPLATE_STRING
 void

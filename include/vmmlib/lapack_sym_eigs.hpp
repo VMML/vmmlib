@@ -190,11 +190,12 @@ template< size_t N, typename float_t >
 struct lapack_sym_eigs
 {
 	
+	typedef matrix< N, N, float_t > m_input_type;
+	typedef matrix< N, N, float_t > evectors_type;
+	
 	typedef vector< N, float_t > evalues_type;
 	typedef typename evalues_type::iterator evalue_iterator;
 	typedef typename evalues_type::const_iterator evalue_const_iterator;
-    
-	typedef matrix< N, N, float_t > evectors_type;
 
     typedef std::pair< float_t, size_t >  eigv_pair_type;
     
@@ -205,16 +206,16 @@ struct lapack_sym_eigs
 	// computes only the x largest magn. eigenvalues and their corresponding eigenvectors 
 	template< size_t X>
 	bool compute_x(
-					 const matrix< N, N, float_t >& A,
+					 const m_input_type& A,
 					 matrix< N, X, float_t >& eigvectors,
 					 vector< X, float_t >& eigvalues
 					 );
 	
 	//computes all eigenvalues and eigenvectors for matrix A
 	bool compute_all(
-				 const matrix< N, N, float_t >& A,
-				 matrix< N, N, float_t >& eigvectors,
-				 vector< N, float_t >& eigvalues
+				 const m_input_type& A,
+				 evectors_type& eigvectors,
+				 evalues_type& eigvalues
 				 );
 		
 	inline bool test_success( lapack::lapack_int info );
@@ -282,13 +283,13 @@ lapack_sym_eigs< N, float_t >::~lapack_sym_eigs()
 template< size_t N, typename float_t >
 bool
 lapack_sym_eigs< N, float_t >::compute_all(
-                                        const matrix< N, N, float_t >& A,
-                                        matrix< N, N, float_t >& eigvectors,
-                                        vector< N, float_t >& eigvalues
+                                        const m_input_type& A,
+                                        evectors_type& eigvectors,
+                                        evalues_type& eigvalues
                                         )
 {
 	// lapack destroys the contents of the input matrix
-	matrix< N, N, float_t > AA( A );
+	m_input_type AA( A );
 
 	p.range     = 'A'; // all eigenvalues will be found.
 	p.a         = AA.array;
@@ -308,7 +309,7 @@ template< size_t N, typename float_t >
 template< size_t X >
 bool
 lapack_sym_eigs< N, float_t >::compute_x(
-                                        const matrix< N, N, float_t >& A,
+                                        const m_input_type& A,
                                         matrix< N, X, float_t >& eigvectors,
                                         vector< X, float_t >& eigvalues
                                         )

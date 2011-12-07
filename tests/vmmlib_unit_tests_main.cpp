@@ -70,7 +70,7 @@ main( int argc, const char* argv[] )
 	
 	vmml::lapack_sym_eigs_test lapack_sym_eigs_test_;
     run_and_log( lapack_sym_eigs_test_ );
-
+	
 #endif
 	
 #ifdef VMMLIB_USE_BLAS

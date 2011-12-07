@@ -38,7 +38,10 @@ LDFLAGS += -framework Accelerate
 else
 CXXFLAGS += -DVMMLIB_USE_LAPACK -DVMMLIB_USE_BLAS
 LDFLAGS +=
+
+# adjust libs depending on your LAPACK and BLAS distribution
 LIBS += -lclapack -lf2c -lcblas
+# LIBS += -llapack -lblas
 
 
 

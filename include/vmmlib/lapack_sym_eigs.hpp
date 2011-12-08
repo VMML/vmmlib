@@ -194,6 +194,7 @@ struct lapack_sym_eigs
 	typedef matrix< N, N, float_t > evectors_type;
 	
 	typedef vector< N, float_t > evalues_type;
+	typedef vector< N, float_t > evector_type;
 	typedef typename evalues_type::iterator evalue_iterator;
 	typedef typename evalues_type::const_iterator evalue_const_iterator;
 
@@ -210,6 +211,15 @@ struct lapack_sym_eigs
 					 matrix< N, X, float_t >& eigvectors,
 					 vector< X, float_t >& eigvalues
 					 );
+
+	// partial sym. eigenvalue decomposition
+	// returns only the largest magn. eigenvalue and the corresponding eigenvector 
+	bool compute_1st(
+				   const m_input_type& A,
+				   evector_type& eigvector,
+				   float_t& eigvalue
+				   );
+	
 	
 	//computes all eigenvalues and eigenvectors for matrix A
 	bool compute_all(
@@ -362,6 +372,47 @@ lapack_sym_eigs< N, float_t >::compute_x(
 	delete sorted_eigvectors;	
 	
     return p.info == 0;
+}	
+
+template< size_t N, typename float_t >
+bool
+lapack_sym_eigs< N, float_t >::compute_1st(
+										 const m_input_type& A,
+										 evector_type& eigvector,
+										 float_t& eigvalue
+										 )
+{
+	//(1) get all eigenvalues and eigenvectors
+	evectors_type* all_eigvectors = new evectors_type();
+	evalues_type all_eigvalues;	
+	compute_all( A, *all_eigvectors, all_eigvalues );
+	
+	//(2) sort the eigenvalues
+	//std::pair< data, original_index >;
+	std::vector< eigv_pair_type > eig_permutations;
+	
+	evalue_const_iterator it = all_eigvalues.begin(), it_end = all_eigvalues.end();
+	size_t counter = 0;
+	for( ; it != it_end; ++it, ++counter )
+	{
+		eig_permutations.push_back( eigv_pair_type( *it, counter ) );
+	}
+	
+	std::sort(
+			  eig_permutations.begin(),
+			  eig_permutations.end(), 
+			  eigenvalue_compare()
+			  );
+	
+	//(2) select the largest magnitude eigenvalue and the corresponding eigenvector
+	typename std::vector< eigv_pair_type >::const_iterator it2 = eig_permutations.begin();
+	
+	eigvalue = it2->first;
+	all_eigvectors->get_column( it2->second, eigvector );
+	
+	delete all_eigvectors;
+	
+	return p.info == 0;
 }	
 
 	

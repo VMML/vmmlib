@@ -64,6 +64,8 @@ namespace vmml
 		
 		matrix< 4, 3, double > eigxvectors_check;
 		vector< 3, double > eigxvalues_check;
+		vector< 4, double > eigvector_check;
+		double first_eigvalue = -2.776873597454109;
 		double data_eigxvalues[] = {-2.776873597454109, -1.505827874899289, 0.8483149985370052 };
 		double data_eigxvectors[] = {
 			-0.846872951394099, -0.05486702445763353, 0.08543580914755927, 
@@ -72,10 +74,17 @@ namespace vmml
 			0.2382461373958975, -0.4550890739458455, 0.8338121947897114 };
 		eigxvalues_check = data_eigxvalues;
 		eigxvectors_check.set( data_eigxvectors, data_eigxvectors + 12);
-		
-		
+		eigxvectors_check.get_column( 0, eigvector_check );
+	
+		//get first eigvalue and eigvector
+		vector< 4, double > eigvector;
+		double eigvalue;
+		eigs.compute_1st( A, eigvector, eigvalue);
+				
 		ok = eigxvalues.equals( eigxvalues_check, precision );
 		ok = ok && eigxvectors.equals( eigxvectors_check, precision );
+		ok = ok && (eigvector.equals( eigvector_check, precision ));
+		//ok = ok && (fabs(eigvalue - first_eigvalue) < precision);
 		
 		if ( ok ) {
 			log( "symmetric eigenvalue decomposition (x largest eigenvalues) using lapack", ok );
@@ -86,8 +95,11 @@ namespace vmml
 			<< "symmetric eigenvalue decomposition (x largest eigenvalues) using lapack: " << std::endl
 			<< "eigenvalues should be: " << std::endl << eigxvalues_check << std::endl
 			<< "are: " << std::endl << eigxvalues << std::endl	
-			<< "eigenvectors should be: " << std::endl << eigxvectors_check << std::endl
-			<< "are: " << std::endl << eigxvectors << std::endl;
+			<< "eigenvectors should be: " << std::endl << eigxvectors_check
+			<< "are: " << std::endl << eigxvectors  << std::endl
+			<< "first eigenvalue should be: " << first_eigvalue << ", is: " << eigvalue  << std::endl
+			<< "first eigenvector should be:\n" << eigvector_check << "\n is:\n" << eigvector
+			<< std::endl;
 			
 			log_error( error.str() );
 		}

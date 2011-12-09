@@ -216,7 +216,11 @@ public:
     void compute_normal( const vector& v0, const vector& v1, const vector& v2 );
     // retval = normal of (this), v1, v2
     vector compute_normal( const vector& v1, const vector& v2 ) const;
-    
+
+	template< size_t N >
+    void get_sub_vector( vector< N, T >& sub_v_, size_t offset = 0, 
+						 typename enable_if< M >= N >::type* = 0 );
+	
     template< size_t N >
     vector< N, T >& get_sub_vector( size_t offset = 0, 
         typename enable_if< M >= N >::type* = 0 );
@@ -1237,6 +1241,16 @@ distance_to_sphere( const vector< 3, TT >& point,
 	return ( point - center_ ).length() - w();
 }
 
+template< size_t M, typename T >
+template< size_t N >
+void
+vector< M, T >::get_sub_vector( vector< N, T >& sub_v, size_t offset, 
+							   typename enable_if< M >= N >::type* )
+{
+    assert( offset <= M - N );
+    sub_v = reinterpret_cast< vector< N, T >& >( *( begin() + offset ) );
+}
+	
 
 
 template< size_t M, typename T >

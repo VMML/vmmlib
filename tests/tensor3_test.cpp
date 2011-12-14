@@ -1234,38 +1234,25 @@ tensor3_test::run()
 	
 	{
 		//fill slice symmetric tensor
-		tensor3< 5, 5, 3, unsigned char > t3;
-		tensor3< 5, 5, 3,  unsigned char > t3_check;
-		unsigned char t3_data[] = { 
-			0, 100, 68, 95, 152,
-			100, 167, 35, 9, 9,
-			68, 35, 205, 38, 142,
-			95, 9, 38, 125, 26,
-			152, 9, 142, 26, 40,
-			150, 3, 5, 38, 51,
-			3, 64, 15, 195, 201,
-			5, 15, 137, 148, 70,
-			38, 195, 148, 245, 63,
-			51, 201, 70, 63, 26,
-			186, 73, 200, 36, 53,
-			73, 251, 228, 68, 248,
-			200, 228, 24, 188, 241,
-			36, 68, 188, 42, 66,
-			53, 248, 241, 66, 243 }; 
-		t3_check.set( t3_data, t3_data + 75 );
+		tensor3< 3, 3, 2, unsigned char > t3;
 		t3.fill_rand_sym_slices( 3 );
 				
 		tensor3< 3, 3, 3, unsigned char > t3_2;
-		tensor3< 3, 3, 3, unsigned char > t3_2_check;
-		unsigned char t3_data2[] = { 
-			0, 201, 136, 201, 191, 50, 136, 50, 80,
-			201, 191, 50, 191, 71, 18, 50, 18, 19,
-			136, 50, 80, 50, 18, 19, 80, 19, 155 }; 
-		t3_2_check.set( t3_data2, t3_data2 + 27 );
-		
 		t3_2.fill_rand_sym( 6 );
 		
-		ok = ( t3_2 == t3_2_check ) && ( t3 == t3_check );
+		
+		ok = t3.at( 0, 1, 0) == t3.at( 1, 0, 0 );
+		ok = ok && (t3.at( 1, 2, 1 ) == t3.at( 2, 1, 1));
+		
+		unsigned char val_102 =  t3_2.at( 1, 0, 2 );
+		unsigned char val_012 =  t3_2.at( 0, 1, 2 );
+		unsigned char val_021 =  t3_2.at( 0, 2, 1 );
+		unsigned char val_201 =  t3_2.at( 2, 0, 1 );
+		unsigned char val_120 =  t3_2.at( 1, 2, 0 );
+		unsigned char val_210 =  t3_2.at( 2, 1, 0 );
+		
+		ok = ok && val_102 == val_012 && val_102 == val_021 && val_102 == val_201; 
+		ok = ok && val_102 == val_120 && val_102 == val_210;
 		
 		log( "fill tensor3 with symmetric random values" , ok  );
 		

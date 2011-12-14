@@ -178,6 +178,31 @@ namespace vmml
 		cp3_u_type u2_3;
 		cp3_u_type u3_3;
 		
+		
+		//test norm ktensor
+		double check_norm = 3.309332639286851;
+		double nrm = hopm2_type::norm_ktensor( u1_2, u2_2, u3_2, lambda_2 );
+		
+		precision = 0.00000001;
+		ok = (check_norm - nrm < precision );
+		
+		if( ok)
+		{	
+			log( "norm ktensor", ok  );
+		} 
+		else
+		{
+			std::stringstream error;
+			error 
+			<< "norm ktensor" << std::setprecision(16) << std::endl
+			<< "should be: " << check_norm << std::endl
+			<< "is: " << nrm
+			<< std::endl;
+			
+			log_error( error.str() );
+		}
+		
+		
 #if 0 //test hosvd with SVD
 		t3_hopm< 6, 4, 4, 4, double >::als( t3_cp_input, u1_3, u2_3, u3_3, lambda_3, init_hosvd_e, 50 );
 		
@@ -272,27 +297,6 @@ namespace vmml
 			log_error( error.str() );
 		}
 		
-		double check_norm = 3.401071120277306;
-		double nrm = hopm4_type::norm_ktensor( u1_4, u2_4, u3_4, lambda_4 );
-		
-		precision = 0.0000000001;
-		ok = (check_norm - nrm < precision );
-		
-		if( ok)
-		{	
-			log( "norm ktensor", ok  );
-		} 
-		else
-		{
-			std::stringstream error;
-			error 
-			<< "norm ktensor" << std::setprecision(16) << std::endl
-			<< "should be: " << check_norm << std::endl
-			<< "is: " << nrm
-			<< std::endl;
-			
-			log_error( error.str() );
-		}
 #endif
 		
 		

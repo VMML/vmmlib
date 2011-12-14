@@ -371,3 +371,4 @@ VMML_TEMPLATE_CLASSNAME::get_svd_u_red( const matrix< M, N, T >& data_, matrix< 
 }//end vmml namespace
 
 #endif
+

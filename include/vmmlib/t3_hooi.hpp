@@ -327,3 +327,4 @@ VMML_TEMPLATE_CLASSNAME::derive_core( const t3_type& data_, const u1_type& u1_, 
 }//end vmml namespace
 
 #endif
+

@@ -446,3 +446,4 @@ VMML_TEMPLATE_CLASSNAME::sort_dec( u1_type& u1_, u2_type& u2_, u3_type& u3_, lam
 }//end vmml namespace
 
 #endif
+

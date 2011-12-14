@@ -174,3 +174,4 @@ Visibility frustum_culler< T >::test_sphere( const vector< 4, T >& sphere )
 } // namespace vmml
 
 #endif // include protection
+

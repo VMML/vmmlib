@@ -620,3 +620,4 @@ VMML_TEMPLATE_CLASSNAME::nnz( const T_value& threshold ) const
 } // namespace vmml
 
 #endif
+

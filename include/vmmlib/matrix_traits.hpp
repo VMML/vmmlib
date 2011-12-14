@@ -64,3 +64,4 @@ struct matrix_traits<vmml::matrix<M, N, T> >
 } // namespace boost
 
 #endif /* VMML_MATRIX_TRAITS_HPP */
+

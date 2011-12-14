@@ -55,3 +55,4 @@ struct vector_traits<vmml::vector<M, T> >
 } // namespace boost
 
 #endif /* VMML_VECTOR_TRAITS_HPP */
+

@@ -1762,3 +1762,4 @@ VMML_TEMPLATE_CLASSNAME::hosvd_on_eigs( const t3_type& data_ )
 } // namespace vmml
 
 #endif
+

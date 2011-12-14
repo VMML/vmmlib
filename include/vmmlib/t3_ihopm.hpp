@@ -152,3 +152,4 @@ VMML_TEMPLATE_CLASSNAME::incremental_als( const t3_type& data_, u1_type& u1_, u2
 }//end vmml namespace
 
 #endif
+

@@ -987,3 +987,4 @@ quaternion< T >::operator=( const vector< 4, T >& other )
 
 }
 #endif
+

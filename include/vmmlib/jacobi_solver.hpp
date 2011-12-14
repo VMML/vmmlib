@@ -168,3 +168,4 @@ bool solve_jacobi_3x3(
 } // namespace vmml
 
 #endif
+

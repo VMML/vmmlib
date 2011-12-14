@@ -381,3 +381,4 @@ VMML_TEMPLATE_CLASSNAME::export_ttm_quantized_to( std::vector<unsigned char>& da
 
 
 #endif
+

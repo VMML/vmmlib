@@ -403,3 +403,4 @@ VMML_TEMPLATE_CLASSNAME::import_ttm_quantized_from( const std::vector<unsigned c
 	
 	
 #endif
+

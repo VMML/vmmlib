@@ -79,6 +79,8 @@ namespace vmml
 			}
 		};
 
+//FIXME: check test on linux
+#if 0
 		struct init_dct
 		{
 			inline void operator()( const t3_type& data_, u2_type& u2_, u3_type& u3_ )
@@ -87,6 +89,7 @@ namespace vmml
 				u3_.set_dct();
 			}
 		};
+#endif
 		
 		
 	protected:

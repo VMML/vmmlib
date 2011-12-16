@@ -27,7 +27,15 @@ VMMLIB_UNIT_TESTS =\
 
 VMMLIB_UNIT_TESTS_OBJECTS = ${VMMLIB_UNIT_TESTS:%.cpp=%.o}  
 
-CXXFLAGS += -I. -Iinclude 
+CXXFLAGS += -I. -Iinclude -Itests -include f2c.h -include f2c_fix.h -include stdint.h
+
+LBITS := $(shell getconf LONG_BIT)
+ifeq ($(LBITS),64)
+  LIBDIR=$(DESTDIR)/usr/lib64
+else
+  LIBDIR=$(DESTDIR)/usr/lib
+endif
+LDFLAGS += -L$(LIBDIR)/atlas -u MAIN__
 
 # on mac we want to use the frameworks, not the unix style libs 
 ARCH = $(shell uname)
@@ -40,7 +48,7 @@ CXXFLAGS +=
 LDFLAGS +=
 
 # adjust libs depending on your LAPACK and BLAS distribution
-LIBS += -lclapack -lf2c -lcblas
+LIBS += -lclapack -lf2c -lcblas -llapack
 # LIBS += -llapack -lblas
 
 

@@ -27,16 +27,9 @@ VMMLIB_UNIT_TESTS =\
 
 VMMLIB_UNIT_TESTS_OBJECTS = ${VMMLIB_UNIT_TESTS:%.cpp=%.o}  
 
-CXXFLAGS += -I. -Iinclude -Itests -include f2c.h -include f2c_fix.h -include stdint.h
+CXXFLAGS += -I. -Iinclude -Itests -include stdint.h
 
-LBITS := $(shell getconf LONG_BIT)
-ifeq ($(LBITS),64)
-  LIBDIR=$(DESTDIR)/usr/lib64
-else
-  LIBDIR=$(DESTDIR)/usr/lib
-endif
-LDFLAGS += -L$(LIBDIR)/atlas -u MAIN__
-
+# Mac OS X specific stuff 
 # on mac we want to use the frameworks, not the unix style libs 
 ARCH = $(shell uname)
 ifeq "$(ARCH)" "Darwin"
@@ -44,6 +37,17 @@ CXXFLAGS += -framework Accelerate
 LDFLAGS += -framework Accelerate
 
 else
+# Linux specific stuff
+
+CXXFLAGS += -include f2c.h -include f2c_fix.h 
+
+LBITS := $(shell getconf LONG_BIT)
+ifeq ($(LBITS),64)
+  LIBDIR=$(DESTDIR)/usr/lib64
+else
+  LIBDIR=$(DESTDIR)/usr/lib
+endif
+
 CXXFLAGS +=
 LDFLAGS +=
 

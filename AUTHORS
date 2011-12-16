@@ -1,0 +1,18 @@
+VMMLib - Vector & Matrix Math Lib - AUTHORS
+
+Susanne Suter (susuter@ifi.uzh.ch) 
+Jonas Boesch (boesch@ifi.uzh.ch)
+Stefan Eilemann (eile@gmail.com)
+Renato Pajarola (pajarola@acm.org)
+Philip Schlegel (schlegel@ifi.uzh.ch)
+Daniel Pfeifer (daniel@pfeifer-mail.de) - CMake Management
+
+revised BSD license, check LICENSE
+
+
+see ACKNOWLEDGEMENTS
+
+parts of the source code of VMMLib were inspired by David Eberly's 
+Wild Magic and Andrew Willmott's VL.
+
+enable_if was inspired by Boost (http://www.boost.org/doc/libs/1_39_0/libs/utility/enable_if.html)

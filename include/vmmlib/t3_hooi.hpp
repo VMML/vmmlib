@@ -19,8 +19,6 @@
 
 
 #include <vmmlib/t3_hosvd.hpp>
-//#include <vmmlib/matrix_pseudoinverse.hpp>
-
 
 namespace vmml
 {

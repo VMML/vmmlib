@@ -16,9 +16,6 @@
 /* FIXME:
  *
  * - T_internal
- * - 2 methods for export/import of all min/max, only one
- * - cast_members ...
- * - quantize matrices and core externally 
  */
 
 
@@ -143,9 +140,6 @@ VMML_TEMPLATE_STRING
 void
 VMML_TEMPLATE_CLASSNAME::import_quantized_from( const std::vector<unsigned char>& data_in_, qtucker3_type& tuck3_data_   )
 {
-#if FIXME
-	tuck3_data_.enable_quantify_coeff();
-#endif
 	size_t end_data = 0;
 	size_t len_t_comp = sizeof( T_internal );
 	size_t len_export_data = tuck3_data_.SIZE * sizeof(T_coeff) + 8 * len_t_comp;
@@ -156,21 +150,9 @@ VMML_TEMPLATE_CLASSNAME::import_quantized_from( const std::vector<unsigned char>
 	}
 	
 	//copy min and max values: u1_min, u1_max, u2_min, u2_max, u3_min, u3_max, core_min, core_max
-#if CODE_ALL_U_MIN_MAX	
-	T_internal u1_min = 0; T_internal u1_max = 0;
-	T_internal u2_min = 0; T_internal u2_max = 0;
-	T_internal u3_min = 0; T_internal u3_max = 0;
-	memcpy( &u1_min, data, len_t_comp ); end_data = len_t_comp;
-	memcpy( &u1_max, data + end_data, len_t_comp ); end_data += len_t_comp;
-	memcpy( &u2_min, data + end_data, len_t_comp ); end_data += len_t_comp;
-	memcpy( &u2_max, data + end_data, len_t_comp ); end_data += len_t_comp;
-	memcpy( &u3_min, data + end_data, len_t_comp ); end_data += len_t_comp;
-	memcpy( &u3_max, data + end_data, len_t_comp ); end_data += len_t_comp;
-#else
 	T_internal u_min = 0; T_internal u_max = 0;
 	memcpy( &u_min, data, len_t_comp ); end_data = len_t_comp;
 	memcpy( &u_max, data + end_data, len_t_comp ); end_data += len_t_comp;
-#endif
 	
 	T_internal core_min = 0; T_internal core_max = 0;
 	memcpy( &core_min, data + end_data, len_t_comp ); end_data += len_t_comp;
@@ -213,11 +195,7 @@ VMML_TEMPLATE_CLASSNAME::import_quantized_from( const std::vector<unsigned char>
 	tuck3_data_.set_core( core );
 	
 	//dequantize tucker3 components (u1-u3 and core)
-#if CODE_ALL_U_MIN_MAX	
-	tuck3_data_.dequantize_basis_matrices( u1_min, u1_max, u2_min, u2_max, u3_min, u3_max );
-#else
 	tuck3_data_.dequantize_basis_matrices( u_min, u_max, u_min, u_max, u_min, u_max  );
-#endif
 	tuck3_data_.dequantize_core( core_min, core_max );	
 	
 	delete slice;

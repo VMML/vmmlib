@@ -17,9 +17,6 @@
 /* FIXME:
  *
  * - T_internal
- * - 2 methods for export/import of all min/max, only one
- * - cast_members ...
- * - quantize matrices and core externally 
  * - const input argument for tucker3 data
  */
 
@@ -135,9 +132,6 @@ VMML_TEMPLATE_STRING
 void
 VMML_TEMPLATE_CLASSNAME::export_quantized_to( std::vector<unsigned char>& data_out_, qtucker3_type& tuck3_data_  )
 {
-#if FIXME
-	tuck3_data_.enable_quantify_coeff();
-#endif
 	//quantize tucker3 components (u1-u3 and core)
 	size_t len_t_comp = sizeof( T_internal );
 	size_t len_export_data = tuck3_data_.SIZE * sizeof(T_coeff) + 8 * len_t_comp;
@@ -145,21 +139,10 @@ VMML_TEMPLATE_CLASSNAME::export_quantized_to( std::vector<unsigned char>& data_o
 	size_t end_data = 0;
 	
 	//quantize basis matrices and copy min-max values
-#if CODE_ALL_U_MIN_MAX	
-	T_internal u1_min, u1_max, u2_min, u2_max, u3_min, u3_max;
-	tuck3_data.quantize_basis_matrices( u1_min, u1_max, u2_min, u2_max, u3_min, u3_max );
-	memcpy( data, &u1_min, len_t_comp ); end_data = len_t_comp;
-	memcpy( data + end_data, &u1_max, len_t_comp ); end_data += len_t_comp;
-	memcpy( data + end_data, &u2_min, len_t_comp ); end_data += len_t_comp;
-	memcpy( data + end_data, &u2_max, len_t_comp ); end_data += len_t_comp;
-	memcpy( data + end_data, &u3_min, len_t_comp ); end_data += len_t_comp;
-	memcpy( data + end_data, &u3_max, len_t_comp ); end_data += len_t_comp;
-#else
 	T_internal u_min, u_max;
 	tuck3_data_.quantize_basis_matrices( u_min, u_max);
 	memcpy( data, &u_min, len_t_comp ); end_data = len_t_comp;
 	memcpy( data + end_data, &u_max, len_t_comp ); end_data += len_t_comp;
-#endif
 	
 	u1_type* u1 = new u1_type;
 	u2_type* u2 = new u2_type;

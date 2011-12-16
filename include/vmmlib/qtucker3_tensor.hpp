@@ -17,7 +17,6 @@
 #ifndef __VMML__QTUCKER3_TENSOR__HPP__
 #define __VMML__QTUCKER3_TENSOR__HPP__
 
-#define CODE_ALL_U_MIN_MAX 0
 #define CORE_RANGE 127
 
 

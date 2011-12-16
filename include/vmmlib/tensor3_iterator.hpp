@@ -1,8 +1,8 @@
 /* 
  * VMMLib - Tensor Classes
  *  
- * @author Susanne Suter
  * @author Jonas Boesch
+ * @author Susanne Suter
  *
  * 
  */

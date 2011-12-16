@@ -4,9 +4,11 @@
 * @author Jonas Boesch
 * @author Stefan Eilemann
 * @author Renato Pajarola
+* @author Susanne Suter
+* @author Philipp Schlegel
+* @author Daniel Pfeifer
 * @author David H. Eberly ( Wild Magic )
 * @author Andrew Willmott ( VL )
-* @author Susanne Suter
 *
 * @license revised BSD license, check LICENSE
 *

@@ -32,11 +32,11 @@ CXXFLAGS += -I. -Iinclude
 # on mac we want to use the frameworks, not the unix style libs 
 ARCH = $(shell uname)
 ifeq "$(ARCH)" "Darwin"
-CXXFLAGS += -framework Accelerate -DVMMLIB_USE_LAPACK -DVMMLIB_USE_BLAS
+CXXFLAGS += -framework Accelerate
 LDFLAGS += -framework Accelerate
 
 else
-CXXFLAGS += -DVMMLIB_USE_LAPACK -DVMMLIB_USE_BLAS
+CXXFLAGS +=
 LDFLAGS +=
 
 # adjust libs depending on your LAPACK and BLAS distribution

@@ -9,7 +9,7 @@ if [ -z "$1" ]; then
 fi
 
 
-export EXCLUDING_PATTERN="*sw* *.svn* *.DS_Store* *.o*"
+export EXCLUDING_PATTERN="*.sw* *.svn* *.DS_Store* *.o*"
 export INCLUDE_DIR="include/vmmlib"
 export TESTS_DIR="tests"
 
@@ -44,6 +44,9 @@ tgz_release() {
   # swap files and SVN directories
   tar cvfz \
       ../vmmlib_${RELEASE_NUM}.tgz \
+	  --exclude="*.o" \
+	  --exclude="*.DS_Store" \
+	  --exclude="*.svn*" \
       ${INCLUDE_DIR} \
       ${TESTS_DIR} \
       ${README_FILES} \

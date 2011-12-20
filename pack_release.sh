@@ -27,7 +27,7 @@ zip_release() {
   # zipping the include and test files excluding VIM
   # swap files and SVN directories
   zip -x ${EXCLUDING_PATTERN} \
-      -r ../vmmlib_${RELEASE_NUM}.zip \
+      -r ../vmmlib-${RELEASE_NUM}.zip \
       ${INCLUDE_DIR} \
       ${TESTS_DIR} \
       ${README_FILES} \
@@ -43,7 +43,7 @@ tgz_release() {
   # tar gzipping the include and test files excluding VIM
   # swap files and SVN directories
   tar cvfz \
-      ../vmmlib_${RELEASE_NUM}.tgz \
+      ../vmmlib-${RELEASE_NUM}.tgz \
 	  --exclude="*.o" \
 	  --exclude="*.DS_Store" \
 	  --exclude="*.svn*" \

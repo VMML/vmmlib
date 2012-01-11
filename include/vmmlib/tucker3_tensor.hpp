@@ -56,6 +56,7 @@ public:
 	void set_u2( u2_type& U2 ) { *_u2 = U2; _u2_comp->cast_from( U2 ); } ;
 	void set_u3( u3_type& U3 ) { *_u3 = U3; _u3_comp->cast_from( U3 ); } ;
 	
+	t3_core_type get_core() const { return _core; } ; //be careful: creates copy!
 	void get_core( t3_core_type& data_ ) const { data_ = _core; } ;
 	void get_u1( u1_type& U1 ) const { U1 = *_u1; } ;
 	void get_u2( u2_type& U2 ) const { U2 = *_u2; } ;
@@ -85,6 +86,8 @@ public:
 	template< typename T_init>
 	void decompose( const t3_type& data_, T_init init );
 		
+    void als_rand( const t3_type& data_ );	
+	
 	template< typename T_init>
 	void tucker_als( const t3_type& data_, T_init init  );	
 	template< typename T_init>
@@ -337,6 +340,14 @@ VMML_TEMPLATE_CLASSNAME::threshold_core( const T_coeff& threshold_value_, size_t
 	_core.cast_from( _core_comp);
 }
 	
+VMML_TEMPLATE_STRING
+void 
+VMML_TEMPLATE_CLASSNAME::als_rand( const t3_type& data_ ) 
+
+{
+	typedef t3_hooi< R1, R2, R3, I1, I2, I3, T_internal > hooi_type;
+	tucker_als( data_, typename hooi_type::init_random() );
+}
 	
 VMML_TEMPLATE_STRING
 template< typename T_init>

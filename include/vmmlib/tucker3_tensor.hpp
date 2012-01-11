@@ -203,7 +203,7 @@ VMML_TEMPLATE_CLASSNAME::tucker3_tensor( const t3_type& data_, u1_type& U1, u2_t
 	_u2_comp = new u2_comp_type(); 
 	_u3_comp = new u3_comp_type(); 	
 	
-	t3_hooi_type::derive_core(  data_, *_u1, *_u2, *_u3, _core );
+	t3_hooi_type::derive_core_orthogonal_bases(  data_, *_u1, *_u2, *_u3, _core );
 	
 	cast_comp_members();
 }

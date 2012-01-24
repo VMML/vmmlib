@@ -1916,10 +1916,13 @@ template< typename TT  >
 void
 VMML_TEMPLATE_CLASSNAME::quantize_to( tensor3< I1, I2, I3, TT >& quantized_, const T& min_value_, const T& max_value_ ) const
 {
-	long max_tt_range = long(std::numeric_limits< TT >::max());
-	long min_tt_range = long(std::numeric_limits< TT >::min());
-	long tt_range = max_tt_range - min_tt_range;
-	long t_range = max_value_ - min_value_;
+	double max_tt_range = double(std::numeric_limits< TT >::max());
+	double min_tt_range = double(std::numeric_limits< TT >::min());
+	double tt_range = max_tt_range - min_tt_range;
+	double t_range = max_value_ - min_value_;
+	
+	//std::cout << "tt min= " << min_tt_range << ", tt max= " << max_tt_range << ", t min= " << min_value_ << ", t max= " << max_value_ << std::endl;
+	//std::cout << "tt range=" << tt_range << ", t range= " << t_range << std::endl;
 	
 	typedef tensor3< I1, I2, I3, TT > t3_tt_type ;
 	typedef typename t3_tt_type::iterator tt_iterator;
@@ -1929,10 +1932,11 @@ VMML_TEMPLATE_CLASSNAME::quantize_to( tensor3< I1, I2, I3, TT >& quantized_, con
 	for( ; it != it_end; ++it, ++it_quant )
 	{
 		if (std::numeric_limits<TT>::is_signed ) {
-			*it_quant = TT( std::min( std::max( min_tt_range, long(( *it * tt_range / t_range ) + 0.5)), max_tt_range ));
+			*it_quant = TT( std::min( std::max( min_tt_range, double(( *it * tt_range / t_range ) + 0.5)), max_tt_range ));
 		} else {
-			*it_quant = TT( std::min( std::max( min_tt_range, long(((*it - min_value_ ) * tt_range / t_range) + 0.5)), max_tt_range ));
+			*it_quant = TT( std::min( std::max( min_tt_range, double(((*it - min_value_ ) * tt_range / t_range) + 0.5)), max_tt_range ));
 		}
+		//std::cout << "original value= " << double(*it) << ", converted value= " << double(*it_quant ) << std::endl;
 	}
 }
 	
@@ -1954,12 +1958,12 @@ template< typename TT  >
 void
 	VMML_TEMPLATE_CLASSNAME::quantize_log( tensor3< I1, I2, I3, TT >& quantized_, tensor3< I1, I2, I3, char >& signs_, T& min_value_, T& max_value_, const TT& tt_range_ ) const
 {
-	long max_tt_range = long(tt_range_);
-	long min_tt_range = 0;
+	double max_tt_range = double(tt_range_);
+	double min_tt_range = 0;
 	
 	min_value_ = get_abs_min();
 	max_value_ = get_abs_max();
-	long t_range = max_value_ - min_value_;
+	double t_range = max_value_ - min_value_;
 	
 	typedef tensor3< I1, I2, I3, TT > t3_tt_type ;
 	typedef typename t3_tt_type::iterator tt_iterator;
@@ -1977,10 +1981,10 @@ void
 		T quant_value = 0;
 		if (std::numeric_limits<TT>::is_signed ) {
 			quant_value = log2( 1 + value) / log2(1 + t_range ) * tt_range_;
-			*it_quant = TT( std::min( std::max( min_tt_range, long(quant_value + 0.5)), max_tt_range ));
+			*it_quant = TT( std::min( std::max( min_tt_range, double(quant_value + 0.5)), max_tt_range ));
 		} else {
 			quant_value = log2( 1 + (value - min_value_ )) / log2(1 + t_range ) * tt_range_;
-			*it_quant = TT(std::min( std::max( min_tt_range, long(quant_value + 0.5)), max_tt_range ));
+			*it_quant = TT(std::min( std::max( min_tt_range, double(quant_value + 0.5)), max_tt_range ));
 		}
 	}
 }		

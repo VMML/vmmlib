@@ -1918,9 +1918,8 @@ VMML_TEMPLATE_CLASSNAME::quantize_to( tensor3< I1, I2, I3, TT >& quantized_, con
 {
 	long max_tt_range = long(std::numeric_limits< TT >::max());
 	long min_tt_range = long(std::numeric_limits< TT >::min());
-	long tt_range = (max_tt_range - min_tt_range);
-	
-	T t_range = max_value_ - min_value_;
+	long tt_range = max_tt_range - min_tt_range;
+	long t_range = max_value_ - min_value_;
 	
 	typedef tensor3< I1, I2, I3, TT > t3_tt_type ;
 	typedef typename t3_tt_type::iterator tt_iterator;
@@ -1960,7 +1959,7 @@ void
 	
 	min_value_ = get_abs_min();
 	max_value_ = get_abs_max();
-	T t_range = max_value_ - min_value_;
+	long t_range = max_value_ - min_value_;
 	
 	typedef tensor3< I1, I2, I3, TT > t3_tt_type ;
 	typedef typename t3_tt_type::iterator tt_iterator;

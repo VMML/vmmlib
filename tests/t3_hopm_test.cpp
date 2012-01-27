@@ -23,6 +23,9 @@ namespace vmml
 			0.3386, 0.3150, 0.4488, 0.4173, 0.2756, 0.3150, 0.3465, 0.3386, 0.2835, 0.2677, 0.2362, 0.2913, 0.2598, 0.2520, 0.2756, 0.3071 };
 		t3_cp_input.set(data_in_cp, data_in_cp + 64);
 		
+		//std::cout << "cpinput\n" << t3_cp_input	<< std::endl;
+		
+		
 		//rank-R approximation with R = I
 		typedef matrix< 4, 4, double > cp1_u_type;
 		typedef vector< 4, double> cp1_lambda_type;
@@ -35,7 +38,7 @@ namespace vmml
 			0.4099981368345459, 0.09772460822979954, 0.07510639313135861, -0.6780604302654061,
 			0.3455791832510188, 0.09762439931096729, 0.03802566879804911, -0.2734889964561094,
 			0.683897786076204, 0.9895526848430239, 0.9964262276714069, 0.5708135709804885
-			 };
+		};
 	    cp1_u_type u1_check; u1_check.set( data_u1_cp, data_u1_cp + 16);
 		double data_u2_cp[] = { 
 			-0.5630888350728218, 0.14726271434163, -0.9072625301681907, -0.3228950591542049,
@@ -80,6 +83,10 @@ namespace vmml
 			
 			log_error( error.str() );
 		}
+		
+		//test with uint8 input values
+		
+		
 		
 		//rank-R approximation (R > I)
 		typedef matrix< 4, 2, double > cp2_u_type;
@@ -139,6 +146,29 @@ namespace vmml
 			
 			log_error( error.str() );
 		}
+		
+#if 0
+		typedef tensor3< 4, 4, 4, unsigned char > cp_t3_uint8_type;
+		
+		cp_t3_uint8_type t3_cp_input2;
+		t3_cp_input2.fill_increasing_values();		
+		std::cout << "cpinput2\n" << t3_cp_input2	<< std::endl;
+		
+		cp2_lambda_type lambda_10;
+		cp2_u_type u1_10;
+		cp2_u_type u2_10;
+		cp2_u_type u3_10;
+		
+		
+		//should be converted to double
+		hopm2_type::als( t3_cp_input2, u1_10, u2_10, u3_10, lambda_10, hopm2_type::init_hosvd(), 50 );
+		
+		
+#endif
+		
+		
+		
+		
 		
 		//rank-R approximation with R > I
 		typedef matrix< 4, 6, double > cp3_u_type;

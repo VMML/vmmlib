@@ -259,7 +259,7 @@ public:
         ); //-> tensor outer product
     	
 	template< size_t R, typename TT >
-	T tensor_inner_product(
+	double tensor_inner_product(
         const vmml::vector< R, TT>& lambda,
         const vmml::matrix< I1, R, TT >& U,
         const vmml::matrix< I2, R, TT >& V,
@@ -2497,7 +2497,7 @@ get_sphere()
 
 VMML_TEMPLATE_STRING
 template< size_t R, typename TT >
-T
+double
 VMML_TEMPLATE_CLASSNAME::tensor_inner_product(
 		const vmml::vector< R, TT>& lambda,
         const vmml::matrix< I1, R, TT >& U,
@@ -2513,7 +2513,7 @@ VMML_TEMPLATE_CLASSNAME::tensor_inner_product(
 			{
 				for (size_t i = 0; i < I1; ++i)
 				{
-					inner_prod += at(i, j, k) * static_cast<T> ( U(i, r) * V( j, r) * W( k, r ) * lambda.at(r));
+					inner_prod += at(i, j, k) * U(i, r) * V( j, r) * W( k, r ) * lambda.at(r);
 				}
 			}
 		}

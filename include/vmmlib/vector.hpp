@@ -1756,7 +1756,7 @@ vector< M, T >::is_valid() const
 
     #ifdef VMMLIB_THROW_EXCEPTIONS
     if ( ! valid )
-        VMMLIB_ERROR( "matrix contains nan or inf.", VMMLIB_HERE );
+        VMMLIB_ERROR( "vector contains nan or inf.", VMMLIB_HERE );
     #endif
 
     return valid;

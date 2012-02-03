@@ -685,7 +685,7 @@ get_frontal_slice_bwd( size_t i3, bwd_front_slice_type& data ) const
 	
 	front_slice_type* data_t = new front_slice_type();
 	*data_t = _get_slice( i3 );
-	data = transpose( *data_t );
+	data_t->transpose_to( data );
 	delete data_t;
 }
 
@@ -704,7 +704,7 @@ get_lateral_slice_fwd( size_t i2, lat_slice_type& data ) const
 	{
 		data_t->set_column( i3, _get_slice( i3 ).get_column( i2 ));
 	}
-	data = transpose( *data_t );
+	data_t->transpose_to( data );
 	delete data_t;
 }
 
@@ -722,7 +722,7 @@ get_horizontal_slice_bwd( size_t i1, bwd_horiz_slice_type& data ) const
 	{
 		data_t->set_column( i3, _get_slice( i3 ).get_row( i1 )); //or for every i2 get/set column
 	}
-	data = transpose( *data_t );
+	data_t->transpose_to( data );
 	delete data_t;
 }
 	
@@ -787,7 +787,7 @@ set_frontal_slice_bwd( size_t i3, const bwd_front_slice_type& data )
 		VMMLIB_ERROR( "set_frontal_slice_bwd() - index out of bounds.", VMMLIB_HERE );
 #endif
 	front_slice_type* data_t  = new front_slice_type();
-	*data_t = transpose( data );
+	data.transpose_to( *data_t );
 	_get_slice( i3 ) = *data_t;
 	delete data_t;
 }
@@ -802,7 +802,7 @@ set_lateral_slice_fwd( size_t i2, const lat_slice_type& data )
 		VMMLIB_ERROR( "set_lateral_slice_fwd() - index out of bounds.", VMMLIB_HERE );
 #endif
 	bwd_lat_slice_type* data_t = new bwd_lat_slice_type();
-	*data_t = transpose( data );
+	data.transpose_to( *data_t );
 	for( size_t i3 = 0; i3 < I3; ++i3 )
 	{
 		_get_slice( i3 ).set_column(i2, data_t->get_column( i3 ));
@@ -821,7 +821,7 @@ set_horizontal_slice_bwd( size_t i1, const bwd_horiz_slice_type& data )
 		VMMLIB_ERROR( "set_horizontal_slice_bwd() - index out of bounds.", VMMLIB_HERE );
 #endif
 	horiz_slice_type* data_t = new horiz_slice_type();
-	*data_t = transpose( data );
+	data.transpose_to( *data_t );
 	
 	for( size_t i3 = 0; i3 < I3; ++i3 )
 	{

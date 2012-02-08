@@ -2185,7 +2185,7 @@ VMML_TEMPLATE_CLASSNAME::write_datfile( const std::string& dir_, const std::stri
 	
 	FILE* datfile = fopen(path_dat.c_str(), "w");
 	fprintf(datfile, "ObjectFileName:\t%s.raw\n", filename.c_str());
-	fprintf(datfile, "TaggedFileName:\t---\nResolution:\t%i %i %i\n", I1, I2, I3);
+	fprintf(datfile, "TaggedFileName:\t---\nResolution:\t%i %i %i\n", int(I1), int(I2), int(I3));
 	fprintf(datfile, "SliceThickness:\t1.0 1.0 1.0\n");
 	fprintf(datfile, "Format:\t%s\nNbrTags:\t0\n", format);
 	fprintf(datfile, "ObjectType:\tTEXTURE_VOLUME_OBJECT\nObjectModel:\tI\nGridType:\tEQUIDISTANT\n");

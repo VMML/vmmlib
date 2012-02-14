@@ -398,7 +398,7 @@ lapack_sym_eigs< N, float_t >::compute_1st(
 	//std::pair< data, original_index >;
 	std::vector< eigv_pair_type >* eig_permutations = new std::vector< eigv_pair_type >;
 	
-	evalue_const_iterator it = all_eigvalues.begin(), it_end = all_eigvalues.end();
+	evalue_const_iterator it = all_eigvalues->begin(), it_end = all_eigvalues->end();
 	size_t counter = 0;
 	for( ; it != it_end; ++it, ++counter )
 	{
@@ -406,8 +406,8 @@ lapack_sym_eigs< N, float_t >::compute_1st(
 	}
 	
 	std::sort(
-			  eig_permutations.begin(),
-			  eig_permutations.end(), 
+			  eig_permutations->begin(),
+			  eig_permutations->end(), 
 			  eigenvalue_compare()
 			  );
 

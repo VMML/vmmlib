@@ -19,7 +19,6 @@
 #include <cstring>
 #include <fstream>   // file I/O
 
-
 namespace vmml
 {
 
@@ -2742,7 +2741,8 @@ matrix< M, N, T >::write_csv_file( const std::string& dir_, const std::string& f
 	}
 	path.append( filename_ );
 	//check for format
-	if( filename_.find( "csv", filename_.size() -3) == (-1)) {
+	int suffix_pos = filename_.find( "csv", filename_.size() -3);
+	if( suffix_pos == (-1)) {
 		path.append( ".");
 		path.append( "csv" );
 	}

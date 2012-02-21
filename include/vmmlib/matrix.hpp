@@ -380,7 +380,7 @@ public:
     
     
     // tests every component for isnan && isinf
-    inline bool is_valid() const; 
+	//   inline bool is_valid() const;  -> moved to class validator
     
 	// legacy/compatibility accessor
 	struct row_accessor
@@ -1278,7 +1278,6 @@ template< size_t uM, size_t vM >
 typename enable_if< uM == 3 && vM == 3 && M == N && M == 4 >::type* 
 matrix< M, N, T >::tensor( const vector< uM, T >& u, const vector< vM, T >& v )
 {
-    int i, j;
     for ( size_t col_index = 0; col_index < 3; ++col_index ) 
     {
         for ( size_t row_index = 0; row_index < 3; ++row_index )
@@ -2758,30 +2757,6 @@ matrix< M, N, T >::write_csv_file( const std::string& dir_, const std::string& f
 	}
 	
 }		
-
-
-
-template< size_t M, size_t N, typename T >
-bool
-matrix< M, N, T >::is_valid() const
-{
-    bool valid = true;
-    for( const_iterator it = begin(); valid && it != end(); ++it )
-    {
-        if ( std::isnan( *it ) )
-            valid = false;
-        if ( std::isinf( *it ) )
-            valid = false;
-    }
-
-    #ifdef VMMLIB_THROW_EXCEPTIONS
-    if ( ! valid )
-        VMMLIB_ERROR( "matrix contains nan or inf.", VMMLIB_HERE );
-    #endif
-
-    return valid;
-}
-	
 	
 template< size_t M, size_t N, typename T >
 void 

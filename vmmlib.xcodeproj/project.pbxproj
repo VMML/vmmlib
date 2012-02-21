@@ -161,6 +161,7 @@
 		CFF0C1F41406E4DC00C3ADDB /* blas_types.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = blas_types.hpp; path = include/vmmlib/blas_types.hpp; sourceTree = "<group>"; };
 		CFF0C1F81406E55200C3ADDB /* blas_dgemm_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = blas_dgemm_test.cpp; path = tests/blas_dgemm_test.cpp; sourceTree = "<group>"; };
 		CFF0C1F91406E55200C3ADDB /* blas_dgemm_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = blas_dgemm_test.hpp; path = tests/blas_dgemm_test.hpp; sourceTree = "<group>"; };
+		CFF1967D14F3F31A00758DF7 /* validator.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = validator.hpp; path = include/vmmlib/validator.hpp; sourceTree = "<group>"; };
 		CFF952C41312B52C00071FB3 /* lapack_sym_eigs.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = lapack_sym_eigs.hpp; path = include/vmmlib/lapack_sym_eigs.hpp; sourceTree = "<group>"; };
 		CFF95531131CECD100071FB3 /* lapack_sym_eigs_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = lapack_sym_eigs_test.hpp; path = tests/lapack_sym_eigs_test.hpp; sourceTree = "<group>"; };
 		CFF95532131CECD100071FB3 /* lapack_sym_eigs_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lapack_sym_eigs_test.cpp; path = tests/lapack_sym_eigs_test.cpp; sourceTree = "<group>"; };
@@ -302,6 +303,7 @@
 				985964770FB177A6006CA0F8 /* math.hpp */,
 				98596E620FB4891E006CA0F8 /* enable_if.hpp */,
 				98D4102C0E2658FE00BEFA71 /* exception.hpp */,
+				CFF1967D14F3F31A00758DF7 /* validator.hpp */,
 			);
 			name = misc;
 			sourceTree = "<group>";

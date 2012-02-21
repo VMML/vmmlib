@@ -205,7 +205,7 @@ namespace vmml
 		p.lda        = M;
 		p.b          = 0;
 		p.ldb        = K; //no transpose
-		p.beta       = 1;
+		p.beta       = 0;
 		p.c          = 0;
 		p.ldc        = M;
 	}

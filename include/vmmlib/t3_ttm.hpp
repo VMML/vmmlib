@@ -33,20 +33,20 @@ namespace vmml
 	
 		//backward cyclic matricization/unfolding (after Lathauwer et al., 2000a)
 		template< size_t I1, size_t I2, size_t I3, size_t J1, size_t J2, size_t J3, typename T > 
-		static void full_tensor3_matrix_multiplication( const tensor3< J1, J2, J3, T >& core_, const matrix< I1, J1, T >& U1, const matrix< I2, J2, T >& U2, const matrix< I3, J3, T >& U3, tensor3< I1, I2, I3, T >& reco_ );
+		static void full_tensor3_matrix_multiplication( const tensor3< J1, J2, J3, T >& t3_in_, const matrix< I1, J1, T >& U1, const matrix< I2, J2, T >& U2, const matrix< I3, J3, T >& U3, tensor3< I1, I2, I3, T >& t3_res_ );
 	
 		template< size_t I1, size_t I2, size_t I3, size_t J1, size_t J2, size_t J3, typename T > 
-		static void full_tensor3_matrix_kronecker_mult( const tensor3< J1, J2, J3, T >& core_, const matrix< I1, J1, T >& U1, const matrix< I2, J2, T >& U2, const matrix< I3, J3, T >& U3, tensor3< I1, I2, I3, T >& reco_ );
+		static void full_tensor3_matrix_kronecker_mult( const tensor3< J1, J2, J3, T >& t3_in_, const matrix< I1, J1, T >& U1, const matrix< I2, J2, T >& U2, const matrix< I3, J3, T >& U3, tensor3< I1, I2, I3, T >& t3_res_ );
 		
 		//tensor times matrix multiplication along different modes
 		template< size_t I3, size_t J1, size_t J2, size_t J3, typename T > 
-		static void multiply_horizontal_bwd( const tensor3< J1, J2, J3, T >& other, const matrix< I3, J3, T >& other_slice_, tensor3< J1, J2, I3, T >& t3_res_ ); //output: tensor3< J1, J2, I3, T >  
+		static void multiply_horizontal_bwd( const tensor3< J1, J2, J3, T >& t3_in_, const matrix< I3, J3, T >& other_slice_, tensor3< J1, J2, I3, T >& t3_res_ ); //output: tensor3< J1, J2, I3, T >  
 		
 		template< size_t I1, size_t J1, size_t J2, size_t J3, typename T > 
-		static void multiply_lateral_bwd( const tensor3< J1, J2, J3, T >& other, const matrix< I1, J1, T >& other_slice_, tensor3< I1, J2, J3, T >& t3_res_ ); //output: tensor3< I1, J2, J3, T > 
+		static void multiply_lateral_bwd( const tensor3< J1, J2, J3, T >& t3_in_, const matrix< I1, J1, T >& other_slice_, tensor3< I1, J2, J3, T >& t3_res_ ); //output: tensor3< I1, J2, J3, T > 
 		
 		template< size_t I2, size_t J1, size_t J2, size_t J3, typename T > 
-		static void multiply_frontal_bwd( const tensor3< J1, J2, J3, T >& other, const matrix< I2, J2, T >& other_slice_, tensor3< J1, I2, J3, T >& t3_res_ ); //output: tensor3< J1, I2, J3, T >
+		static void multiply_frontal_bwd( const tensor3< J1, J2, J3, T >& t3_in_, const matrix< I2, J2, T >& other_slice_, tensor3< J1, I2, J3, T >& t3_res_ ); //output: tensor3< J1, I2, J3, T >
 		
 	protected:
 		
@@ -61,35 +61,35 @@ namespace vmml
 	
 template< size_t I1, size_t I2, size_t I3, size_t J1, size_t J2, size_t J3, typename T > 
 void
-VMML_TEMPLATE_CLASSNAME::full_tensor3_matrix_multiplication(  const tensor3< J1, J2, J3, T >& core_, 
+VMML_TEMPLATE_CLASSNAME::full_tensor3_matrix_multiplication(  const tensor3< J1, J2, J3, T >& t3_in_, 
 															const matrix< I1, J1, T >& U1, 
 															const matrix< I2, J2, T >& U2, 
 															const matrix< I3, J3, T >& U3,
-															tensor3< I1, I2, I3, T >& reco_
+															tensor3< I1, I2, I3, T >& t3_res_
 															)
 {
 	tensor3< I1, J2, J3, T> t3_result_1;
 	tensor3< I1, I2, J3, T> t3_result_2;
 	
 	//backward cyclic matricization/unfolding (after Lathauwer et al., 2000a)
-	multiply_lateral_bwd( core_, U1, t3_result_1 );
+	multiply_lateral_bwd( t3_in_, U1, t3_result_1 );
 	multiply_frontal_bwd( t3_result_1, U2, t3_result_2 );
-	multiply_horizontal_bwd( t3_result_2, U3, reco_ );
+	multiply_horizontal_bwd( t3_result_2, U3, t3_res_ );
 }
 
 template< size_t I1, size_t I2, size_t I3, size_t J1, size_t J2, size_t J3, typename T > 
 void
-VMML_TEMPLATE_CLASSNAME::full_tensor3_matrix_kronecker_mult(  const tensor3< J1, J2, J3, T >& core_, 
+VMML_TEMPLATE_CLASSNAME::full_tensor3_matrix_kronecker_mult(  const tensor3< J1, J2, J3, T >& t3_in_, 
 															const matrix< I1, J1, T >& U1, 
 															const matrix< I2, J2, T >& U2, 
 															const matrix< I3, J3, T >& U3,
-															tensor3< I1, I2, I3, T >& reco_
+															tensor3< I1, I2, I3, T >& t3_res_
 															)
 {
 	//TODO should use blas
 	
 	matrix< J1, J2*J3, T>* core_unfolded = new matrix< J1, J2*J3, T>;
-	core_.lateral_unfolding_bwd( *core_unfolded );
+	t3_in_.lateral_unfolding_bwd( *core_unfolded );
 	matrix< I1, J2*J3, T>* tmp1 = new matrix< I1, J2*J3, T>;
 	tmp1->multiply( U1, *core_unfolded );
 	
@@ -110,7 +110,7 @@ VMML_TEMPLATE_CLASSNAME::full_tensor3_matrix_kronecker_mult(  const tensor3< J1,
 		}
 		
 		size_t i3 = i % I3;
-		reco_.set_column( i2, i3, res_unfolded->get_column(i));
+		t3_res_.set_column( i2, i3, res_unfolded->get_column(i));
 	}
 	
 	delete core_unfolded;
@@ -126,7 +126,9 @@ VMML_TEMPLATE_CLASSNAME::full_tensor3_matrix_kronecker_mult(  const tensor3< J1,
 
 template< size_t I3, size_t J1, size_t J2, size_t J3, typename T > 
 void
-VMML_TEMPLATE_CLASSNAME::multiply_horizontal_bwd( const tensor3< J1, J2, J3, T >& other, const matrix< I3, J3, T >& other_slice_, tensor3< J1, J2, I3, T >& t3_res_ )
+VMML_TEMPLATE_CLASSNAME::multiply_horizontal_bwd( const tensor3< J1, J2, J3, T >& t3_in_, 
+												 const matrix< I3, J3, T >& other_slice_, 
+												 tensor3< J1, J2, I3, T >& t3_res_ )
 {
 	matrix< J3, J2, T >* slice = new matrix< J3, J2, T >;
 	matrix< I3, J2, T >* slice_new = new matrix< I3, J2, T >;
@@ -139,7 +141,7 @@ VMML_TEMPLATE_CLASSNAME::multiply_horizontal_bwd( const tensor3< J1, J2, J3, T >
 	
 	for ( size_t i1 = 0; i1 < J1; ++i1 )
 	{
-		other.get_horizontal_slice_bwd( i1, *slice );
+		t3_in_.get_horizontal_slice_bwd( i1, *slice );
 		
 		slice_blas->cast_from( *slice );
 		blas_dgemm1->compute( *other_slice_blas, *slice_blas, *slice_new_blas );
@@ -160,7 +162,9 @@ VMML_TEMPLATE_CLASSNAME::multiply_horizontal_bwd( const tensor3< J1, J2, J3, T >
 
 template< size_t I1, size_t J1, size_t J2, size_t J3, typename T > 
 void
-VMML_TEMPLATE_CLASSNAME::multiply_lateral_bwd( const tensor3< J1, J2, J3, T >& other, const matrix< I1, J1, T >& other_slice_, tensor3< I1, J2, J3, T >& t3_res_ )
+VMML_TEMPLATE_CLASSNAME::multiply_lateral_bwd( const tensor3< J1, J2, J3, T >& t3_in_, 
+											  const matrix< I1, J1, T >& other_slice_, 
+											  tensor3< I1, J2, J3, T >& t3_res_ )
 {
 	matrix< J1, J3, T>* slice = new matrix< J1, J3, T>();
 	matrix< I1, J3, T>* slice_new = new matrix< I1, J3, T>();
@@ -173,7 +177,7 @@ VMML_TEMPLATE_CLASSNAME::multiply_lateral_bwd( const tensor3< J1, J2, J3, T >& o
 	
 	for ( size_t i2 = 0; i2 < J2; ++i2 )
 	{
-		other.get_lateral_slice_bwd( i2, *slice );
+		t3_in_.get_lateral_slice_bwd( i2, *slice );
 		
 		slice_blas->cast_from( *slice );
 		blas_dgemm1->compute( *other_slice_blas, *slice_blas, *slice_new_blas );
@@ -194,10 +198,12 @@ VMML_TEMPLATE_CLASSNAME::multiply_lateral_bwd( const tensor3< J1, J2, J3, T >& o
 
 template< size_t I2, size_t J1, size_t J2, size_t J3, typename T > 
 void
-VMML_TEMPLATE_CLASSNAME::multiply_frontal_bwd( const tensor3< J1, J2, J3, T >& other, const matrix< I2, J2, T >& other_slice_, tensor3< J1, I2, J3, T >& t3_res_  )
+VMML_TEMPLATE_CLASSNAME::multiply_frontal_bwd( const tensor3< J1, J2, J3, T >& t3_in_, 
+											  const matrix< I2, J2, T >& other_slice_, 
+											  tensor3< J1, I2, J3, T >& t3_res_  )
 {
-	matrix< J2, J1, T>* slice = new matrix< J2, J1, T>();
-	matrix< I2, J1, T>* slice_new = new matrix< I2, J1, T>();
+	matrix< J2, J1, T>* slice = new matrix< J2, J1, T>;
+	matrix< I2, J1, T>* slice_new = new matrix< I2, J1, T>;
 	
 	blas_dgemm< I2, J2, J1, T_blas >* blas_dgemm1 = new blas_dgemm< I2, J2, J1, T_blas >;
 	matrix< J2, J1, T_blas >* slice_blas = new matrix< J2, J1, T_blas >;
@@ -207,7 +213,7 @@ VMML_TEMPLATE_CLASSNAME::multiply_frontal_bwd( const tensor3< J1, J2, J3, T >& o
 	
 	for ( size_t i3 = 0; i3 < J3; ++i3 )
 	{
-		other.get_frontal_slice_bwd( i3, *slice );
+		t3_in_.get_frontal_slice_bwd( i3, *slice );
 		
 		slice_blas->cast_from( *slice );
 		blas_dgemm1->compute( *other_slice_blas, *slice_blas, *slice_new_blas );

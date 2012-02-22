@@ -9,7 +9,7 @@ namespace vmml
 	class cublas_dgemm_test : public unit_test
 	{
 	public:
-		cublas_dgemm_test();
+		cublas_dgemm_test() : unit_test( "matrix matrix multiplication (dgemm) using CUBLAS" ) {}
 		
 		virtual bool run();
 		

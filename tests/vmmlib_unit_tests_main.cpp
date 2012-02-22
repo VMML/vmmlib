@@ -31,6 +31,12 @@
 
 #endif
 
+#ifdef VMMLIB_CUBLAS
+
+#include "cublas_dgemm_test.hpp"
+
+#endif
+
 void
 run_and_log( vmml::unit_test& test )
 {
@@ -108,6 +114,13 @@ main( int argc, const char* argv[] )
 
 	vmml::cp3_tensor_test cp3t;
     run_and_log( cp3t );
+	
+#endif
+	
+#ifdef VMML_CUBLAS
+
+    vmml::cublas_dgemm_test cublas_mm;
+    run_and_log( cublas_mm );
 	
 #endif
 	

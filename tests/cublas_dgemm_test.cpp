@@ -1,13 +1,12 @@
 #include "cublas_dgemm_test.hpp"
 
+#ifdef  VMMLIB_CUBLAS
+
 #include <vmmlib/cublas_dgemm.cu>
 
 namespace vmml
 {
 	
-	cublas_dgemm_test::cublas_dgemm_test() : unit_test( "matrix matrix multiplication (dgemm) using CUBLAS" )
-	{}
-
 	bool
 	cublas_dgemm_test::run()
 	{
@@ -55,4 +54,4 @@ namespace vmml
 	
 	
 } // namespace vmml
-
+#endif

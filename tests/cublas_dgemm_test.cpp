@@ -1,6 +1,6 @@
 #include "cublas_dgemm_test.hpp"
 
-#ifdef  VMMLIB_CUBLAS
+#ifdef VMMLIB_CUBLAS
 
 #include <vmmlib/cublas_dgemm.cu>
 

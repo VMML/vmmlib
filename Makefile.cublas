@@ -33,7 +33,7 @@ CXXFLAGS += -I. -Iinclude -Itests -include stdint.h
 # on mac we want to use the frameworks, not the unix style libs 
 ARCH = $(shell uname)
 ifeq "$(ARCH)" "Darwin"
-CXXFLAGS +=
+CXXFLAGS += -DVMMLIB_CUBLAS
 LDFLAGS += -framework Accelerate
 
 else
@@ -48,7 +48,7 @@ else
   LIBDIR=$(DESTDIR)/usr/lib
 endif
 
-CXXFLAGS +=
+CXXFLAGS += -DVMMLIB_CUBLAS
 LDFLAGS +=
 
 # adjust libs depending on your LAPACK and BLAS distribution
@@ -65,7 +65,7 @@ CUDA_INC	:= -I$(CUDA)/include -I.
 CUDA_LIB	:= -L$(CUDA)/lib
 NVCC = nvcc
 # -g -> debug level, -G device-debug; -O optimized level
-NVCCFLAGS := -Iinclude -Itests
+NVCCFLAGS := -Iinclude -Itests -DVMMLIB_CUBLAS
 CUDA_LIBS := $(CUDA_LIB) -lcuda -lcublas -lcudart
 ARCHFLAGS := -arch=sm_13 -m64
 ### endif cublas vmmlib

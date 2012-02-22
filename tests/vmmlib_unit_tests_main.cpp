@@ -117,7 +117,7 @@ main( int argc, const char* argv[] )
 	
 #endif
 	
-#ifdef VMML_CUBLAS
+#ifdef VMMLIB_CUBLAS
 
     vmml::cublas_dgemm_test cublas_mm;
     run_and_log( cublas_mm );

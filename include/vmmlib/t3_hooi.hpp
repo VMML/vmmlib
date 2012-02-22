@@ -19,6 +19,7 @@
 
 
 #include <vmmlib/t3_hosvd.hpp>
+#include <vmmlib/t3_ttm.hpp>
 #include <vmmlib/matrix_pseudoinverse.hpp>
 
 namespace vmml
@@ -136,7 +137,7 @@ VMML_TEMPLATE_CLASSNAME::als( const t3_type& data_,
 	
 	//compute best rank-(R1, R2, R3) approximation (Lathauwer et al., 2000b)
 	t3_type approximated_data;
-	approximated_data.full_tensor3_matrix_multiplication( core_, u1_, u2_, u3_);
+	t3_ttm::full_tensor3_matrix_multiplication( core_, u1_, u2_, u3_, approximated_data );
 	
 	double f_norm = approximated_data.frobenius_norm();
 	double max_f_norm = data_.frobenius_norm();
@@ -178,7 +179,7 @@ VMML_TEMPLATE_CLASSNAME::als( const t3_type& data_,
 		optimize_mode3( data_, u1_, u2_, projection3 );
 		t3_hosvd< R1, R2, R3, R1, R2, I3, T >::apply_mode3( projection3, u3_ );
 		
-		core_.multiply_horizontal_bwd( projection3, transpose( u3_ ) );
+		t3_ttm::multiply_horizontal_bwd( projection3, transpose( u3_ ), core_ );
 		f_norm = core_.frobenius_norm();
 		normresidual  = sqrt( max_f_norm * max_f_norm - f_norm * f_norm);
 		fit = 1 - (normresidual / max_f_norm);
@@ -206,8 +207,8 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode1( const t3_type& data_, const u2_type& u2
 	
 	//backward cyclic matricization/unfolding (after Lathauwer et al., 2000a)
 	tensor3< I1, R2, I3, T >* tmp  = new tensor3< I1, R2, I3, T >;
-	tmp->multiply_frontal_bwd( data_, *u2_inv );
-	projection_.multiply_horizontal_bwd( *tmp, *u3_inv );
+	t3_ttm::multiply_frontal_bwd( data_, *u2_inv, *tmp );
+	t3_ttm::multiply_horizontal_bwd( *tmp, *u3_inv, projection_ );
 	
 	delete u2_inv;
 	delete u3_inv;
@@ -227,8 +228,8 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode2( const t3_type& data_, const u1_type& u1
 	
 	//backward cyclic matricization (after Lathauwer et al., 2000a)
 	tensor3< R1, I2, I3, T >* tmp = new tensor3< R1, I2, I3, T >();
-	tmp->multiply_lateral_bwd( data_, *u1_inv );
-	projection_.multiply_horizontal_bwd( *tmp, *u3_inv );
+	t3_ttm::multiply_lateral_bwd( data_, *u1_inv, *tmp );
+	t3_ttm::multiply_horizontal_bwd( *tmp, *u3_inv, projection_ );
 	
 	delete u1_inv;
 	delete u3_inv;
@@ -247,8 +248,8 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode3( const t3_type& data_, const u1_type& u1
 	
 	//backward cyclic matricization (after Lathauwer et al., 2000a)
 	tensor3< R1, I2, I3, T >* tmp = new tensor3< R1, I2, I3, T >();
-	tmp->multiply_lateral_bwd( data_, *u1_inv );
-	projection_.multiply_frontal_bwd( *tmp, *u2_inv );
+	t3_ttm::multiply_lateral_bwd( data_, *u1_inv, *tmp );
+	t3_ttm::multiply_frontal_bwd( *tmp, *u2_inv, projection_ );
 	
 	delete u1_inv;
 	delete u2_inv;
@@ -269,7 +270,7 @@ VMML_TEMPLATE_CLASSNAME::derive_core_orthogonal_bases( const t3_type& data_, con
 	u2_.transpose_to( *u2_inv );
 	u3_.transpose_to( *u3_inv );
 	
-	core_.full_tensor3_matrix_multiplication( data_, *u1_inv, *u2_inv, *u3_inv );
+	t3_ttm::full_tensor3_matrix_multiplication( data_, *u1_inv, *u2_inv, *u3_inv, core_ );
 	
 	delete u1_inv;
 	delete u2_inv;
@@ -304,7 +305,7 @@ VMML_TEMPLATE_CLASSNAME::derive_core( const t3_type& data_, const u1_type& u1_, 
 	u2_pinv_t->transpose_to( *u2_pinv );
 	u3_pinv_t->transpose_to( *u3_pinv );
 		
-	core_.full_tensor3_matrix_multiplication( data_, *u1_pinv, *u2_pinv, *u3_pinv );
+	t3_ttm::full_tensor3_matrix_multiplication( data_, *u1_pinv, *u2_pinv, *u3_pinv, core_ );
 	
 	delete u1_pinv;
 	delete u2_pinv;

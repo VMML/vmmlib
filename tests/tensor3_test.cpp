@@ -508,44 +508,6 @@ tensor3_test::run()
 	}
 	
 	
-	//test tensor3 matrix multiplication
-	t3.fill_increasing_values();
-	matrix<5, 4, int> u3;
-	u3.fill(1);
-	tensor3<2, 3, 5, int> t3_jji;
-	t3_jji.multiply_horizontal_bwd(t3, u3 );
-	
-	tensor3<6, 3, 5, int> t3_iji;
-	matrix<6, 2, int> u1;
-	u1.fill(2);
-	t3_iji.multiply_lateral_bwd(t3_jji, u1 );
-
-	tensor3<6, 7, 5, int> t3_iii;
-	matrix<7, 3, int> u2;
-	u2.fill(3);
-	t3_iii.multiply_frontal_bwd(t3_iji, u2 );
-	 
-	
-	t3.fill_increasing_values();
-	tensor3<6, 7, 5, int> t3_reco;
-	t3_reco.full_tensor3_matrix_multiplication( t3, u1, u2, u3 ); 
-	tensor3<6, 7, 5, int> t3_reco2;
-	t3_reco2.full_tensor3_matrix_kronecker_mult( t3, u1, u2, u3 ); 
-	ok = t3_reco == t3_reco2;
-	
-	tensor3<6, 7, 5, int> t3_iii_test;
-	t3_iii_test.fill(1656);
-	if ( t3_iii_test == t3_reco && t3_iii_test == t3_iii && ok )
-	{	
-		log( "tensor3 matrix multiplication along all three modes", true  );
-	} else
-	{
-		std::stringstream error;
-		error 
-		<< "T3_result (all values should be 1656): " << std::endl << t3_iii
-		<< std::endl;
-		log_error( error.str() );
-	}
 	
 	//CP reconstruction
 	
@@ -652,6 +614,7 @@ tensor3_test::run()
 	matrix< 2, 12, int> m_lateral;
 	matrix< 3, 8, int> m_frontal;
 	
+	t3.fill_increasing_values();
 	t3.horizontal_unfolding_bwd( m_horizontal);
 	t3.lateral_unfolding_bwd( m_lateral);
 	t3.frontal_unfolding_bwd(  m_frontal);

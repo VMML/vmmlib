@@ -473,7 +473,7 @@ VMML_TEMPLATE_CLASSNAME::reconstruct( t3_type& data_ )
 {
 	t3_comp_type data;
 	data.cast_from( data_ );
-	data.full_tensor3_matrix_multiplication( _core_comp, *_u1_comp, *_u2_comp, *_u3_comp );
+	t3_ttm::full_tensor3_matrix_multiplication( _core_comp, *_u1_comp, *_u2_comp, *_u3_comp, data );
 	
 	//convert reconstructed data, which is in type T_internal (double, float) to T_value (uint8 or uint16)
 	if( (sizeof(T_value) == 1) || (sizeof(T_value) == 2) ){

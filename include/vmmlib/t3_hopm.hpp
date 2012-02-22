@@ -353,6 +353,8 @@ VMML_TEMPLATE_CLASSNAME::reconstruct( t3_type& data_, const u1_type& u1_, const 
 	delete u2_t;
 	delete u3_t;
 }
+	
+	
 
 VMML_TEMPLATE_STRING
 double 

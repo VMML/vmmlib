@@ -50,6 +50,7 @@
 		CF7FA8D5114EB617003076E4 /* tucker3_tensor_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CF7FA8D4114EB617003076E4 /* tucker3_tensor_test.cpp */; };
 		CF906A2114F562F90043CF23 /* cublas_dgemm_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CF906A1F14F562F90043CF23 /* cublas_dgemm_test.cpp */; };
 		CF906ACE14F56FEC0043CF23 /* t3_ttm_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CF906ACD14F56FEC0043CF23 /* t3_ttm_test.cpp */; };
+		CF906B8914F6313A0043CF23 /* cutensor_tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CF906B8814F6313A0043CF23 /* cutensor_tests.cpp */; };
 		CFA7FE4B14225C03001EE112 /* t3_ihopm_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CFA7FE4A14225C03001EE112 /* t3_ihopm_test.cpp */; };
 		CFD85C551399060300266D85 /* t3_hosvd_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CFD85C541399060300266D85 /* t3_hosvd_test.cpp */; };
 		CFD85C81139909EF00266D85 /* t3_hooi_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CFD85C80139909EF00266D85 /* t3_hooi_test.cpp */; };
@@ -154,6 +155,11 @@
 		CF906ABE14F56D510043CF23 /* t3_ttm.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = t3_ttm.hpp; path = include/vmmlib/t3_ttm.hpp; sourceTree = "<group>"; };
 		CF906ACC14F56FEC0043CF23 /* t3_ttm_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = t3_ttm_test.hpp; path = tests/t3_ttm_test.hpp; sourceTree = "<group>"; };
 		CF906ACD14F56FEC0043CF23 /* t3_ttm_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = t3_ttm_test.cpp; path = tests/t3_ttm_test.cpp; sourceTree = "<group>"; };
+		CF906B7714F57B640043CF23 /* t3_cublas_ttm.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = t3_cublas_ttm.hpp; path = include/vmmlib/t3_cublas_ttm.hpp; sourceTree = "<group>"; };
+		CF906B7914F57D3C0043CF23 /* t3_cublas_hosvd.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = t3_cublas_hosvd.hpp; path = include/vmmlib/t3_cublas_hosvd.hpp; sourceTree = "<group>"; };
+		CF906B7A14F57D7C0043CF23 /* t3_cublas_hooi.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = t3_cublas_hooi.hpp; path = include/vmmlib/t3_cublas_hooi.hpp; sourceTree = "<group>"; };
+		CF906B8714F6313A0043CF23 /* cutensor_tests.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = cutensor_tests.hpp; path = tests/cutensor_tests.hpp; sourceTree = "<group>"; };
+		CF906B8814F6313A0043CF23 /* cutensor_tests.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = cutensor_tests.cpp; path = tests/cutensor_tests.cpp; sourceTree = "<group>"; };
 		CFA7FE00142242BD001EE112 /* t3_ihopm.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = t3_ihopm.hpp; path = include/vmmlib/t3_ihopm.hpp; sourceTree = "<group>"; };
 		CFA7FE4914225C03001EE112 /* t3_ihopm_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = t3_ihopm_test.hpp; path = tests/t3_ihopm_test.hpp; sourceTree = "<group>"; };
 		CFA7FE4A14225C03001EE112 /* t3_ihopm_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = t3_ihopm_test.cpp; path = tests/t3_ihopm_test.cpp; sourceTree = "<group>"; };
@@ -258,6 +264,7 @@
 				98596E630FB48923006CA0F8 /* misc */,
 				98596E740FB489AC006CA0F8 /* frustum */,
 				984763FD110DDB210024A1F8 /* tensor */,
+				CF906B7814F57D0F0043CF23 /* cutensor */,
 				CFF0C1F11406E4BA00C3ADDB /* blas */,
 				CF9069F914F561CF0043CF23 /* cublas */,
 				9839FE5C0E2BB59800A16721 /* lapack */,
@@ -291,11 +298,11 @@
 				CF0647981446E152007DD062 /* tucker3_exporter.hpp */,
 				CF06479A1446E17B007DD062 /* tucker3_importer.hpp */,
 				CF2DD1EF126C7A4A0036DE05 /* cp3_tensor.hpp */,
+				CF906ABE14F56D510043CF23 /* t3_ttm.hpp */,
 				CFD85BC61398E2A100266D85 /* t3_hosvd.hpp */,
 				CFD85BC71398E2BE00266D85 /* t3_hooi.hpp */,
 				CFD85BC81398E2D400266D85 /* t3_hopm.hpp */,
 				CFA7FE00142242BD001EE112 /* t3_ihopm.hpp */,
-				CF906ABE14F56D510043CF23 /* t3_ttm.hpp */,
 			);
 			name = tensor;
 			sourceTree = "<group>";
@@ -412,6 +419,8 @@
 				CF06479E1446E4B7007DD062 /* tucker3_exporter_importer_test.cpp */,
 				CF2DD263126C91670036DE05 /* cp3_tensor_test.hpp */,
 				CF2DD264126C91670036DE05 /* cp3_tensor_test.cpp */,
+				CF906ACC14F56FEC0043CF23 /* t3_ttm_test.hpp */,
+				CF906ACD14F56FEC0043CF23 /* t3_ttm_test.cpp */,
 				CFD85C531399060300266D85 /* t3_hosvd_test.hpp */,
 				CFD85C541399060300266D85 /* t3_hosvd_test.cpp */,
 				CFD85C7F139909EF00266D85 /* t3_hooi_test.hpp */,
@@ -426,8 +435,8 @@
 				CF906A1F14F562F90043CF23 /* cublas_dgemm_test.cpp */,
 				CF75FFF31432383D00CFD46E /* blas_dot_test.hpp */,
 				CF75FFF41432383D00CFD46E /* blas_dot_test.cpp */,
-				CF906ACC14F56FEC0043CF23 /* t3_ttm_test.hpp */,
-				CF906ACD14F56FEC0043CF23 /* t3_ttm_test.cpp */,
+				CF906B8714F6313A0043CF23 /* cutensor_tests.hpp */,
+				CF906B8814F6313A0043CF23 /* cutensor_tests.cpp */,
 			);
 			name = "unit tests";
 			sourceTree = "<group>";
@@ -451,6 +460,16 @@
 				CF9069FC14F561E70043CF23 /* cublas_types.hpp */,
 			);
 			name = cublas;
+			sourceTree = "<group>";
+		};
+		CF906B7814F57D0F0043CF23 /* cutensor */ = {
+			isa = PBXGroup;
+			children = (
+				CF906B7714F57B640043CF23 /* t3_cublas_ttm.hpp */,
+				CF906B7914F57D3C0043CF23 /* t3_cublas_hosvd.hpp */,
+				CF906B7A14F57D7C0043CF23 /* t3_cublas_hooi.hpp */,
+			);
+			name = cutensor;
 			sourceTree = "<group>";
 		};
 		CFF0C1F11406E4BA00C3ADDB /* blas */ = {
@@ -607,6 +626,7 @@
 				CF0649C814472249007DD062 /* qtucker3_tensor_test.cpp in Sources */,
 				CF906A2114F562F90043CF23 /* cublas_dgemm_test.cpp in Sources */,
 				CF906ACE14F56FEC0043CF23 /* t3_ttm_test.cpp in Sources */,
+				CF906B8914F6313A0043CF23 /* cutensor_tests.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

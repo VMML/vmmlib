@@ -4,6 +4,7 @@
  * @author Susanne Suter
  *
  * Tensor times matrix multiplication for tensor3 (t3)
+ * using BLAS
  * see e.g.:
  * - Bader & Kolda, 2006: Algorithm 862: Matlab tensor classes for fast algorithm prototyping. ACM Transactions on Mathematical Software.
  * 
@@ -14,13 +15,6 @@
 
 #include <vmmlib/tensor3.hpp>
 #include <vmmlib/blas_dgemm.hpp>
-
-//TODO
-enum dgemm_method {
-	blas_e,
-	cublas_e
-}; 
-
 
 namespace vmml
 {
@@ -40,13 +34,13 @@ namespace vmml
 		
 		//tensor times matrix multiplication along different modes
 		template< size_t I3, size_t J1, size_t J2, size_t J3, typename T > 
-		static void multiply_horizontal_bwd( const tensor3< J1, J2, J3, T >& t3_in_, const matrix< I3, J3, T >& other_slice_, tensor3< J1, J2, I3, T >& t3_res_ ); //output: tensor3< J1, J2, I3, T >  
+		static void multiply_horizontal_bwd( const tensor3< J1, J2, J3, T >& t3_in_, const matrix< I3, J3, T >& in_slice_, tensor3< J1, J2, I3, T >& t3_res_ ); //output: tensor3< J1, J2, I3, T >  
 		
 		template< size_t I1, size_t J1, size_t J2, size_t J3, typename T > 
-		static void multiply_lateral_bwd( const tensor3< J1, J2, J3, T >& t3_in_, const matrix< I1, J1, T >& other_slice_, tensor3< I1, J2, J3, T >& t3_res_ ); //output: tensor3< I1, J2, J3, T > 
+		static void multiply_lateral_bwd( const tensor3< J1, J2, J3, T >& t3_in_, const matrix< I1, J1, T >& in_slice_, tensor3< I1, J2, J3, T >& t3_res_ ); //output: tensor3< I1, J2, J3, T > 
 		
 		template< size_t I2, size_t J1, size_t J2, size_t J3, typename T > 
-		static void multiply_frontal_bwd( const tensor3< J1, J2, J3, T >& t3_in_, const matrix< I2, J2, T >& other_slice_, tensor3< J1, I2, J3, T >& t3_res_ ); //output: tensor3< J1, I2, J3, T >
+		static void multiply_frontal_bwd( const tensor3< J1, J2, J3, T >& t3_in_, const matrix< I2, J2, T >& in_slice_, tensor3< J1, I2, J3, T >& t3_res_ ); //output: tensor3< J1, I2, J3, T >
 		
 	protected:
 		
@@ -127,71 +121,88 @@ VMML_TEMPLATE_CLASSNAME::full_tensor3_matrix_kronecker_mult(  const tensor3< J1,
 template< size_t I3, size_t J1, size_t J2, size_t J3, typename T > 
 void
 VMML_TEMPLATE_CLASSNAME::multiply_horizontal_bwd( const tensor3< J1, J2, J3, T >& t3_in_, 
-												 const matrix< I3, J3, T >& other_slice_, 
+												 const matrix< I3, J3, T >& in_slice_, 
 												 tensor3< J1, J2, I3, T >& t3_res_ )
 {
-	matrix< J3, J2, T >* slice = new matrix< J3, J2, T >;
-	matrix< I3, J2, T >* slice_new = new matrix< I3, J2, T >;
+	typedef matrix< J3, J2, T > slice_t;
+	typedef matrix< I3, J2, T > slice_new_t;
+	typedef matrix< J3, J2, T_blas > blas_slice_t;
+	typedef matrix< I3, J2, T_blas > blas_slice_new_t;
+	typedef matrix< I3, J3, T_blas > blas_in_slice_t;
+	typedef blas_dgemm< I3, J3, J2, T_blas > blas_t;
 	
-	blas_dgemm< I3, J3, J2, T_blas >* blas_dgemm1 = new blas_dgemm< I3, J3, J2, T_blas >;
-	matrix< J3, J2, T_blas >* slice_blas = new matrix< J3, J2, T_blas >;
-	matrix< I3, J2, T_blas >* slice_new_blas = new matrix< I3, J2, T_blas >;
-	matrix< I3, J3, T_blas >* other_slice_blas = new matrix< I3, J3, T_blas >;
-	other_slice_blas->cast_from( other_slice_ );
+	slice_t* slice = new slice_t;
+	slice_new_t* slice_new = new slice_new_t;
+	
+	blas_slice_t* slice_blas = new blas_slice_t;
+	blas_slice_new_t* slice_new_blas = new blas_slice_new_t;
+	blas_in_slice_t* in_slice_blas = new blas_in_slice_t;
+	in_slice_blas->cast_from( in_slice_ );
+	
+	blas_t* multiplier = new blas_t;
 	
 	for ( size_t i1 = 0; i1 < J1; ++i1 )
 	{
 		t3_in_.get_horizontal_slice_bwd( i1, *slice );
 		
 		slice_blas->cast_from( *slice );
-		blas_dgemm1->compute( *other_slice_blas, *slice_blas, *slice_new_blas );
+		multiplier->compute( *in_slice_blas, *slice_blas, *slice_new_blas );
 		slice_new->cast_from( *slice_new_blas );
 		//slice_new->multiply( other_slice_, *slice );
 		
 		t3_res_.set_horizontal_slice_bwd( i1, *slice_new );		
 	}
 	
-	delete blas_dgemm1;	
+	delete multiplier;	
 	delete slice;
 	delete slice_new;
 	delete slice_blas;
 	delete slice_new_blas;
-	delete other_slice_blas;
+	delete in_slice_blas;
 }
 
 
 template< size_t I1, size_t J1, size_t J2, size_t J3, typename T > 
 void
 VMML_TEMPLATE_CLASSNAME::multiply_lateral_bwd( const tensor3< J1, J2, J3, T >& t3_in_, 
-											  const matrix< I1, J1, T >& other_slice_, 
+											  const matrix< I1, J1, T >& in_slice_, 
 											  tensor3< I1, J2, J3, T >& t3_res_ )
 {
-	matrix< J1, J3, T>* slice = new matrix< J1, J3, T>();
-	matrix< I1, J3, T>* slice_new = new matrix< I1, J3, T>();
+	typedef matrix< J1, J3, T > slice_t;
+	typedef matrix< I1, J3, T > slice_new_t;
+	typedef matrix< J1, J3, T_blas > blas_slice_t;
+	typedef matrix< I1, J3, T_blas > blas_slice_new_t;
+	typedef matrix< I1, J1, T_blas > blas_in_slice_t;
+	typedef blas_dgemm< I1, J1, J3, T_blas > blas_t;
 	
-	blas_dgemm< I1, J1, J3, T_blas >* blas_dgemm1 = new blas_dgemm< I1, J1, J3, T_blas >;
-	matrix< J1, J3, T_blas >* slice_blas = new matrix< J1, J3, T_blas >;
-	matrix< I1, J3, T_blas >* slice_new_blas = new matrix< I1, J3, T_blas >;
-	matrix< I1, J1, T_blas >* other_slice_blas = new matrix< I1, J1, T_blas >;
-	other_slice_blas->cast_from( other_slice_ );
+	slice_t* slice = new slice_t;
+	slice_new_t* slice_new = new slice_new_t;
+	
+	blas_slice_t* slice_blas = new blas_slice_t;
+	blas_slice_new_t* slice_new_blas = new blas_slice_new_t;
+	blas_in_slice_t* in_slice_blas = new blas_in_slice_t;
+	in_slice_blas->cast_from( in_slice_ );
+	
+	blas_t* multiplier = new blas_t;
 	
 	for ( size_t i2 = 0; i2 < J2; ++i2 )
 	{
 		t3_in_.get_lateral_slice_bwd( i2, *slice );
 		
 		slice_blas->cast_from( *slice );
-		blas_dgemm1->compute( *other_slice_blas, *slice_blas, *slice_new_blas );
+		multiplier->compute( *in_slice_blas, *slice_blas, *slice_new_blas );
 		slice_new->cast_from( *slice_new_blas );
 		
 		//slice_new->multiply( other_slice_, *slice );
 		t3_res_.set_lateral_slice_bwd( i2, *slice_new );		
 	}
-	delete blas_dgemm1;	
+	
+	delete multiplier;	
 	delete slice;
 	delete slice_new;
 	delete slice_blas;
 	delete slice_new_blas;
-	delete other_slice_blas;
+	delete in_slice_blas;
 }
 
 
@@ -199,35 +210,44 @@ VMML_TEMPLATE_CLASSNAME::multiply_lateral_bwd( const tensor3< J1, J2, J3, T >& t
 template< size_t I2, size_t J1, size_t J2, size_t J3, typename T > 
 void
 VMML_TEMPLATE_CLASSNAME::multiply_frontal_bwd( const tensor3< J1, J2, J3, T >& t3_in_, 
-											  const matrix< I2, J2, T >& other_slice_, 
+											  const matrix< I2, J2, T >& in_slice_, 
 											  tensor3< J1, I2, J3, T >& t3_res_  )
 {
-	matrix< J2, J1, T>* slice = new matrix< J2, J1, T>;
-	matrix< I2, J1, T>* slice_new = new matrix< I2, J1, T>;
+	typedef matrix< J2, J1, T > slice_t;
+	typedef matrix< I2, J1, T > slice_new_t;
+	typedef matrix< J2, J1, T_blas > blas_slice_t;
+	typedef matrix< I2, J1, T_blas > blas_slice_new_t;
+	typedef matrix< I2, J2, T_blas > blas_in_slice_t;
+	typedef blas_dgemm< I2, J2, J1, T_blas > blas_t;
 	
-	blas_dgemm< I2, J2, J1, T_blas >* blas_dgemm1 = new blas_dgemm< I2, J2, J1, T_blas >;
-	matrix< J2, J1, T_blas >* slice_blas = new matrix< J2, J1, T_blas >;
-	matrix< I2, J1, T_blas >* slice_new_blas = new matrix< I2, J1, T_blas >;
-	matrix< I2, J2, T_blas >* other_slice_blas = new matrix< I2, J2, T_blas >;
-	other_slice_blas->cast_from( other_slice_ );
+	slice_t* slice = new slice_t;
+	slice_new_t* slice_new = new slice_new_t;
+	
+	blas_slice_t* slice_blas = new blas_slice_t;
+	blas_slice_new_t* slice_new_blas = new blas_slice_new_t;
+	blas_in_slice_t* in_slice_blas = new blas_in_slice_t;
+	in_slice_blas->cast_from( in_slice_ );
+	
+	blas_t* multiplier = new blas_t;
 	
 	for ( size_t i3 = 0; i3 < J3; ++i3 )
 	{
 		t3_in_.get_frontal_slice_bwd( i3, *slice );
 		
 		slice_blas->cast_from( *slice );
-		blas_dgemm1->compute( *other_slice_blas, *slice_blas, *slice_new_blas );
+		multiplier->compute( *in_slice_blas, *slice_blas, *slice_new_blas );
 		slice_new->cast_from( *slice_new_blas );
 		
 		//slice_new->multiply( other_slice_, *slice );
 		t3_res_.set_frontal_slice_bwd( i3, *slice_new );		
 	}
-	delete blas_dgemm1;	
+	
+	delete multiplier;	
 	delete slice;
 	delete slice_new;
 	delete slice_blas;
 	delete slice_new_blas;
-	delete other_slice_blas;
+	delete in_slice_blas;
 }
 
 	

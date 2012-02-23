@@ -35,6 +35,7 @@
 #ifdef VMMLIB_CUBLAS
 
 #include "cublas_dgemm_test.hpp"
+#include "cutensor_tests.hpp"
 
 #endif
 
@@ -125,6 +126,9 @@ main( int argc, const char* argv[] )
 
     vmml::cublas_dgemm_test cublas_mm;
     run_and_log( cublas_mm );
+	
+    vmml::cutensor_tests cut3;
+    run_and_log( cut3 );
 	
 #endif
 	

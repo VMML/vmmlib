@@ -189,9 +189,10 @@ namespace vmml
 		typedef vector< N, float_t > vector_right_t;
 		
 		cublas_dgemm();
-		~cublas_dgemm() {};
+		~cublas_dgemm();
 		
 		bool compute( const matrix_left_t& A_, const matrix_right_t& B_, matrix_out_t& C_ );
+		bool compute( const matrix_left_t& A_, matrix_out_t& C_ );
 		
 		
 		cublas::dgemm_params< float_t > p;
@@ -205,8 +206,8 @@ namespace vmml
 	template< size_t M, size_t K, size_t N, typename float_t >
 	cublas_dgemm< M, K, N, float_t >::cublas_dgemm()
 	{
-        cublasCreate( &p.handle );
- 		p.trans_a    = CUBLAS_OP_N;
+        cublasStatus_t cstat = cublasCreate( &p.handle ); if ( cstat > 0 ) { printf( "cublasCreate: status error=%d\n", cstat ); }
+		p.trans_a    = CUBLAS_OP_N;
 		p.trans_b    = CUBLAS_OP_N;
 		p.m          = M;
 		p.n          = N;
@@ -217,12 +218,21 @@ namespace vmml
 		p.lda        = M;
 		p.h_b        = 0;
 		p.d_b        = 0;
-		p.ldb        = K; //no transpose
+		p.ldb        = K; //no transpose, use N for transpose
 		p.beta       = 0.0;
 		p.h_c        = 0;
 		p.d_c        = 0;
 		p.ldc        = M;
 	}
+	
+	template< size_t M, size_t K, size_t N, typename float_t >
+	cublas_dgemm< M, K, N, float_t >::~cublas_dgemm()
+	{
+		/*cublasStatus_t cuerr = cublasDestroy( p.handle );
+		if ( cuerr > 0 ) 
+		{ printf( "cudaMemcpy: cublas error=%d\n", cuerr ); }*/
+	}
+
 	
 	
 	
@@ -242,6 +252,59 @@ namespace vmml
 		p.h_a         = AA->array;
 		p.h_b         = BB->array;
 		p.h_c         = C_.array;
+				
+		// memory sizes of matrices
+		size_t mem_size_A = sizeof(float_t) * M * K;
+		size_t mem_size_B = sizeof(float_t) * K * N;
+		size_t mem_size_C = sizeof(float_t) * M * N;
+		
+		// allocate device memory
+		cudaError_t cuerr = cudaMalloc( (void**) &p.d_a, mem_size_A ); if ( cuerr > 0 ) { printf( "cudaMalloc: cublas error=%d\n", cuerr ); }
+		cuerr = cudaMalloc( (void**) &p.d_b, mem_size_B ); if ( cuerr > 0 ) { printf( "cudaMalloc: cublas error=%d\n", cuerr ); } 
+		cuerr = cudaMalloc( (void**) &p.d_c, mem_size_C ); if ( cuerr > 0 ) { printf( "cudaMalloc: cublas error=%d\n", cuerr ); }  
+		
+		// copy host memory to device
+		cuerr = cudaMemcpy( p.d_a, p.h_a, mem_size_A, cudaMemcpyHostToDevice); if ( cuerr > 0 ) { printf( "cudaMemcpy: cublas error=%d\n", cuerr ); }
+		cuerr = cudaMemcpy( p.d_b, p.h_b, mem_size_B, cudaMemcpyHostToDevice); if ( cuerr > 0 ) { printf( "cudaMemcpy: cublas error=%d\n", cuerr ); }
+
+		// call CUBLAS V2
+		cublas::dgemm_call< float_t >( p );
+		//std::cout << p << std::endl; //debug
+	
+		cudaDeviceSynchronize();
+
+		// copy result from device to host
+		cuerr = cudaMemcpy( p.h_c, p.d_c, mem_size_C, cudaMemcpyDeviceToHost); if ( cuerr > 0 ) { printf( "cudaMemcpy: cublas error=%d\n", cuerr ); }
+		
+		// clean up memory
+		cudaFree( p.d_a );
+		cudaFree( p.d_b );
+		cudaFree( p.d_c );
+		cudaDeviceReset();
+		
+		delete AA;
+		delete BB;
+		
+		return true;
+	}	
+	
+	
+	template< size_t M, size_t K, size_t N, typename float_t >
+	bool
+	cublas_dgemm< M, K, N, float_t >::compute( 
+											const matrix_left_t& A_, 
+											matrix_out_t& C_ 
+											)
+	{
+		// cublas needs non-const data
+		matrix_left_t* AA = new matrix_left_t( A_ );
+		C_.zero();
+		
+		p.h_a         = AA->array;
+		p.h_b         = AA->array;
+		p.h_c         = C_.array;
+		p.trans_b     = CUBLAS_OP_T;
+		p.ldb         = N; 
 		
 		// memory sizes of matrices
 		size_t mem_size_A = sizeof(float_t) * M * K;
@@ -265,8 +328,6 @@ namespace vmml
 
 		// copy result from device to host
 		cuerr = cudaMemcpy( p.h_c, p.d_c, mem_size_C, cudaMemcpyDeviceToHost); if ( cuerr > 0 ) { printf( "cudaMemcpy: cublas error=%d\n", cuerr ); }
-
-        cublasDestroy( p.handle );
 		
 		// clean up memory
 		cudaFree( p.d_a );
@@ -275,10 +336,10 @@ namespace vmml
 		cudaDeviceReset();
 
 		delete AA;
-		delete BB;
 		
 		return true;
 	}	
+
 	
 	
 } // namespace vmml

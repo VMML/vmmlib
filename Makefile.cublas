@@ -21,6 +21,7 @@ VMMLIB_UNIT_TESTS =\
     tests/t3_hooi_test.cpp \
     tests/t3_hopm_test.cpp \
     tests/t3_ihopm_test.cpp \
+    tests/t3_ttm_test.cpp \
     tests/matrix_pseudoinverse_test.cpp \
     tests/blas_dgemm_test.cpp \
     tests/blas_dot_test.cpp \
@@ -72,7 +73,7 @@ ARCHFLAGS := -arch=sm_13 -m64
 
 
 
-all: tests/cublas_dgemm_test.o vmmlib_unit_tests 
+all: tests/cublas_dgemm_test.o tests/cutensor_tests.o vmmlib_unit_tests 
 
 .cpp.o:
 	$(CXX) $(CXXFLAGS) -c $< -o $@  
@@ -80,14 +81,17 @@ all: tests/cublas_dgemm_test.o vmmlib_unit_tests
 tests/cublas_dgemm_test.o: tests/cublas_dgemm_test.cpp
 	$(NVCC) $(NVCCFLAGS) $(CUDA_INC) $(CUDA_LIBS) $(ARCHFLAGS) -c tests/cublas_dgemm_test.cpp -o tests/cublas_dgemm_test.o
 
+tests/cutensor_tests.o: tests/cutensor_tests.cpp
+	$(NVCC) $(NVCCFLAGS) $(CUDA_INC) $(CUDA_LIBS) $(ARCHFLAGS) -c tests/cutensor_tests.cpp -o tests/cutensor_tests.o
+
 
 vmmlib_unit_tests: $(VMMLIB_UNIT_TESTS_OBJECTS)
 ifeq "$(ARCH)" "Darwin"
-	 $(CXX) $(LDFLAGS) $(CUDA_INC) $(CUDA_LIBS) $(ARCHFLAGS) $(VMMLIB_UNIT_TESTS_OBJECTS) tests/cublas_dgemm_test.o -o $@  
+	 $(CXX) $(LDFLAGS) $(CUDA_INC) $(CUDA_LIBS) $(ARCHFLAGS) $(VMMLIB_UNIT_TESTS_OBJECTS) tests/cublas_dgemm_test.o tests/cutensor_tests.o -o $@  
 else
 	 $(CXX) $(LDFLAGS) $(VMMLIB_UNIT_TESTS_OBJECTS) -o $@  $(LIBS)
 endif
 
 clean:
-	rm -rf $(VMMLIB_UNIT_TESTS_OBJECTS) vmmlib_unit_tests tests/cublas_dgemm_test.o
+	rm -rf $(VMMLIB_UNIT_TESTS_OBJECTS) vmmlib_unit_tests tests/cublas_dgemm_test.o tests/cutensor_tests.o
 

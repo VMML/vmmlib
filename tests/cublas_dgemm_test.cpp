@@ -46,6 +46,31 @@ namespace vmml
             
 		}
 		
+		//covariance computation
+		
+		matrix< 3, 3, double > C;
+		matrix< 3, 3, double > C_check;
+		
+		cublas_dgemm< 3, 6, 3, double > blas_cov;
+		blas_cov.compute( A, C );
+		
+		double CData[] = { 91, 217, 343, 217, 559, 901, 343, 901, 1459 };
+		C_check = CData;
+		
+		ok = C == C_check;
+		
+		log( "symmetric matrix-matrix multiplication (input left matrix) (MxK) x (KxN) = (MxN), while M=N", ok );
+		if ( ! ok )
+		{
+			std::stringstream ss;
+			ss
+            << "input matrix (left matrix)\n" << A << "\n"
+            << "covariance matrix should be\n" << C_check << "\n"
+            << "covariance matrix is\n" << C << "\n"
+            << std::endl;
+			log_error( ss.str() );
+            
+		}
 		
 		
 		return ok;

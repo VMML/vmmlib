@@ -76,6 +76,22 @@ namespace vmml
 													 const matrix< I3, J3, T_cublas >& in_slice_, 
 													 tensor3< J1, J2, I3, T_cublas >& t3_res_ )
 	{
+#if 1
+		typedef matrix< J3, J1*J2, T_cublas > unfolding_t; 
+		typedef matrix< I3, J1*J2, T_cublas > unfolding_res_t; 
+		typedef cublas_dgemm< I3, J3, J1 * J2, T_cublas > cublas_t;
+		
+		unfolding_t* unfolding = new unfolding_t;
+		t3_in_.horizontal_unfolding_bwd( *unfolding );
+		unfolding_res_t* unfolding_2 = new unfolding_res_t;
+		cublas_t* multiplier = new cublas_t;
+		multiplier->compute( in_slice_, *unfolding, *unfolding_2 );
+		
+		t3_res_.horizontal_folding_bwd( *unfolding_2 );
+		
+		delete unfolding;
+		delete unfolding_2;
+#else
 		typedef matrix< J3, J2, T_cublas > slice_t;
 		typedef matrix< I3, J2, T_cublas > slice_new_t;
 		typedef cublas_dgemm< I3, J3, J2, T_cublas > cublas_t;
@@ -97,6 +113,7 @@ namespace vmml
 		delete multiplier;	
 		delete slice;
 		delete slice_new;
+#endif
 	}
 	
 	
@@ -106,6 +123,22 @@ namespace vmml
 												  const matrix< I1, J1, T_cublas >& in_slice_, 
 												  tensor3< I1, J2, J3, T_cublas >& t3_res_ )
 	{
+#if 1
+		typedef matrix< J1, J3*J2, T_cublas > unfolding_t; 
+		typedef matrix< I1, J3*J2, T_cublas > unfolding_res_t; 
+		typedef cublas_dgemm< I1, J1, J3 * J2, T_cublas > cublas_t;
+		
+		unfolding_t* unfolding = new unfolding_t;
+		t3_in_.lateral_unfolding_bwd( *unfolding );
+		unfolding_res_t* unfolding_2 = new unfolding_res_t;
+		cublas_t* multiplier = new cublas_t;
+		multiplier->compute( in_slice_, *unfolding, *unfolding_2 );
+		
+		t3_res_.lateral_folding_bwd( *unfolding_2 );
+		
+		delete unfolding;
+		delete unfolding_2;
+#else
 		typedef matrix< J1, J3, T_cublas > slice_t;
 		typedef matrix< I1, J3, T_cublas > slice_new_t;
 		typedef cublas_dgemm< I1, J1, J3, T_cublas > cublas_t;
@@ -127,6 +160,7 @@ namespace vmml
 		delete multiplier;	
 		delete slice;
 		delete slice_new;
+#endif
 	}
 	
 	
@@ -137,6 +171,22 @@ namespace vmml
 												  const matrix< I2, J2, T_cublas >& in_slice_, 
 												  tensor3< J1, I2, J3, T_cublas >& t3_res_  )
 	{
+#if 1
+		typedef matrix< J2, J1*J3, T_cublas > unfolding_t; 
+		typedef matrix< I2, J1*J3, T_cublas > unfolding_res_t; 
+		typedef cublas_dgemm< I2, J2, J1 * J3, T_cublas > cublas_t;
+		
+		unfolding_t* unfolding = new unfolding_t;
+		t3_in_.frontal_unfolding_bwd( *unfolding );
+		unfolding_res_t* unfolding_2 = new unfolding_res_t;
+		cublas_t* multiplier = new cublas_t;
+		multiplier->compute( in_slice_, *unfolding, *unfolding_2 );
+		
+		t3_res_.frontal_folding_bwd( *unfolding_2 );
+		
+		delete unfolding;
+		delete unfolding_2;
+#else
 		typedef matrix< J2, J1, T_cublas > slice_t;
 		typedef matrix< I2, J1, T_cublas > slice_new_t;
 		typedef cublas_dgemm< I2, J2, J1, T_cublas > cublas_t;
@@ -158,6 +208,7 @@ namespace vmml
 		delete multiplier;	
 		delete slice;
 		delete slice_new;
+#endif
 	}
 	
 	

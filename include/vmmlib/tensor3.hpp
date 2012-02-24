@@ -229,7 +229,11 @@ public:
     void frontal_unfolding_bwd( bwd_front_unfolding_type& unfolding) const;
     void frontal_unfolding_fwd( fwd_front_unfolding_type& unfolding) const;
 
-
+    void horizontal_folding_bwd( const bwd_horiz_unfolding_type& unfolding);
+    void lateral_folding_bwd( const bwd_lat_unfolding_type& unfolding);
+    void frontal_folding_bwd( const bwd_front_unfolding_type& unfolding);
+	
+	
     // reconstruction of a Kruskal tensor => inversion of CP (Candecomp/Parafac)
     // please note that the parameter U will be overwritten
     // temp is simply a required workspace matrix, it can be empty or uninitialized
@@ -1409,6 +1413,56 @@ VMML_TEMPLATE_CLASSNAME::frontal_unfolding_fwd( fwd_front_unfolding_type& unfold
 		} 
 	}
 	delete frontal_slice;
+}
+
+VMML_TEMPLATE_STRING
+void 
+VMML_TEMPLATE_CLASSNAME::horizontal_folding_bwd( const bwd_horiz_unfolding_type& unfolding)
+{
+	bwd_horiz_slice_type* horizontal_slice = new bwd_horiz_slice_type;
+	for( size_t i = 0; i < I1; ++i )
+	{
+		for( size_t col = 0; col < I2; ++col )
+		{
+			horizontal_slice->set_column(col, unfolding.get_column( i*I2+col ));
+		} 
+		set_horizontal_slice_bwd(i, *horizontal_slice );
+	}
+	delete horizontal_slice;
+}
+	
+	
+VMML_TEMPLATE_STRING
+void 
+VMML_TEMPLATE_CLASSNAME::frontal_folding_bwd( const bwd_front_unfolding_type& unfolding) 
+{
+	bwd_front_slice_type* frontal_slice = new bwd_front_slice_type();
+	for( size_t i = 0; i < I3; ++i )
+	{
+		for( size_t col = 0; col < I1; ++col )
+		{
+			frontal_slice->set_column(col, unfolding.get_column( i*I1+col));
+		} 
+		set_frontal_slice_bwd(i, *frontal_slice );
+	}
+	delete frontal_slice;
+}
+
+	
+VMML_TEMPLATE_STRING
+void 
+VMML_TEMPLATE_CLASSNAME::lateral_folding_bwd( const bwd_lat_unfolding_type& unfolding) 
+{
+	bwd_lat_slice_type* lateral_slice = new bwd_lat_slice_type();
+	for( size_t i = 0; i < I2; ++i )
+	{
+		for( size_t col = 0; col < I3; ++col )
+		{
+			lateral_slice->set_column(col, unfolding.get_column( i*I3+col ));
+		} 
+		set_lateral_slice_bwd(i, *lateral_slice );
+	}
+	delete lateral_slice;
 }
 
 

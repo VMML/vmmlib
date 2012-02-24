@@ -32,7 +32,7 @@
 
 #endif
 
-#ifdef VMMLIB_CUBLAS
+#ifdef VMMLIB_CUDA
 
 #include "cublas_dgemm_test.hpp"
 #include "cutensor_tests.hpp"
@@ -122,7 +122,7 @@ main( int argc, const char* argv[] )
 	
 #endif
 	
-#ifdef VMMLIB_CUBLAS
+#ifdef VMMLIB_CUDA
 
     vmml::cublas_dgemm_test cublas_mm;
     run_and_log( cublas_mm );

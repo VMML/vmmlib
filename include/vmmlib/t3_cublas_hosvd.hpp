@@ -28,26 +28,26 @@
 namespace vmml
 {
 	
-	template< size_t R1, size_t R2, size_t R3, size_t I1, size_t I2, size_t I3, typename T = float >
+	template< size_t R1, size_t R2, size_t R3, size_t I1, size_t I2, size_t I3 >
 	class t3_cublas_hosvd
 	{
 	public:    
 		
 		typedef double T_svd;
 		
-		typedef tensor3< I1, I2, I3, T > t3_type;
+		typedef tensor3< I1, I2, I3, float > t3_type;
 		
-		typedef matrix< I1, R1, T > u1_type;
-		typedef matrix< I2, R2, T > u2_type;
-		typedef matrix< I3, R3, T > u3_type;
+		typedef matrix< I1, R1, float > u1_type;
+		typedef matrix< I2, R2, float > u2_type;
+		typedef matrix< I3, R3, float > u3_type;
 		
-		typedef matrix< I1, I2*I3, T > u1_unfolded_type;
-		typedef matrix< I2, I1*I3, T > u2_unfolded_type;
-		typedef matrix< I3, I1*I2, T > u3_unfolded_type;
+		typedef matrix< I1, I2*I3, float > u1_unfolded_type;
+		typedef matrix< I2, I1*I3, float > u2_unfolded_type;
+		typedef matrix< I3, I1*I2, float > u3_unfolded_type;
 		
-		typedef matrix< I1, I1, T > u1_cov_type;
-		typedef matrix< I2, I2, T > u2_cov_type;
-		typedef matrix< I3, I3, T > u3_cov_type;
+		typedef matrix< I1, I1, float > u1_cov_type;
+		typedef matrix< I2, I2, float > u2_cov_type;
+		typedef matrix< I3, I3, float > u3_cov_type;
 		
 		/*	higher-order singular value decomposition (HOSVD) with full rank decomposition (also known as Tucker decomposition). 
 		 see: De Lathauer et al, 2000a: A multilinear singular value decomposition. 
@@ -66,7 +66,7 @@ namespace vmml
 		
 		//hosvd on eigenvalue decomposition = hoeigs
 		template< size_t N, size_t R  >
-        static void get_eigs_u_red( const matrix< N, N, T >& data_, matrix< N, R, T >& u_ );
+        static void get_eigs_u_red( const matrix< N, N, float >& data_, matrix< N, R, float >& u_ );
 		
 		static void eigs_mode1( const t3_type& data_, u1_type& u1_ );
         static void eigs_mode2( const t3_type& data_, u2_type& u2_ );
@@ -74,8 +74,8 @@ namespace vmml
 		
 	}; //end hosvd class
 	
-#define VMML_TEMPLATE_STRING        template< size_t R1, size_t R2, size_t R3, size_t I1, size_t I2, size_t I3, typename T >
-#define VMML_TEMPLATE_CLASSNAME     t3_cublas_hosvd< R1, R2, R3, I1, I2, I3, T >
+#define VMML_TEMPLATE_STRING        template< size_t R1, size_t R2, size_t R3, size_t I1, size_t I2, size_t I3 >
+#define VMML_TEMPLATE_CLASSNAME     t3_cublas_hosvd< R1, R2, R3, I1, I2, I3 >
 
 
 	
@@ -134,7 +134,7 @@ VMML_TEMPLATE_CLASSNAME::eigs_mode1( const t3_type& data_, u1_type& u1_ )
 	
 	//covariance matrix of unfolded data
 	u1_cov_type* cov  = new u1_cov_type;
-	cublas_dgemm< I1, I2*I3, I1, T>* blas_cov = new cublas_dgemm< I1, I2*I3, I1, T>;
+	cublas_dgemm< I1, I2*I3, I1, float >* blas_cov = new cublas_dgemm< I1, I2*I3, I1, float >;
 	blas_cov->compute( *m_lateral, *cov );
 	delete blas_cov;
 	delete m_lateral;
@@ -155,7 +155,7 @@ VMML_TEMPLATE_CLASSNAME::eigs_mode2( const t3_type& data_, u2_type& u2_ )
 	
 	//covariance matrix of unfolded data
 	u2_cov_type* cov  = new u2_cov_type;
-	cublas_dgemm< I2, I1*I3, I2, T>* blas_cov = new cublas_dgemm< I2, I1*I3, I2, T>;
+	cublas_dgemm< I2, I1*I3, I2, float >* blas_cov = new cublas_dgemm< I2, I1*I3, I2, float >;
 	blas_cov->compute( *m_frontal, *cov );
 	delete blas_cov;
 	delete m_frontal;
@@ -176,7 +176,7 @@ VMML_TEMPLATE_CLASSNAME::eigs_mode3( const t3_type& data_, u3_type& u3_)
 	
 	//covariance matrix of unfolded data
 	u3_cov_type* cov  = new u3_cov_type;
-	cublas_dgemm< I3, I1*I2, I3, T>* blas_cov = new cublas_dgemm< I3, I1*I2, I3, T>;
+	cublas_dgemm< I3, I1*I2, I3, float >* blas_cov = new cublas_dgemm< I3, I1*I2, I3, float >;
 	blas_cov->compute( *m_horizontal, *cov );
 	delete blas_cov;
 	delete m_horizontal;
@@ -194,7 +194,7 @@ VMML_TEMPLATE_CLASSNAME::eigs_mode3( const t3_type& data_, u3_type& u3_)
 VMML_TEMPLATE_STRING
 template< size_t N, size_t R >
 void 
-VMML_TEMPLATE_CLASSNAME::get_eigs_u_red( const matrix< N, N, T >& data_, matrix< N, R, T >& u_ )
+VMML_TEMPLATE_CLASSNAME::get_eigs_u_red( const matrix< N, N, float >& data_, matrix< N, R, float >& u_ )
 {
 	typedef matrix< N, N, T_svd > cov_matrix_type;
 	typedef vector< R, T_svd > eigval_type;
@@ -219,11 +219,8 @@ VMML_TEMPLATE_CLASSNAME::get_eigs_u_red( const matrix< N, N, T >& data_, matrix<
 			u_.quantize( *evec_quant, min_value, max_value );
 			evec_quant->dequantize( u_, min_value, max_value );
 			delete evec_quant;
-		} else */ if ( sizeof( T ) != 4 ){
-			u_.cast_from( *eigxvectors );
-		} else {
-			u_ = *eigxvectors;
-		}
+		} else */ 
+		u_ = *eigxvectors;
 		
 	} else {
 		u_.zero();

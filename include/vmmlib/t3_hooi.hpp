@@ -206,13 +206,12 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode1( const t3_type& data_, const u2_type& u2
 	u3_.transpose_to( *u3_inv );
 	
 	//backward cyclic matricization/unfolding (after Lathauwer et al., 2000a)
-	tensor3< I1, R2, I3, T >* tmp  = new tensor3< I1, R2, I3, T >;
-	t3_ttm::multiply_frontal_bwd( data_, *u2_inv, *tmp );
-	t3_ttm::multiply_horizontal_bwd( *tmp, *u3_inv, projection_ );
+	tensor3< I1, R2, I3, T > tmp;
+	t3_ttm::multiply_frontal_bwd( data_, *u2_inv, tmp );
+	t3_ttm::multiply_horizontal_bwd( tmp, *u3_inv, projection_ );
 	
 	delete u2_inv;
 	delete u3_inv;
-	delete tmp;
 }
 
 
@@ -227,13 +226,12 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode2( const t3_type& data_, const u1_type& u1
 	
 	
 	//backward cyclic matricization (after Lathauwer et al., 2000a)
-	tensor3< R1, I2, I3, T >* tmp = new tensor3< R1, I2, I3, T >();
-	t3_ttm::multiply_lateral_bwd( data_, *u1_inv, *tmp );
-	t3_ttm::multiply_horizontal_bwd( *tmp, *u3_inv, projection_ );
+	tensor3< R1, I2, I3, T > tmp;
+	t3_ttm::multiply_lateral_bwd( data_, *u1_inv, tmp );
+	t3_ttm::multiply_horizontal_bwd( tmp, *u3_inv, projection_ );
 	
 	delete u1_inv;
 	delete u3_inv;
-	delete tmp;
 }
 
 
@@ -247,13 +245,12 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode3( const t3_type& data_, const u1_type& u1
 	u2_.transpose_to( *u2_inv );
 	
 	//backward cyclic matricization (after Lathauwer et al., 2000a)
-	tensor3< R1, I2, I3, T >* tmp = new tensor3< R1, I2, I3, T >();
-	t3_ttm::multiply_lateral_bwd( data_, *u1_inv, *tmp );
-	t3_ttm::multiply_frontal_bwd( *tmp, *u2_inv, projection_ );
+	tensor3< R1, I2, I3, T > tmp;
+	t3_ttm::multiply_lateral_bwd( data_, *u1_inv, tmp );
+	t3_ttm::multiply_frontal_bwd( tmp, *u2_inv, projection_ );
 	
 	delete u1_inv;
 	delete u2_inv;
-	delete tmp;
 }
 	
 	

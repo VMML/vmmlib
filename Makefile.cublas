@@ -37,7 +37,7 @@ ifeq "$(ARCH)" "Darwin"
 CXXFLAGS += -DVMMLIB_CUDA
 LDFLAGS += -framework Accelerate
 CUDA_INSTALL_PATH = /usr/local/cuda
-CUDA_LIB	:= -L$(CUDA)/lib
+CUDA_LIB	:= -L$(CUDA_INSTALL_PATH)/lib
 
 else
 # Linux specific stuff
@@ -55,7 +55,7 @@ CXXFLAGS += -DVMMLIB_CUDA
 LDFLAGS +=
 
 CUDA_INSTALL_PATH = /opt/cuda
-CUDA_LIB	:= -L$(CUDA)/lib64
+CUDA_LIB	:= -L$(CUDA_INSTALL_PATH)/lib64
 
 # adjust libs depending on your LAPACK and BLAS distribution
 LIBS += -lclapack -lf2c -lcblas
@@ -63,9 +63,8 @@ LIBS += -lclapack -lf2c -lcblas
 
 endif
 
-### if CUBLAS VMMLIB (for Mac OS X, x86_64, cuda compute compatibility 1.3) ####
-CUDA	:= $(CUDA_INSTALL_PATH)
-CUDA_INC	:= -I$(CUDA)/include -I.
+### if CUBLAS VMMLIB (update cuda compute compatibility) ####
+CUDA_INC	:= -I$(CUDA_INSTALL_PATH)/include -I.
 
 NVCC = nvcc
 # -g -> debug level, -G device-debug; -O optimized level

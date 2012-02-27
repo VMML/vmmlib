@@ -22,8 +22,14 @@ namespace vmml
 		
 		double CData[] = { 91, 217, 343, 217, 559, 901, 343, 901, 1459 };
 		C_check = CData;
-		
 		ok = C == C_check;
+
+		tensor3< 3, 2, 3, double> t3;
+		double A2Data[] = { 1, 2, 7,8,13,14, 3,4,9,10,15,16,5,6,11,12,17,18 };
+		t3.set( A2Data, A2Data + 18);
+		blas_cov.compute( t3, C );
+		
+		ok = (C == C_check) && ok;
 		
 		log( "symmetric matrix-matrix multiplication (input left matrix) (MxK) x (KxN) = (MxN), while M=N", ok );
 		if ( ! ok )
@@ -53,7 +59,7 @@ namespace vmml
 		F_check = FData;
 		
 		ok = F == F_check;
-		
+				
 		log( "symmetric matrix-matrix multiplication (input right matrix) (MxK) x (KxN) = (MxN), while M=N", ok );
 		if ( ! ok )
 		{
@@ -82,6 +88,11 @@ namespace vmml
 		D_check = DData;
 		
 		ok = D == D_check;
+		
+		blas_dgemm< 3, 6, 2, double > blas_cov3_t3_2;
+		blas_v_dgemm.compute( t3, B, D );
+
+		ok = (D == D_check) && ok;
 		
 		log( "matrix-matrix multiplication (MxK) x (KxN) = (MxN)", ok );
 		if ( ! ok )

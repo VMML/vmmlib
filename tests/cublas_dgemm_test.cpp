@@ -48,13 +48,13 @@ namespace vmml
 		
 		//covariance computation
 		
-		matrix< 3, 3, double > C;
-		matrix< 3, 3, double > C_check;
+		matrix< 3, 3, float > C;
+		matrix< 3, 3, float > C_check;
 		
-		cublas_dgemm< 3, 6, 3, double > blas_cov;
+		cublas_dgemm< 3, 6, 3, float > blas_cov;
 		blas_cov.compute( A, C );
 		
-		double CData[] = { 91, 217, 343, 217, 559, 901, 343, 901, 1459 };
+		float CData[] = { 91, 217, 343, 217, 559, 901, 343, 901, 1459 };
 		C_check = CData;
 		
 		ok = C == C_check;

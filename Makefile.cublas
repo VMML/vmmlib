@@ -36,6 +36,8 @@ ARCH = $(shell uname)
 ifeq "$(ARCH)" "Darwin"
 CXXFLAGS += -DVMMLIB_CUDA
 LDFLAGS += -framework Accelerate
+CUDA_INSTALL_PATH = /usr/local/cuda
+CUDA_LIB	:= -L$(CUDA)/lib
 
 else
 # Linux specific stuff
@@ -52,23 +54,24 @@ endif
 CXXFLAGS += -DVMMLIB_CUDA
 LDFLAGS +=
 
+CUDA_INSTALL_PATH = /opt/cuda
+CUDA_LIB	:= -L$(CUDA)/lib64
+
 # adjust libs depending on your LAPACK and BLAS distribution
-LIBS += -lclapack -lf2c -lcblas -llapack
+LIBS += -lclapack -lf2c -lcblas
 # LIBS += -llapack -lblas
 
 endif
 
 ### if CUBLAS VMMLIB (for Mac OS X, x86_64, cuda compute compatibility 1.3) ####
-
-CUDA_INSTALL_PATH = /usr/local/cuda
 CUDA	:= $(CUDA_INSTALL_PATH)
 CUDA_INC	:= -I$(CUDA)/include -I.
-CUDA_LIB	:= -L$(CUDA)/lib
+
 NVCC = nvcc
 # -g -> debug level, -G device-debug; -O optimized level
 NVCCFLAGS := -Iinclude -Itests -DVMMLIB_CUDA
 CUDA_LIBS := $(CUDA_LIB) -lcuda -lcublas -lcudart
-ARCHFLAGS := -arch=sm_13 -m64
+ARCHFLAGS := -arch=sm_20 -m64
 ### endif cublas vmmlib
 
 
@@ -89,7 +92,7 @@ vmmlib_unit_tests: $(VMMLIB_UNIT_TESTS_OBJECTS)
 ifeq "$(ARCH)" "Darwin"
 	 $(CXX) $(LDFLAGS) $(CUDA_INC) $(CUDA_LIBS) $(ARCHFLAGS) $(VMMLIB_UNIT_TESTS_OBJECTS) tests/cublas_dgemm_test.o tests/cutensor_tests.o -o $@  
 else
-	 $(CXX) $(LDFLAGS) $(VMMLIB_UNIT_TESTS_OBJECTS) -o $@  $(LIBS)
+	$(CXX) $(LDFLAGS) $(CUDA_INC) $(CUDA_LIBS) $(ARCHFLAGS) $(VMMLIB_UNIT_TESTS_OBJECTS) $(LIBS) tests/cublas_dgemm_test.o tests/cutensor_tests.o -o $@
 endif
 
 clean:

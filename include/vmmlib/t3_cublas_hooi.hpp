@@ -135,20 +135,21 @@ VMML_TEMPLATE_CLASSNAME::als( const t3_type& data_,
 	//derve core from initialized matrices
 	derive_core_orthogonal_bases( data_, u1_, u2_, u3_, core_ );
 	
+	//removed initial fit to save computing time
 	//compute best rank-(R1, R2, R3) approximation (Lathauwer et al., 2000b)
-	t3_type approximated_data;
-	t3_cublas_ttm::full_tensor3_matrix_multiplication( core_, u1_, u2_, u3_, approximated_data );
+	//t3_type approximated_data;
+	//t3_cublas_ttm::full_tensor3_matrix_multiplication( core_, u1_, u2_, u3_, approximated_data );
 	
-	double f_norm = approximated_data.frobenius_norm();
+	double f_norm = 0;//approximated_data.frobenius_norm();
 	double max_f_norm = data_.frobenius_norm();
-	double normresidual  = sqrt( (max_f_norm * max_f_norm) - (f_norm * f_norm));
+	double normresidual  =  0; //sqrt( (max_f_norm * max_f_norm) - (f_norm * f_norm));
 	double fit = 0;
-	if ( (max_f_norm != 0) && (max_f_norm > f_norm) ) 
+	/*if ( (max_f_norm != 0) && (max_f_norm > f_norm) ) 
 	{
 		fit = 1 - (normresidual / max_f_norm);
 	} else { 
 		fit = 1;
-	}
+	}*/
 	
 	double fitchange = 1;
 	double fitold = fit;

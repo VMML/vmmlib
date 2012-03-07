@@ -34,8 +34,8 @@ CXXFLAGS += -I. -Iinclude -Itests -include stdint.h
 # on mac we want to use the frameworks, not the unix style libs 
 ARCH = $(shell uname)
 ifeq "$(ARCH)" "Darwin"
-CXXFLAGS +=
-LDFLAGS += -framework Accelerate
+CXXFLAGS += 
+LDFLAGS += -framework Accelerate -fopenmp
 
 else
 # Linux specific stuff
@@ -50,7 +50,7 @@ else
 endif
 
 CXXFLAGS +=
-LDFLAGS +=
+LDFLAGS +=  -fopenmp
 
 # adjust libs depending on your LAPACK and BLAS distribution
 LIBS += -lclapack -lf2c -lcblas -llapack

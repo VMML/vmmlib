@@ -16,6 +16,8 @@
 #include <vmmlib/tensor3.hpp>
 #include <vmmlib/blas_dgemm.hpp>
 
+#include<omp.h>
+
 namespace vmml
 {
 	
@@ -220,24 +222,24 @@ VMML_TEMPLATE_CLASSNAME::multiply_horizontal_bwd( const tensor3< J1, J2, J3, T_b
 	typedef matrix< J3, J2, T_blas > slice_t;
 	typedef matrix< I3, J2, T_blas > slice_new_t;
 	typedef blas_dgemm< I3, J3, J2, T_blas > blas_t;
-	
-	slice_t* slice = new slice_t;
-	slice_new_t* slice_new = new slice_new_t;
-	
-	blas_t* multiplier = new blas_t;
-	
-	for ( size_t i1 = 0; i1 < J1; ++i1 )
+    
+#pragma omp parallel for
+	for ( int i1 = 0; i1 < (int)J1; ++i1 )
 	{
+		slice_t* slice = new slice_t;
+		slice_new_t* slice_new = new slice_new_t;
+		
+		blas_t* multiplier = new blas_t;
 		t3_in_.get_horizontal_slice_bwd( i1, *slice );
 		
 		multiplier->compute( in_slice_, *slice, *slice_new );
 		
 		t3_res_.set_horizontal_slice_bwd( i1, *slice_new );		
+		
+		delete multiplier;	
+		delete slice;
+		delete slice_new;
 	}
-	
-	delete multiplier;	
-	delete slice;
-	delete slice_new;
 }
 
 
@@ -251,23 +253,23 @@ VMML_TEMPLATE_CLASSNAME::multiply_lateral_bwd( const tensor3< J1, J2, J3, T_blas
 	typedef matrix< I1, J3, T_blas > slice_new_t;
 	typedef blas_dgemm< I1, J1, J3, T_blas > blas_t;
 	
-	slice_t* slice = new slice_t;
-	slice_new_t* slice_new = new slice_new_t;
-	
-	blas_t* multiplier = new blas_t;
-	
-	for ( size_t i2 = 0; i2 < J2; ++i2 )
+#pragma omp parallel for
+	for ( int i2 = 0; i2 < (int)J2; ++i2 )
 	{
+		slice_t* slice = new slice_t;
+		slice_new_t* slice_new = new slice_new_t;
+		
+		blas_t* multiplier = new blas_t;
 		t3_in_.get_lateral_slice_bwd( i2, *slice );
 		
 		multiplier->compute( in_slice_, *slice, *slice_new );
 		
 		t3_res_.set_lateral_slice_bwd( i2, *slice_new );		
+		delete multiplier;	
+		delete slice;
+		delete slice_new;
 	}
 	
-	delete multiplier;	
-	delete slice;
-	delete slice_new;
 }
 
 
@@ -281,24 +283,24 @@ VMML_TEMPLATE_CLASSNAME::multiply_frontal_bwd( const tensor3< J1, J2, J3, T_blas
 	typedef matrix< J2, J1, T_blas > slice_t;
 	typedef matrix< I2, J1, T_blas > slice_new_t;
 	typedef blas_dgemm< I2, J2, J1, T_blas > blas_t;
-	
-	slice_t* slice = new slice_t;
-	slice_new_t* slice_new = new slice_new_t;
-	
-	blas_t* multiplier = new blas_t;
-	
-	for ( size_t i3 = 0; i3 < J3; ++i3 )
+		
+#pragma omp parallel for
+	for ( int i3 = 0; i3 < (int)J3; ++i3 )
 	{
+		slice_t* slice = new slice_t;
+		slice_new_t* slice_new = new slice_new_t;
+		
+		blas_t* multiplier = new blas_t;
 		t3_in_.get_frontal_slice_bwd( i3, *slice );
 		
 		multiplier->compute( in_slice_, *slice, *slice_new );
 		
 		t3_res_.set_frontal_slice_bwd( i3, *slice_new );	
+		delete multiplier;	
+		delete slice;
+		delete slice_new;
 	}
 	
-	delete multiplier;	
-	delete slice;
-	delete slice_new;
 }
 	
 

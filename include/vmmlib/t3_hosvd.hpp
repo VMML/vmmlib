@@ -223,7 +223,7 @@ VMML_TEMPLATE_CLASSNAME::eigs_mode1( const t3_type& data_, u1_type& u1_ )
 	
 	//covariance matrix of unfolded data
 	u1_cov_type* cov  = new u1_cov_type;
-#if 0
+#if 1
 	blas_dgemm< I1, I2*I3, I1, T>* blas_cov = new blas_dgemm< I1, I2*I3, I1, T>;
 	blas_cov->compute( *m_lateral, *cov );
 #else
@@ -249,7 +249,7 @@ VMML_TEMPLATE_CLASSNAME::eigs_mode2( const t3_type& data_, u2_type& u2_ )
 	
 	//covariance matrix of unfolded data
 	u2_cov_type* cov  = new u2_cov_type;
-#if 0
+#if 1
 	blas_dgemm< I2, I1*I3, I2, T>* blas_cov = new blas_dgemm< I2, I1*I3, I2, T>;
 	blas_cov->compute( *m_frontal, *cov );
 #else
@@ -276,16 +276,13 @@ VMML_TEMPLATE_CLASSNAME::eigs_mode3( const t3_type& data_, u3_type& u3_)
 	
 	//covariance matrix of unfolded data
 	u3_cov_type* cov  = new u3_cov_type;
-	//blas_dgemm< I3, I1*I2, I3, T>* blas_cov = new blas_dgemm< I3, I1*I2, I3, T>;
-	//blas_cov->compute( *m_horizontal, *cov );
-	
-	//std::cout << "dgemm cov\n" << *cov << std::endl;
-	//cov->zero();
-
+#if 1
+	blas_dgemm< I3, I1*I2, I3, T>* blas_cov = new blas_dgemm< I3, I1*I2, I3, T>;
+	blas_cov->compute( *m_horizontal, *cov );
+#else
 	blas_daxpy< I3, T>* blas_cov = new blas_daxpy< I3, T>;
 	blas_cov->compute_mmm( *m_horizontal, *cov );
-	
-	//std::cout << "daxpy cov\n" << *cov << std::endl;
+#endif	
 	
 	delete blas_cov;
 	delete m_horizontal;

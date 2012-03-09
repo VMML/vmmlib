@@ -47,6 +47,8 @@ namespace vmml
 		matrix< 2,3, float > res_m;
 		matrix< 2,3, float > res_m_check;
 		matrix< 2,3, float > left_m;
+		matrix< 2,2, float > res2_m;
+		matrix< 2,2, float > res2_m_check;
 		
 		float lData[] = {  0.9649  ,  0.9706 ,   0.4854, 0.1576  ,  0.9572 ,   0.8003 };
 		left_m = lData;
@@ -60,16 +62,23 @@ namespace vmml
 		
 		ok = res_m.equals( res_m_check, 0.0001 );
 		
-		log( "compute matrix-matrix multiplication by multiple daxpy's", ok );
+		blas_daxpy2.compute_mmm( left_m, res2_m );
+		
+		float r2Data[] = {  2.10871, 1.46959, 1.46959, 1.58155 };
+		res2_m_check = r2Data;
+		
+		ok = ok && (res2_m_check.equals( res2_m, 0.0001));
+		
+		
+		log( "compute matrix-matrix multiplication (A*B and A*A^T) by multiple daxpy's", ok );
 		if ( ! ok )
 		{
 			std::stringstream ss;
 			ss
             << "left matrix \n" << left_m << "\n"
-			<< "right matrix \n" << right_m << "\n"
 			<< "result matrix \n"
-			<< "should be\n" << res_m_check << "\n"
-            << "is\n" << res_m << "\n"
+			<< "should be\n" << res2_m_check << "\n"
+            << "is\n" << res2_m << "\n"
             << std::endl;
 			log_error( ss.str() );
             

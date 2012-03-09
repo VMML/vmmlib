@@ -133,6 +133,10 @@ namespace vmml
 						 const matrix< K, N, float_t >& right_m_,
 						 matrix< M, N, float_t >& res_m_ );
 		
+		template< size_t K >
+		bool compute_mmm( const matrix< M, K, float_t >& left_m_, 
+						 matrix< M, M, float_t >& res_m_ );
+		
 		
 		blas::daxpy_params< float_t > p;
 		
@@ -183,8 +187,44 @@ namespace vmml
 										  const matrix< K, N, float_t >& right_m_,
 										  matrix< M, N, float_t >& res_m_ )
 	{
-#pragma omp parallel for
 		for ( int n = 0; n < (int)N; ++n )
+		{
+			vector_t* final_col = new vector_t;
+			final_col->set(0);
+			
+			for ( int k = 0; k < (int)K; ++k )
+			{
+				vector_t* in_col = new vector_t;
+				vector_t* out_col = new vector_t;
+				float_t a_val = right_m_.at( k, n );
+				left_m_.get_column( k, *in_col );
+				
+				compute( a_val, *in_col, *out_col );
+				
+				*final_col += *out_col;
+				
+				delete in_col;
+				delete out_col;
+			}
+			
+			res_m_.set_column( n, *final_col );
+			
+			delete final_col;
+		}
+		
+		
+		return true;
+	}	
+	
+
+	template< size_t M, typename float_t >
+	template< size_t K >
+	bool
+	blas_daxpy< M, float_t >::compute_mmm(  const matrix< M, K, float_t >& left_m_, 
+										  matrix< M, M, float_t >& res_m_ )
+	{
+#pragma omp parallel for
+		for ( int n = 0; n < (int)M; ++n )
 		{
 			vector_t* final_col = new vector_t;
 			final_col->set(0);
@@ -194,7 +234,7 @@ namespace vmml
 			{
 				vector_t* in_col = new vector_t;
 				vector_t* out_col = new vector_t;
-				float_t a_val = right_m_.at( k, n );
+				float_t a_val = left_m_.at( n,k ); //reversed (k,n), because take value from transposed matrix left_m_
 				left_m_.get_column( k, *in_col );
 				
 				compute( a_val, *in_col, *out_col );

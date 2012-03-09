@@ -15,6 +15,7 @@
 #include "lapack_sym_eigs_test.hpp"
 #include "blas_dgemm_test.hpp"
 #include "blas_dot_test.hpp"
+#include "blas_daxpy_test.hpp"
 
 #include "matrix_pseudoinverse_test.hpp"
 
@@ -83,6 +84,9 @@ main( int argc, const char* argv[] )
 	
     vmml::blas_dot_test blas_vvi;
     run_and_log( blas_vvi );
+
+	vmml::blas_daxpy_test b_daxpy;
+    run_and_log( b_daxpy );
 	
     vmml::matrix_pseudoinverse_test m_pinv;
     run_and_log( m_pinv );

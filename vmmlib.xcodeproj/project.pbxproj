@@ -52,6 +52,7 @@
 		CF906ACE14F56FEC0043CF23 /* t3_ttm_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CF906ACD14F56FEC0043CF23 /* t3_ttm_test.cpp */; };
 		CF906B8914F6313A0043CF23 /* cutensor_tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CF906B8814F6313A0043CF23 /* cutensor_tests.cpp */; };
 		CFA7FE4B14225C03001EE112 /* t3_ihopm_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CFA7FE4A14225C03001EE112 /* t3_ihopm_test.cpp */; };
+		CFCE7024150A004300A29C68 /* blas_daxpy_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CFCE7023150A004300A29C68 /* blas_daxpy_test.cpp */; };
 		CFD85C551399060300266D85 /* t3_hosvd_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CFD85C541399060300266D85 /* t3_hosvd_test.cpp */; };
 		CFD85C81139909EF00266D85 /* t3_hooi_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CFD85C80139909EF00266D85 /* t3_hooi_test.cpp */; };
 		CFD85C8413990A0E00266D85 /* t3_hopm_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CFD85C8313990A0E00266D85 /* t3_hopm_test.cpp */; };
@@ -163,6 +164,9 @@
 		CFA7FE00142242BD001EE112 /* t3_ihopm.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = t3_ihopm.hpp; path = include/vmmlib/t3_ihopm.hpp; sourceTree = "<group>"; };
 		CFA7FE4914225C03001EE112 /* t3_ihopm_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = t3_ihopm_test.hpp; path = tests/t3_ihopm_test.hpp; sourceTree = "<group>"; };
 		CFA7FE4A14225C03001EE112 /* t3_ihopm_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = t3_ihopm_test.cpp; path = tests/t3_ihopm_test.cpp; sourceTree = "<group>"; };
+		CFCE701F1509F53100A29C68 /* blas_daxpy.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = blas_daxpy.hpp; path = include/vmmlib/blas_daxpy.hpp; sourceTree = "<group>"; };
+		CFCE7022150A004300A29C68 /* blas_daxpy_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = blas_daxpy_test.hpp; path = tests/blas_daxpy_test.hpp; sourceTree = "<group>"; };
+		CFCE7023150A004300A29C68 /* blas_daxpy_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = blas_daxpy_test.cpp; path = tests/blas_daxpy_test.cpp; sourceTree = "<group>"; };
 		CFD85BC61398E2A100266D85 /* t3_hosvd.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = t3_hosvd.hpp; path = include/vmmlib/t3_hosvd.hpp; sourceTree = "<group>"; };
 		CFD85BC71398E2BE00266D85 /* t3_hooi.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = t3_hooi.hpp; path = include/vmmlib/t3_hooi.hpp; sourceTree = "<group>"; };
 		CFD85BC81398E2D400266D85 /* t3_hopm.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = t3_hopm.hpp; path = include/vmmlib/t3_hopm.hpp; sourceTree = "<group>"; };
@@ -431,10 +435,12 @@
 				CFA7FE4A14225C03001EE112 /* t3_ihopm_test.cpp */,
 				CFF0C1F91406E55200C3ADDB /* blas_dgemm_test.hpp */,
 				CFF0C1F81406E55200C3ADDB /* blas_dgemm_test.cpp */,
-				CF906A2014F562F90043CF23 /* cublas_dgemm_test.hpp */,
-				CF906A1F14F562F90043CF23 /* cublas_dgemm_test.cpp */,
 				CF75FFF31432383D00CFD46E /* blas_dot_test.hpp */,
 				CF75FFF41432383D00CFD46E /* blas_dot_test.cpp */,
+				CFCE7022150A004300A29C68 /* blas_daxpy_test.hpp */,
+				CFCE7023150A004300A29C68 /* blas_daxpy_test.cpp */,
+				CF906A2014F562F90043CF23 /* cublas_dgemm_test.hpp */,
+				CF906A1F14F562F90043CF23 /* cublas_dgemm_test.cpp */,
 				CF906B8714F6313A0043CF23 /* cutensor_tests.hpp */,
 				CF906B8814F6313A0043CF23 /* cutensor_tests.cpp */,
 			);
@@ -477,6 +483,7 @@
 			children = (
 				CFF0C1F21406E4DC00C3ADDB /* blas_dgemm.hpp */,
 				CF75FFD11432315C00CFD46E /* blas_dot.hpp */,
+				CFCE701F1509F53100A29C68 /* blas_daxpy.hpp */,
 				CFF0C1F31406E4DC00C3ADDB /* blas_includes.hpp */,
 				CFF0C1F41406E4DC00C3ADDB /* blas_types.hpp */,
 			);
@@ -627,6 +634,7 @@
 				CF906A2114F562F90043CF23 /* cublas_dgemm_test.cpp in Sources */,
 				CF906ACE14F56FEC0043CF23 /* t3_ttm_test.cpp in Sources */,
 				CF906B8914F6313A0043CF23 /* cutensor_tests.cpp in Sources */,
+				CFCE7024150A004300A29C68 /* blas_daxpy_test.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

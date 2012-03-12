@@ -1134,30 +1134,36 @@ tensor3_test::run()
 		
 		
 		unsigned int data_uct[] = { 
-			0, 0, 0, 0, 0, 0, 0, 0, 
-			0, 0, 7, 7, 7, 7, 0, 0,
-			0, 7, 7, 7, 7, 7, 7, 0,
-			0, 7, 7, 7, 7, 7, 7, 0,
-			0, 7, 7, 7, 7, 7, 7, 0,
-			0, 7, 7, 7, 7, 7, 7, 0,
-			0, 0, 7, 7, 7, 7, 0, 0,
-			0, 0, 0, 0, 0, 0, 0, 0,
-			0, 0, 0, 0, 0, 0, 0, 0, 
-			0, 0, 7, 7, 7, 7, 0, 0,
-			0, 7, 7, 7, 7, 7, 7, 0,
-			0, 7, 7, 7, 7, 7, 7, 0,
-			0, 7, 7, 7, 7, 7, 7, 0,
-			0, 7, 7, 7, 7, 7, 7, 0,
-			0, 0, 7, 7, 7, 7, 0, 0,
-			0, 0, 0, 0, 0, 0, 0, 0 
-		};
+			0, 2, 4, 8, 0, 3, 0, 3,
+			3, 7, 15, 54, 96, 219, 6, 0,
+			5, 17, 17, 187, 226, 199, 33, 0,
+			0, 39, 136, 58, 159, 6, 209, 0,
+			3, 165, 86, 83, 15, 54, 230, 0,
+			6, 70, 126, 155, 13, 148, 50, 1,
+			7, 3, 181, 72, 236, 13, 1, 7,
+			6, 0, 1, 2, 7, 3, 7, 4,
+			4, 0, 4, 5, 2, 4, 8, 6,
+			 4, 8, 0, 27, 186, 146, 3, 4,
+			 2, 60, 32, 220, 39, 106, 254, 1,
+			 2, 182, 129, 114, 82, 67, 187, 6,
+			 4, 134, 241, 206, 76, 70, 70, 7,
+			 4, 102, 9, 27, 189, 251, 179, 8,
+			 4, 4, 226, 185, 75, 163, 6, 2,
+			 8, 6, 7, 1, 7, 0, 0, 5
+			 };
 		
-		tensor3< 8,8, 2, unsigned int > uct_t3_check;
+		tensor3< 8,8, 2, unsigned char > uct_t3_check;
 		uct_t3_check.set( data_uct, data_uct + 128);
 		
-		tensor3< 8,8, 2, unsigned int > uct_t3;
-		uct_t3.fill(7);
-		uct_t3.remove_uct_cylinder( 0 );
+		tensor3< 8,8, 2, unsigned char > uct_t3;
+		uct_t3.fill_random(8);
+		
+		//std::cout << "t3 is: " << std::endl << uct_t3 << std::endl << "remove uct cylinder, now t3 is" << std::endl;
+		
+		uct_t3.remove_uct_cylinder( 0, 2 );
+		
+		//std::cout << uct_t3 << std::endl;
+
 		
 		ok = uct_t3 == uct_t3_check;
 		
@@ -1226,18 +1232,13 @@ tensor3_test::run()
 		tensor3< 3, 3, 2, unsigned char > t3;
 		t3.fill_random( 3 );
 		
-		unsigned char mean_val = t3.mean();
+		double mean_val = t3.mean();
 		double var = t3.variance();
 		double sigma = t3.stdev();
-		
-		/*std::cout << "t3 is\n" << t3 
-		<< "\n\nwith mean value=\t" << float(mean_val) 
-		<< ", and variance=\t" << var
-		<< " and stdev=\t" << sigma << std::endl;*/
-				
-		ok = 76 == mean_val;
-		ok = ok && ((4220.94 - var) <= 0.01);
-		ok = ok && ((64.9688 - sigma) <= 0.01);
+						
+		ok = (mean_val - 76.0556 <= 0.01 );
+		ok = ok && ((4469.232026 - var) <= 0.01);
+		ok = ok && ((66.85231504 - sigma) <= 0.01);
 		
 		log( "mean, variance and standard deviation" , ok  );
 		

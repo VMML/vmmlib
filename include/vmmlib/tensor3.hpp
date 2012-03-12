@@ -260,7 +260,8 @@ public:
 	double avg_frobenius_norm() const;
     double rmse( const tensor3< I1, I2, I3, T >& other ) const; //root mean-squared error
     double compute_psnr( const tensor3< I1, I2, I3, T >& other, const T& max_value_ ) const; //peak signal-to-noise ratio
-    T mean() const; 
+    void mean( T& mean_ ) const; 
+    double mean() const; 
     double variance() const; 
 	double stdev() const; 
    
@@ -1587,7 +1588,7 @@ VMML_TEMPLATE_CLASSNAME::rmse( const tensor3< I1, I2, I3, T >& other ) const
 }	
 	
 VMML_TEMPLATE_STRING
-T 
+double
 VMML_TEMPLATE_CLASSNAME::mean() const
 {
 	double val = 0;
@@ -1595,8 +1596,16 @@ VMML_TEMPLATE_CLASSNAME::mean() const
 	for( ; it != it_end; ++it ){
 		val += double(abs( *it ));
 	}
-		
-	return (static_cast< T >( val/size()));
+	
+	return ( val/size());
+}	
+	
+	
+VMML_TEMPLATE_STRING
+void 
+VMML_TEMPLATE_CLASSNAME::mean( T& mean_ ) const
+{
+	mean_ = static_cast< T >( mean() );
 }	
 	
 VMML_TEMPLATE_STRING
@@ -1605,15 +1614,15 @@ VMML_TEMPLATE_CLASSNAME::variance() const
 {
 	double val = 0.0;
 	double sum_val = 0.0;
-	double mean_val = (double)mean();
+	double mean_val = mean();
 	const_iterator it = begin(), it_end = end(); 
 	for( ; it != it_end; ++it ){
-		val = *it - mean_val;
+		val = double(*it) - mean_val;
 		val *= val;
 		sum_val += val;
 	}
 	
-	return (sum_val/size());
+	return double(sum_val/(size()-1));
 }	
 
 VMML_TEMPLATE_STRING
@@ -2230,6 +2239,9 @@ VMML_TEMPLATE_CLASSNAME::remove_uct_cylinder( const size_t radius_offset_, int s
 	double k1 = 0;
 	double k2 = 0;
 	double fill_value = 0;
+	
+	double sigma = stdev();
+	
 	for( size_t i3 = 0; i3 < I3; ++i3 )
 	{
 		for( size_t i1 = 0; i1 < I1; i1++ )
@@ -2243,7 +2255,7 @@ VMML_TEMPLATE_CLASSNAME::remove_uct_cylinder( const size_t radius_offset_, int s
 				{
 					fill_value = rand();
 					fill_value /= RAND_MAX;
-					fill_value *= sqrt(std::numeric_limits< T >::max());
+					fill_value *= sqrt(sigma);
 					at( i1, i2, i3 ) = static_cast< T >( fill_value )  ;
 				}
 			}			

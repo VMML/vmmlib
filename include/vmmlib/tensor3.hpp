@@ -260,7 +260,10 @@ public:
 	double avg_frobenius_norm() const;
     double rmse( const tensor3< I1, I2, I3, T >& other ) const; //root mean-squared error
     double compute_psnr( const tensor3< I1, I2, I3, T >& other, const T& max_value_ ) const; //peak signal-to-noise ratio
-    
+    T mean() const; 
+    double variance() const; 
+	double stdev() const; 
+   
     template< typename TT >
     void cast_from( const tensor3< I1, I2, I3, TT >& other );
 	
@@ -1582,6 +1585,43 @@ VMML_TEMPLATE_CLASSNAME::rmse( const tensor3< I1, I2, I3, T >& other ) const
 	
 	return sqrt(mse/size());
 }	
+	
+VMML_TEMPLATE_STRING
+T 
+VMML_TEMPLATE_CLASSNAME::mean() const
+{
+	double val = 0;
+	const_iterator it = begin(), it_end = end(); 
+	for( ; it != it_end; ++it ){
+		val += double(abs( *it ));
+	}
+		
+	return (static_cast< T >( val/size()));
+}	
+	
+VMML_TEMPLATE_STRING
+double
+VMML_TEMPLATE_CLASSNAME::variance() const
+{
+	double val = 0.0;
+	double sum_val = 0.0;
+	double mean_val = (double)mean();
+	const_iterator it = begin(), it_end = end(); 
+	for( ; it != it_end; ++it ){
+		val = *it - mean_val;
+		val *= val;
+		sum_val += val;
+	}
+	
+	return (sum_val/size());
+}	
+
+VMML_TEMPLATE_STRING
+double
+VMML_TEMPLATE_CLASSNAME::stdev() const
+{
+	return sqrt(variance());
+}		
 
 VMML_TEMPLATE_STRING
 double 

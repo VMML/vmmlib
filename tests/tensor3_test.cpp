@@ -1221,6 +1221,28 @@ tensor3_test::run()
 		
 	}
 	
+	{
+		//mean, variance and stdev
+		tensor3< 3, 3, 2, unsigned char > t3;
+		t3.fill_random( 3 );
+		
+		unsigned char mean_val = t3.mean();
+		double var = t3.variance();
+		double sigma = t3.stdev();
+		
+		/*std::cout << "t3 is\n" << t3 
+		<< "\n\nwith mean value=\t" << float(mean_val) 
+		<< ", and variance=\t" << var
+		<< " and stdev=\t" << sigma << std::endl;*/
+				
+		ok = 76 == mean_val;
+		ok = ok && ((4220.94 - var) <= 0.01);
+		ok = ok && ((64.9688 - sigma) <= 0.01);
+		
+		log( "mean, variance and standard deviation" , ok  );
+		
+	}
+	
 	ok = true;
     return ok;
 }

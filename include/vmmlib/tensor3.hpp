@@ -86,6 +86,9 @@ public:
     
     // ctors
     tensor3();
+	
+	//allocate memory mapped file
+    tensor3( const std::string& dir_, const std::string& filename_ );
         
     tensor3( const tensor3& source );
     
@@ -327,6 +330,7 @@ public:
     // static members
     static void     tensor3_allocate_data( T*& array_ );
     static void     tensor3_deallocate_data( T*& array_ );
+    static void     tensor3_allocate_mmap( const std::string& dir_, const std::string& filename_, T*& array_ );
 
     static const tensor3< I1, I2, I3, T > ZERO;
 
@@ -348,6 +352,13 @@ protected:
 #define VMML_TEMPLATE_CLASSNAME tensor3< I1, I2, I3, T >
 
 
+VMML_TEMPLATE_STRING
+VMML_TEMPLATE_CLASSNAME::tensor3( const std::string& dir_, const std::string& filename_ )
+: _array()
+{
+	t3_allocate_mmap( dir_, filename_, _array );
+}	
+	
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::tensor3()
 	: _array()
@@ -2301,6 +2312,16 @@ VMML_TEMPLATE_CLASSNAME::
 tensor3_allocate_data( T*& array_ )
 {
     array_ = new T[ I1 * I2 * I3];
+}
+	
+	
+VMML_TEMPLATE_STRING
+void
+VMML_TEMPLATE_CLASSNAME::
+tensor3_allocate_mmap(  const std::string& dir_, const std::string& filename_, T*& array_ )
+{
+	//TODO
+
 }
 
 

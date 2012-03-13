@@ -258,6 +258,7 @@ public:
     double frobenius_norm() const;
     double frobenius_norm( const tensor3< I1, I2, I3, T >& other ) const;
 	double avg_frobenius_norm() const;
+    double mse( const tensor3< I1, I2, I3, T >& other ) const; // mean-squared error
     double rmse( const tensor3< I1, I2, I3, T >& other ) const; //root mean-squared error
     double compute_psnr( const tensor3< I1, I2, I3, T >& other, const T& max_value_ ) const; //peak signal-to-noise ratio
     void mean( T& mean_ ) const; 
@@ -1573,18 +1574,28 @@ VMML_TEMPLATE_CLASSNAME::avg_frobenius_norm( ) const
 
 VMML_TEMPLATE_STRING
 double 
-VMML_TEMPLATE_CLASSNAME::rmse( const tensor3< I1, I2, I3, T >& other ) const
+VMML_TEMPLATE_CLASSNAME::mse( const tensor3< I1, I2, I3, T >& other ) const
 {
-	double mse = 0.0;
+	double mse_val = 0.0;
 	double diff = 0.0;
 	const_iterator it = begin(), it_end = end(); 
 	const_iterator other_it = other.begin(), other_it_end = other.end(); 
 	for( ; it != it_end; ++it, ++other_it ){
 		diff = abs( *it ) - abs( *other_it );
-		mse += diff * diff;
+		mse_val += diff * diff;
 	}
 	
-	return sqrt(mse/size());
+	mse_val /= (double)size();
+	
+	return mse_val;
+}	
+	
+	
+VMML_TEMPLATE_STRING
+double 
+VMML_TEMPLATE_CLASSNAME::rmse( const tensor3< I1, I2, I3, T >& other ) const
+{
+	return sqrt(mse( other ));
 }	
 	
 VMML_TEMPLATE_STRING

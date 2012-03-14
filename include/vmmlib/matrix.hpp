@@ -2856,7 +2856,8 @@ matrix< M, N, T >::read_csv_file( const std::string& dir_, const std::string& fi
 	std::ifstream infile;
 	infile.open( path.c_str(), std::ios::in); 
 	if( infile.is_open() ) {
-		infile >> *this  >> std::endl;		
+		//TODO: not yet implemented
+		//infile >> *this  >> std::endl;		
 		infile.close();
 	} else {
 		std::cout << "no file open" << std::endl;

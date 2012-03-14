@@ -216,6 +216,8 @@ public:
 	void cast_from( const matrix< M, N, TT >& other );
 	
 	void write_csv_file( const std::string& dir_, const std::string& filename_ ) const;
+	void write_to_raw( const std::string& dir_, const std::string& filename_ ) const;
+	void read_from_raw( const std::string& dir_, const std::string& filename_ ) ;
 	
 	template< typename TT >
 		void quantize_to( matrix< M, N, TT >& quantized_, const T& min_value, const T& max_value ) const;
@@ -2726,7 +2728,81 @@ matrix< M, N, T >::set_random( int seed )
 	}
 }	
 	
+template< size_t M, size_t N, typename T >
+void
+matrix< M, N, T >::write_to_raw( const std::string& dir_, const std::string& filename_ ) const
+{		
+	int dir_length = dir_.size() -1;
+	int last_separator = dir_.find_last_of( "/");
+	std::string path = dir_;
+	if (last_separator < dir_length ) {
+		path.append( "/" );
+	}
+	path.append( filename_ );
+	//check for format
+	if( filename_.find( "raw", filename_.size() -3) == (-1)) {
+		path.append( ".");
+		path.append( "raw" );
+	}
+	std::string path_raw = path;
+	
+	std::ofstream outfile;	
+	outfile.open( path_raw.c_str() );
+	if( outfile.is_open() ) {
+		size_t len_slice = sizeof(T) * M*N;
+		outfile.write( (char*)&(*this), len_slice );
+		outfile.close();
+	} else {
+		std::cout << "no file open" << std::endl;
+	}
+}	
+	
+template< size_t M, size_t N, typename T >
+void
+matrix< M, N, T >::read_from_raw( const std::string& dir_, const std::string& filename_ ) 
+{	
+	int dir_length = dir_.size() -1;
+	int last_separator = dir_.find_last_of( "/");
+	std::string path = dir_;
+	if (last_separator < dir_length ) {
+		path.append( "/" );
+	}
+	path.append( filename_ );
+	
+	size_t max_file_len = 2147483648u - sizeof(T) ;
+	size_t len_data = sizeof(T) * size();
+	size_t len_read = 0;
+	char* data = new char[ len_data ];
+	std::ifstream infile;
+	infile.open( path.c_str(), std::ios::in); 
+	
+	if( infile.is_open())
+	{
+		iterator  it = begin(),
+		it_end = end();
+		
+		while ( len_data > 0 ) 
+		{
+			len_read = (len_data % max_file_len ) > 0 ? len_data % max_file_len : len_data;
+			len_data -= len_read;
+			infile.read( data, len_read );
+			
+			T* T_ptr = (T*)&(data[0]);
+			for( ; (it != it_end) && (len_read > 0); ++it, len_read -= sizeof(T) )
+			{
+				*it = *T_ptr; ++T_ptr;
+			}
+		}
+		
+		delete[] data;
+		infile.close();
+	} else {
+		std::cout << "no file open" << std::endl;
+	}
+	
+}	
 
+	
 	
 
 template< size_t M, size_t N, typename T >

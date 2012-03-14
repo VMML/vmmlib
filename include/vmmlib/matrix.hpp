@@ -215,6 +215,7 @@ public:
 	template< typename TT >
 	void cast_from( const matrix< M, N, TT >& other );
 	
+	void read_csv_file( const std::string& dir_, const std::string& filename_ );
 	void write_csv_file( const std::string& dir_, const std::string& filename_ ) const;
 	void write_to_raw( const std::string& dir_, const std::string& filename_ ) const;
 	void read_from_raw( const std::string& dir_, const std::string& filename_ ) ;
@@ -2833,6 +2834,36 @@ matrix< M, N, T >::write_csv_file( const std::string& dir_, const std::string& f
 	}
 	
 }		
+	
+template< size_t M, size_t N, typename T >
+void
+matrix< M, N, T >::read_csv_file( const std::string& dir_, const std::string& filename_ )
+{	
+	int dir_length = dir_.size() -1;
+	int last_separator = dir_.find_last_of( "/");
+	std::string path = dir_;
+	if (last_separator < dir_length ) {
+		path.append( "/" );
+	}
+	path.append( filename_ );
+	//check for format
+	int suffix_pos = filename_.find( "csv", filename_.size() -3);
+	if( suffix_pos == (-1)) {
+		path.append( ".");
+		path.append( "csv" );
+	}
+	
+	std::ifstream infile;
+	infile.open( path.c_str(), std::ios::in); 
+	if( infile.is_open() ) {
+		infile >> *this  >> std::endl;		
+		infile.close();
+	} else {
+		std::cout << "no file open" << std::endl;
+	}
+	
+}		
+
 	
 template< size_t M, size_t N, typename T >
 void 

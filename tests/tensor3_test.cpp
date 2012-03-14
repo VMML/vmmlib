@@ -1162,9 +1162,6 @@ tensor3_test::run()
 		
 		uct_t3.remove_uct_cylinder( 0, 2 );
 		
-		//std::cout << uct_t3 << std::endl;
-
-		
 		ok = uct_t3 == uct_t3_check;
 		
 		if ( ok )	{	
@@ -1243,6 +1240,55 @@ tensor3_test::run()
 		log( "mean, variance and standard deviation" , ok  );
 		
 	}
+	
+	{
+		//load mmap for tensor3
+		
+		//create test data
+		std::string dir = ".";
+		std::string filename = "mmap_testdata.raw";
+		tensor3< 4,4,4, unsigned char > t3_testdata;
+		t3_testdata.fill_random( 3 );
+		t3_testdata.write_to_raw( dir, filename );
+		
+		tensor3< 4,4,4, unsigned char > t3( dir, filename );
+		
+		unsigned int data_mmp_t3[] = { 
+			0, 152, 9, 125,
+			100, 167, 205, 26,
+			68, 35, 38, 40,
+			95, 9, 142, 150, 
+			3, 64, 137, 63,
+			5, 15, 148, 26,
+			38, 195, 70, 186,
+			51, 201, 245, 73,
+			200, 228, 188, 243,
+			36, 68, 241, 55,
+			53, 248, 42, 228,
+			251, 24, 66, 166,
+			208, 181, 117, 182,
+			78, 210, 176, 130,
+			76, 19, 185, 139,
+			110, 127, 46, 244
+		};
+		tensor3< 4,4,4, unsigned char > t3_check;
+		t3_check.set( data_mmp_t3, data_mmp_t3 + 64);
+		
+		//double fnorm = t3.frobenius_norm();
+		//std::cout << "frobnorm of mmapped file " << fnorm << std::endl;
+		
+		//tensor3< 4,4,4, unsigned char > t33(t3);
+		//std::cout << "t33\n" << t33 << std::endl;
+
+		//tensor3< 4,4,4, unsigned short > t333(t3);
+		//std::cout << "t333\n" << t333 << std::endl;
+
+		
+		ok = t3_check == t3;
+		log( "load tensor3 from memory mapped file" , ok  );
+		
+	}
+	
 	
 	ok = true;
     return ok;

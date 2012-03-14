@@ -15,6 +15,9 @@
 #include <vmmlib/tensor3_iterator.hpp>
 #include <vmmlib/enable_if.hpp>
 #include <vmmlib/blas_dot.hpp>
+#include <sys/mman.h>
+#include <fcntl.h>
+
 
 namespace vmml
 {
@@ -330,7 +333,7 @@ public:
     // static members
     static void     tensor3_allocate_data( T*& array_ );
     static void     tensor3_deallocate_data( T*& array_ );
-    static void     tensor3_allocate_mmap( const std::string& dir_, const std::string& filename_, T*& array_ );
+    static void     t3_allocate_mmap( const std::string& dir_, const std::string& filename_, T*& array_ );
 
     static const tensor3< I1, I2, I3, T > ZERO;
 
@@ -340,12 +343,15 @@ public:
     // computes the array index for direct access 
     inline size_t compute_index( size_t i1, size_t i2, size_t i3 ) const;
 
+	bool is_mmapped() const { return _is_mmapped; };
 
 protected:
     front_slice_type&                   _get_slice( size_t index_ );
     const front_slice_type&             _get_slice( size_t index_ ) const;
 
 	T*                      _array;
+	
+	bool _is_mmapped;
 }; // class tensor3
 
 #define VMML_TEMPLATE_STRING    template< size_t I1, size_t I2, size_t I3, typename T >
@@ -354,14 +360,14 @@ protected:
 
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::tensor3( const std::string& dir_, const std::string& filename_ )
-: _array()
+: _array(), _is_mmapped(1)
 {
 	t3_allocate_mmap( dir_, filename_, _array );
 }	
 	
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::tensor3()
-	: _array()
+	: _array(), _is_mmapped(0)
 {
     tensor3_allocate_data( _array );
 }
@@ -369,7 +375,7 @@ VMML_TEMPLATE_CLASSNAME::tensor3()
 	
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::tensor3( const tensor3& source_ )
-    : _array()
+    : _array(), _is_mmapped(0) //CHECK
 {
     tensor3_allocate_data( _array );
     (*this) = source_;
@@ -379,20 +385,29 @@ VMML_TEMPLATE_CLASSNAME::tensor3( const tensor3& source_ )
 VMML_TEMPLATE_STRING
 template< typename U >
 VMML_TEMPLATE_CLASSNAME::tensor3( const tensor3< I1, I2, I3, U >& source_ )
+	: _is_mmapped(0)
 {
-    tensor3_allocate_data( _array );
 	const U* s_array = source_.get_array_ptr();
-    for( size_t index = 0; index < I1 * I2 * I3; ++index )
-    {
-        _array[ index ] = static_cast< T >( s_array[ index ] );
-        //_array[ index ] = static_cast< T >( source_._array[ index ] );
-    }
+
+	_is_mmapped = source_.is_mmapped();
+	if (_is_mmapped ) {
+		//t3_allocate_mmap( _array );
+	} 
+	else 
+	{
+		tensor3_allocate_data( _array );
+		for( size_t index = 0; index < I1 * I2 * I3; ++index )
+		{
+			_array[ index ] = static_cast< T >( s_array[ index ] );
+		}
+	}
 }
 	
 
 VMML_TEMPLATE_STRING
 template< size_t J1, size_t J2, size_t J3 >
 VMML_TEMPLATE_CLASSNAME::tensor3( const tensor3< J1, J2, J3, T >& source_ )
+	: _is_mmapped(0)
 {
 	const size_t minL =  J1 < I1 ? J1 : I1;
 	const size_t minC =  J2 < I2 ? J2 : I2;
@@ -415,7 +430,14 @@ VMML_TEMPLATE_CLASSNAME::tensor3( const tensor3< J1, J2, J3, T >& source_ )
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::~tensor3()
 {
-    tensor3_deallocate_data( _array );
+	if (_is_mmapped )
+	{
+		munmap( _array, sizeof(T) * SIZE ); //get error
+	} 
+	else 
+	{
+		tensor3_deallocate_data( _array );
+	}
 }
 
 	
@@ -2318,10 +2340,39 @@ tensor3_allocate_data( T*& array_ )
 VMML_TEMPLATE_STRING
 void
 VMML_TEMPLATE_CLASSNAME::
-tensor3_allocate_mmap(  const std::string& dir_, const std::string& filename_, T*& array_ )
+t3_allocate_mmap(  const std::string& dir_, const std::string& filename_, T*& array_ )
 {
-	//TODO
+	//void * mmap(void *addr, size_t len, int prot, int flags, int fd, off_t offset);
+	
+	int dir_length = dir_.size() -1;
+	int last_separator = dir_.find_last_of( "/");
+	std::string path = dir_;
+	if (last_separator < dir_length ) {
+		path.append( "/" );
+	}
+	path.append( filename_ );
 
+	int fd = -1;
+	fd = open( path.c_str(), O_RDONLY, 0 ); 
+	if ( fd == -1 )
+	{
+		close(fd);
+		std::cout << "no file open for memory mapping" << std::endl;
+	}
+	
+	
+	size_t len = sizeof(T) * SIZE;
+	off_t offset = 0;
+	
+	array_ = (T*)mmap( 0, len, PROT_READ, MAP_FILE | MAP_SHARED, fd, offset ); //cast to void*? //MAP_FILE|MAP_SHARED
+	
+	if( array_ == MAP_FAILED)
+	{
+		std::cout << "mmap failed" << std::endl;
+	}
+	
+    //correct to do it here or after munmap?
+	//close(fd);
 }
 
 

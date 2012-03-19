@@ -333,7 +333,7 @@ public:
     // static members
     static void     tensor3_allocate_data( T*& array_ );
     static void     tensor3_deallocate_data( T*& array_ );
-    static void     t3_allocate_mmap( const std::string& dir_, const std::string& filename_, T*& array_ );
+    static void     t3_allocate_mmap( const std::string& dir_, const std::string& filename_, T*& array_, int& fd_ );
 
     static const tensor3< I1, I2, I3, T > ZERO;
 
@@ -352,6 +352,8 @@ protected:
 	T*                      _array;
 	
 	bool _is_mmapped;
+	int _fd;
+	
 }; // class tensor3
 
 #define VMML_TEMPLATE_STRING    template< size_t I1, size_t I2, size_t I3, typename T >
@@ -360,14 +362,14 @@ protected:
 
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::tensor3( const std::string& dir_, const std::string& filename_ )
-: _array(), _is_mmapped(1)
+: _array(), _is_mmapped(1), _fd(-1)
 {
-	t3_allocate_mmap( dir_, filename_, _array );
+	t3_allocate_mmap( dir_, filename_, _array, _fd );
 }	
 	
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::tensor3()
-	: _array(), _is_mmapped(0)
+	: _array(), _is_mmapped(0), _fd(0)
 {
     tensor3_allocate_data( _array );
 }
@@ -375,7 +377,7 @@ VMML_TEMPLATE_CLASSNAME::tensor3()
 	
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::tensor3( const tensor3& source_ )
-    : _array(), _is_mmapped(0)
+    : _array(), _is_mmapped(0), _fd(-1)
 {
  	_is_mmapped = source_.is_mmapped();
 	if (_is_mmapped ) {
@@ -392,7 +394,7 @@ VMML_TEMPLATE_CLASSNAME::tensor3( const tensor3& source_ )
 VMML_TEMPLATE_STRING
 template< typename U >
 VMML_TEMPLATE_CLASSNAME::tensor3( const tensor3< I1, I2, I3, U >& source_ )
-	: _is_mmapped(0)
+	: _is_mmapped(0), _fd(-1)
 {
 	const U* s_array = source_.get_array_ptr();
 
@@ -414,7 +416,7 @@ VMML_TEMPLATE_CLASSNAME::tensor3( const tensor3< I1, I2, I3, U >& source_ )
 VMML_TEMPLATE_STRING
 template< size_t J1, size_t J2, size_t J3 >
 VMML_TEMPLATE_CLASSNAME::tensor3( const tensor3< J1, J2, J3, T >& source_ )
-: _is_mmapped(0)
+: _is_mmapped(0), _fd(-1)
 {
 	const size_t minL =  J1 < I1 ? J1 : I1;
 	const size_t minC =  J2 < I2 ? J2 : I2;
@@ -448,6 +450,7 @@ VMML_TEMPLATE_CLASSNAME::~tensor3()
 	if (_is_mmapped )
 	{
 		munmap( _array, sizeof(T) * SIZE ); //get error
+		close( _fd );
 	} 
 	else 
 	{
@@ -2355,7 +2358,7 @@ tensor3_allocate_data( T*& array_ )
 VMML_TEMPLATE_STRING
 void
 VMML_TEMPLATE_CLASSNAME::
-t3_allocate_mmap(  const std::string& dir_, const std::string& filename_, T*& array_ )
+t3_allocate_mmap(  const std::string& dir_, const std::string& filename_, T*& array_, int& fd_ )
 {
 	//void * mmap(void *addr, size_t len, int prot, int flags, int fd, off_t offset);
 	
@@ -2367,11 +2370,10 @@ t3_allocate_mmap(  const std::string& dir_, const std::string& filename_, T*& ar
 	}
 	path.append( filename_ );
 
-	int fd = -1;
-	fd = open( path.c_str(), O_RDWR, 0 ); //O_RDONLY
-	if ( fd == -1 )
+	fd_ = open( path.c_str(), O_RDWR, 0 ); //O_RDONLY
+	if ( fd_ == -1 )
 	{
-		close(fd);
+		close(fd_);
 		std::cout << "no file open for memory mapping" << std::endl;
 	}
 	
@@ -2379,15 +2381,12 @@ t3_allocate_mmap(  const std::string& dir_, const std::string& filename_, T*& ar
 	size_t len = sizeof(T) * SIZE;
 	off_t offset = 0;
 	
-	array_ = (T*)mmap( 0, len, PROT_READ, MAP_FILE | MAP_SHARED, fd, offset ); //cast to void*? //MAP_FILE|MAP_SHARED
+	array_ = (T*)mmap( 0, len, PROT_READ, MAP_FILE | MAP_SHARED, fd_, offset ); //cast to void*? //MAP_FILE|MAP_SHARED
 	
 	if( array_ == MAP_FAILED)
 	{
 		std::cout << "mmap failed" << std::endl;
 	}
-	
-    //correct to do it here or after munmap?
-	//close(fd);
 }
 
 

@@ -2393,7 +2393,7 @@ t3_allocate_mmap(  const std::string& dir_, const std::string& filename_, T*& ar
 	size_t len = sizeof(T) * SIZE;
 	off_t offset = 0;
 	
-	array_ = (T*)mmap( 0, len, PROT_READ, MAP_FILE | MAP_SHARED, fd_, offset ); //cast to void*? //MAP_FILE|MAP_SHARED
+	array_ = (T*)mmap( 0, len, PROT_WRITE, MAP_FILE | MAP_SHARED, fd_, offset ); //cast to void*? //MAP_FILE|MAP_SHARED
 	
 	if( array_ == MAP_FAILED)
 	{

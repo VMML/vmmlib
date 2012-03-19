@@ -375,10 +375,17 @@ VMML_TEMPLATE_CLASSNAME::tensor3()
 	
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::tensor3( const tensor3& source_ )
-    : _array(), _is_mmapped(0) //CHECK
+    : _array(), _is_mmapped(0)
 {
-    tensor3_allocate_data( _array );
-    (*this) = source_;
+ 	_is_mmapped = source_.is_mmapped();
+	if (_is_mmapped ) {
+		//t3_allocate_copy_mmp( _array );
+	} 
+	else 
+	{
+		tensor3_allocate_data( _array );
+		(*this) = source_;
+	}
 }
 
 
@@ -391,7 +398,7 @@ VMML_TEMPLATE_CLASSNAME::tensor3( const tensor3< I1, I2, I3, U >& source_ )
 
 	_is_mmapped = source_.is_mmapped();
 	if (_is_mmapped ) {
-		//t3_allocate_mmap( _array );
+		//t3_allocate_copy_mmp( _array, s_array );
 	} 
 	else 
 	{
@@ -407,7 +414,7 @@ VMML_TEMPLATE_CLASSNAME::tensor3( const tensor3< I1, I2, I3, U >& source_ )
 VMML_TEMPLATE_STRING
 template< size_t J1, size_t J2, size_t J3 >
 VMML_TEMPLATE_CLASSNAME::tensor3( const tensor3< J1, J2, J3, T >& source_ )
-	: _is_mmapped(0)
+: _is_mmapped(0)
 {
 	const size_t minL =  J1 < I1 ? J1 : I1;
 	const size_t minC =  J2 < I2 ? J2 : I2;
@@ -415,16 +422,24 @@ VMML_TEMPLATE_CLASSNAME::tensor3( const tensor3< J1, J2, J3, T >& source_ )
 	
 	zero();
 	
-	for ( size_t i = 0 ; i < minL ; i++ ) {
-		for ( size_t j = 0 ; j < minC ; j++ ) {
-			for ( size_t k = 0 ; k < minS ; k++ )
-			{
-				at( i,j, k ) = source_( i, j, k ); 
+	_is_mmapped = source_.is_mmapped();
+	if (_is_mmapped ) 
+	{
+		//t3_allocate_copy_mmp( _array, s_array );
+	} 
+	else 
+	{
+		for ( size_t i = 0 ; i < minL ; i++ ) {
+			for ( size_t j = 0 ; j < minC ; j++ ) {
+				for ( size_t k = 0 ; k < minS ; k++ )
+				{
+					at( i,j, k ) = source_( i, j, k ); 
+				}
 			}
 		}
 	}
 }
-
+	
 
 
 VMML_TEMPLATE_STRING
@@ -2353,7 +2368,7 @@ t3_allocate_mmap(  const std::string& dir_, const std::string& filename_, T*& ar
 	path.append( filename_ );
 
 	int fd = -1;
-	fd = open( path.c_str(), O_RDONLY, 0 ); 
+	fd = open( path.c_str(), O_RDWR, 0 ); //O_RDONLY
 	if ( fd == -1 )
 	{
 		close(fd);

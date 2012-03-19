@@ -97,9 +97,16 @@ namespace vmml
 	protected:
 	
 			
-        static void optimize_mode1( const t3_type& data_, const u2_type& u2_, const u3_type& u3_, tensor3< I1, R2, R3, T >& projection_ );
-        static void optimize_mode2( const t3_type& data_, const u1_type& u1_, const u3_type& u3_, tensor3< R1, I2, R3, T >& projection_ );		
-        static void optimize_mode3( const t3_type& data_, const u1_type& u1_, const u2_type& u2_, tensor3< R1, R2, I3, T >& projection_ );
+        static void optimize_mode1( const t3_type& data_, const u2_type& u2_, const u3_type& u3_, 
+								   tensor3< I1, R2, R3, T >& projection_,
+								   tensor3< I1, R2, I3, T >& tmp_ );
+        static void optimize_mode2( const t3_type& data_, const u1_type& u1_, const u3_type& u3_, 
+								   tensor3< R1, I2, R3, T >& projection_,
+								   tensor3< R1, I2, I3, T >& tmp_ );		
+        static void optimize_mode3( const t3_type& data_, const u1_type& u1_, const u2_type& u2_, 
+								   tensor3< R1, R2, I3, T >& projection_,
+								   tensor3< R1, I2, I3, T >& tmp_ );
+		
 		
 	};//end class t3_hooi
 	
@@ -155,9 +162,20 @@ VMML_TEMPLATE_CLASSNAME::als( const t3_type& data_,
 	double fitold = fit;
 	double fitchange_tolerance = 1.0e-4;
 	
+#if 1
 	tensor3< I1, R2, R3, T > projection1; 
 	tensor3< R1, I2, R3, T > projection2; 
 	tensor3< R1, R2, I3, T > projection3; 
+	tensor3< I1, R2, I3, T > tmp1;
+	tensor3< R1, I2, I3, T > tmp2;
+#else	
+	std::string tmp_dir = ".";
+	tensor3< I1, R2, R3, T > projection1( tmp_dir, "proj1.raw" ); 
+	tensor3< R1, I2, R3, T > projection2( tmp_dir, "proj2.raw" ); 
+	tensor3< R1, R2, I3, T > projection3( tmp_dir, "proj3.raw" ); 
+	tensor3< I1, R2, I3, T > tmp1( tmp_dir, "tmp_m1.raw" );
+	tensor3< R1, I2, I3, T > tmp2( tmp_dir, "tmp_m2.raw" );
+#endif
 	
 #if TUCKER_LOG
 	std::cout << "HOOI ALS (for tensor3) " << std::endl 
@@ -171,13 +189,13 @@ VMML_TEMPLATE_CLASSNAME::als( const t3_type& data_,
 		fitold = fit;
 		
 		//optimize modes
-		optimize_mode1( data_, u2_, u3_, projection1 );
+		optimize_mode1( data_, u2_, u3_, projection1, tmp1 );
 		t3_hosvd< R1, R2, R3, I1, R2, R3, T >::apply_mode1( projection1, u1_ );
 		
-		optimize_mode2( data_, u1_, u3_, projection2 );
+		optimize_mode2( data_, u1_, u3_, projection2, tmp2 );
 		t3_hosvd< R1, R2, R3, R1, I2, R3, T >::apply_mode2( projection2, u2_ );
 		
-		optimize_mode3( data_, u1_, u2_, projection3 );
+		optimize_mode3( data_, u1_, u2_, projection3, tmp2 );
 		t3_hosvd< R1, R2, R3, R1, R2, I3, T >::apply_mode3( projection3, u3_ );
 		
 		t3_ttm::multiply_horizontal_bwd( projection3, transpose( u3_ ), core_ );
@@ -196,10 +214,11 @@ VMML_TEMPLATE_CLASSNAME::als( const t3_type& data_,
 }	
 
 
-
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::optimize_mode1( const t3_type& data_, const u2_type& u2_, const u3_type& u3_, tensor3< I1, R2, R3, T >& projection_ )
+VMML_TEMPLATE_CLASSNAME::optimize_mode1( const t3_type& data_, const u2_type& u2_, const u3_type& u3_, 
+										tensor3< I1, R2, R3, T >& projection_,
+										tensor3< I1, R2, I3, T >& tmp_ )
 {
 	u2_t_type* u2_inv = new u2_t_type;
 	u3_t_type* u3_inv = new u3_t_type;
@@ -207,9 +226,8 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode1( const t3_type& data_, const u2_type& u2
 	u3_.transpose_to( *u3_inv );
 	
 	//backward cyclic matricization/unfolding (after Lathauwer et al., 2000a)
-	tensor3< I1, R2, I3, T > tmp;
-	t3_ttm::multiply_frontal_bwd( data_, *u2_inv, tmp );
-	t3_ttm::multiply_horizontal_bwd( tmp, *u3_inv, projection_ );
+	t3_ttm::multiply_frontal_bwd( data_, *u2_inv, tmp_ );
+	t3_ttm::multiply_horizontal_bwd( tmp_, *u3_inv, projection_ );
 	
 	delete u2_inv;
 	delete u3_inv;
@@ -218,7 +236,9 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode1( const t3_type& data_, const u2_type& u2
 
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::optimize_mode2( const t3_type& data_, const u1_type& u1_, const u3_type& u3_, tensor3< R1, I2, R3, T >& projection_ )
+VMML_TEMPLATE_CLASSNAME::optimize_mode2( const t3_type& data_, const u1_type& u1_, const u3_type& u3_, 
+										tensor3< R1, I2, R3, T >& projection_,
+										tensor3< R1, I2, I3, T >& tmp_ )
 {
 	u1_t_type* u1_inv = new u1_t_type();
 	u3_t_type* u3_inv = new u3_t_type();
@@ -227,9 +247,8 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode2( const t3_type& data_, const u1_type& u1
 	
 	
 	//backward cyclic matricization (after Lathauwer et al., 2000a)
-	tensor3< R1, I2, I3, T > tmp;
-	t3_ttm::multiply_lateral_bwd( data_, *u1_inv, tmp );
-	t3_ttm::multiply_horizontal_bwd( tmp, *u3_inv, projection_ );
+	t3_ttm::multiply_lateral_bwd( data_, *u1_inv, tmp_ );
+	t3_ttm::multiply_horizontal_bwd( tmp_, *u3_inv, projection_ );
 	
 	delete u1_inv;
 	delete u3_inv;
@@ -238,7 +257,9 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode2( const t3_type& data_, const u1_type& u1
 
 VMML_TEMPLATE_STRING
 void 
-VMML_TEMPLATE_CLASSNAME::optimize_mode3( const t3_type& data_, const u1_type& u1_, const u2_type& u2_, tensor3< R1, R2, I3, T >& projection_ )
+VMML_TEMPLATE_CLASSNAME::optimize_mode3( const t3_type& data_, const u1_type& u1_, const u2_type& u2_, 
+										tensor3< R1, R2, I3, T >& projection_,
+										tensor3< R1, I2, I3, T >& tmp_ )
 {
 	u1_t_type* u1_inv = new u1_t_type;
 	u2_t_type* u2_inv = new u2_t_type;
@@ -246,14 +267,14 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode3( const t3_type& data_, const u1_type& u1
 	u2_.transpose_to( *u2_inv );
 	
 	//backward cyclic matricization (after Lathauwer et al., 2000a)
-	tensor3< R1, I2, I3, T > tmp;
-	t3_ttm::multiply_lateral_bwd( data_, *u1_inv, tmp );
-	t3_ttm::multiply_frontal_bwd( tmp, *u2_inv, projection_ );
+	t3_ttm::multiply_lateral_bwd( data_, *u1_inv, tmp_ );
+	t3_ttm::multiply_frontal_bwd( tmp_, *u2_inv, projection_ );
 	
 	delete u1_inv;
 	delete u2_inv;
 }
-	
+
+
 	
 	
 VMML_TEMPLATE_STRING

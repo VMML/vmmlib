@@ -382,6 +382,7 @@ VMML_TEMPLATE_CLASSNAME::tensor3( const tensor3& source_ )
  	_is_mmapped = source_.is_mmapped();
 	if (_is_mmapped ) {
 		//t3_allocate_copy_mmp( _array );
+		std::cout << "not yet implemented check tensor3 copy construtor" << std::endl;
 	} 
 	else 
 	{
@@ -401,6 +402,7 @@ VMML_TEMPLATE_CLASSNAME::tensor3( const tensor3< I1, I2, I3, U >& source_ )
 	_is_mmapped = source_.is_mmapped();
 	if (_is_mmapped ) {
 		//t3_allocate_copy_mmp( _array, s_array );
+		std::cout << "not yet implemented check tensor3 copy construtor" << std::endl;
 	} 
 	else 
 	{
@@ -428,6 +430,7 @@ VMML_TEMPLATE_CLASSNAME::tensor3( const tensor3< J1, J2, J3, T >& source_ )
 	if (_is_mmapped ) 
 	{
 		//t3_allocate_copy_mmp( _array, s_array );
+		std::cout << "not yet implemented check tensor3 copy construtor" << std::endl;
 	} 
 	else 
 	{
@@ -2373,8 +2376,17 @@ t3_allocate_mmap(  const std::string& dir_, const std::string& filename_, T*& ar
 	fd_ = open( path.c_str(), O_RDWR, 0 ); //O_RDONLY
 	if ( fd_ == -1 )
 	{
-		close(fd_);
-		std::cout << "no file open for memory mapping" << std::endl;
+		tensor3<I1, I2, I3, T> tmp; tmp.fill_random();
+		tmp.write_to_raw( dir_, filename_ );
+		
+		std::cout << "created file for memory mapping" << std::endl;
+		
+		fd_ = open( path.c_str(), O_RDWR, 0 ); //O_RDONLY
+		if ( fd_ == -1 )
+		{
+			close(fd_);
+			std::cout << "no file open for memory mapping" << std::endl;
+		}
 	}
 	
 	

@@ -920,6 +920,25 @@ tensor3_test::run()
 		<< "deq. from linear: " << std::endl << t3_dequant2 << std::endl;
 #endif	
 
+		//linear quantization with separate sign encoding
+		tensor3< 2, 4, 3, float >  t3_raw3;
+		signs.zero(); t3_quant.zero();
+		t3_raw.quantize_to( t3_quant, signs, min_value, max_value, tt_range );
+		
+		t3_quant.dequantize( t3_raw3, signs, min_value, max_value );
+
+		float t3_raw3_data[] = {
+			0.459921, 0.233858, 0.459921, 0.459921,
+			-0.802913, 0.459921, -0.233858, -0.99,
+			0.459921, 0.459921, 0.459921, 0.459921,
+			0.109134, 0.459921, 0, 0.459921,
+			0.459921, 0.459921, 0.678189, 0.99,
+			0.459921, 0.459921, 0.459921, 0.459921
+		};
+		tensor3< 2, 4, 3, float >  t3_raw3_check;
+		t3_raw3_check.set( t3_raw3_data, t3_raw3_data +24 );
+		
+		ok = ok && t3_raw3.equals( t3_raw3_check, 0.001 );
 		
 		if ( ok )	{	
 			log( "quantize/dequantize" , ok  );

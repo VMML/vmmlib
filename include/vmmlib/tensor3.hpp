@@ -309,7 +309,10 @@ public:
     tensor3 operator*( T scalar );
     void operator*=( T scalar );
 	
-    //
+	tensor3 operator/( T scalar );
+    void operator/=( T scalar );
+	
+	//
     // matrix-vector operations
     //
     // transform column vector by matrix ( vec = matrix * vec )
@@ -1569,7 +1572,43 @@ VMML_TEMPLATE_CLASSNAME::operator*=( T scalar )
 #endif	
 }
 
+VMML_TEMPLATE_STRING
+tensor3< I1, I2, I3, T >
+VMML_TEMPLATE_CLASSNAME::operator/( T scalar )
+{
+	tensor3< I1, I2, I3, T > result;
+	
+	for( size_t slice_idx = 0; slice_idx < I3; ++ slice_idx )
+	{
+		for( size_t row_index = 0; row_index < I1; ++row_index )
+		{
+			for( size_t col_index = 0; col_index < I2; ++col_index )
+			{
+				result.at( row_index, col_index, slice_idx ) = at( row_index, col_index, slice_idx ) / scalar;
+			}
+		}
+	}
+	return result;
+}
 
+
+
+VMML_TEMPLATE_STRING
+void
+VMML_TEMPLATE_CLASSNAME::operator/=( T scalar )
+{
+	for( size_t slice_idx = 0; slice_idx < I3; ++ slice_idx )
+	{
+		for( size_t row_index = 0; row_index < I1; ++row_index )
+		{
+			for( size_t col_index = 0; col_index < I2; ++col_index )
+			{
+				at( row_index, col_index, slice_idx ) /= scalar;
+			}
+		}
+	}
+}
+	
 
 VMML_TEMPLATE_STRING
 inline tensor3< I1, I2, I3, T >
@@ -1720,12 +1759,26 @@ VMML_TEMPLATE_CLASSNAME::cast_from( const tensor3< I1, I2, I3, TT >& other )
     typedef tensor3< I1, I2, I3, TT > t3_tt_type ;
     typedef typename t3_tt_type::const_iterator tt_const_iterator;
     
+#if 0
     iterator it = begin(), it_end = end();
     tt_const_iterator other_it = other.begin();
     for( ; it != it_end; ++it, ++other_it )
     {
         *it = static_cast< T >( *other_it );
     }
+#else
+	for( size_t slice_idx = 0; slice_idx < I3; ++ slice_idx )
+	{
+		for( size_t row_index = 0; row_index < I1; ++row_index )
+		{
+			for( size_t col_index = 0; col_index < I2; ++col_index )
+			{
+				at( row_index, col_index, slice_idx ) =  static_cast< T >(other.at( row_index, col_index, slice_idx ));
+			}
+		}
+	}
+
+#endif
 }
 
 VMML_TEMPLATE_STRING

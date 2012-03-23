@@ -166,14 +166,8 @@ VMML_TEMPLATE_CLASSNAME::als( const t3_type& data_,
 	tensor3< R1, I2, R3, T > projection2; 
 	tensor3< R1, R2, I3, T > projection3; 
 
-#if MMAPPED
-	std::string tmp_dir = ".";
-	tensor3< I1, R2, I3, T > tmp1( tmp_dir, "tmp_m1.raw" );
-	tensor3< R1, I2, I3, T > tmp2( tmp_dir, "tmp_m2.raw" );
-#else	
 	tensor3< I1, R2, I3, T > tmp1;
 	tensor3< R1, I2, I3, T > tmp2;
-#endif
 	
 #if TUCKER_LOG
 	std::cout << "HOOI ALS (for tensor3) " << std::endl 
@@ -209,11 +203,6 @@ VMML_TEMPLATE_CLASSNAME::als( const t3_type& data_,
 #endif
 		++i;
 	}
-	
-#if MMAPPED
-	remove( "tmp_m1.raw");
-	remove( "tmp_m2.raw");
-#endif
 }	
 
 

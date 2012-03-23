@@ -17,6 +17,7 @@
 #include <vmmlib/blas_dot.hpp>
 #include <sys/mman.h>
 #include <fcntl.h>
+#include <omp.h>
 
 
 namespace vmml
@@ -277,7 +278,7 @@ public:
 	double stdev() const; 
    
     template< typename TT >
-    void cast_from( const tensor3< I1, I2, I3, TT >& other );
+    void cast_from( const tensor3< I1, I2, I3, TT >& other, const long& slice_idx_start_ = 0 );
 	
     template< typename TT >
     void float_t_to_uint_t( const tensor3< I1, I2, I3, TT >& other );
@@ -285,7 +286,7 @@ public:
     void export_to( std::vector< T >& data_ ) const ;
     void import_from( const std::vector< T >& data_ ) ;
 	void write_to_raw( const std::string& dir_, const std::string& filename_ ) const;
-	void read_from_raw( const std::string& dir_, const std::string& filename_ ) ;
+	void read_from_raw( const std::string& dir_, const std::string& filename_, const size_t& start_idx_ = 0 ) ;
 	void write_datfile( const std::string& dir_, const std::string& filename_ ) const;
 	void write_to_csv( const std::string& dir_, const std::string& filename_ ) const;
 	void remove_normals_from_raw( const std::string& dir_, const std::string& filename_ ) ;
@@ -1754,7 +1755,7 @@ VMML_TEMPLATE_CLASSNAME::compute_psnr( const tensor3< I1, I2, I3, T >& other, co
 VMML_TEMPLATE_STRING
 template< typename TT >
 void
-VMML_TEMPLATE_CLASSNAME::cast_from( const tensor3< I1, I2, I3, TT >& other )
+VMML_TEMPLATE_CLASSNAME::cast_from( const tensor3< I1, I2, I3, TT >& other, const long& slice_idx_start_ )
 {
     typedef tensor3< I1, I2, I3, TT > t3_tt_type ;
     typedef typename t3_tt_type::const_iterator tt_const_iterator;
@@ -1767,11 +1768,14 @@ VMML_TEMPLATE_CLASSNAME::cast_from( const tensor3< I1, I2, I3, TT >& other )
         *it = static_cast< T >( *other_it );
     }
 #else
-	for( size_t slice_idx = 0; slice_idx < I3; ++ slice_idx )
+#pragma omp parallel for
+	for( long slice_idx = slice_idx_start_; slice_idx < (long)I3; ++ slice_idx )
 	{
-		for( size_t row_index = 0; row_index < I1; ++row_index )
+#pragma omp parallel for
+		for( long row_index = 0; row_index < (long)I1; ++row_index )
 		{
-			for( size_t col_index = 0; col_index < I2; ++col_index )
+#pragma omp parallel for
+			for( long col_index = 0; col_index < (long)I2; ++col_index )
 			{
 				at( row_index, col_index, slice_idx ) =  static_cast< T >(other.at( row_index, col_index, slice_idx ));
 			}
@@ -2314,7 +2318,7 @@ VMML_TEMPLATE_CLASSNAME::write_datfile( const std::string& dir_, const std::stri
 	
 VMML_TEMPLATE_STRING
 void
-VMML_TEMPLATE_CLASSNAME::read_from_raw( const std::string& dir_, const std::string& filename_ ) 
+VMML_TEMPLATE_CLASSNAME::read_from_raw( const std::string& dir_, const std::string& filename_, const size_t& start_idx_ ) 
 {	
 	int dir_length = dir_.size() -1;
 	int last_separator = dir_.find_last_of( "/");
@@ -2333,7 +2337,7 @@ VMML_TEMPLATE_CLASSNAME::read_from_raw( const std::string& dir_, const std::stri
 	
 	if( infile.is_open())
 	{
-		iterator  it = begin(),
+		iterator  it = begin() + start_idx_,
 		it_end = end();
 		
 		while ( len_data > 0 ) 

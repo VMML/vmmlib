@@ -278,7 +278,11 @@ public:
 	double stdev() const; 
    
     template< typename TT >
-    void cast_from( const tensor3< I1, I2, I3, TT >& other, const long& slice_idx_start_ = 0 );
+    void cast_from( const tensor3< I1, I2, I3, TT >& other );
+
+    template< size_t J1, size_t J2, size_t  J3, typename TT >
+	void cast_from( const tensor3< J1, J2, J3, TT >& other, const long& slice_idx_start_ = 0 );
+
 	
     template< typename TT >
     void float_t_to_uint_t( const tensor3< I1, I2, I3, TT >& other );
@@ -1755,12 +1759,12 @@ VMML_TEMPLATE_CLASSNAME::compute_psnr( const tensor3< I1, I2, I3, T >& other, co
 VMML_TEMPLATE_STRING
 template< typename TT >
 void
-VMML_TEMPLATE_CLASSNAME::cast_from( const tensor3< I1, I2, I3, TT >& other, const long& slice_idx_start_ )
+VMML_TEMPLATE_CLASSNAME::cast_from( const tensor3< I1, I2, I3, TT >& other )
 {
-    typedef tensor3< I1, I2, I3, TT > t3_tt_type ;
+#if 0
+   typedef tensor3< I1, I2, I3, TT > t3_tt_type ;
     typedef typename t3_tt_type::const_iterator tt_const_iterator;
     
-#if 0
     iterator it = begin(), it_end = end();
     tt_const_iterator other_it = other.begin();
     for( ; it != it_end; ++it, ++other_it )
@@ -1769,7 +1773,7 @@ VMML_TEMPLATE_CLASSNAME::cast_from( const tensor3< I1, I2, I3, TT >& other, cons
     }
 #else
 #pragma omp parallel for
-	for( long slice_idx = slice_idx_start_; slice_idx < (long)I3; ++ slice_idx )
+	for( long slice_idx = 0; slice_idx < (long)I3; ++ slice_idx )
 	{
 #pragma omp parallel for
 		for( long row_index = 0; row_index < (long)I1; ++row_index )
@@ -1784,6 +1788,28 @@ VMML_TEMPLATE_CLASSNAME::cast_from( const tensor3< I1, I2, I3, TT >& other, cons
 
 #endif
 }
+	
+VMML_TEMPLATE_STRING
+template< size_t J1, size_t J2, size_t  J3, typename TT >
+void
+VMML_TEMPLATE_CLASSNAME::cast_from( const tensor3< J1, J2, J3, TT >& other, const long& slice_idx_start_ )
+{
+#pragma omp parallel for
+	for( long slice_idx = slice_idx_start_; slice_idx < (long)J3; ++ slice_idx )
+	{
+#pragma omp parallel for
+		for( long row_index = 0; row_index < (long)J1; ++row_index )
+		{
+#pragma omp parallel for
+			for( long col_index = 0; col_index < (long)J2; ++col_index )
+			{
+				at( row_index, col_index, slice_idx ) =  static_cast< T >(other.at( row_index, col_index, slice_idx ));
+			}
+		}
+	}
+}
+	
+	
 
 VMML_TEMPLATE_STRING
 template< typename TT >

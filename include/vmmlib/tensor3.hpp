@@ -2516,7 +2516,7 @@ t3_allocate_mmap(  const std::string& dir_, const std::string& filename_, T*& ar
 		tensor3<I1, I2, I3, T> tmp; tmp.fill_random();
 		tmp.write_to_raw( dir_, filename_ );
 		
-		std::cout << "created file for memory mapping" << std::endl;
+		//std::cout << "created file for memory mapping" << std::endl;
 		
 		fd_ = open( path.c_str(), O_RDWR, 0 ); //O_RDONLY
 		if ( fd_ == -1 )

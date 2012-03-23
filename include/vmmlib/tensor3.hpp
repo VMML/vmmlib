@@ -2337,8 +2337,11 @@ VMML_TEMPLATE_CLASSNAME::read_from_raw( const std::string& dir_, const std::stri
 	
 	if( infile.is_open())
 	{
-		iterator  it = begin() + start_idx_,
+		iterator  it = begin(),
 		it_end = end();
+		
+		for( size_t ii = 0; ii < start_idx_; )
+			++it;
 		
 		while ( len_data > 0 ) 
 		{

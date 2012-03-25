@@ -56,7 +56,10 @@ namespace vmml
 		template< typename T_init>
 		static void als( const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, T_init init );
 		
-
+		//2 different data layouts for different unfoldings, frontal and lateral
+		template< typename T_init>
+		static void als( const t3_type& data1_, const t3_type& data2_, u1_type& u1_, u2_type& u2_, u3_type& u3_, T_init init );
+		
 		/* derive core
 		 implemented accodring to core = data x_1 U1_pinv x_2 U2_pinv x_3 U3_pinv, 
 		 where x_1 ... x_3 are n-mode products and U1_pinv ... U3_pinv are inverted basis matrices
@@ -125,6 +128,78 @@ VMML_TEMPLATE_CLASSNAME::als( const t3_type& data_,
 	core.zero();
 	als( data_, u1_, u2_, u3_, core, init );
 }	
+	
+	
+	
+
+VMML_TEMPLATE_STRING
+template< typename T_init>
+void 
+VMML_TEMPLATE_CLASSNAME::als( const t3_type& data1_, const t3_type& data2_,
+							 u1_type& u1_, u2_type& u2_, u3_type& u3_,
+							 T_init init )
+{
+	//intialize basis matrices
+	init( data1_, u1_, u2_, u3_ );
+	
+	//derve core from initialized matrices
+	t3_core_type core;
+	core.zero();
+	derive_core_orthogonal_bases( data1_, u1_, u2_, u3_, core );
+	
+	
+	double f_norm = 0;
+	double max_f_norm = data1_.frobenius_norm();
+	double normresidual  = 0; 
+	double fit = 0;
+
+	double fitchange = 1;
+	double fitold = fit;
+	double fitchange_tolerance = 1.0e-4;
+	
+	tensor3< I1, R2, R3, T > projection1; 
+	tensor3< R1, I2, R3, T > projection2; 
+	tensor3< R1, R2, I3, T > projection3; 
+	
+	tensor3< I1, R2, I3, T > tmp1;
+	tensor3< R1, I2, I3, T > tmp2;
+	
+#if TUCKER_LOG
+	std::cout << "HOOI ALS (for tensor3) " << std::endl 
+	<< "initial fit: " << fit  << ", "
+	<< "frobenius norm original: " << max_f_norm << std::endl;
+#endif	
+	size_t i = 0;
+	size_t max_iterations = 10;
+	while( (fitchange >= fitchange_tolerance) && (i < max_iterations) )
+	{
+		fitold = fit;
+		
+		//optimize modes
+		optimize_mode1( data2_, u2_, u3_, projection1, tmp1 );
+		t3_hosvd< R1, R2, R3, I1, R2, R3, T >::apply_mode1( projection1, u1_ );
+		
+		optimize_mode2( data1_, u1_, u3_, projection2, tmp2 );
+		t3_hosvd< R1, R2, R3, R1, I2, R3, T >::apply_mode2( projection2, u2_ );
+		
+		optimize_mode3( data1_, u1_, u2_, projection3, tmp2 );
+		t3_hosvd< R1, R2, R3, R1, R2, I3, T >::apply_mode3( projection3, u3_ );
+		
+		t3_ttm::multiply_horizontal_bwd( projection3, transpose( u3_ ), core );
+		f_norm = core.frobenius_norm();
+		normresidual  = sqrt( max_f_norm * max_f_norm - f_norm * f_norm);
+		fit = 1 - (normresidual / max_f_norm);
+		fitchange = fabs(fitold - fit);
+		
+#if TUCKER_LOG
+		std::cout << "iteration '" << i << "', fit: " << fit 
+		<< ", fitdelta: " << fitchange 
+		<< ", frobenius norm: " << f_norm << std::endl;		
+#endif
+		++i;
+	}
+}	
+
 	
 	
 	

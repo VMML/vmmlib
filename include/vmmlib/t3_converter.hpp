@@ -1,15 +1,15 @@
-#ifndef __VMML__T3_CONVERTOR__HPP__
-#define __VMML__T3_CONVERTOR__HPP__
+#ifndef __VMML__t3_converter__HPP__
+#define __VMML__t3_converter__HPP__
 
 #include "tensor3.hpp"
 
-
+//TODO: make open file methods and move other write/read methods
 
 namespace vmml
 {
 	
 	template< size_t I1, size_t I2, size_t I3, typename T = float >
-	class t3_convertor
+	class t3_converter
 	{
 		
 	public:	
@@ -19,7 +19,14 @@ namespace vmml
 		
 		template< typename T_convert >
 		static void convert_raw( const std::string& dir_, const std::string& in_filename_, const std::string& out_filename_ );
-				
+
+		static void remove_uct_cylinder( const std::string& dir_, 
+										const std::string& in_filename_, 
+										const std::string& out_filename_,
+										const double& sigma_, 
+										const size_t radius_offset_, 
+										int seed_ = 0);
+
 		static void export_to( std::vector< T >& data_ ) ;
 		static void import_from( const std::vector< T >& data_ ) ;
 		static void write_to_raw( const t3_t& data_, const std::string& dir_, const std::string& filename_ );
@@ -27,17 +34,16 @@ namespace vmml
 		static void write_datfile( const std::string& dir_, const std::string& filename_ );
 		static void write_to_csv( const t3_t& data_, const std::string& dir_, const std::string& filename_ );
 		//static void remove_normals_from_raw( const std::string& dir_, const std::string& filename_ ) ;
-		//static void remove_uct_cylinder( const size_t radius_offset_, int seed_ = 0 ) ;
 		
 		
 	protected:
 		
-	}; //end t3_convertor
+	}; //end t3_converter
 	
 	
 	
 #define VMML_TEMPLATE_STRING        template< size_t I1, size_t I2, size_t I3, typename T >
-#define VMML_TEMPLATE_CLASSNAME     t3_convertor< I1, I2, I3, T >
+#define VMML_TEMPLATE_CLASSNAME     t3_converter< I1, I2, I3, T >
 	
 	
 	VMML_TEMPLATE_STRING
@@ -107,8 +113,103 @@ namespace vmml
 		}
 	}
 	
+	VMML_TEMPLATE_STRING
+	void
+	VMML_TEMPLATE_CLASSNAME::remove_uct_cylinder( const std::string& dir_, 
+												 const std::string& in_filename_, 
+												 const std::string& out_filename_, 
+												 const double& sigma_, 
+												 const size_t radius_offset_, 
+												 int seed_ )
+	{
+		int dir_length = dir_.size() -1;
+		int last_separator = dir_.find_last_of( "/");
+		std::string path_in = dir_;
+		std::string path_out = dir_;
+		if (last_separator < dir_length ) {
+			path_in.append( "/" );
+			path_out.append( "/" );
+		}
+		path_in.append( in_filename_ );
+		path_out.append( out_filename_ );
+		
+		//check for format
+		if( in_filename_.find( "raw", in_filename_.size() -3) == (-1)) {
+			path_in.append( ".");
+			path_in.append( "raw" );
+		}
+		std::string path_in_raw = path_in;
+		
+		//check for format
+		if( out_filename_.find( "raw", out_filename_.size() -3) == (-1)) {
+			path_out.append( ".");
+			path_out.append( "raw" );
+		}
+		std::string path_out_raw = path_out;
+		
+		std::ofstream outfile;	
+		outfile.open( path_out_raw.c_str() );
+		
+		std::ifstream infile;
+		infile.open( path_in_raw.c_str(), std::ios::in); 
+		
+		
+		//for noise adding in outer area
+		if ( seed_ >= 0 )
+			srand( seed_ );
+		
+		double length = 0;
+		double radius = (I1-1.0)/2.0 - radius_offset_;
+		radius *= radius;
+		double k1 = 0;
+		double k2 = 0;
+		double fill_value = 0;
+			
+		if( infile.is_open() && outfile.is_open() )
+		{
+			T* in_value;
+			T out_value;
+			size_t len_val = sizeof(T);
+			char* data = new char[ len_val ];
+			
+			for( size_t i3 = 0; i3 < I3; ++i3 )
+			{
+				for ( size_t i1 = 0; i1 < I1; ++i1 )
+				{
+					k1 = i1 - (I1-1.0)/2.0;
+					for( size_t i2 = 0; i2 < I2; ++i2 )
+					{
+						infile.read( data, len_val );
+						in_value = (T*)&(data[0]);
+						fill_value = static_cast< T > (*in_value);
+						
+						//check if value is outside cylinder
+						k2 = i2 - (I2-1.0)/2.0;
+						length = k1*k1 + k2*k2 ;
+						if ( length >= radius )
+						{
+							fill_value = rand();
+							fill_value /= RAND_MAX;
+							fill_value *= sqrt(sigma_);
+						}
+						
+						out_value = static_cast< T > ( fill_value );
+						outfile.write( (char*)&(out_value), len_val );
+					}
+				}
+			}	
+			
+			infile.close();
+			outfile.close();
+		} else {
+			infile.close();
+			outfile.close();
+			std::cout << "no file open" << std::endl;
+		}
+	}
 	
 	
+		
 	VMML_TEMPLATE_STRING
 	void
 	VMML_TEMPLATE_CLASSNAME::read_from_raw( t3_t& data_, const std::string& dir_, const std::string& filename_ ) 

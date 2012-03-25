@@ -1,6 +1,6 @@
 #include "tensor3_test.hpp"
 
-#include <vmmlib/t3_convertor.hpp>
+#include <vmmlib/t3_converter.hpp>
 #include <vmmlib/tensor3.hpp>
 #include <sstream>
 
@@ -1154,23 +1154,22 @@ tensor3_test::run()
 		
 		
 		unsigned int data_uct[] = { 
-			0, 2, 4, 8, 0, 3, 0, 3,
-			3, 7, 15, 54, 96, 219, 6, 0,
-			5, 17, 17, 187, 226, 199, 33, 0,
-			0, 39, 136, 58, 159, 6, 209, 0,
-			3, 165, 86, 83, 15, 54, 230, 0,
-			6, 70, 126, 155, 13, 148, 50, 1,
-			7, 3, 181, 72, 236, 13, 1, 7,
-			6, 0, 1, 2, 7, 3, 7, 4,
-			4, 0, 4, 5, 2, 4, 8, 6,
-			 4, 8, 0, 27, 186, 146, 3, 4,
-			 2, 60, 32, 220, 39, 106, 254, 1,
-			 2, 182, 129, 114, 82, 67, 187, 6,
-			 4, 134, 241, 206, 76, 70, 70, 7,
-			 4, 102, 9, 27, 189, 251, 179, 8,
-			 4, 4, 226, 185, 75, 163, 6, 2,
-			 8, 6, 7, 1, 7, 0, 0, 5
-			 };
+			0, 3, 5, 0, 3, 6, 7, 6,
+			2, 7, 15, 54, 96, 219, 3, 0,
+			4, 17, 17, 187, 226, 199, 33, 1,
+			8, 39, 136, 58, 159, 6, 209, 2,
+			0, 165, 86, 83, 15, 54, 230, 7,
+			3, 70, 126, 155, 13, 148, 50, 3,
+			0, 6, 181, 72, 236, 13, 1, 7,
+			3, 0, 0, 0, 0, 1, 7, 4,
+			4, 4, 2, 2, 4, 4, 4, 8,
+			 0, 8, 0, 27, 186, 146, 4, 6,
+			 4, 60, 32, 220, 39, 106, 254, 7,
+			 5, 182, 129, 114, 82, 67, 187, 1,
+			 2, 134, 241, 206, 76, 70, 70, 7,
+			 4, 102, 9, 27, 189, 251, 179, 0,
+			 8, 3, 226, 185, 75, 163, 6, 0,
+			 6, 4, 1, 6, 7, 8, 2, 5};
 		
 		tensor3< 8,8, 2, unsigned char > uct_t3_check;
 		uct_t3_check.set( data_uct, data_uct + 128);
@@ -1180,9 +1179,21 @@ tensor3_test::run()
 		
 		//std::cout << "t3 is: " << std::endl << uct_t3 << std::endl << "remove uct cylinder, now t3 is" << std::endl;
 		
-		uct_t3.remove_uct_cylinder( 0, 2 );
+		std::string dir = ".";
+		std::string in_filename = "in.raw";
+		std::string out_filename = "out.raw";
+		uct_t3.write_to_raw( dir, in_filename );
+		
+		double sigma = uct_t3.stdev();
+		
+		t3_converter<8,8,8, unsigned char>::remove_uct_cylinder( dir, in_filename, out_filename, sigma, 0, 2 ); //remove_uct_cylinder
+		
+		uct_t3.read_from_raw( dir, out_filename );
 		
 		ok = uct_t3 == uct_t3_check;
+		
+		remove("in.raw");
+		remove("out.raw");
 		
 		if ( ok )	{	
 			log( "remove uct ring" , ok  );
@@ -1320,7 +1331,7 @@ tensor3_test::run()
 		t3_in.fill_random( 3 );
 		t3_in.write_to_raw( dir, in_filename );
 		
-		t3_convertor<4,4,4, unsigned char>::convert_raw<float>( dir, in_filename, out_filename );
+		t3_converter<4,4,4, unsigned char>::convert_raw<float>( dir, in_filename, out_filename );
 		
 		tensor3< 4,4,4, float > t3_out;
 		t3_out.read_from_raw( dir, out_filename );

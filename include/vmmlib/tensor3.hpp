@@ -92,7 +92,7 @@ public:
     tensor3();
 	
 	//allocate memory mapped file
-    tensor3( const std::string& dir_, const std::string& filename_ );
+    tensor3( const std::string& dir_, const std::string& filename_, const bool prot_read_);
         
     tensor3( const tensor3& source );
     
@@ -290,7 +290,7 @@ public:
     void export_to( std::vector< T >& data_ ) const ;
     void import_from( const std::vector< T >& data_ ) ;
 	void write_to_raw( const std::string& dir_, const std::string& filename_ ) const;
-	void read_from_raw( const std::string& dir_, const std::string& filename_, const size_t& start_idx_ = 0 ) ;
+	void read_from_raw( const std::string& dir_, const std::string& filename_ ) ;
 	void write_datfile( const std::string& dir_, const std::string& filename_ ) const;
 	void write_to_csv( const std::string& dir_, const std::string& filename_ ) const;
 	void remove_normals_from_raw( const std::string& dir_, const std::string& filename_ ) ;
@@ -345,7 +345,8 @@ public:
     // static members
     static void     tensor3_allocate_data( T*& array_ );
     static void     tensor3_deallocate_data( T*& array_ );
-    static void     t3_allocate_mmap( const std::string& dir_, const std::string& filename_, T*& array_, int& fd_ );
+    static void     t3_allocate_rd_mmap( const std::string& dir_, const std::string& filename_, T*& array_, int& fd_ );
+    static void     t3_allocate_wr_mmap( const std::string& dir_, const std::string& filename_, T*& array_, int& fd_ );
 
     static const tensor3< I1, I2, I3, T > ZERO;
 
@@ -373,10 +374,14 @@ protected:
 
 
 VMML_TEMPLATE_STRING
-VMML_TEMPLATE_CLASSNAME::tensor3( const std::string& dir_, const std::string& filename_ )
+VMML_TEMPLATE_CLASSNAME::tensor3( const std::string& dir_, const std::string& filename_, const bool prot_read_ )
 : _array(), _is_mmapped(1), _fd(-1)
 {
-	t3_allocate_mmap( dir_, filename_, _array, _fd );
+	if ( prot_read_ ) {
+		t3_allocate_rd_mmap( dir_, filename_, _array, _fd );
+	} else {
+		t3_allocate_wr_mmap( dir_, filename_, _array, _fd );
+	}
 }	
 	
 VMML_TEMPLATE_STRING
@@ -2344,7 +2349,7 @@ VMML_TEMPLATE_CLASSNAME::write_datfile( const std::string& dir_, const std::stri
 	
 VMML_TEMPLATE_STRING
 void
-VMML_TEMPLATE_CLASSNAME::read_from_raw( const std::string& dir_, const std::string& filename_, const size_t& start_idx_ ) 
+VMML_TEMPLATE_CLASSNAME::read_from_raw( const std::string& dir_, const std::string& filename_ ) 
 {	
 	int dir_length = dir_.size() -1;
 	int last_separator = dir_.find_last_of( "/");
@@ -2365,9 +2370,6 @@ VMML_TEMPLATE_CLASSNAME::read_from_raw( const std::string& dir_, const std::stri
 	{
 		iterator  it = begin(),
 		it_end = end();
-		
-		for( size_t ii = 0; ii < start_idx_; )
-			++it;
 		
 		while ( len_data > 0 ) 
 		{
@@ -2520,11 +2522,47 @@ tensor3_allocate_data( T*& array_ )
     array_ = new T[ I1 * I2 * I3];
 }
 	
+
+VMML_TEMPLATE_STRING
+void
+VMML_TEMPLATE_CLASSNAME::
+t3_allocate_rd_mmap(  const std::string& dir_, const std::string& filename_, T*& array_, int& fd_ )
+{
+	//void * mmap(void *addr, size_t len, int prot, int flags, int fd, off_t offset);
+	
+	int dir_length = dir_.size() -1;
+	int last_separator = dir_.find_last_of( "/");
+	std::string path = dir_;
+	if (last_separator < dir_length ) {
+		path.append( "/" );
+	}
+	path.append( filename_ );
+	
+	fd_ = open( path.c_str(), O_RDONLY, 0 );
+	if ( fd_ == -1 )
+	{
+		{
+			close(fd_);
+			std::cout << "no file open for memory mapping" << std::endl;
+		}
+	}
+	
+	
+	size_t len = sizeof(T) * SIZE;
+	off_t offset = 0;
+	
+	array_ = (T*)mmap( 0, len, PROT_READ, MAP_FILE | MAP_SHARED, fd_, offset ); //cast to void*? //MAP_FILE|MAP_SHARED
+	
+	if( array_ == MAP_FAILED)
+	{
+		std::cout << "mmap failed" << std::endl;
+	}
+}
 	
 VMML_TEMPLATE_STRING
 void
 VMML_TEMPLATE_CLASSNAME::
-t3_allocate_mmap(  const std::string& dir_, const std::string& filename_, T*& array_, int& fd_ )
+t3_allocate_wr_mmap(  const std::string& dir_, const std::string& filename_, T*& array_, int& fd_ )
 {
 	//void * mmap(void *addr, size_t len, int prot, int flags, int fd, off_t offset);
 	
@@ -2539,7 +2577,7 @@ t3_allocate_mmap(  const std::string& dir_, const std::string& filename_, T*& ar
 	fd_ = open( path.c_str(), O_RDWR, 0 ); //O_RDONLY
 	if ( fd_ == -1 )
 	{
-		tensor3<I1, I2, I3, T> tmp; tmp.fill_random();
+		tensor3<I1, I2, I3, T> tmp; tmp.zero();
 		tmp.write_to_raw( dir_, filename_ );
 		
 		//std::cout << "created file for memory mapping" << std::endl;

@@ -1,5 +1,6 @@
 #include "tensor3_test.hpp"
 
+#include <vmmlib/t3_convertor.hpp>
 #include <vmmlib/tensor3.hpp>
 #include <sstream>
 
@@ -1270,7 +1271,7 @@ tensor3_test::run()
 		t3_testdata.fill_random( 3 );
 		t3_testdata.write_to_raw( dir, filename );
 		
-		tensor3< 4,4,4, unsigned char > t3( dir, filename );
+		tensor3< 4,4,4, unsigned char > t3( dir, filename, false );
 		
 		unsigned int data_mmp_t3[] = { 
 			0, 152, 9, 125,
@@ -1306,9 +1307,33 @@ tensor3_test::run()
 		ok = t3_check == t3;
 		log( "load tensor3 from memory mapped file" , ok  );
 		
+		remove("mmap_testdata.raw");
 	}
 	
-	
+	{
+		
+		//create test data
+		std::string dir = ".";
+		std::string in_filename = "in.raw";
+		std::string out_filename = "out.raw";
+		tensor3< 4,4,4, unsigned char > t3_in;
+		t3_in.fill_random( 3 );
+		t3_in.write_to_raw( dir, in_filename );
+		
+		t3_convertor<4,4,4, unsigned char>::convert_raw<float>( dir, in_filename, out_filename );
+		
+		tensor3< 4,4,4, float > t3_out;
+		t3_out.read_from_raw( dir, out_filename );
+
+		ok = t3_out.equals( t3_in, 0.001);
+		log( "t3 converter: convert raw" , ok  );
+		
+		
+		remove("in.raw");
+		remove("out.raw");
+		
+	}
+		
 	ok = true;
     return ok;
 }

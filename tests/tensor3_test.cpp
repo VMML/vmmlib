@@ -1186,7 +1186,7 @@ tensor3_test::run()
 		
 		double sigma = uct_t3.stdev();
 		
-		t3_converter<8,8,8, unsigned char>::remove_uct_cylinder( dir, in_filename, out_filename, sigma, 0, 2 ); //remove_uct_cylinder
+		t3_converter<8,8,8, unsigned char>::remove_uct_cylinder( dir, in_filename, out_filename, sigma, 0, 0, 2 ); //remove_uct_cylinder
 		
 		uct_t3.read_from_raw( dir, out_filename );
 		
@@ -1196,7 +1196,7 @@ tensor3_test::run()
 		remove("out.raw");
 		
 		if ( ok )	{	
-			log( "remove uct ring" , ok  );
+			log( "t3_converter: remove uct ring" , ok  );
 		} else
 		{
 			std::stringstream error;

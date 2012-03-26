@@ -20,10 +20,12 @@ namespace vmml
 		template< typename T_convert >
 		static void convert_raw( const std::string& dir_, const std::string& in_filename_, const std::string& out_filename_ );
 
+		//header size as bytes
 		static void remove_uct_cylinder( const std::string& dir_, 
 										const std::string& in_filename_, 
 										const std::string& out_filename_,
 										const double& sigma_, 
+										const size_t header_size_,
 										const size_t radius_offset_, 
 										int seed_ = 0);
 
@@ -33,10 +35,16 @@ namespace vmml
 		static void read_from_raw( t3_t& data_, const std::string& dir_, const std::string& filename_ ) ;
 		static void write_datfile( const std::string& dir_, const std::string& filename_ );
 		static void write_to_csv( const t3_t& data_, const std::string& dir_, const std::string& filename_ );
-		//static void remove_normals_from_raw( const std::string& dir_, const std::string& filename_ ) ;
-		
+
+		template< typename TT  >
+		void quantize_to( const std::string& dir_, 
+						 const std::string& in_filename_, const std::string& out_filename_,
+						 const T& min_value_, const T& max_value_ );
+
 		
 	protected:
+		
+		static void concat_path( const std::string& dir_, const std::string& filename_, std::string& path_ );
 		
 	}; //end t3_converter
 	
@@ -44,6 +52,94 @@ namespace vmml
 	
 #define VMML_TEMPLATE_STRING        template< size_t I1, size_t I2, size_t I3, typename T >
 #define VMML_TEMPLATE_CLASSNAME     t3_converter< I1, I2, I3, T >
+
+	
+	VMML_TEMPLATE_STRING
+	template< typename TT  >
+	void
+	VMML_TEMPLATE_CLASSNAME::quantize_to( const std::string& dir_, 
+										 const std::string& in_filename_, const std::string& out_filename_,
+										 const T& min_value_, const T& max_value_ )
+	{
+		std::string path_in_raw = "";
+		std::string path_out_raw = "";
+		concat_path( dir_, in_filename_, path_in_raw );
+		concat_path( dir_, out_filename_, path_out_raw );
+
+		std::ofstream outfile;	
+		outfile.open( path_out_raw.c_str() );
+		
+		std::ifstream infile;
+		infile.open( path_in_raw.c_str(), std::ios::in); 
+		
+		if( infile.is_open() && outfile.is_open() )
+		{
+			double max_tt_range = double(std::numeric_limits< TT >::max());
+			double min_tt_range = double(std::numeric_limits< TT >::min());
+			double tt_range = max_tt_range - min_tt_range;
+			double t_range = max_value_ - min_value_;
+			
+			//std::cout << "tt min= " << min_tt_range << ", tt max= " << max_tt_range << ", t min= " << min_value_ << ", t max= " << max_value_ << std::endl;
+			//std::cout << "tt range=" << tt_range << ", t range= " << t_range << std::endl;
+
+			T* in_value;
+			TT out_value;
+			size_t len_in = sizeof(T);
+			size_t len_out = sizeof(TT);
+			char* data = new char[ len_in ];
+			
+			for( size_t i3 = 0; i3 < I3; ++i3 )
+			{
+				for ( size_t i1 = 0; i1 < I1; ++i1 )
+				{
+					for( size_t i2 = 0; i2 < I2; ++i2 )
+					{
+						//read value
+						infile.read( data, len_in );
+						in_value = (T*)&(data[0]);
+						
+						//Quantize value
+						if (std::numeric_limits<TT>::is_signed ) {
+							out_value = TT( std::min( std::max( min_tt_range, double(( *in_value * tt_range / t_range ) + 0.5)), max_tt_range ));
+						} else {
+							out_value = TT( std::min( std::max( min_tt_range, double(((*in_value - min_value_ ) * tt_range / t_range) + 0.5)), max_tt_range ));
+						}
+						
+						//write_value
+						outfile.write( (char*)&(out_value), len_out );
+					}
+				}
+			}	
+			
+			infile.close();
+			outfile.close();
+		} else {
+			infile.close();
+			outfile.close();
+			std::cout << "no file open" << std::endl;
+		}
+	}
+	
+	
+
+	VMML_TEMPLATE_STRING
+	void
+	VMML_TEMPLATE_CLASSNAME::concat_path( const std::string& dir_, const std::string& filename_, std::string& path_ )
+	{
+		int dir_length = dir_.size() -1;
+		int last_separator = dir_.find_last_of( "/");
+		path_ = dir_;
+		if (last_separator < dir_length ) {
+			path_.append( "/" );
+		}
+		path_.append( filename_ );
+		
+		//check for format
+		if( filename_.find( "raw", filename_.size() -3) == (-1)) {
+			path_.append( ".");
+			path_.append( "raw" );
+		}
+	}		
 	
 	
 	VMML_TEMPLATE_STRING
@@ -51,30 +147,10 @@ namespace vmml
 	void
 	VMML_TEMPLATE_CLASSNAME::convert_raw( const std::string& dir_, const std::string& in_filename_, const std::string& out_filename_ )
 	{
-		int dir_length = dir_.size() -1;
-		int last_separator = dir_.find_last_of( "/");
-		std::string path_in = dir_;
-		std::string path_out = dir_;
-		if (last_separator < dir_length ) {
-			path_in.append( "/" );
-			path_out.append( "/" );
-		}
-		path_in.append( in_filename_ );
-		path_out.append( out_filename_ );
-		
-		//check for format
-		if( in_filename_.find( "raw", in_filename_.size() -3) == (-1)) {
-			path_in.append( ".");
-			path_in.append( "raw" );
-		}
-		std::string path_in_raw = path_in;
-
-		//check for format
-		if( out_filename_.find( "raw", out_filename_.size() -3) == (-1)) {
-			path_out.append( ".");
-			path_out.append( "raw" );
-		}
-		std::string path_out_raw = path_out;
+		std::string path_in_raw = "";
+		std::string path_out_raw = "";
+		concat_path( dir_, in_filename_, path_in_raw );
+		concat_path( dir_, out_filename_, path_out_raw );
 		
 		std::ofstream outfile;	
 		outfile.open( path_out_raw.c_str() );
@@ -119,40 +195,20 @@ namespace vmml
 												 const std::string& in_filename_, 
 												 const std::string& out_filename_, 
 												 const double& sigma_, 
+												 const size_t header_size_,
 												 const size_t radius_offset_, 
 												 int seed_ )
 	{
-		int dir_length = dir_.size() -1;
-		int last_separator = dir_.find_last_of( "/");
-		std::string path_in = dir_;
-		std::string path_out = dir_;
-		if (last_separator < dir_length ) {
-			path_in.append( "/" );
-			path_out.append( "/" );
-		}
-		path_in.append( in_filename_ );
-		path_out.append( out_filename_ );
-		
-		//check for format
-		if( in_filename_.find( "raw", in_filename_.size() -3) == (-1)) {
-			path_in.append( ".");
-			path_in.append( "raw" );
-		}
-		std::string path_in_raw = path_in;
-		
-		//check for format
-		if( out_filename_.find( "raw", out_filename_.size() -3) == (-1)) {
-			path_out.append( ".");
-			path_out.append( "raw" );
-		}
-		std::string path_out_raw = path_out;
+		std::string path_in_raw = "";
+		std::string path_out_raw = "";
+		concat_path( dir_, in_filename_, path_in_raw );
+		concat_path( dir_, out_filename_, path_out_raw );
 		
 		std::ofstream outfile;	
 		outfile.open( path_out_raw.c_str() );
 		
 		std::ifstream infile;
 		infile.open( path_in_raw.c_str(), std::ios::in); 
-		
 		
 		//for noise adding in outer area
 		if ( seed_ >= 0 )
@@ -172,6 +228,10 @@ namespace vmml
 			size_t len_val = sizeof(T);
 			char* data = new char[ len_val ];
 			
+			//skip header
+			infile.read( data, header_size_ );
+			
+			//Read/write data
 			for( size_t i3 = 0; i3 < I3; ++i3 )
 			{
 				for ( size_t i1 = 0; i1 < I1; ++i1 )

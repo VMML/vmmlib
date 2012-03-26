@@ -37,7 +37,7 @@ namespace vmml
 		static void write_to_csv( const t3_t& data_, const std::string& dir_, const std::string& filename_ );
 
 		template< typename TT  >
-		void quantize_to( const std::string& dir_, 
+		static void quantize_to( const std::string& dir_, 
 						 const std::string& in_filename_, const std::string& out_filename_,
 						 const T& min_value_, const T& max_value_ );
 

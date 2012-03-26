@@ -58,7 +58,7 @@ namespace vmml
 		
 		//2 different data layouts for different unfoldings, frontal and lateral
 		template< typename T_init>
-		static void als( const t3_type& data1_, const t3_type& data2_, u1_type& u1_, u2_type& u2_, u3_type& u3_, T_init init );
+		static void als( const t3_type& data_frontal_, const t3_type& data_horizontal_, u1_type& u1_, u2_type& u2_, u3_type& u3_, T_init init );
 		
 		/* derive core
 		 implemented accodring to core = data x_1 U1_pinv x_2 U2_pinv x_3 U3_pinv, 
@@ -135,21 +135,21 @@ VMML_TEMPLATE_CLASSNAME::als( const t3_type& data_,
 VMML_TEMPLATE_STRING
 template< typename T_init>
 void 
-VMML_TEMPLATE_CLASSNAME::als( const t3_type& data1_, const t3_type& data2_,
+VMML_TEMPLATE_CLASSNAME::als( const t3_type& data_frontal_, const t3_type& data_horizontal_,
 							 u1_type& u1_, u2_type& u2_, u3_type& u3_,
 							 T_init init )
 {
 	//intialize basis matrices
-	init( data1_, u1_, u2_, u3_ );
+	init( data_frontal_, u1_, u2_, u3_ );
 	
 	//derve core from initialized matrices
 	t3_core_type core;
 	core.zero();
-	derive_core_orthogonal_bases( data1_, u1_, u2_, u3_, core );
+	derive_core_orthogonal_bases( data_frontal_, u1_, u2_, u3_, core );
 	
 	
 	double f_norm = 0;
-	double max_f_norm = data1_.frobenius_norm();
+	double max_f_norm = data_frontal_.frobenius_norm();
 	double normresidual  = 0; 
 	double fit = 0;
 
@@ -176,13 +176,13 @@ VMML_TEMPLATE_CLASSNAME::als( const t3_type& data1_, const t3_type& data2_,
 		fitold = fit;
 		
 		//optimize modes
-		optimize_mode1( data2_, u2_, u3_, projection1, tmp1 );
+		optimize_mode1( data_horizontal_, u2_, u3_, projection1, tmp1 );
 		t3_hosvd< R1, R2, R3, I1, R2, R3, T >::apply_mode1( projection1, u1_ );
 		
-		optimize_mode2( data1_, u1_, u3_, projection2, tmp2 );
+		optimize_mode2( data_frontal_, u1_, u3_, projection2, tmp2 );
 		t3_hosvd< R1, R2, R3, R1, I2, R3, T >::apply_mode2( projection2, u2_ );
 		
-		optimize_mode3( data1_, u1_, u2_, projection3, tmp2 );
+		optimize_mode3( data_frontal_, u1_, u2_, projection3, tmp2 );
 		t3_hosvd< R1, R2, R3, R1, R2, I3, T >::apply_mode3( projection3, u3_ );
 		
 		t3_ttm::multiply_horizontal_bwd( projection3, transpose( u3_ ), core );
@@ -292,9 +292,15 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode1( const t3_type& data_, const u2_type& u2
 	u2_.transpose_to( *u2_inv );
 	u3_.transpose_to( *u3_inv );
 	
+#if 0
 	//backward cyclic matricization/unfolding (after Lathauwer et al., 2000a)
 	t3_ttm::multiply_frontal_bwd( data_, *u2_inv, tmp_ );
 	t3_ttm::multiply_horizontal_bwd( tmp_, *u3_inv, projection_ );
+#else
+	//forward cyclic matricization/unfolding (after Kiers, 2000) -> memory optimized
+	t3_ttm::multiply_horizontal_fwd( data_, *u2_inv, tmp_ );
+	t3_ttm::multiply_lateral_fwd( tmp_, *u3_inv, projection_ );
+#endif
 	
 	delete u2_inv;
 	delete u3_inv;
@@ -313,9 +319,15 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode2( const t3_type& data_, const u1_type& u1
 	u3_.transpose_to( *u3_inv );
 	
 	
+#if 0
 	//backward cyclic matricization (after Lathauwer et al., 2000a)
 	t3_ttm::multiply_lateral_bwd( data_, *u1_inv, tmp_ );
 	t3_ttm::multiply_horizontal_bwd( tmp_, *u3_inv, projection_ );
+#else
+	//forward cyclic matricization/unfolding (after Kiers, 2000) -> memory optimized
+	t3_ttm::multiply_frontal_fwd( data_, *u1_inv, tmp_ );
+	t3_ttm::multiply_lateral_fwd( tmp_, *u3_inv, projection_ );
+#endif
 	
 	delete u1_inv;
 	delete u3_inv;
@@ -333,9 +345,15 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode3( const t3_type& data_, const u1_type& u1
 	u1_.transpose_to( *u1_inv );
 	u2_.transpose_to( *u2_inv );
 	
+#if 0
 	//backward cyclic matricization (after Lathauwer et al., 2000a)
 	t3_ttm::multiply_lateral_bwd( data_, *u1_inv, tmp_ );
 	t3_ttm::multiply_frontal_bwd( tmp_, *u2_inv, projection_ );
+#else
+	//forward cyclic matricization/unfolding (after Kiers, 2000) -> memory optimized
+	t3_ttm::multiply_frontal_fwd( data_, *u1_inv, tmp_ );
+	t3_ttm::multiply_horizontal_fwd( tmp_, *u2_inv, projection_ );
+#endif
 	
 	delete u1_inv;
 	delete u2_inv;

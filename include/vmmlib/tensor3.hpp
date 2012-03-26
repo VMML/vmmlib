@@ -42,7 +42,7 @@ public:
     typedef typename vmml::tensor3_iterator< tensor3< I1, I2, I3, T > >          reverse_iterator;
     typedef typename vmml::tensor3_iterator< tensor3< I1, I2, I3, T > >          const_reverse_iterator;
     
-    typedef matrix< I1, I2, T >        front_slice_type; //fwd: forward cylcling (after kiers et al., 2000)
+    typedef matrix< I1, I2, T >        front_slice_type; //fwd: forward cylcling (after kiers, 2000)
     typedef matrix< I3, I1, T >        lat_slice_type;
     typedef matrix< I2, I3, T >        horiz_slice_type;
 

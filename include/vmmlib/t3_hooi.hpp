@@ -145,7 +145,7 @@ VMML_TEMPLATE_CLASSNAME::als( const t3_type& data_frontal_, const t3_type& data_
 	//derve core from initialized matrices
 	t3_core_type core;
 	core.zero();
-	derive_core_orthogonal_bases( data_frontal_, u1_, u2_, u3_, core );
+	//derive_core_orthogonal_bases( data_frontal_, u1_, u2_, u3_, core );
 	
 	
 	double f_norm = 0;
@@ -215,7 +215,7 @@ VMML_TEMPLATE_CLASSNAME::als( const t3_type& data_,
 	init( data_, u1_, u2_, u3_ );
 	
 	//derve core from initialized matrices
-	derive_core_orthogonal_bases( data_, u1_, u2_, u3_, core_ );
+	//derive_core_orthogonal_bases( data_, u1_, u2_, u3_, core_ );
 	
 	//removed to save computation
 	//compute best rank-(R1, R2, R3) approximation (Lathauwer et al., 2000b)

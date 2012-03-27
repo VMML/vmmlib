@@ -50,11 +50,11 @@ namespace vmml
 		 with the dimensions I1xI2I3, which corresponds to a matrizitation alonge mode I1.
 		 */
 		template< typename T_init>
-		static void als( const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, t3_core_type& core_, T_init init );
+		static void als( const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, t3_core_type& core_, T_init init, const double& max_f_norm_ = 0.0 );
 
 		//core not needed
 		template< typename T_init>
-		static void als( const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, T_init init );
+		static void als( const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, T_init init, const double& max_f_norm_ = 0.0 );
 		
 		//2 different data layouts for different unfoldings, frontal and lateral
 		template< typename T_init>
@@ -122,11 +122,11 @@ template< typename T_init>
 void 
 VMML_TEMPLATE_CLASSNAME::als( const t3_type& data_, 
 							 u1_type& u1_, u2_type& u2_, u3_type& u3_, 
-							 T_init init )
+							 T_init init, const double& max_f_norm_ )
 {
 	t3_core_type core;
 	core.zero();
-	als( data_, u1_, u2_, u3_, core, init );
+	als( data_, u1_, u2_, u3_, core, init, max_f_norm_ );
 }	
 	
 	
@@ -207,15 +207,17 @@ VMML_TEMPLATE_STRING
 template< typename T_init>
 void 
 VMML_TEMPLATE_CLASSNAME::als( const t3_type& data_, 
-								  u1_type& u1_, u2_type& u2_, u3_type& u3_, 
-								  t3_core_type& core_,
-								  T_init init )
+							 u1_type& u1_, u2_type& u2_, u3_type& u3_, 
+							 t3_core_type& core_,
+							 T_init init,
+							 const double& max_f_norm_ )
 {
 	//intialize basis matrices
 	init( data_, u1_, u2_, u3_ );
 	
 	//derve core from initialized matrices
 	//derive_core_orthogonal_bases( data_, u1_, u2_, u3_, core_ );
+	core_.zero();
 	
 	//removed to save computation
 	//compute best rank-(R1, R2, R3) approximation (Lathauwer et al., 2000b)
@@ -223,7 +225,13 @@ VMML_TEMPLATE_CLASSNAME::als( const t3_type& data_,
 	//t3_ttm::full_tensor3_matrix_multiplication( core_, u1_, u2_, u3_, approximated_data );
 	
 	double f_norm = 0;// approximated_data.frobenius_norm();
-	double max_f_norm = data_.frobenius_norm();
+	
+	double max_f_norm = max_f_norm_;
+	if (max_f_norm <= 0.0 )
+	{
+		max_f_norm = data_.frobenius_norm();
+	}
+	
 	double normresidual  = 0; //sqrt( (max_f_norm * max_f_norm) - (f_norm * f_norm));
 	double fit = 0;
 	/*if ( (max_f_norm != 0) && (max_f_norm > f_norm) ) 

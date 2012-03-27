@@ -1661,9 +1661,24 @@ double
 VMML_TEMPLATE_CLASSNAME::frobenius_norm( ) const
 {
     double f_norm = 0.0;
-    const_iterator it = begin(), it_end = end(); 
+#if 0   
+	const_iterator it = begin(), it_end = end(); 
     for( ; it != it_end; ++it )
          f_norm += *it * *it;
+#else
+	for( long i3 = 0; i3 < long(I3); ++i3 )
+	{
+		for( long i1 = 0; i1 < long(I1); ++i1 )
+		{
+			long i2 = 0;
+			for( i2 = 0; i2 < long(I2); ++i2 )
+			{
+				f_norm += at(i1, i2, i3 ) * at(i1, i2, i3 );
+			}
+		}
+	}
+	
+#endif
 
     return sqrt(f_norm);
 }

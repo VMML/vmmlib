@@ -292,7 +292,7 @@ VMML_TEMPLATE_CLASSNAME::optimize_mode1( const t3_type& data_, const u2_type& u2
 	u2_.transpose_to( *u2_inv );
 	u3_.transpose_to( *u3_inv );
 	
-#if 0
+#if 1
 	//backward cyclic matricization/unfolding (after Lathauwer et al., 2000a)
 	t3_ttm::multiply_frontal_bwd( data_, *u2_inv, tmp_ );
 	t3_ttm::multiply_horizontal_bwd( tmp_, *u3_inv, projection_ );

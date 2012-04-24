@@ -34,7 +34,7 @@ CXXFLAGS += -I. -Iinclude -Itests -include stdint.h
 # on mac we want to use the frameworks, not the unix style libs 
 ARCH = $(shell uname)
 ifeq "$(ARCH)" "Darwin"
-CXXFLAGS += -DVMMLIB_CUDA
+CXXFLAGS += -DVMMLIB_USE_CUDA
 LDFLAGS += -framework Accelerate
 CUDA_INSTALL_PATH = /usr/local/cuda
 CUDA_LIB	:= -L$(CUDA_INSTALL_PATH)/lib
@@ -51,7 +51,7 @@ else
   LIBDIR=$(DESTDIR)/usr/lib
 endif
 
-CXXFLAGS += -DVMMLIB_CUDA
+CXXFLAGS += -DVMMLIB_USE_LAPACK -DVMMLIB_USE_BLAS -DVMMLIB_USE_CUDA
 LDFLAGS +=
 
 CUDA_INSTALL_PATH = /opt/cuda
@@ -68,7 +68,7 @@ CUDA_INC	:= -I$(CUDA_INSTALL_PATH)/include -I.
 
 NVCC = nvcc
 # -g -> debug level, -G device-debug; -O optimized level
-NVCCFLAGS := -Iinclude -Itests -DVMMLIB_CUDA
+NVCCFLAGS := -Iinclude -Itests -DVMMLIB_USE_LAPACK -DVMMLIB_USE_BLAS -DVMMLIB_USE_CUDA
 CUDA_LIBS := $(CUDA_LIB) -lcuda -lcublas -lcudart
 ARCHFLAGS := -arch=sm_12 -m64
 ### endif cublas vmmlib

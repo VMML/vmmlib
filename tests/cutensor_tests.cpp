@@ -1,6 +1,6 @@
 #include "cutensor_tests.hpp"
 
-#ifdef VMMLIB_CUDA
+#ifdef VMMLIB_USE_CUDA
 
 #include <vmmlib/t3_cublas_ttm.hpp>
 #include <vmmlib/t3_cublas_hosvd.hpp>

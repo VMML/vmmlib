@@ -18,6 +18,65 @@ else(APPLE)
   find_package(LAPACK)
 endif(APPLE)
 
+set(HEADERS
+  include/vmmlib/ACKNOWLEDGEMENTS
+  include/vmmlib/LICENSE
+  include/vmmlib/aabb.hpp
+  include/vmmlib/blas_daxpy.hpp
+  include/vmmlib/blas_dgemm.hpp
+  include/vmmlib/blas_dot.hpp
+  include/vmmlib/blas_includes.hpp
+  include/vmmlib/blas_types.hpp
+  include/vmmlib/cp3_tensor.hpp
+  include/vmmlib/cublas_dgemm.cu
+  include/vmmlib/cublas_includes.hpp
+  include/vmmlib/cublas_types.hpp
+  include/vmmlib/enable_if.hpp
+  include/vmmlib/exception.hpp
+  include/vmmlib/frustum.hpp
+  include/vmmlib/frustum_culler.hpp
+  include/vmmlib/jacobi_solver.hpp
+  include/vmmlib/lapack.hpp
+  include/vmmlib/lapack/detail/clapack.h
+  include/vmmlib/lapack/detail/f2c.h
+  include/vmmlib/lapack_gaussian_elimination.hpp
+  include/vmmlib/lapack_includes.hpp
+  include/vmmlib/lapack_linear_least_squares.hpp
+  include/vmmlib/lapack_svd.hpp
+  include/vmmlib/lapack_sym_eigs.hpp
+  include/vmmlib/lapack_types.hpp
+  include/vmmlib/linear_least_squares.hpp
+  include/vmmlib/math.hpp
+  include/vmmlib/matrix.hpp
+  include/vmmlib/matrix_functors.hpp
+  include/vmmlib/matrix_pseudoinverse.hpp
+  include/vmmlib/matrix_traits.hpp
+  include/vmmlib/qr_decomposition.hpp
+  include/vmmlib/qtucker3_tensor.hpp
+  include/vmmlib/quaternion.hpp
+  include/vmmlib/svd.hpp
+  include/vmmlib/t3_converter.hpp
+  include/vmmlib/t3_cublas_hooi.hpp
+  include/vmmlib/t3_cublas_hosvd.hpp
+  include/vmmlib/t3_cublas_ttm.hpp
+  include/vmmlib/t3_hooi.hpp
+  include/vmmlib/t3_hopm.hpp
+  include/vmmlib/t3_hosvd.hpp
+  include/vmmlib/t3_ihopm.hpp
+  include/vmmlib/t3_ttm.hpp
+  include/vmmlib/tensor3.hpp
+  include/vmmlib/tensor3_iterator.hpp
+  include/vmmlib/tucker3_exporter.hpp
+  include/vmmlib/tucker3_importer.hpp
+  include/vmmlib/tucker3_tensor.hpp
+  include/vmmlib/validator.hpp
+  include/vmmlib/vector.hpp
+  include/vmmlib/vector_traits.hpp
+  include/vmmlib/visibility.hpp
+  include/vmmlib/vmmlib.hpp
+  include/vmmlib/vmmlib_config.hpp
+)
+
 set(SOURCES
   tests/frustum_test.cpp
   tests/jacobi_test.cpp
@@ -59,10 +118,11 @@ if(BLAS_FOUND)
   )
 endif()
 
-add_executable(vmmlib_test ${SOURCES})
-
+add_executable(vmmlib_test ${HEADERS} ${SOURCES})
 if(LAPACK_FOUND)
   target_link_libraries(vmmlib_test ${LAPACK_LIBRARIES})
 endif()
-
 add_test(vmmlib_test vmmlib_test)
+
+install(FILES ${HEADERS} DESTINATION include/vmmlib)
+add_custom_target(package COMMENT "Packaging not done yet")

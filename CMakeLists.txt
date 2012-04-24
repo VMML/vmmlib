@@ -3,10 +3,11 @@
 cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 project(VMMLib)
 
-enable_testing()
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMake)
+include(Common)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-shadow -Wno-sign-compare -Wno-extra")
 
 include_directories(include)
-find_package(BLAS)
 
 if(APPLE)
   find_library(LAPACK_LIBRARIES accelerate)
@@ -15,6 +16,7 @@ if(APPLE)
   endif(LAPACK_LIBRARIES)
 else(APPLE)
 #  enable_language(Fortran OPTIONAL) # eile: Why needed?
+  find_package(BLAS)
   find_package(LAPACK)
 endif(APPLE)
 
@@ -122,6 +124,9 @@ if(NOT MSVC)
   add_executable(vmmlib_test ${HEADERS} ${SOURCES})
   if(LAPACK_FOUND)
     target_link_libraries(vmmlib_test ${LAPACK_LIBRARIES})
+  endif()
+  if(BLAS_FOUND)
+    target_link_libraries(vmmlib_test ${BLAS_LIBRARIES})
   endif()
   add_test(vmmlib_test vmmlib_test)
 endif()

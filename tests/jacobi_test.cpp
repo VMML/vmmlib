@@ -6,7 +6,7 @@ namespace vmml
 bool
 jacobi_test::run()
 {
-    bool ok;
+    bool ok = true;
     
 
 

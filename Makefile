@@ -35,7 +35,7 @@ CXXFLAGS += -I. -Iinclude -Itests -include stdint.h
 # on mac we want to use the frameworks, not the unix style libs 
 ARCH = $(shell uname)
 ifeq "$(ARCH)" "Darwin"
-CXXFLAGS += 
+CXXFLAGS += -DVMMLIB_USE_LAPACK
 LDFLAGS += -framework Accelerate -fopenmp
 
 else

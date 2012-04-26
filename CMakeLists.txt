@@ -17,7 +17,9 @@ if(APPLE)
 else(APPLE)
 #  enable_language(Fortran OPTIONAL) # eile: Why needed?
   find_package(BLAS)
-  find_package(LAPACK)
+  if(BLAS_FOUND)
+    find_package(LAPACK)
+  endif()
 endif(APPLE)
 
 set(HEADERS
@@ -101,19 +103,13 @@ set(SOURCES
 if(LAPACK_FOUND)
   add_definitions(-DVMMLIB_USE_LAPACK)
   list(APPEND SOURCES
+    tests/cp3_tensor_test.cpp
     tests/lapack_gaussian_elimination_test.cpp
     tests/lapack_linear_least_squares_test.cpp
     tests/lapack_svd_test.cpp
     tests/lapack_sym_eigs_test.cpp
-    tests/svd_lapack_vs_old.cpp
-  )
-endif(LAPACK_FOUND)
-
-if(BLAS_FOUND)
-  add_definitions(-DVMMLIB_USE_BLAS)
-  list(APPEND SOURCES
-    tests/cp3_tensor_test.cpp
     tests/matrix_pseudoinverse_test.cpp
+    tests/svd_lapack_vs_old.cpp
     tests/tensor3_iterator_test.cpp
     tests/tensor3_test.cpp
     tests/tucker3_tensor_test.cpp

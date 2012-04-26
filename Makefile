@@ -50,7 +50,7 @@ else
   LIBDIR=$(DESTDIR)/usr/lib
 endif
 
-CXXFLAGS += -DVMMLIB_USE_LAPACK -DVMMLIB_USE_BLAS
+CXXFLAGS += -DVMMLIB_USE_LAPACK
 LDFLAGS +=  -fopenmp
 
 # adjust libs depending on your LAPACK and BLAS distribution

@@ -12,8 +12,6 @@
 #  include "lapack_gaussian_elimination_test.hpp"
 #  include "lapack_svd_test.hpp"
 #  include "lapack_sym_eigs_test.hpp"
-#endif
-#ifdef VMMLIB_USE_BLAS
 #  include "blas_daxpy_test.hpp"
 #  include "blas_dgemm_test.hpp"
 #  include "blas_dot_test.hpp"
@@ -73,8 +71,7 @@ main( int argc, const char* argv[] )
 	
 	vmml::lapack_sym_eigs_test lapack_sym_eigs_test_;
     run_and_log( lapack_sym_eigs_test_ );
-#endif
-#ifdef VMMLIB_USE_BLAS
+
     vmml::blas_dgemm_test blas_mm;
     run_and_log( blas_mm );
 	

@@ -188,8 +188,10 @@ namespace vmml
 	
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::qtucker3_tensor( )
-: _is_quantify_hot( false ), _hottest_core_value( 0 )
-, _is_quantify_linear( false ), _is_quantify_log( false )
+  : _hottest_core_value( 0 )
+  , _is_quantify_hot( false )
+  , _is_quantify_log( false )
+  , _is_quantify_linear( false )
 {
 	_core.zero();
 	_u1 = new u1_type(); _u1->zero();
@@ -205,8 +207,10 @@ VMML_TEMPLATE_CLASSNAME::qtucker3_tensor( )
 
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::qtucker3_tensor( t3_core_type& core )
-: _is_quantify_hot( false ), _hottest_core_value( 0 )
-, _is_quantify_linear( false ), _is_quantify_log( false )
+  : _hottest_core_value( 0 )
+  , _is_quantify_hot( false )
+  , _is_quantify_log( false )
+  , _is_quantify_linear( false )
 {
 	_core = core;
 	_u1 = new u1_type(); _u1->zero();
@@ -222,8 +226,10 @@ VMML_TEMPLATE_CLASSNAME::qtucker3_tensor( t3_core_type& core )
 
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::qtucker3_tensor( t3_core_type& core, u1_type& U1, u2_type& U2, u3_type& U3 )
-:  _is_quantify_hot( false ), _hottest_core_value( 0 )
-, _is_quantify_linear( false ), _is_quantify_log( false )
+  : _hottest_core_value( 0 )
+  , _is_quantify_hot( false )
+  , _is_quantify_log( false )
+  , _is_quantify_linear( false )
 {
 	_core = core;
 	_u1 = new u1_type( U1 );
@@ -239,8 +245,10 @@ VMML_TEMPLATE_CLASSNAME::qtucker3_tensor( t3_core_type& core, u1_type& U1, u2_ty
 
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::qtucker3_tensor( const t3_type& data_, u1_type& U1, u2_type& U2, u3_type& U3 )
-: _is_quantify_hot( false ), _hottest_core_value( 0 )
-, _is_quantify_linear( false ), _is_quantify_log( false )
+  : _hottest_core_value( 0 )
+  , _is_quantify_hot( false )
+  , _is_quantify_log( false )
+  , _is_quantify_linear( false )
 {
 	_u1 = new u1_type( U1 );
 	_u2 = new u2_type( U2 );
@@ -258,8 +266,10 @@ VMML_TEMPLATE_CLASSNAME::qtucker3_tensor( const t3_type& data_, u1_type& U1, u2_
 
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::qtucker3_tensor( const tucker3_type& other )
-: _is_quantify_hot( false ), _hottest_core_value( 0 )
-, _is_quantify_linear( false ), _is_quantify_log( false )
+  : _hottest_core_value( 0 )
+  , _is_quantify_hot( false )
+  , _is_quantify_log( false )
+  , _is_quantify_linear( false )
 {
 	_u1 = new u1_type();
 	_u2 = new u2_type();

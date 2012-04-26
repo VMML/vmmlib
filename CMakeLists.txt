@@ -10,7 +10,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-shadow -Wno-sign-compare -Wno-extra
 include_directories(include)
 
 if(APPLE)
-  find_library(LAPACK_LIBRARIES accelerate)
+  find_library(LAPACK_LIBRARIES Accelerate)
   if(LAPACK_LIBRARIES)
     set(LAPACK_FOUND TRUE)
   endif(LAPACK_LIBRARIES)
@@ -103,17 +103,27 @@ set(SOURCES
 if(LAPACK_FOUND)
   add_definitions(-DVMMLIB_USE_LAPACK)
   list(APPEND SOURCES
+    tests/blas_dot_test.cpp
+    tests/blas_daxpy_test.cpp
+    tests/blas_dgemm_test.cpp
     tests/cp3_tensor_test.cpp
     tests/lapack_gaussian_elimination_test.cpp
     tests/lapack_linear_least_squares_test.cpp
     tests/lapack_svd_test.cpp
     tests/lapack_sym_eigs_test.cpp
     tests/matrix_pseudoinverse_test.cpp
+    tests/qtucker3_tensor_test.cpp
     tests/svd_lapack_vs_old.cpp
+    tests/t3_hooi_test.cpp
+    tests/t3_hopm_test.cpp
+    tests/t3_hosvd_test.cpp
+    tests/t3_ihopm_test.cpp
+    tests/t3_ttm_test.cpp
     tests/tensor3_iterator_test.cpp
     tests/tensor3_test.cpp
+    tests/tucker3_exporter_importer_test.cpp
     tests/tucker3_tensor_test.cpp
-  )
+)
 endif()
 
 if(NOT MSVC)

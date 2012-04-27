@@ -5,9 +5,9 @@ project(VMMLib)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMake)
 include(Common)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-shadow -Wno-sign-compare -Wno-extra")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-shadow -Wno-sign-compare -Wno-extra -Wno-strict-aliasing")
 
-include_directories(include)
+include_directories(BEFORE ${CMAKE_SOURCE_DIR}/include)
 
 if(APPLE)
   find_library(LAPACK_LIBRARIES Accelerate)

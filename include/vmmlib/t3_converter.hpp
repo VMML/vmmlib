@@ -250,7 +250,7 @@ namespace vmml
 						{
 							fill_value = rand();
 							fill_value /= RAND_MAX;
-							fill_value *= sqrt(sigma_);
+							fill_value *= sigma_;
 						}
 						
 						out_value = static_cast< T > ( fill_value );

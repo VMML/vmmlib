@@ -55,7 +55,7 @@ namespace vmml
 		};
 		pseudoinverse_control2.set( data4, data4 + 16);
 		
-		pinv_type2 pseudoinverse_transposed2;
+		pinv_type2 pseudoinverse_transposed2( pinv_type2::IDENTITY );
 		compute_pinv2( input2, pseudoinverse_transposed2 );
 		pinv_type2 pseudoinverse2 = transpose( pseudoinverse_transposed2 );
 		

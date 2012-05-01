@@ -18,6 +18,9 @@
 #include <sys/mman.h>
 #include <fcntl.h>
 #include <omp.h>
+#include <limits>
+#undef min
+#undef max
 
 
 namespace vmml
@@ -1703,7 +1706,7 @@ VMML_TEMPLATE_CLASSNAME::mse( const tensor3< I1, I2, I3, T >& other ) const
 	double mse_val = 0.0;
 	double diff = 0.0;
 	const_iterator it = begin(), it_end = end(); 
-	const_iterator other_it = other.begin(), other_it_end = other.end(); 
+	const_iterator other_it = other.begin(); 
 	for( ; it != it_end; ++it, ++other_it ){
 		diff = abs( *it ) - abs( *other_it );
 		mse_val += diff * diff;
@@ -2728,7 +2731,7 @@ VMML_TEMPLATE_CLASSNAME::tensor_inner_product(
         const vmml::matrix< I2, R, TT >& V,
         const vmml::matrix< I3, R, TT >& W ) const
 {
-	T inner_prod;
+	T inner_prod( 0 );
 	for (size_t r = 0; r < R; ++r)
 	{
 		for (size_t k = 0; k < I3; ++k)

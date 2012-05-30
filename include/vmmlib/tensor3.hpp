@@ -310,6 +310,10 @@ public:
     inline tensor3 operator+( const tensor3& other ) const;
     inline tensor3 operator-( const tensor3& other ) const;
     
+	template< size_t J1, size_t J2, size_t J3>
+	typename enable_if< J1 < I1 && J2 < I2 && J3 < I3 >::type*
+	operator+=( const tensor3< J1, J2, J3, T>& other );
+	
     void operator+=( const tensor3& other );
     void operator-=( const tensor3& other );
 
@@ -1313,6 +1317,25 @@ VMML_TEMPLATE_CLASSNAME::operator+( const tensor3< I1, I2, I3, T >& other ) cons
 
 
 
+VMML_TEMPLATE_STRING
+template< size_t J1, size_t J2, size_t J3>
+typename enable_if< J1 < I1 && J2 < I2 && J3 < I3 >::type*
+VMML_TEMPLATE_CLASSNAME::operator+=( const tensor3< J1, J2, J3, T >& other )
+{
+	for( size_t i3 = 0; i3 < J3; ++i3 )
+	{
+		for( size_t i1 = 0; i1 < J1; ++i1 )
+		{
+			for( size_t i2 = 0; i2 < J2; ++i2 )
+			{
+				at( i1, i2, i3 ) += other.at(i1, i2, i3);
+			}		
+		}
+	}
+	return 0;
+}
+	
+	
 VMML_TEMPLATE_STRING
 void
 VMML_TEMPLATE_CLASSNAME::operator+=( const tensor3< I1, I2, I3, T >& other )

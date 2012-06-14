@@ -3,6 +3,11 @@
 cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 project(VMMLib)
 
+set(VERSION_MAJOR 1)
+set(VERSION_MINOR 3)
+set(VERSION_PATCH 5)
+set(RELEASE_VERSION 1) # OFF or ABI version
+
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMake)
 include(Common)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-shadow -Wno-sign-compare -Wno-extra -Wno-strict-aliasing")
@@ -21,6 +26,8 @@ else(APPLE)
     find_package(LAPACK)
   endif()
 endif(APPLE)
+
+set(DOCS README AUTHORS LICENSE.txt ACKNOWLEDGEMENTS)
 
 set(HEADERS
   include/vmmlib/ACKNOWLEDGEMENTS
@@ -81,7 +88,7 @@ set(HEADERS
   include/vmmlib/vmmlib_config.hpp
 )
 
-set(SOURCES
+set(TESTS
   tests/frustum_test.cpp
   tests/jacobi_test.cpp
   tests/matrix_test.cpp
@@ -102,7 +109,7 @@ set(SOURCES
 
 if(LAPACK_FOUND)
   add_definitions(-DVMMLIB_USE_LAPACK)
-  list(APPEND SOURCES
+  list(APPEND TESTS
     tests/blas_dot_test.cpp
     tests/blas_daxpy_test.cpp
     tests/blas_dgemm_test.cpp
@@ -127,7 +134,7 @@ if(LAPACK_FOUND)
 endif()
 
 if(NOT MSVC)
-  add_executable(vmmlib_test ${HEADERS} ${SOURCES})
+  add_executable(vmmlib_test ${HEADERS} ${TESTS})
   if(LAPACK_FOUND)
     target_link_libraries(vmmlib_test ${LAPACK_LIBRARIES})
   endif()
@@ -137,5 +144,9 @@ if(NOT MSVC)
   add_test(vmmlib_test vmmlib_test)
 endif()
 
-install(FILES ${HEADERS} DESTINATION include/vmmlib)
-add_custom_target(package COMMENT "Packaging not done yet")
+install(FILES ${HEADERS} DESTINATION include/vmmlib COMPONENT dev)
+install(FILES ${DOCS} DESTINATION share/vmmlib COMPONENT dev)
+install(FILES CMake/FindVMMLIB.cmake DESTINATION ${CMAKE_MODULE_INSTALL_PATH}
+  COMPONENT dev)
+
+include(CPackConfig)

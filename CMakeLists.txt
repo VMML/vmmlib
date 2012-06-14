@@ -10,6 +10,8 @@ set(RELEASE_VERSION 1) # OFF or ABI version
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMake)
 include(Common)
+include(DoxygenSetup)
+
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-shadow -Wno-sign-compare -Wno-extra -Wno-strict-aliasing")
 
 include_directories(BEFORE ${CMAKE_SOURCE_DIR}/include)
@@ -143,6 +145,8 @@ if(NOT MSVC)
   endif()
   add_test(vmmlib_test vmmlib_test)
 endif()
+
+include(DoxygenRule) # must be after all targets
 
 install(FILES ${HEADERS} DESTINATION include/vmmlib COMPONENT dev)
 install(FILES ${DOCS} DESTINATION share/vmmlib COMPONENT dev)

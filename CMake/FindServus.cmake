@@ -27,51 +27,51 @@
 #
 #==================================
 #
-# - Find Lunchbox
-# This module searches for the Lunchbox library
-#    See https://github.com/Eyescale/Lunchbox
+# - Find Servus
+# This module searches for the Servus library
+#    See https://github.com/Eyescale/servus
 #
 #==================================
 #
-# The following environment variables are respected for finding Lunchbox.
+# The following environment variables are respected for finding Servus.
 # CMAKE_PREFIX_PATH can also be used for this (see find_library() CMake
 # documentation).
 #
-#    LUNCHBOX_ROOT
+#    SERVUS_ROOT
 #    EQ_ROOT
 #
 # This module defines the following output variables:
 #
-#    LUNCHBOX_FOUND - Was Lunchbox and all of the specified components found?
+#    SERVUS_FOUND - Was Servus and all of the specified components found?
 #
-#    LUNCHBOX_VERSION - The version of Lunchbox which was found
+#    SERVUS_VERSION - The version of Servus which was found
 #
-#    LUNCHBOX_VERSION_ABI - The DSO version of Lunchbox which was found
+#    SERVUS_VERSION_ABI - The DSO version of Servus which was found
 #
-#    LUNCHBOX_INCLUDE_DIRS - Where to find the headers
+#    SERVUS_INCLUDE_DIRS - Where to find the headers
 #
-#    LUNCHBOX_LIBRARIES - The Lunchbox libraries
+#    SERVUS_LIBRARIES - The Servus libraries
 #
 #==================================
 # Example Usage:
 #
-#  find_package(Lunchbox 0.3.0 REQUIRED)
-#  include_directories(${LUNCHBOX_INCLUDE_DIRS})
+#  find_package(Servus 0.3.0 REQUIRED)
+#  include_directories(${SERVUS_INCLUDE_DIRS})
 #
 #  add_executable(foo foo.cc)
-#  target_link_libraries(foo ${LUNCHBOX_LIBRARIES})
+#  target_link_libraries(foo ${SERVUS_LIBRARIES})
 #
 #==================================
 # Naming convention:
-#  Local variables of the form _lunchbox_foo
-#  Input variables of the form Lunchbox_FOO
-#  Output variables of the form LUNCHBOX_FOO
+#  Local variables of the form _servus_foo
+#  Input variables of the form Servus_FOO
+#  Output variables of the form SERVUS_FOO
 #
 
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/FindLunchbox)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/FindServus)
 include(FindLibraryPackage)
 include(FindPackageHandleStandardArgs)
 
-find_library_package(Lunchbox INCLUDE lunchbox)
-find_package_handle_standard_args(Lunchbox DEFAULT_MSG
-                                  LUNCHBOX_LIBRARIES LUNCHBOX_INCLUDE_DIRS)
+find_library_package(servus)
+find_package_handle_standard_args(Servus DEFAULT_MSG
+                                  SERVUS_LIBRARIES SERVUS_INCLUDE_DIRS)

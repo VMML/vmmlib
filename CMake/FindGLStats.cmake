@@ -1,5 +1,5 @@
 #
-# Copyright 2012 Stefan Eilemann <eile@eyescale.ch>
+# Copyright 2011-2012 Stefan Eilemann <eile@eyescale.ch>
 #
 #  Redistribution and use in source and binary forms, with or without
 #  modification, are permitted provided that the following conditions are met:
@@ -27,51 +27,60 @@
 #
 #==================================
 #
-# - Find Lunchbox
-# This module searches for the Lunchbox library
-#    See https://github.com/Eyescale/Lunchbox
+# Find GLStats. This module searches for the GLStats library
+#    See http://www.equalizergraphics.com/GLStats
+#
 #
 #==================================
 #
-# The following environment variables are respected for finding Lunchbox.
+# The following environment variables are respected for finding GLStats.
 # CMAKE_PREFIX_PATH can also be used for this (see find_library() CMake
 # documentation).
 #
-#    LUNCHBOX_ROOT
-#    EQ_ROOT
+#    GLSTATS_ROOT
 #
 # This module defines the following output variables:
 #
-#    LUNCHBOX_FOUND - Was Lunchbox and all of the specified components found?
+#    GLSTATS_FOUND - Was GLStats and all of the specified components found?
 #
-#    LUNCHBOX_VERSION - The version of Lunchbox which was found
+#    GLSTATS_VERSION - The version of GLStats which was found
 #
-#    LUNCHBOX_VERSION_ABI - The DSO version of Lunchbox which was found
+#    GLSTATS_INCLUDE_DIRS - Where to find the headers
 #
-#    LUNCHBOX_INCLUDE_DIRS - Where to find the headers
+#    GLSTATS_LIBRARIES - The GLStats libraries
 #
-#    LUNCHBOX_LIBRARIES - The Lunchbox libraries
+#    GLSTATS_COMPONENTS - A list of components found
+#
+#    GLSTATS_DEB_DEPENDENCIES - A list of dependencies for the CPack deb generator
+#
+# Components may be: core, cgl, glx, wgl, dns_sd
+#   For each component, the following variables are set. In addition, the
+#   relevent libraries are added to GLSTATS_LIBRARIES. The core component is
+#   implicit and always searched.
+#
+#   GLSTATS_${COMPONENT}_FOUND - Was the component found?
+#   GLSTATS_${COMPONENT}_LIBRARY - The component librarys
 #
 #==================================
 # Example Usage:
 #
-#  find_package(Lunchbox 0.3.0 REQUIRED)
-#  include_directories(${LUNCHBOX_INCLUDE_DIRS})
+#  find_package(GLSTATS 1.0.0 dns_sd REQUIRED)
+#  include_directories(${GLSTATS_INCLUDE_DIRS})
 #
 #  add_executable(foo foo.cc)
-#  target_link_libraries(foo ${LUNCHBOX_LIBRARIES})
+#  target_link_libraries(foo ${GLSTATS_LIBRARIES})
 #
 #==================================
 # Naming convention:
-#  Local variables of the form _lunchbox_foo
-#  Input variables of the form Lunchbox_FOO
-#  Output variables of the form LUNCHBOX_FOO
+#  Local variables of the form _glstats_foo
+#  Input variables of the form GLSTATS_FOO
+#  Output variables of the form GLSTATS_FOO
 #
 
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/FindLunchbox)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/FindGLStats)
 include(FindLibraryPackage)
 include(FindPackageHandleStandardArgs)
 
-find_library_package(Lunchbox INCLUDE lunchbox)
-find_package_handle_standard_args(Lunchbox DEFAULT_MSG
-                                  LUNCHBOX_LIBRARIES LUNCHBOX_INCLUDE_DIRS)
+find_library_package(GLStats)
+find_package_handle_standard_args(GLStats DEFAULT_MSG
+                                  GLSTATS_LIBRARIES GLSTATS_INCLUDE_DIRS)

@@ -9,4 +9,19 @@ set(CPACK_PACKAGE_DESCRIPTION_SUMMARY
 set(CPACK_DEBIAN_PACKAGE_DEPENDS
   "libstdc++6")
 
+if(RELEASE_VERSION)
+  set(CPACK_COMPONENTS_ALL dev)
+else()
+  set(CPACK_COMPONENTS_ALL unspecified dev)
+endif()
+
+set(CPACK_COMPONENT_UNSPECIFIED_DISPLAY_NAME "Unspecified")
+set(CPACK_COMPONENT_UNSPECIFIED_DESCRIPTION
+  "Unspecified Component - set COMPONENT in CMake install() command")
+
+set(CPACK_COMPONENT_DEV_DISPLAY_NAME
+  "${CPACK_PROJECT_NAME} Development Files")
+set(CPACK_COMPONENT_DEV_DESCRIPTION
+  "Header and Library Files for ${CPACK_PROJECT_NAME} Development")
+
 include(CommonCPack)

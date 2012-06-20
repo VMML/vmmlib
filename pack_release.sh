@@ -47,6 +47,7 @@ tgz_release() {
 	  --exclude="*.o" \
 	  --exclude="*.DS_Store" \
 	  --exclude="*.svn*" \
+          --transform "s|^|vmmlib-${RELEASE_NUM}/|" \
       ${INCLUDE_DIR} \
       ${TESTS_DIR} \
       ${README_FILES} \

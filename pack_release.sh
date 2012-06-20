@@ -13,7 +13,7 @@ export EXCLUDING_PATTERN="*.sw* *.svn* *.DS_Store* *.o*"
 export INCLUDE_DIR="include/vmmlib"
 export TESTS_DIR="tests"
 
-export README_FILES="README AUTHORS LICENSE ACKNOWLEDGEMENTS"
+export README_FILES="README AUTHORS LICENSE.txt ACKNOWLEDGEMENTS"
 export PROJECT_FILES="vmmlib.xcodeproj Makefile Makefile.atlas CMakeLists.txt"
 export RELEASE_NUM=$1
 

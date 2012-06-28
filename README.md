@@ -1,4 +1,5 @@
 vmmlib
 ======
 
-A templatized C++ vector and matrix math library: http://vmmlib.sourceforge.net/
+A templatized C++ vector and matrix math library. For more information
+please see http://vmmlib.sourceforge.net/

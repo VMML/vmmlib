@@ -28,6 +28,7 @@ namespace vmml
 	
 // tensor with three modes, containing a series I3 of I1 x I2 vmml matrices
 //I1 is number of rows, I2 is number of columns and I3 is number of tubes
+	
 template< size_t I1, size_t I2, size_t I3, typename T = float >
 class tensor3
 {

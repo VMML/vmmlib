@@ -1,5 +1,5 @@
 #
-# Copyright 2011 Stefan Eilemann <eile@eyescale.ch>
+# Copyright 2012 Daniel Nachbaur <daniel.nachbaur@epfl.ch>
 #
 #  Redistribution and use in source and binary forms, with or without
 #  modification, are permitted provided that the following conditions are met:
@@ -27,54 +27,53 @@
 #
 #==================================
 #
-# - Find Collage
-# This module searches for the Collage library
-#    See http://www.libcollage.net
+# - Find Monsteer
+# This module searches for the Monsteer library
+#    See https://github.com/BlueBrain/Monsteer
 #
 #==================================
 #
-# The following environment variables are respected for finding Collage.
+# The following environment variables are respected for finding Monsteer.
 # CMAKE_PREFIX_PATH can also be used for this (see find_library() CMake
 # documentation).
 #
-#    CO_ROOT
-#    EQ_ROOT
+#    MONSTEER_ROOT
 #
 # This module defines the following output variables:
 #
-#    COLLAGE_FOUND - Was Collage and all of the specified components found?
+#    MONSTEER_FOUND - Was Monsteer and all of the specified components found?
 #
-#    COLLAGE_VERSION - The version of Collage which was found
+#    MONSTEER_VERSION - The version of Monsteer which was found
 #
-#    COLLAGE_VERSION_ABI - The DSO version of Collage which was found
+#    MONSTEER_VERSION_ABI - The DSO version of Monsteer which was found
 #
-#    COLLAGE_INCLUDE_DIRS - Where to find the headers
+#    MONSTEER_INCLUDE_DIRS - Where to find the headers
 #
-#    COLLAGE_LIBRARIES - The Collage libraries
+#    MONSTEER_LIBRARIES - The Monsteer libraries
 #
 #==================================
 # Example Usage:
 #
-#  find_package(Collage 0.3.0 REQUIRED)
-#  include_directories(${COLLAGE_INCLUDE_DIRS})
+#  find_package(Monsteer 0.1.0 REQUIRED)
+#  include_directories(${MONSTEER_INCLUDE_DIRS})
 #
 #  add_executable(foo foo.cc)
-#  target_link_libraries(foo ${COLLAGE_LIBRARIES})
+#  target_link_libraries(foo ${MONSTEER_LIBRARIES})
 #
 #==================================
 # Naming convention:
-#  Local variables of the form _co_foo
-#  Input variables of the form Collage_FOO
-#  Output variables of the form COLLAGE_FOO
+#  Local variables of the form _monsteer_foo
+#  Input variables of the form Monsteer_FOO
+#  Output variables of the form MONSTEER_FOO
 #
 
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/FindMonsteer)
 include(FindLibraryPackage)
 include(FindPackageHandleStandardArgs)
 
-set(_Collage_Lunchbox_version_0.5.1 "0.9.0")
-set(_Collage_Lunchbox_version_0.5.2 "1.3.5")
-set(_Collage_Lunchbox_version_0.5.5 "1.3.5")
-
-find_library_package(Collage INCLUDE co TRANSIENT Lunchbox)
-find_package_handle_standard_args(Collage DEFAULT_MSG
-                                  COLLAGE_LIBRARIES COLLAGE_INCLUDE_DIRS)
+find_library_package(Monsteer INCLUDE monsteer)
+find_package_handle_standard_args(Monsteer DEFAULT_MSG
+                                  MONSTEER_LIBRARIES MONSTEER_INCLUDE_DIRS)
+if(MONSTEER_FOUND)
+  include("${MONSTEER_LIBRARY_DIRS}/../share/Monsteer/CMake/options.cmake")
+endif()

@@ -203,6 +203,7 @@ public:
 	size_t nnz( const T& threshold_ ) const;
 	void threshold( const T& threshold_value_ );
 	
+	//note: move to t3_converter
 	template< typename TT  >
 		void quantize( tensor3< I1, I2, I3, TT >& quantized_, T& min_value_, T& max_value_ ) const;
 	template< typename TT  >
@@ -2086,7 +2087,7 @@ void
 	double max_tt_range = double(tt_range_);
 	double min_tt_range = 0;
 	
-	min_value_ = get_abs_min();
+	min_value_ = 0;
 	max_value_ = get_abs_max();
 	double t_range = max_value_ - min_value_;
 	

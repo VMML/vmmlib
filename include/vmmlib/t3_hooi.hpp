@@ -138,6 +138,7 @@ VMML_TEMPLATE_CLASSNAME::als( const t3_type& data_,
 	//intialize basis matrices
 	init( data_, u1_, u2_, u3_ );
 	
+	//removed to save computation
 	//derve core from initialized matrices
 	//derive_core_orthogonal_bases( data_, u1_, u2_, u3_, core_ );
 	core_.zero();
@@ -157,6 +158,7 @@ VMML_TEMPLATE_CLASSNAME::als( const t3_type& data_,
 	
 	double normresidual  = 0; //sqrt( (max_f_norm * max_f_norm) - (f_norm * f_norm));
 	double fit = 0;
+	//removed to save computation
 	/*if ( (max_f_norm != 0) && (max_f_norm > f_norm) ) 
 	{
 		fit = 1 - (normresidual / max_f_norm);
@@ -174,7 +176,7 @@ VMML_TEMPLATE_CLASSNAME::als( const t3_type& data_,
 
 	tensor3< I1, R2, I3, T > tmp1;
 	tensor3< R1, I2, I3, T > tmp2;
-	
+
 #if TUCKER_LOG
 	std::cout << "HOOI ALS (for tensor3) " << std::endl 
 	<< "initial fit: " << fit  << ", "
@@ -205,7 +207,7 @@ VMML_TEMPLATE_CLASSNAME::als( const t3_type& data_,
 #if TUCKER_LOG
 		std::cout << "iteration '" << i << "', fit: " << fit 
 		<< ", fitdelta: " << fitchange 
-		<< ", frobenius norm: " << f_norm << std::endl;		
+		<< ", frobenius norm of core: " << f_norm << std::endl;		
 #endif
 		++i;
 	}

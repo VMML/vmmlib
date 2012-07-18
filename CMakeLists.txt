@@ -4,8 +4,8 @@ cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 project(VMMLib)
 
 set(VERSION_MAJOR 1)
-set(VERSION_MINOR 3)
-set(VERSION_PATCH 5)
+set(VERSION_MINOR 4)
+set(VERSION_PATCH 0)
 set(RELEASE_VERSION 1) # OFF or ABI version
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMake)
@@ -33,8 +33,6 @@ endif(APPLE)
 set(DOCS README AUTHORS LICENSE.txt ACKNOWLEDGEMENTS)
 
 set(HEADERS
-  include/vmmlib/ACKNOWLEDGEMENTS
-  include/vmmlib/LICENSE
   include/vmmlib/aabb.hpp
   include/vmmlib/blas_daxpy.hpp
   include/vmmlib/blas_dgemm.hpp

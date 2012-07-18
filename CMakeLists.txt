@@ -4,9 +4,9 @@ cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 project(VMMLib)
 
 set(VERSION_MAJOR 1)
-set(VERSION_MINOR 4)
+set(VERSION_MINOR 5)
 set(VERSION_PATCH 0)
-set(RELEASE_VERSION 1) # OFF or ABI version
+set(RELEASE_VERSION OFF) # OFF or ABI version
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMake)
 include(Common)

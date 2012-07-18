@@ -158,8 +158,6 @@ public:
     quaternion rotate_y( T theta, const vector< 3, T >& a );
     quaternion rotate_z( T theta, const vector< 3, T >& a );
 
-    
-    // returns the slerp in the parameter result
     static quaternion slerp( T a, const quaternion& p, 
         const quaternion& q, const T epsilon = 1e-13 );
 

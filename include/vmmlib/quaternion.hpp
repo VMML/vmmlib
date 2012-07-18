@@ -158,7 +158,10 @@ public:
     quaternion rotate_y( T theta, const vector< 3, T >& a );
     quaternion rotate_z( T theta, const vector< 3, T >& a );
 
-    quaternion slerp( T a, const quaternion< T >& p, const quaternion& q );
+    
+    // returns the slerp in the parameter result
+    static quaternion slerp( T a, const quaternion& p, 
+        const quaternion& q, const T epsilon = 1e-13 );
 
     matrix< 3, 3, T > get_rotation_matrix() const;
 
@@ -912,46 +915,48 @@ void quaternion< T >::get_rotation_matrix( matrix< DIM, DIM, T >& M ) const
 
 }
 
-
-
-template < typename T >
+template< typename T >
 quaternion< T > quaternion< T >::
-slerp( T a, const quaternion< T >& p, const quaternion< T >& q )
+slerp( T a, const quaternion< T >& p, const quaternion< T >& q, const T epsilon )
 {
-    const quaternion< T > pn = p.normalize();
-    const quaternion< T > qn = q.normalize();
-    T cosine = pn.dot( qn );
-    quaternion< T > quat_t;
+    quaternion< T > px = p.get_normalized();
+    quaternion< T > qx = q.get_normalized();
+
+    T cosine = px.dot( qx );
 
     // check if inverted rotation is needed
     if ( cosine < 0.0 )
     {
         cosine = -cosine;
-        quat_t = -qn;
-    }
-    else
-    {
-        quat_t = qn;
+        qx = -qx;
     }
 
-    if( cosine.abs() < 1 - 1e-13 )
+    const T abs_cos = static_cast< T >( fabs(cosine) );
+    const T one_x   = static_cast< T >( 1. - epsilon );
+    if( abs_cos < one_x )
     {
         // standard slerp
         T sine = sqrt( 1. - ( cosine * cosine ) );
         T angle = atan2( sine, cosine );
         T coeff1 = sin( 1.0 - a ) * angle / sine;
         T coeff2 = sin( a * angle ) / sine;
-        return coeff1 * pn + coeff2 * quat_t;
+
+        qx *= coeff2;
+        px *= coeff1;
+        
+        px += qx;
     }
     else
     {
         // linear interpolation for very small angles
-        quaternion< T > quat_u = ( 1. - a ) * pn + a * quat_t;
-        quat_u.normalize();
-        return quat_u;
+        px *= 1. - a;
+        qx *= a;
+        px += qx;
+        px.normalize();
     }
-}
 
+    return px;
+}
 
 
 template < typename T >

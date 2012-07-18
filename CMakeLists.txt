@@ -33,8 +33,6 @@ endif(APPLE)
 set(DOCS README AUTHORS LICENSE.txt ACKNOWLEDGEMENTS)
 
 set(HEADERS
-  include/vmmlib/ACKNOWLEDGEMENTS
-  include/vmmlib/LICENSE
   include/vmmlib/aabb.hpp
   include/vmmlib/blas_daxpy.hpp
   include/vmmlib/blas_dgemm.hpp

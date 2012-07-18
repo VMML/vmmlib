@@ -24,4 +24,5 @@ set(CPACK_COMPONENT_DEV_DISPLAY_NAME
 set(CPACK_COMPONENT_DEV_DESCRIPTION
   "Header and Library Files for ${CPACK_PROJECT_NAME} Development")
 
+set(CPACK_NSIS_MODIFY_PATH OFF) # no binaries installed
 include(CommonCPack)

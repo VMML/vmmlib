@@ -190,6 +190,7 @@
 		CFF98C5215B8178100F599FE /* tensor4.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = tensor4.hpp; path = include/vmmlib/tensor4.hpp; sourceTree = "<group>"; };
 		CFF98C5315B817BC00F599FE /* tensor4_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = tensor4_test.cpp; path = tests/tensor4_test.cpp; sourceTree = "<group>"; };
 		CFF98C5415B817BC00F599FE /* tensor4_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = tensor4_test.hpp; path = tests/tensor4_test.hpp; sourceTree = "<group>"; };
+		CFF98CEF15B8556B00F599FE /* t4_converter.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = t4_converter.hpp; path = include/vmmlib/t4_converter.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -314,6 +315,7 @@
 				CFA7FE00142242BD001EE112 /* t3_ihopm.hpp */,
 				CF7F632B151F8D4400F033B4 /* t3_converter.hpp */,
 				CFF98C5215B8178100F599FE /* tensor4.hpp */,
+				CFF98CEF15B8556B00F599FE /* t4_converter.hpp */,
 			);
 			name = tensor;
 			sourceTree = "<group>";

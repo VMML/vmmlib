@@ -232,7 +232,7 @@ quaternion_test::run()
         
         quaterniond qq(1., 2., 3., 4.);
         quaterniond pp(1., 2., 3., 4.);
-        double a;
+        double a = 0.;
         
         quaterniond x(1., 2., 3., 4.);
         

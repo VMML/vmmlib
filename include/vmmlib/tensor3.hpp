@@ -1,13 +1,13 @@
-/* 
+/*
  * VMMLib - Tensor Classes
- *  
+ *
  * @author Susanne Suter
  * @author Jonas Boesch
- * 
+ *
  * a tensor is a generalization of a multidimensional array
  * a tensor3 is a tensor data structure with three modes I1, I2 and I3
  */
- 
+
 #ifndef __VMML__TENSOR3__HPP__
 #define __VMML__TENSOR3__HPP__
 
@@ -25,10 +25,10 @@
 
 namespace vmml
 {
-	
+
 // tensor with three modes, containing a series I3 of I1 x I2 vmml matrices
 //I1 is number of rows, I2 is number of columns and I3 is number of tubes
-	
+
 template< size_t I1, size_t I2, size_t I3, typename T = float >
 class tensor3
 {
@@ -37,15 +37,15 @@ public:
     typedef T*                                      pointer;
     typedef T&                                      reference;
 	typedef float T_blas;
-    
+
     typedef typename matrix< I1, I2, T>::iterator                                matrix_iterator;
-		
+
     typedef typename vmml::tensor3_iterator< tensor3< I1, I2, I3, T > >	         iterator;
     typedef typename vmml::tensor3_const_iterator< tensor3< I1, I2, I3, T > >    const_iterator;
-	
+
     typedef typename vmml::tensor3_iterator< tensor3< I1, I2, I3, T > >          reverse_iterator;
     typedef typename vmml::tensor3_iterator< tensor3< I1, I2, I3, T > >          const_reverse_iterator;
-    
+
     typedef matrix< I1, I2, T >        front_slice_type; //fwd: forward cylcling (after kiers, 2000)
     typedef matrix< I3, I1, T >        lat_slice_type;
     typedef matrix< I2, I3, T >        horiz_slice_type;
@@ -61,70 +61,70 @@ public:
     typedef matrix< I1, I2*I3, T >     bwd_lat_unfolding_type;
     typedef matrix< I2, I1*I3, T >     bwd_front_unfolding_type;
     typedef matrix< I3, I1*I2, T >     bwd_horiz_unfolding_type;
-	
-    
+
+
     static const size_t ROWS	       = I1;
     static const size_t COLS	       = I2;
     static const size_t SLICES	       = I3;
     static const size_t SIZE           = I1 * I2 * I3;
-    
+
     static const size_t MATRIX_SIZE     = I1 * I2;
 
- 
+
     // accessors
     inline T& operator()( size_t i1, size_t i2, size_t i3 );
     inline const T& operator()( size_t i1, size_t i2, size_t i3 ) const;
 
     inline T& at( size_t i1, size_t i2, size_t i3 );
     inline const T& at( size_t i1, size_t i2, size_t i3 ) const;
-    
+
     // element iterators - NOTE: column-major order
     iterator                begin();
     iterator                end();
-    
+
     const_iterator          begin() const;
     const_iterator          end() const;
-	
+
 #if 0
     reverse_iterator        rbegin();
     reverse_iterator        rend();
     const_reverse_iterator  rbegin() const;
     const_reverse_iterator  rend() const;
 #endif
-    
+
     // ctors
     tensor3();
-	
+
 	//allocate memory mapped file
     tensor3( const std::string& dir_, const std::string& filename_, const bool prot_read_);
-        
+
     tensor3( const tensor3& source );
-    
+
     template< typename U >
     tensor3( const tensor3< I1, I2, I3, U >& source_ );
-	
+
     template< size_t J1, size_t J2, size_t J3>
     tensor3( const tensor3< J1, J2, J3, T >& source_ );
-	
+
     ~tensor3();
-    
-    size_t size() const; // return I1 * I2 * I3;   
-	
+
+    size_t size() const; // return I1 * I2 * I3;
+
 	template< size_t J1, size_t J2, size_t J3 >
 	tensor3<J1, J2, J3, T>
     get_sub_tensor3( size_t row_offset, size_t col_offset, size_t slice_offset = 0,
 					typename enable_if< J1 <= I1 && J2 <= I2 && J3 <= I3 >::type* = 0 ) const;
-	
+
 	template< size_t J1, size_t J2, size_t J3 >
 	typename enable_if< J1 <= I1 && J2 <= I2 && J3 <= I3 >::type*
-    get_sub_tensor3( tensor3<J1, J2, J3, T >& result, 
+    get_sub_tensor3( tensor3<J1, J2, J3, T >& result,
 					size_t row_offset = 0, size_t col_offset = 0, size_t slice_offset = 0 ) const;
-	
+
 	template< size_t J1, size_t J2, size_t J3 >
 	typename enable_if< J1 <= I1 && J2 <= I2 && J3 <= I3 >::type*
-    set_sub_tensor3( const tensor3<J1, J2, J3, T >& sub_data_, 
+    set_sub_tensor3( const tensor3<J1, J2, J3, T >& sub_data_,
 					size_t row_offset = 0, size_t col_offset = 0, size_t slice_offset = 0 );
-	
+
     inline void get_I1_vector( size_t i2, size_t i3, vector< I1, T >& data ) const; // I1_vector is a column vector with all values i1 at i2 and i3
     inline void get_I2_vector( size_t i1, size_t i3, vector< I2, T >& data ) const; // I2_vector is a row vector with all values i2 at i1 and i3
     inline void get_I3_vector( size_t i1, size_t i2, vector< I3, T >& data ) const; // I3_vector is a vector with all values i3 at a given i1 and i2
@@ -132,7 +132,7 @@ public:
     inline void get_row( size_t i1, size_t i3, vector< I2, T >& data ) const; // same as get_I2_vector
     inline void get_column( size_t i2, size_t i3, vector< I1, T >& data ) const; // same as get_I1_vector
     inline void get_tube( size_t i1, size_t i2, vector< I3, T >& data ) const; // same as get_I3_vector
-	
+
     inline void set_I1_vector( size_t i2, size_t i3, const vector< I1, T >& data ); // I1_vector is a column vector with all values i1 at i2 and i3
     inline void set_I2_vector( size_t i1, size_t i3, const vector< I2, T >& data ); // I2_vector is a row vector with all values i2 at i1 and i3
     inline void set_I3_vector( size_t i1, size_t i2, const vector< I3, T >& data ); // I3_vector is a vector with all values i3 at a given i1 and i2
@@ -141,29 +141,29 @@ public:
     inline void set_column( size_t i2, size_t i3, const vector< I1, T >& data ); // same as set_I1_vector
     inline void set_tube( size_t i1, size_t i2, const vector< I3, T >& data ); // same as set_I3_vector
 
-    inline void get_frontal_slice_fwd( size_t i3, front_slice_type& data ) const;  
-    inline void get_lateral_slice_bwd( size_t i2, bwd_lat_slice_type& data ) const; 
+    inline void get_frontal_slice_fwd( size_t i3, front_slice_type& data ) const;
+    inline void get_lateral_slice_bwd( size_t i2, bwd_lat_slice_type& data ) const;
     inline void get_horizontal_slice_fwd( size_t i1, horiz_slice_type& data ) const;
-	
-    inline void get_frontal_slice_bwd( size_t i3, bwd_front_slice_type& data ) const;  
-    inline void get_lateral_slice_fwd( size_t i2, lat_slice_type& data ) const; 
+
+    inline void get_frontal_slice_bwd( size_t i3, bwd_front_slice_type& data ) const;
+    inline void get_lateral_slice_fwd( size_t i2, lat_slice_type& data ) const;
     inline void get_horizontal_slice_bwd( size_t i1, bwd_horiz_slice_type& data ) const;
-    
-    inline void set_frontal_slice_fwd( size_t i3, const front_slice_type& data ); 
-    inline void set_lateral_slice_bwd( size_t i2, const bwd_lat_slice_type& data ); 
+
+    inline void set_frontal_slice_fwd( size_t i3, const front_slice_type& data );
+    inline void set_lateral_slice_bwd( size_t i2, const bwd_lat_slice_type& data );
     inline void set_horizontal_slice_fwd( size_t i1, const horiz_slice_type& data );
-	
-    inline void set_frontal_slice_bwd( size_t i3, const bwd_front_slice_type& data ); 
-    inline void set_lateral_slice_fwd( size_t i2, const lat_slice_type& data ); 
+
+    inline void set_frontal_slice_bwd( size_t i3, const bwd_front_slice_type& data );
+    inline void set_lateral_slice_fwd( size_t i2, const lat_slice_type& data );
     inline void set_horizontal_slice_bwd( size_t i1, const bwd_horiz_slice_type& data );
-	
+
     inline front_slice_type& get_frontal_slice_fwd( size_t index );
     inline const front_slice_type& get_frontal_slice_fwd( size_t index ) const;
-	
+
 	// sets all elements to fill_value
     void operator=( T fill_value ); //@SUS: todo
     void fill( T fill_value ); //special case of set method (all values are set to the same value!)
-	
+
 	//sets all tensor values with random values
 	//set srand(time(NULL)) or srand( seed )
 	//if seed is set to -1, srand( seed ) was set outside set_random
@@ -173,36 +173,36 @@ public:
     void fill_increasing_values( );
     void fill_rand_sym_slices( int seed = -1 );
     void fill_rand_sym( int seed = -1 );
-	
+
     const tensor3& operator=( const tensor3& source_ );
-	
+
     template< size_t R >
-    typename enable_if< R == I1 && R == I2 && R == I3 >::type* 
+    typename enable_if< R == I1 && R == I2 && R == I3 >::type*
 	 diag( const vector< R, T >& diag_values_ );
-	
+
     void range_threshold(tensor3< I1, I2, I3, T >& other_, const T& start_value, const T& end_value) const;
-	
+
 	template< size_t K1, size_t K2, size_t K3 >
 	void average_8to1( tensor3< K1, K2, K3, T >& other ) const;
-	
-    
+
+
     // note: this function copies elements until either the matrix is full or
     // the iterator equals end_.
     template< typename input_iterator_t >
-    void set( input_iterator_t begin_, input_iterator_t end_, 
-			 bool row_major_layout = true );	
+    void set( input_iterator_t begin_, input_iterator_t end_,
+			 bool row_major_layout = true );
     void zero();
-	
+
 	T get_min() const;
 	T get_max() const;
 	T get_abs_min() const;
 	T get_abs_max() const;
-	
+
 	//returns number of non-zeros
 	size_t nnz() const;
 	size_t nnz( const T& threshold_ ) const;
 	void threshold( const T& threshold_value_ );
-	
+
 	//note: move to t3_converter
 	template< typename TT  >
 		void quantize( tensor3< I1, I2, I3, TT >& quantized_, T& min_value_, T& max_value_ ) const;
@@ -218,10 +218,10 @@ public:
 		void dequantize_log( tensor3< I1, I2, I3, TT >& dequantized_, const tensor3< I1, I2, I3, char >& signs_, const TT& min_value_, const TT& max_value_ ) const;
 	template< typename TT  >
 		void dequantize( tensor3< I1, I2, I3, TT >& dequantized_, const tensor3< I1, I2, I3, char >& signs_, const TT& min_value_, const TT& max_value_ ) const;
-	
+
     bool operator==( const tensor3& other ) const;
     bool operator!=( const tensor3& other ) const;
-	
+
     // due to limited precision, two 'idential' tensor3 might seem different.
     // this function allows to specify a tolerance when comparing matrices.
     bool equals( const tensor3& other, T tolerance ) const;
@@ -229,10 +229,10 @@ public:
     // the two tensor3 data structures
     template< typename compare_t >
     bool equals( const tensor3& other, compare_t& cmp ) const;
-	 
-	
+
+
 	//NOTE: moved tensor times matrix multiplications (TTM) to t3_ttm
-	
+
 	//apply spherical weights
 	template< typename float_t>
     void apply_spherical_weights( tensor3< I1, I2, I3, float_t >& other );
@@ -248,50 +248,50 @@ public:
     void horizontal_folding_bwd( const bwd_horiz_unfolding_type& unfolding);
     void lateral_folding_bwd( const bwd_lat_unfolding_type& unfolding);
     void frontal_folding_bwd( const bwd_front_unfolding_type& unfolding);
-	
-	
+
+
     // reconstruction of a Kruskal tensor => inversion of CP (Candecomp/Parafac)
     // please note that the parameter U will be overwritten
     // temp is simply a required workspace matrix, it can be empty or uninitialized
     // but is passed as parameter to prevent potentially superfluous allocations.
     template< size_t R >
     void reconstruct_CP( const vmml::vector< R, T>& lambda,
-        vmml::matrix< R, I1, T >& U, 
+        vmml::matrix< R, I1, T >& U,
         const vmml::matrix< R, I2, T >& V,
         const vmml::matrix< R, I3, T >& W,
         vmml::matrix< R, I2 * I3, T >& temp
         ); //-> tensor outer product
-    	
-	
+
+
 	template< size_t R, typename TT >
 	double tensor_inner_product(
         const vmml::vector< R, TT>& lambda,
         const vmml::matrix< I1, R, TT >& U,
         const vmml::matrix< I2, R, TT >& V,
-        const vmml::matrix< I3, R, TT >& W ) const;    
-    
-    //error computation 
+        const vmml::matrix< I3, R, TT >& W ) const;
+
+    //error computation
     double frobenius_norm() const;
     double frobenius_norm( const tensor3< I1, I2, I3, T >& other ) const;
 	double avg_frobenius_norm() const;
     double mse( const tensor3< I1, I2, I3, T >& other ) const; // mean-squared error
     double rmse( const tensor3< I1, I2, I3, T >& other ) const; //root mean-squared error
     double compute_psnr( const tensor3< I1, I2, I3, T >& other, const T& max_value_ ) const; //peak signal-to-noise ratio
-    void mean( T& mean_ ) const; 
-    double mean() const; 
-    double variance() const; 
-	double stdev() const; 
-   
+    void mean( T& mean_ ) const;
+    double mean() const;
+    double variance() const;
+	double stdev() const;
+
     template< typename TT >
     void cast_from( const tensor3< I1, I2, I3, TT >& other );
 
     template< size_t J1, size_t J2, size_t  J3, typename TT >
 	void cast_from( const tensor3< J1, J2, J3, TT >& other, const long& slice_idx_start_ = 0 );
 
-	
+
     template< typename TT >
     void float_t_to_uint_t( const tensor3< I1, I2, I3, TT >& other );
-	
+
     void export_to( std::vector< T >& data_ ) const ;
     void import_from( const std::vector< T >& data_ ) ;
 	void write_to_raw( const std::string& dir_, const std::string& filename_ ) const;
@@ -299,60 +299,60 @@ public:
 	void write_datfile( const std::string& dir_, const std::string& filename_ ) const;
 	void write_to_csv( const std::string& dir_, const std::string& filename_ ) const;
 	void remove_normals_from_raw( const std::string& dir_, const std::string& filename_ ) ;
-	
+
 	//note: moved to t3_converter
 	//void remove_uct_cylinder( const size_t radius_offset_, int seed_ = 0 ) ;
-	    
+
     inline tensor3 operator+( T scalar ) const;
     inline tensor3 operator-( T scalar ) const;
-    
+
     void operator+=( T scalar );
     void operator-=( T scalar );
-    
+
     inline tensor3 operator+( const tensor3& other ) const;
     inline tensor3 operator-( const tensor3& other ) const;
-    
+
 	template< size_t J1, size_t J2, size_t J3>
 	typename enable_if< J1 < I1 && J2 < I2 && J3 < I3 >::type*
 	operator+=( const tensor3< J1, J2, J3, T>& other );
-	
+
     void operator+=( const tensor3& other );
     void operator-=( const tensor3& other );
 
-    // 
-    // tensor3-scalar operations / scaling 
-    // 
+    //
+    // tensor3-scalar operations / scaling
+    //
     tensor3 operator*( T scalar );
     void operator*=( T scalar );
-	
+
 	tensor3 operator/( T scalar );
     void operator/=( T scalar );
-	
+
 	//
     // matrix-vector operations
     //
     // transform column vector by matrix ( vec = matrix * vec )
     vector< I1, T > operator*( const vector< I2, T >& other ) const;
-	
+
     // transform column vector by matrix ( vec = matrix * vec )
     // assume homogenous coords, e.g. vec3 = mat4x4 * vec3, with w = 1.0
     template< size_t O >
     vector< O, T > operator*( const vector< O, T >& vector_ ) const;
-    
+
     inline tensor3< I1, I2, I3, T > operator-() const;
     tensor3< I1, I2, I3, T > negate() const;
-	
+
     friend std::ostream& operator << ( std::ostream& os, const tensor3< I1, I2, I3, T >& t3 )
     {
         for(size_t i = 0; i < I3; ++i)
         {
-            //os << t3.array[ i ] << "***" << std::endl;			
+            //os << t3.array[ i ] << "***" << std::endl;
             os << t3.get_frontal_slice_fwd( i ) << " *** " << std::endl;
-        }	
+        }
         return os;
     }
-	
-	
+
+
     // static members
     static void     tensor3_allocate_data( T*& array_ );
     static void     tensor3_deallocate_data( T*& array_ );
@@ -363,8 +363,8 @@ public:
 
     T*          get_array_ptr();
     const T*    get_array_ptr() const;
-    
-    // computes the array index for direct access 
+
+    // computes the array index for direct access
     inline size_t compute_index( size_t i1, size_t i2, size_t i3 ) const;
 
 	bool is_mmapped() const { return _is_mmapped; };
@@ -374,10 +374,10 @@ protected:
     const front_slice_type&             _get_slice( size_t index_ ) const;
 
 	T*                      _array;
-	
+
 	bool _is_mmapped;
 	int _fd;
-	
+
 }; // class tensor3
 
 #define VMML_TEMPLATE_STRING    template< size_t I1, size_t I2, size_t I3, typename T >
@@ -393,8 +393,8 @@ VMML_TEMPLATE_CLASSNAME::tensor3( const std::string& dir_, const std::string& fi
 	} else {
 		t3_allocate_wr_mmap( dir_, filename_, _array, _fd );
 	}
-}	
-	
+}
+
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::tensor3()
 	: _array(), _is_mmapped(0), _fd(0)
@@ -402,7 +402,7 @@ VMML_TEMPLATE_CLASSNAME::tensor3()
     tensor3_allocate_data( _array );
 }
 
-	
+
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::tensor3( const tensor3& source_ )
     : _array(), _is_mmapped(0), _fd(-1)
@@ -411,8 +411,8 @@ VMML_TEMPLATE_CLASSNAME::tensor3( const tensor3& source_ )
 	if (_is_mmapped ) {
 		//t3_allocate_copy_mmp( _array );
 		std::cout << "not yet implemented check tensor3 copy construtor" << std::endl;
-	} 
-	else 
+	}
+	else
 	{
 		tensor3_allocate_data( _array );
 		(*this) = source_;
@@ -431,8 +431,8 @@ VMML_TEMPLATE_CLASSNAME::tensor3( const tensor3< I1, I2, I3, U >& source_ )
 	if (_is_mmapped ) {
 		//t3_allocate_copy_mmp( _array, s_array );
 		std::cout << "not yet implemented check tensor3 copy construtor" << std::endl;
-	} 
-	else 
+	}
+	else
 	{
 		tensor3_allocate_data( _array );
 		for( size_t index = 0; index < I1 * I2 * I3; ++index )
@@ -441,7 +441,7 @@ VMML_TEMPLATE_CLASSNAME::tensor3( const tensor3< I1, I2, I3, U >& source_ )
 		}
 	}
 }
-	
+
 
 VMML_TEMPLATE_STRING
 template< size_t J1, size_t J2, size_t J3 >
@@ -451,28 +451,28 @@ VMML_TEMPLATE_CLASSNAME::tensor3( const tensor3< J1, J2, J3, T >& source_ )
 	const size_t minL =  J1 < I1 ? J1 : I1;
 	const size_t minC =  J2 < I2 ? J2 : I2;
 	const size_t minS =  J3 < I3 ? J3 : I3;
-	
+
 	zero();
-	
+
 	_is_mmapped = source_.is_mmapped();
-	if (_is_mmapped ) 
+	if (_is_mmapped )
 	{
 		//t3_allocate_copy_mmp( _array, s_array );
 		std::cout << "not yet implemented check tensor3 copy construtor" << std::endl;
-	} 
-	else 
+	}
+	else
 	{
 		for ( size_t i = 0 ; i < minL ; i++ ) {
 			for ( size_t j = 0 ; j < minC ; j++ ) {
 				for ( size_t k = 0 ; k < minS ; k++ )
 				{
-					at( i,j, k ) = source_( i, j, k ); 
+					at( i,j, k ) = source_( i, j, k );
 				}
 			}
 		}
 	}
 }
-	
+
 
 
 VMML_TEMPLATE_STRING
@@ -482,15 +482,15 @@ VMML_TEMPLATE_CLASSNAME::~tensor3()
 	{
 		munmap( _array, sizeof(T) * SIZE ); //get error
 		close( _fd );
-	} 
-	else 
+	}
+	else
 	{
 		tensor3_deallocate_data( _array );
 	}
 }
 
-	
-	
+
+
 VMML_TEMPLATE_STRING
 inline T&
 VMML_TEMPLATE_CLASSNAME::at( size_t i1, size_t i2, size_t i3 )
@@ -538,54 +538,54 @@ VMML_TEMPLATE_CLASSNAME::operator()(  size_t i1, size_t i2, size_t i3 ) const
 
 
 VMML_TEMPLATE_STRING
-inline void 
+inline void
 VMML_TEMPLATE_CLASSNAME::
 get_I2_vector( size_t i1, size_t i3, vector< I2, T >& data ) const
 {
 #ifdef VMMLIB_SAFE_ACCESSORS
-	
+
     if ( i3 >= I3 )
         VMMLIB_ERROR( "get_I1_vector() - i3 index out of bounds.", VMMLIB_HERE );
-	
+
 #endif
-   	_get_slice( i3 ).get_row( i1, data );	
+   	_get_slice( i3 ).get_row( i1, data );
 }
 
 
 
 VMML_TEMPLATE_STRING
-inline void 
+inline void
 VMML_TEMPLATE_CLASSNAME::
 get_I1_vector( size_t i2, size_t i3, vector< I1, T >& data ) const
 {
 #ifdef VMMLIB_SAFE_ACCESSORS
-	
+
     if ( i3 >= I3 )
         VMMLIB_ERROR( "get_I2_vector() - i3 index out of bounds.", VMMLIB_HERE );
-	
+
 #endif
-    
-	_get_slice( i3 ).get_column( i2, data );	
-	
+
+	_get_slice( i3 ).get_column( i2, data );
+
 }
 
 
 
 VMML_TEMPLATE_STRING
-inline void 
+inline void
 VMML_TEMPLATE_CLASSNAME::
 get_I3_vector( size_t i1, size_t i2, vector< I3, T >& data ) const
 {
 	for (size_t i3 = 0; i3 < I3; ++i3)
 	{
-		data[ i3 ] = _get_slice( i3 ).at( i1, i2 );		
+		data[ i3 ] = _get_slice( i3 ).at( i1, i2 );
 	}
 
 }
 
 
 VMML_TEMPLATE_STRING
-inline void 
+inline void
 VMML_TEMPLATE_CLASSNAME::
 get_row( size_t i1, size_t i3, vector< I2, T >& data ) const
 {
@@ -593,7 +593,7 @@ get_row( size_t i1, size_t i3, vector< I2, T >& data ) const
 }
 
 VMML_TEMPLATE_STRING
-inline void 
+inline void
 VMML_TEMPLATE_CLASSNAME::
 get_column( size_t i2, size_t i3, vector< I1, T >& data ) const
 {
@@ -601,7 +601,7 @@ get_column( size_t i2, size_t i3, vector< I1, T >& data ) const
 }
 
 VMML_TEMPLATE_STRING
-inline void 
+inline void
 VMML_TEMPLATE_CLASSNAME::
 get_tube( size_t i1, size_t i2, vector< I3, T >& data ) const
 {
@@ -610,39 +610,39 @@ get_tube( size_t i1, size_t i2, vector< I3, T >& data ) const
 
 
 VMML_TEMPLATE_STRING
-inline void 
+inline void
 VMML_TEMPLATE_CLASSNAME::
 set_I2_vector( size_t i1, size_t i3, const vector< I2, T >& data )
 {
 #ifdef VMMLIB_SAFE_ACCESSORS
-	
+
     if ( i3 >= I3 )
         VMMLIB_ERROR( "set_I1_vector() - i3 index out of bounds.", VMMLIB_HERE );
-	
+
 #endif
-    
+
 	_get_slice( i3 ).set_row( i1, data );	//@SUS: bug fix
 }
 
 
 VMML_TEMPLATE_STRING
-inline void 
+inline void
 VMML_TEMPLATE_CLASSNAME::
 set_I1_vector( size_t i2, size_t i3, const vector< I1, T >& data )
 {
 #ifdef VMMLIB_SAFE_ACCESSORS
-	
+
     if ( i3 >= I3 )
         VMMLIB_ERROR( "set_I2_vector() - i3 index out of bounds.", VMMLIB_HERE );
-	
+
 #endif
-    
-	_get_slice( i3 ).set_column( i2, data );	
-	
+
+	_get_slice( i3 ).set_column( i2, data );
+
 }
 
 VMML_TEMPLATE_STRING
-inline void 
+inline void
 VMML_TEMPLATE_CLASSNAME::
 set_I3_vector( size_t i1, size_t i2, const vector< I3, T >& data )
 {
@@ -650,11 +650,11 @@ set_I3_vector( size_t i1, size_t i2, const vector< I3, T >& data )
     {
             _get_slice( i3 ).at( i1, i2 ) = data[ i3 ];
     }
-	
+
 }
 
 VMML_TEMPLATE_STRING
-inline void 
+inline void
 VMML_TEMPLATE_CLASSNAME::
 set_row( size_t i1, size_t i3, const vector< I2, T >& data )
 {
@@ -663,7 +663,7 @@ set_row( size_t i1, size_t i3, const vector< I2, T >& data )
 
 
 VMML_TEMPLATE_STRING
-inline void 
+inline void
 VMML_TEMPLATE_CLASSNAME::
 set_column( size_t i2, size_t i3, const vector< I1, T >& data )
 {
@@ -671,7 +671,7 @@ set_column( size_t i2, size_t i3, const vector< I1, T >& data )
 }
 
 VMML_TEMPLATE_STRING
-inline void 
+inline void
 VMML_TEMPLATE_CLASSNAME::
 set_tube( size_t i1, size_t i2, const vector< I3, T >& data )
 {
@@ -679,7 +679,7 @@ set_tube( size_t i1, size_t i2, const vector< I3, T >& data )
 }
 
 VMML_TEMPLATE_STRING
-inline typename VMML_TEMPLATE_CLASSNAME::front_slice_type& 
+inline typename VMML_TEMPLATE_CLASSNAME::front_slice_type&
 VMML_TEMPLATE_CLASSNAME::
 get_frontal_slice_fwd( size_t i3 )
 {
@@ -692,7 +692,7 @@ get_frontal_slice_fwd( size_t i3 )
 
 
 VMML_TEMPLATE_STRING
-inline const typename VMML_TEMPLATE_CLASSNAME::front_slice_type& 
+inline const typename VMML_TEMPLATE_CLASSNAME::front_slice_type&
 VMML_TEMPLATE_CLASSNAME::
 get_frontal_slice_fwd( size_t i3 ) const
 {
@@ -704,7 +704,7 @@ get_frontal_slice_fwd( size_t i3 ) const
 }
 
 VMML_TEMPLATE_STRING
-inline void 
+inline void
 VMML_TEMPLATE_CLASSNAME::
 get_frontal_slice_fwd( size_t i3, front_slice_type& data ) const
 {
@@ -712,14 +712,14 @@ get_frontal_slice_fwd( size_t i3, front_slice_type& data ) const
     if ( i3 >= I3 )
         VMMLIB_ERROR( "get_frontal_slice_fwd() - index out of bounds.", VMMLIB_HERE );
 #endif
-	
+
 	data = _get_slice( i3 );
 ;
 }
 
 
 VMML_TEMPLATE_STRING
-inline void 
+inline void
 VMML_TEMPLATE_CLASSNAME::
 get_lateral_slice_bwd( size_t i2, bwd_lat_slice_type& data ) const
 {
@@ -727,7 +727,7 @@ get_lateral_slice_bwd( size_t i2, bwd_lat_slice_type& data ) const
     if ( i2 >= I2 )
         VMMLIB_ERROR( "get_lateral_slice_bwd() - index out of bounds.", VMMLIB_HERE );
 #endif
-    
+
 	for( size_t i3 = 0; i3 < I3; ++i3 )
 	{
 		data.set_column( i3, _get_slice( i3 ).get_column( i2 ));
@@ -735,7 +735,7 @@ get_lateral_slice_bwd( size_t i2, bwd_lat_slice_type& data ) const
 }
 
 VMML_TEMPLATE_STRING
-inline void 
+inline void
 VMML_TEMPLATE_CLASSNAME::
 get_horizontal_slice_fwd( size_t i1, horiz_slice_type& data ) const
 {
@@ -750,7 +750,7 @@ get_horizontal_slice_fwd( size_t i1, horiz_slice_type& data ) const
 }
 
 VMML_TEMPLATE_STRING
-inline void 
+inline void
 VMML_TEMPLATE_CLASSNAME::
 get_frontal_slice_bwd( size_t i3, bwd_front_slice_type& data ) const
 {
@@ -758,7 +758,7 @@ get_frontal_slice_bwd( size_t i3, bwd_front_slice_type& data ) const
 	if ( i3 >= I3 )
 		VMMLIB_ERROR( "get_frontal_slice_bwd() - index out of bounds.", VMMLIB_HERE );
 #endif
-	
+
 	front_slice_type* data_t = new front_slice_type();
 	*data_t = _get_slice( i3 );
 	data_t->transpose_to( data );
@@ -767,7 +767,7 @@ get_frontal_slice_bwd( size_t i3, bwd_front_slice_type& data ) const
 
 
 VMML_TEMPLATE_STRING
-inline void 
+inline void
 VMML_TEMPLATE_CLASSNAME::
 get_lateral_slice_fwd( size_t i2, lat_slice_type& data ) const
 {
@@ -785,7 +785,7 @@ get_lateral_slice_fwd( size_t i2, lat_slice_type& data ) const
 }
 
 VMML_TEMPLATE_STRING
-inline void 
+inline void
 VMML_TEMPLATE_CLASSNAME::
 get_horizontal_slice_bwd( size_t i1, bwd_horiz_slice_type& data ) const
 {
@@ -801,12 +801,12 @@ get_horizontal_slice_bwd( size_t i1, bwd_horiz_slice_type& data ) const
 	data_t->transpose_to( data );
 	delete data_t;
 }
-	
-	
-	
+
+
+
 //setter
 VMML_TEMPLATE_STRING
-inline void 
+inline void
 VMML_TEMPLATE_CLASSNAME::
 set_frontal_slice_fwd( size_t i3, const front_slice_type& data )
 {
@@ -814,14 +814,14 @@ set_frontal_slice_fwd( size_t i3, const front_slice_type& data )
     if ( i3 >= I3 )
         VMMLIB_ERROR( "set_frontal_slice_fwd() - index out of bounds.", VMMLIB_HERE );
 #endif
-	
+
 	_get_slice( i3 ) = data;
 }
 
 
 
 VMML_TEMPLATE_STRING
-inline void 
+inline void
 VMML_TEMPLATE_CLASSNAME::
 set_lateral_slice_bwd( size_t i2, const bwd_lat_slice_type& data )
 {
@@ -829,7 +829,7 @@ set_lateral_slice_bwd( size_t i2, const bwd_lat_slice_type& data )
     if ( i2 >= I2 )
         VMMLIB_ERROR( "set_lateral_slice_bwd() - index out of bounds.", VMMLIB_HERE );
 #endif
-	
+
 	for( size_t i3 = 0; i3 < I3; ++i3 )
 	{
 		_get_slice( i3 ).set_column(i2, data.get_column( i3 ));
@@ -837,7 +837,7 @@ set_lateral_slice_bwd( size_t i2, const bwd_lat_slice_type& data )
 }
 
 VMML_TEMPLATE_STRING
-inline void 
+inline void
 VMML_TEMPLATE_CLASSNAME::
 set_horizontal_slice_fwd( size_t i1, const horiz_slice_type& data )
 {
@@ -845,16 +845,16 @@ set_horizontal_slice_fwd( size_t i1, const horiz_slice_type& data )
     if ( i1 >= I1 )
         VMMLIB_ERROR( "set_horizontal_slice_fwd() - index out of bounds.", VMMLIB_HERE );
 #endif
-	
+
 	for( size_t i3 = 0; i3 < I3; ++i3 )
 	{
 		_get_slice( i3 ).set_row( i1, data.get_column( i3 ));
 	}
-	
+
 }
-	
+
 VMML_TEMPLATE_STRING
-inline void 
+inline void
 VMML_TEMPLATE_CLASSNAME::
 set_frontal_slice_bwd( size_t i3, const bwd_front_slice_type& data )
 {
@@ -869,7 +869,7 @@ set_frontal_slice_bwd( size_t i3, const bwd_front_slice_type& data )
 }
 
 VMML_TEMPLATE_STRING
-inline void 
+inline void
 VMML_TEMPLATE_CLASSNAME::
 set_lateral_slice_fwd( size_t i2, const lat_slice_type& data )
 {
@@ -883,12 +883,12 @@ set_lateral_slice_fwd( size_t i2, const lat_slice_type& data )
 	{
 		_get_slice( i3 ).set_column(i2, data_t->get_column( i3 ));
 	}
-	
+
 	delete data_t;
 }
 
 VMML_TEMPLATE_STRING
-inline void 
+inline void
 VMML_TEMPLATE_CLASSNAME::
 set_horizontal_slice_bwd( size_t i1, const bwd_horiz_slice_type& data )
 {
@@ -898,7 +898,7 @@ set_horizontal_slice_bwd( size_t i1, const bwd_horiz_slice_type& data )
 #endif
 	horiz_slice_type* data_t = new horiz_slice_type();
 	data.transpose_to( *data_t );
-	
+
 	for( size_t i3 = 0; i3 < I3; ++i3 )
 	{
 		_get_slice( i3 ).set_row( i1, data_t->get_column( i3 ));
@@ -907,7 +907,7 @@ set_horizontal_slice_bwd( size_t i1, const bwd_horiz_slice_type& data )
 }
 
 
-	
+
 //fill
 VMML_TEMPLATE_STRING
 void
@@ -928,7 +928,7 @@ fill_random( int seed )
 {
 	if ( seed >= 0 )
 		srand( seed );
-	
+
 	double fillValue = 0.0f;
     for( size_t index = 0; index < I1 * I2 * I3; ++index )
     {
@@ -937,7 +937,7 @@ fill_random( int seed )
         fillValue *= std::numeric_limits< T >::max();
         _array[ index ] = static_cast< T >( fillValue )  ;
     }
-    
+
 #if 0
 	for( size_t i3 = 0; i3 < I3; ++i3 )
 	{
@@ -990,7 +990,7 @@ fill_rand_sym( int seed )
 		srand( seed );
 	assert(I1 == I2);
 	assert(I1 == I3);
-	
+
 	double fillValue = 0.0f;
 	T t_fill_value = 0;
 	for( size_t i3 = 0; i3 < I3; ++i3 )
@@ -1003,9 +1003,9 @@ fill_rand_sym( int seed )
 				fillValue /= RAND_MAX;
 				fillValue *= std::numeric_limits< T >::max(); //add fillValue += 0.5; for rounding
 				t_fill_value = static_cast< T >( fillValue );
-				
+
 				at( i1, i2, i3 ) = t_fill_value;
-				
+
 				if ( i1 != i2 || i1 != i3 || i2 != i3 )
 				{
 					if ( i1 != i2 )
@@ -1014,7 +1014,7 @@ fill_rand_sym( int seed )
 						at( i1, i3, i2 ) = t_fill_value;
 					if ( i1 != i3 )
 						at( i3, i2, i1 ) = t_fill_value;
-						
+
 					if ( i1 != i2 && i1 != i3 && i2 != i3 )
 					{
 						at( i2, i3, i1 ) = t_fill_value;
@@ -1023,9 +1023,9 @@ fill_rand_sym( int seed )
 				}
 			}
 		}
-	}	
-}	
-	
+	}
+}
+
 VMML_TEMPLATE_STRING
 void
 VMML_TEMPLATE_CLASSNAME::
@@ -1034,7 +1034,7 @@ fill_rand_sym_slices( int seed )
 	if ( seed >= 0 )
 		srand( seed );
 	assert(I1 == I2);
-	
+
 	double fillValue = 0.0f;
 	for( size_t i3 = 0; i3 < I3; ++i3 )
 	{
@@ -1049,10 +1049,10 @@ fill_rand_sym_slices( int seed )
 				at( i2, i1, i3 ) = static_cast< T >( fillValue );
 			}
 		}
-	}	
-}	
-	
-	
+	}
+}
+
+
 
 VMML_TEMPLATE_STRING
 void
@@ -1074,10 +1074,10 @@ fill_increasing_values( )
 }
 
 VMML_TEMPLATE_STRING
-void 
+void
 VMML_TEMPLATE_CLASSNAME::range_threshold(tensor3<I1, I2, I3, T>& other_, const T& start_value, const T& end_value) const
 {
-	
+
 	for( size_t i3 = 0; i3 < I3; ++i3 )
 	{
 		for( size_t i1 = 0; i1 < I1; ++i1 )
@@ -1092,10 +1092,10 @@ VMML_TEMPLATE_CLASSNAME::range_threshold(tensor3<I1, I2, I3, T>& other_, const T
 	}
 }
 
-	
+
 VMML_TEMPLATE_STRING
 template< size_t R>
-typename enable_if< R == I1 && R == I2 && R == I3>::type* 
+typename enable_if< R == I1 && R == I2 && R == I3>::type*
 VMML_TEMPLATE_CLASSNAME::diag( const vector< R, T >& diag_values_ )
 {
 	zero();
@@ -1103,15 +1103,15 @@ VMML_TEMPLATE_CLASSNAME::diag( const vector< R, T >& diag_values_ )
 	{
 		at(r, r, r) = static_cast< T >( diag_values_.at(r) );
 	}
-	
+
 	return 0;
 }
-	
-	
-	
+
+
+
 
 VMML_TEMPLATE_STRING
-void 
+void
 VMML_TEMPLATE_CLASSNAME::zero()
 {
     fill( static_cast< T >( 0.0 ) );
@@ -1129,7 +1129,7 @@ VMML_TEMPLATE_CLASSNAME::operator==( const tensor3< I1, I2, I3, T >& other ) con
             return false;
     }
     return true;
-    
+
 #if 0
     for( size_t i3 = 0; ok && i3 < I3; ++i3 )
 	{
@@ -1159,11 +1159,11 @@ bool
 VMML_TEMPLATE_CLASSNAME::equals( const tensor3< I1, I2, I3, T >& other, T tolerance ) const
 {
     bool ok = true;
-	for (size_t i3 = 0; ok && i3 < I3; ++i3 ) 
+	for (size_t i3 = 0; ok && i3 < I3; ++i3 )
 	{
 		ok = _get_slice( i3 ).equals( other.get_frontal_slice_fwd( i3 ), tolerance );
 	}
-    return ok;	
+    return ok;
 }
 
 
@@ -1194,40 +1194,40 @@ VMML_TEMPLATE_STRING
 template< size_t J1, size_t J2, size_t J3 >
 typename enable_if< J1 <= I1 && J2 <= I2 && J3 <= I3 >::type*
 VMML_TEMPLATE_CLASSNAME::
-get_sub_tensor3( tensor3<J1, J2, J3, T >& result,  
+get_sub_tensor3( tensor3<J1, J2, J3, T >& result,
 				size_t row_offset, size_t col_offset, size_t slice_offset ) const
 {
 #ifdef VMMLIB_SAFE_ACCESSORS
 	if ( J1 + row_offset > I1 || J2 + col_offset > I2 || J3 + slice_offset > I3 )
 		VMMLIB_ERROR( "index out of bounds.", VMMLIB_HERE );
 #endif
-	
+
 	for( size_t slice = 0; slice < J3; ++slice )
 	{
 		for( size_t row = 0; row < J1; ++row )
 		{
 			for( size_t col = 0; col < J2; ++col )
 			{
-				result.at( row, col, slice ) 
+				result.at( row, col, slice )
 				= at( row_offset + row, col_offset + col, slice_offset + slice );
 			}
 		}
 	}
 	return 0;
 }
-	
+
 VMML_TEMPLATE_STRING
 template< size_t J1, size_t J2, size_t J3 >
 typename enable_if< J1 <= I1 && J2 <= I2 && J3 <= I3 >::type*
 VMML_TEMPLATE_CLASSNAME::
-set_sub_tensor3( const tensor3<J1, J2, J3, T >& sub_data_,  
+set_sub_tensor3( const tensor3<J1, J2, J3, T >& sub_data_,
 				size_t row_offset, size_t col_offset, size_t slice_offset )
 {
 #ifdef VMMLIB_SAFE_ACCESSORS
 	if ( J1 + row_offset > I1 || J2 + col_offset > I2 || J3 + slice_offset > I3 )
 		VMMLIB_ERROR( "index out of bounds.", VMMLIB_HERE );
 #endif
-	
+
 	for( size_t slice = 0; slice < J3; ++slice )
 	{
 		for( size_t row = 0; row < J1; ++row )
@@ -1279,7 +1279,7 @@ VMML_TEMPLATE_CLASSNAME::end() const
 
 VMML_TEMPLATE_STRING
 template< typename input_iterator_t >
-void 
+void
 VMML_TEMPLATE_CLASSNAME::set( input_iterator_t begin_, input_iterator_t end_, bool row_major_layout )
 {
 	input_iterator_t it( begin_ );
@@ -1309,7 +1309,7 @@ VMML_TEMPLATE_CLASSNAME::set( input_iterator_t begin_, input_iterator_t end_, bo
 
 
 VMML_TEMPLATE_STRING
-inline VMML_TEMPLATE_CLASSNAME 
+inline VMML_TEMPLATE_CLASSNAME
 VMML_TEMPLATE_CLASSNAME::operator+( const tensor3< I1, I2, I3, T >& other ) const
 {
 	tensor3< I1, I2, I3, T > result( *this );
@@ -1331,18 +1331,18 @@ VMML_TEMPLATE_CLASSNAME::operator+=( const tensor3< J1, J2, J3, T >& other )
 			for( size_t i2 = 0; i2 < J2; ++i2 )
 			{
 				at( i1, i2, i3 ) += other.at(i1, i2, i3);
-			}		
+			}
 		}
 	}
 	return 0;
 }
-	
-	
+
+
 VMML_TEMPLATE_STRING
 void
 VMML_TEMPLATE_CLASSNAME::operator+=( const tensor3< I1, I2, I3, T >& other )
 {
-    iterator it = begin(), it_end = end(); 
+    iterator it = begin(), it_end = end();
     const_iterator other_it = other.begin();
     for( ; it != it_end; ++it, ++other_it )
     {
@@ -1353,7 +1353,7 @@ VMML_TEMPLATE_CLASSNAME::operator+=( const tensor3< I1, I2, I3, T >& other )
 
 
 VMML_TEMPLATE_STRING
-inline VMML_TEMPLATE_CLASSNAME 
+inline VMML_TEMPLATE_CLASSNAME
 VMML_TEMPLATE_CLASSNAME::operator-( const tensor3< I1, I2, I3, T >& other ) const
 {
 	tensor3< I1, I2, I3, T > result( *this );
@@ -1367,7 +1367,7 @@ VMML_TEMPLATE_STRING
 void
 VMML_TEMPLATE_CLASSNAME::operator-=( const tensor3< I1, I2, I3, T >& other )
 {
-    iterator it = begin(), it_end = end(); 
+    iterator it = begin(), it_end = end();
     const_iterator other_it = other.begin();
     for( ; it != it_end; ++it, ++other_it )
     {
@@ -1380,7 +1380,7 @@ VMML_TEMPLATE_CLASSNAME::operator-=( const tensor3< I1, I2, I3, T >& other )
 
 
 VMML_TEMPLATE_STRING
-inline VMML_TEMPLATE_CLASSNAME 
+inline VMML_TEMPLATE_CLASSNAME
 VMML_TEMPLATE_CLASSNAME::operator+( T scalar ) const
 {
 	tensor3< I1, I2, I3, T > result( *this );
@@ -1394,7 +1394,7 @@ VMML_TEMPLATE_STRING
 void
 VMML_TEMPLATE_CLASSNAME::operator+=( T scalar )
 {
-    iterator it = begin(), it_end = end(); 
+    iterator it = begin(), it_end = end();
     for( ; it != it_end; ++it )
     {
         *it += scalar;
@@ -1404,7 +1404,7 @@ VMML_TEMPLATE_CLASSNAME::operator+=( T scalar )
 
 
 VMML_TEMPLATE_STRING
-inline VMML_TEMPLATE_CLASSNAME 
+inline VMML_TEMPLATE_CLASSNAME
 VMML_TEMPLATE_CLASSNAME::operator-( T scalar ) const
 {
 	tensor3< I1, I2, I3, T > result( *this );
@@ -1418,15 +1418,15 @@ VMML_TEMPLATE_STRING
 void
 VMML_TEMPLATE_CLASSNAME::operator-=( T scalar )
 {
-    iterator it = begin(), it_end = end(); 
+    iterator it = begin(), it_end = end();
     for( ; it != it_end; ++it )
     {
         *it -= scalar;
     }
 }
-	
+
 VMML_TEMPLATE_STRING
-void 
+void
 VMML_TEMPLATE_CLASSNAME::horizontal_unfolding_bwd( bwd_horiz_unfolding_type& unfolding) const
 {
 	bwd_horiz_slice_type* horizontal_slice = new bwd_horiz_slice_type();
@@ -1436,13 +1436,13 @@ VMML_TEMPLATE_CLASSNAME::horizontal_unfolding_bwd( bwd_horiz_unfolding_type& unf
 		for( size_t col = 0; col < I2; ++col )
 		{
 			unfolding.set_column( i*I2+col,  horizontal_slice->get_column(col));
-		} 
+		}
 	}
 	delete horizontal_slice;
 }
-	
+
 VMML_TEMPLATE_STRING
-void 
+void
 VMML_TEMPLATE_CLASSNAME::horizontal_unfolding_fwd( fwd_horiz_unfolding_type& unfolding) const
 {
 	horiz_slice_type* horizontal_slice = new horiz_slice_type();
@@ -1452,13 +1452,13 @@ VMML_TEMPLATE_CLASSNAME::horizontal_unfolding_fwd( fwd_horiz_unfolding_type& unf
 		for( size_t col = 0; col < I3; ++col )
 		{
 			unfolding.set_column( i*I3+col,  horizontal_slice->get_column(col));
-		} 
+		}
 	}
 	delete horizontal_slice;
-}	
+}
 
 VMML_TEMPLATE_STRING
-void 
+void
 VMML_TEMPLATE_CLASSNAME::lateral_unfolding_bwd( bwd_lat_unfolding_type& unfolding) const
 {
 	bwd_lat_slice_type* lateral_slice = new bwd_lat_slice_type();
@@ -1468,13 +1468,13 @@ VMML_TEMPLATE_CLASSNAME::lateral_unfolding_bwd( bwd_lat_unfolding_type& unfoldin
 		for( size_t col = 0; col < I3; ++col )
 		{
 			unfolding.set_column( i*I3+col,  lateral_slice->get_column(col));
-		} 
+		}
 	}
 	delete lateral_slice;
 }
 
 VMML_TEMPLATE_STRING
-void 
+void
 VMML_TEMPLATE_CLASSNAME::lateral_unfolding_fwd( fwd_lat_unfolding_type& unfolding) const
 {
 	lat_slice_type* lateral_slice = new lat_slice_type();
@@ -1484,13 +1484,13 @@ VMML_TEMPLATE_CLASSNAME::lateral_unfolding_fwd( fwd_lat_unfolding_type& unfoldin
 		for( size_t col = 0; col < I1; ++col )
 		{
 			unfolding.set_column( i*I1+col,  lateral_slice->get_column(col));
-		} 
+		}
 	}
 	delete lateral_slice;
 }
-	
+
 VMML_TEMPLATE_STRING
-void 
+void
 VMML_TEMPLATE_CLASSNAME::frontal_unfolding_bwd( bwd_front_unfolding_type& unfolding) const
 {
 	bwd_front_slice_type* frontal_slice = new bwd_front_slice_type();
@@ -1500,13 +1500,13 @@ VMML_TEMPLATE_CLASSNAME::frontal_unfolding_bwd( bwd_front_unfolding_type& unfold
 		for( size_t col = 0; col < I1; ++col )
 		{
 			unfolding.set_column( i*I1+col, frontal_slice->get_column(col));
-		} 
+		}
 	}
 	delete frontal_slice;
 }
 
 VMML_TEMPLATE_STRING
-void 
+void
 VMML_TEMPLATE_CLASSNAME::frontal_unfolding_fwd( fwd_front_unfolding_type& unfolding) const
 {
 	front_slice_type* frontal_slice = new front_slice_type();
@@ -1516,13 +1516,13 @@ VMML_TEMPLATE_CLASSNAME::frontal_unfolding_fwd( fwd_front_unfolding_type& unfold
 		for( size_t col = 0; col < I2; ++col )
 		{
 			unfolding.set_column( i*I2+col, frontal_slice->get_column(col));
-		} 
+		}
 	}
 	delete frontal_slice;
 }
 
 VMML_TEMPLATE_STRING
-void 
+void
 VMML_TEMPLATE_CLASSNAME::horizontal_folding_bwd( const bwd_horiz_unfolding_type& unfolding)
 {
 	bwd_horiz_slice_type* horizontal_slice = new bwd_horiz_slice_type;
@@ -1531,16 +1531,16 @@ VMML_TEMPLATE_CLASSNAME::horizontal_folding_bwd( const bwd_horiz_unfolding_type&
 		for( size_t col = 0; col < I2; ++col )
 		{
 			horizontal_slice->set_column(col, unfolding.get_column( i*I2+col ));
-		} 
+		}
 		set_horizontal_slice_bwd(i, *horizontal_slice );
 	}
 	delete horizontal_slice;
 }
-	
-	
+
+
 VMML_TEMPLATE_STRING
-void 
-VMML_TEMPLATE_CLASSNAME::frontal_folding_bwd( const bwd_front_unfolding_type& unfolding) 
+void
+VMML_TEMPLATE_CLASSNAME::frontal_folding_bwd( const bwd_front_unfolding_type& unfolding)
 {
 	bwd_front_slice_type* frontal_slice = new bwd_front_slice_type();
 	for( size_t i = 0; i < I3; ++i )
@@ -1548,16 +1548,16 @@ VMML_TEMPLATE_CLASSNAME::frontal_folding_bwd( const bwd_front_unfolding_type& un
 		for( size_t col = 0; col < I1; ++col )
 		{
 			frontal_slice->set_column(col, unfolding.get_column( i*I1+col));
-		} 
+		}
 		set_frontal_slice_bwd(i, *frontal_slice );
 	}
 	delete frontal_slice;
 }
 
-	
+
 VMML_TEMPLATE_STRING
-void 
-VMML_TEMPLATE_CLASSNAME::lateral_folding_bwd( const bwd_lat_unfolding_type& unfolding) 
+void
+VMML_TEMPLATE_CLASSNAME::lateral_folding_bwd( const bwd_lat_unfolding_type& unfolding)
 {
 	bwd_lat_slice_type* lateral_slice = new bwd_lat_slice_type();
 	for( size_t i = 0; i < I2; ++i )
@@ -1565,7 +1565,7 @@ VMML_TEMPLATE_CLASSNAME::lateral_folding_bwd( const bwd_lat_unfolding_type& unfo
 		for( size_t col = 0; col < I3; ++col )
 		{
 			lateral_slice->set_column(col, unfolding.get_column( i*I3+col ));
-		} 
+		}
 		set_lateral_slice_bwd(i, *lateral_slice );
 	}
 	delete lateral_slice;
@@ -1576,15 +1576,15 @@ VMML_TEMPLATE_STRING
 tensor3< I1, I2, I3, T >
 VMML_TEMPLATE_CLASSNAME::operator*( T scalar )
 {
-    tensor3< I1, I2, I3, T > result; 
+    tensor3< I1, I2, I3, T > result;
     for( size_t index = 0; index < I1 * I2 * I3; ++index )
     {
         result._array[ index ] = _array[ index ] * scalar;
     }
-    
+
 #if 0
     tensor3< I1, I2, I3, T >* result = (*this);
-    
+
 	for( size_t i3 = 0; i3 < I3; ++i3 )
 	{
 		result.array[ i3 ] = array[ i3 ] * scalar;
@@ -1609,7 +1609,7 @@ VMML_TEMPLATE_CLASSNAME::operator*=( T scalar )
 	{
 		array[ i3 ] *= scalar;
 	}
-#endif	
+#endif
 }
 
 VMML_TEMPLATE_STRING
@@ -1617,7 +1617,7 @@ tensor3< I1, I2, I3, T >
 VMML_TEMPLATE_CLASSNAME::operator/( T scalar )
 {
 	tensor3< I1, I2, I3, T > result;
-	
+
 	for( size_t slice_idx = 0; slice_idx < I3; ++ slice_idx )
 	{
 		for( size_t row_index = 0; row_index < I1; ++row_index )
@@ -1648,7 +1648,7 @@ VMML_TEMPLATE_CLASSNAME::operator/=( T scalar )
 		}
 	}
 }
-	
+
 
 VMML_TEMPLATE_STRING
 inline tensor3< I1, I2, I3, T >
@@ -1668,29 +1668,29 @@ VMML_TEMPLATE_CLASSNAME::negate() const
 }
 
 VMML_TEMPLATE_STRING
-double 
+double
 VMML_TEMPLATE_CLASSNAME::frobenius_norm( const tensor3< I1, I2, I3, T>& other_ ) const
 {
 	double f_norm = 0.0;
 	T abs_diff = 0;
-	const_iterator it = begin(), it_end = end(); 
-	const_iterator it_other = other_.begin(); 
+	const_iterator it = begin(), it_end = end();
+	const_iterator it_other = other_.begin();
 	for( ; it != it_end; ++it, ++it_other )
 	{
 		abs_diff = fabs( *it ) - fabs( *it_other );
 		f_norm += abs_diff * abs_diff;
 	}
-	
+
 	return sqrt(f_norm);
 }
 
 VMML_TEMPLATE_STRING
-double 
+double
 VMML_TEMPLATE_CLASSNAME::frobenius_norm( ) const
 {
     double f_norm = 0.0;
-#if 0   
-	const_iterator it = begin(), it_end = end(); 
+#if 0
+	const_iterator it = begin(), it_end = end();
     for( ; it != it_end; ++it )
          f_norm += *it * *it;
 #else
@@ -1705,72 +1705,72 @@ VMML_TEMPLATE_CLASSNAME::frobenius_norm( ) const
 			}
 		}
 	}
-	
+
 #endif
 
     return sqrt(f_norm);
 }
 
 VMML_TEMPLATE_STRING
-double 
+double
 VMML_TEMPLATE_CLASSNAME::avg_frobenius_norm( ) const
 {
     double af_norm = 0.0;
-    const_iterator it = begin(), it_end = end(); 
+    const_iterator it = begin(), it_end = end();
     for( ; it != it_end; ++it )
 		af_norm += *it * *it;
-	
+
 	af_norm /= size();
     return sqrt(af_norm);
 }
 
 VMML_TEMPLATE_STRING
-double 
+double
 VMML_TEMPLATE_CLASSNAME::mse( const tensor3< I1, I2, I3, T >& other ) const
 {
 	double mse_val = 0.0;
 	double diff = 0.0;
-	const_iterator it = begin(), it_end = end(); 
-	const_iterator other_it = other.begin(); 
+	const_iterator it = begin(), it_end = end();
+	const_iterator other_it = other.begin();
 	for( ; it != it_end; ++it, ++other_it ){
 		diff = abs( *it ) - abs( *other_it );
 		mse_val += diff * diff;
 	}
-	
+
 	mse_val /= (double)size();
-	
+
 	return mse_val;
-}	
-	
-	
+}
+
+
 VMML_TEMPLATE_STRING
-double 
+double
 VMML_TEMPLATE_CLASSNAME::rmse( const tensor3< I1, I2, I3, T >& other ) const
 {
 	return sqrt(mse( other ));
-}	
-	
+}
+
 VMML_TEMPLATE_STRING
 double
 VMML_TEMPLATE_CLASSNAME::mean() const
 {
 	double val = 0;
-	const_iterator it = begin(), it_end = end(); 
+	const_iterator it = begin(), it_end = end();
 	for( ; it != it_end; ++it ){
 		val += double(abs( *it ));
 	}
-	
+
 	return ( val/size());
-}	
-	
-	
+}
+
+
 VMML_TEMPLATE_STRING
-void 
+void
 VMML_TEMPLATE_CLASSNAME::mean( T& mean_ ) const
 {
 	mean_ = static_cast< T >( mean() );
-}	
-	
+}
+
 VMML_TEMPLATE_STRING
 double
 VMML_TEMPLATE_CLASSNAME::variance() const
@@ -1778,34 +1778,34 @@ VMML_TEMPLATE_CLASSNAME::variance() const
 	double val = 0.0;
 	double sum_val = 0.0;
 	double mean_val = mean();
-	const_iterator it = begin(), it_end = end(); 
+	const_iterator it = begin(), it_end = end();
 	for( ; it != it_end; ++it ){
 		val = double(*it) - mean_val;
 		val *= val;
 		sum_val += val;
 	}
-	
+
 	return double(sum_val/(size()-1));
-}	
+}
 
 VMML_TEMPLATE_STRING
 double
 VMML_TEMPLATE_CLASSNAME::stdev() const
 {
 	return sqrt(variance());
-}		
+}
 
 VMML_TEMPLATE_STRING
-double 
+double
 VMML_TEMPLATE_CLASSNAME::compute_psnr( const tensor3< I1, I2, I3, T >& other, const T& max_value_ ) const
 {
 	double rmse_val = rmse( other );
 	double psnr_val = log( max_value_ / rmse_val );
 	psnr_val *= 20;
-	
+
 	return fabs(psnr_val);
-}		
-	
+}
+
 VMML_TEMPLATE_STRING
 template< typename TT >
 void
@@ -1814,7 +1814,7 @@ VMML_TEMPLATE_CLASSNAME::cast_from( const tensor3< I1, I2, I3, TT >& other )
 #if 0
    typedef tensor3< I1, I2, I3, TT > t3_tt_type ;
     typedef typename t3_tt_type::const_iterator tt_const_iterator;
-    
+
     iterator it = begin(), it_end = end();
     tt_const_iterator other_it = other.begin();
     for( ; it != it_end; ++it, ++other_it )
@@ -1838,7 +1838,7 @@ VMML_TEMPLATE_CLASSNAME::cast_from( const tensor3< I1, I2, I3, TT >& other )
 
 #endif
 }
-	
+
 VMML_TEMPLATE_STRING
 template< size_t J1, size_t J2, size_t  J3, typename TT >
 void
@@ -1858,8 +1858,8 @@ VMML_TEMPLATE_CLASSNAME::cast_from( const tensor3< J1, J2, J3, TT >& other, cons
 		}
 	}
 }
-	
-	
+
+
 
 VMML_TEMPLATE_STRING
 template< typename TT >
@@ -1868,7 +1868,7 @@ VMML_TEMPLATE_CLASSNAME::float_t_to_uint_t( const tensor3< I1, I2, I3, TT >& oth
 {
 	typedef tensor3< I1, I2, I3, TT > t3_tt_type ;
 	typedef typename t3_tt_type::const_iterator tt_const_iterator;
-	
+
 	if( sizeof(T) == 1 || sizeof(T) == 2) {
 		iterator it = begin(), it_end = end();
 		tt_const_iterator other_it = other.begin();
@@ -1876,18 +1876,18 @@ VMML_TEMPLATE_CLASSNAME::float_t_to_uint_t( const tensor3< I1, I2, I3, TT >& oth
 		{
 			*it = T( std::min( std::max(int(0), int( *other_it + 0.5)), int(std::numeric_limits< T >::max()) ));
 		}
-	} 
+	}
 	else {
 		//std::cout << "Warning: use a different type as target (uint8 or uint16). No converstion done.\n" << std::endl;
 		this->cast_from( other );
 		return;
 	}
-}	
+}
 
 VMML_TEMPLATE_STRING
 void
 VMML_TEMPLATE_CLASSNAME::export_to( std::vector< T >& data_ ) const
-{	
+{
     data_.clear();
     const_iterator  it = begin(),
     it_end = end();
@@ -1904,46 +1904,46 @@ VMML_TEMPLATE_CLASSNAME::import_from( const std::vector< T >& data_ )
 {
     size_t i = 0; //iterator over data_
     size_t input_size = data_.size();
-    
+
     iterator  it = begin(),
     it_end = end();
     for( ; it != it_end; ++it, ++i )
-    {		
-        if ( i >= input_size) 
+    {
+        if ( i >= input_size)
                 *it = static_cast<T> (0);
-        else 
+        else
                 *it = data_.at( i );
     }
-}	
+}
 
-	
+
 VMML_TEMPLATE_STRING
 T
 VMML_TEMPLATE_CLASSNAME::get_min() const
 {
 	T tensor3_min = static_cast<T>(std::numeric_limits<T>::max());
-	
+
 	const_iterator  it = begin(),
 	it_end = end();
 	for( ; it != it_end; ++it)
-	{		
+	{
 		if ( *it < tensor3_min ) {
 			tensor3_min = *it;
 		}
 	}
 	return tensor3_min;
-}	
-	
+}
+
 VMML_TEMPLATE_STRING
 T
 VMML_TEMPLATE_CLASSNAME::get_max() const
 {
 	T tensor3_max = static_cast<T>(0);
-	
+
 	const_iterator  it = begin(),
 	it_end = end();
 	for( ; it != it_end; ++it)
-	{		
+	{
 		if ( *it > tensor3_max ) {
 			tensor3_max = *it;
 		}
@@ -1956,105 +1956,105 @@ T
 VMML_TEMPLATE_CLASSNAME::get_abs_min() const
 {
 	T tensor3_min = static_cast<T>(std::numeric_limits<T>::max());
-	
+
 	const_iterator  it = begin(),
 	it_end = end();
 	for( ; it != it_end; ++it)
-	{		
+	{
 		if ( fabs(*it) < fabs(tensor3_min) ) {
 			tensor3_min = fabs(*it);
 		}
 	}
 	return tensor3_min;
-}	
+}
 
 VMML_TEMPLATE_STRING
 T
 VMML_TEMPLATE_CLASSNAME::get_abs_max() const
 {
 	T tensor3_max = static_cast<T>(0);
-	
+
 	const_iterator  it = begin(),
 	it_end = end();
 	for( ; it != it_end; ++it)
-	{		
+	{
 		if ( fabs(*it) > fabs(tensor3_max) ) {
 			tensor3_max = fabs(*it);
 		}
 	}
 	return tensor3_max;
 }
-	
-	
+
+
 VMML_TEMPLATE_STRING
 size_t
 VMML_TEMPLATE_CLASSNAME::nnz() const
 {
 	size_t counter = 0;
- 	
+
 	const_iterator  it = begin(),
 	it_end = end();
 	for( ; it != it_end; ++it)
-	{		
+	{
 		if ( *it != 0 ) {
 			++counter;
 		}
 	}
-	
+
 	return counter;
-}	
-	
+}
+
 VMML_TEMPLATE_STRING
 size_t
 VMML_TEMPLATE_CLASSNAME::nnz( const T& threshold_ ) const
 {
 	size_t counter = 0;
-	
+
 	const_iterator  it = begin(),
 	it_end = end();
 	for( ; it != it_end; ++it)
-	{		
+	{
 		if ( fabs(*it) > threshold_ ) {
 			++counter;
 		}
 	}
-	
+
 	return counter;
-}		
-	
+}
+
 VMML_TEMPLATE_STRING
 void
-VMML_TEMPLATE_CLASSNAME::threshold( const T& threshold_value_ ) 
+VMML_TEMPLATE_CLASSNAME::threshold( const T& threshold_value_ )
 {
 	iterator  it = begin(),
 	it_end = end();
 	for( ; it != it_end; ++it)
-	{		
+	{
 		if ( fabs(*it) <= threshold_value_ ) {
 			*it = static_cast<T> (0);
 		}
 	}
-}	
-	
+}
+
 VMML_TEMPLATE_STRING
 template< typename TT  >
 void
-VMML_TEMPLATE_CLASSNAME::quantize_to( tensor3< I1, I2, I3, TT >& quantized_, 
+VMML_TEMPLATE_CLASSNAME::quantize_to( tensor3< I1, I2, I3, TT >& quantized_,
 									 const T& min_value_, const T& max_value_ ) const
 {
 	double max_tt_range = double(std::numeric_limits< TT >::max());
 	double min_tt_range = double(std::numeric_limits< TT >::min());
 	double tt_range = max_tt_range - min_tt_range;
 	double t_range = max_value_ - min_value_;
-	
+
 	//std::cout << "tt min= " << min_tt_range << ", tt max= " << max_tt_range << ", t min= " << min_value_ << ", t max= " << max_value_ << std::endl;
 	//std::cout << "tt range=" << tt_range << ", t range= " << t_range << std::endl;
-	
+
 	typedef tensor3< I1, I2, I3, TT > t3_tt_type ;
 	typedef typename t3_tt_type::iterator tt_iterator;
 	tt_iterator it_quant = quantized_.begin();
 	const_iterator it = begin(), it_end = end();
-	
+
 	for( ; it != it_end; ++it, ++it_quant )
 	{
 		if (std::numeric_limits<TT>::is_signed ) {
@@ -2065,8 +2065,8 @@ VMML_TEMPLATE_CLASSNAME::quantize_to( tensor3< I1, I2, I3, TT >& quantized_,
 		//std::cout << "original value= " << double(*it) << ", converted value= " << double(*it_quant ) << std::endl;
 	}
 }
-	
-	
+
+
 VMML_TEMPLATE_STRING
 template< typename TT  >
 void
@@ -2074,11 +2074,11 @@ VMML_TEMPLATE_CLASSNAME::quantize( tensor3< I1, I2, I3, TT >& quantized_, T& min
 {
 	min_value_= get_min();
 	max_value_ = get_max();
-	
-	quantize_to( quantized_, min_value_, max_value_ ); 
-}	
-	
-	
+
+	quantize_to( quantized_, min_value_, max_value_ );
+}
+
+
 VMML_TEMPLATE_STRING
 template< typename TT  >
 void
@@ -2086,20 +2086,20 @@ void
 {
 	double max_tt_range = double(tt_range_);
 	double min_tt_range = 0;
-	
+
 	min_value_ = 0;
 	max_value_ = get_abs_max();
 	double t_range = max_value_ - min_value_;
-	
+
 	typedef tensor3< I1, I2, I3, TT > t3_tt_type ;
 	typedef typename t3_tt_type::iterator tt_iterator;
 	tt_iterator it_quant = quantized_.begin();
 	const_iterator it = begin(), it_end = end();
-	
+
 	typedef tensor3< I1, I2, I3, char > t3_sign_type ;
 	typedef typename t3_sign_type::iterator sign_iterator;
 	sign_iterator it_sign = signs_.begin();
-	
+
 	for( ; it != it_end; ++it, ++it_quant, ++it_sign )
 	{
 		T value = fabs(*it);
@@ -2113,32 +2113,32 @@ void
 			*it_quant = TT(std::min( std::max( min_tt_range, double(quant_value + 0.5)), max_tt_range ));
 		}
 	}
-}		
+}
 
 VMML_TEMPLATE_STRING
 template< typename TT  >
 void
-VMML_TEMPLATE_CLASSNAME::quantize_to( tensor3< I1, I2, I3, TT >& quantized_, 
-								  tensor3< I1, I2, I3, char >& signs_, 
-								  T& min_value_, T& max_value_, 
+VMML_TEMPLATE_CLASSNAME::quantize_to( tensor3< I1, I2, I3, TT >& quantized_,
+								  tensor3< I1, I2, I3, char >& signs_,
+								  T& min_value_, T& max_value_,
 								  const TT& tt_range_ ) const
 {
 	double max_tt_range = double(tt_range_);
 	double min_tt_range = 0;
-	
+
 	min_value_ = get_abs_min();
 	max_value_ = get_abs_max();
 	double t_range = max_value_ - min_value_;
-	
+
 	typedef tensor3< I1, I2, I3, TT > t3_tt_type ;
 	typedef typename t3_tt_type::iterator tt_iterator;
 	tt_iterator it_quant = quantized_.begin();
 	const_iterator it = begin(), it_end = end();
-	
+
 	typedef tensor3< I1, I2, I3, char > t3_sign_type ;
 	typedef typename t3_sign_type::iterator sign_iterator;
 	sign_iterator it_sign = signs_.begin();
-	
+
 	for( ; it != it_end; ++it, ++it_quant, ++it_sign )
 	{
 		T value = fabs(*it);
@@ -2149,31 +2149,31 @@ VMML_TEMPLATE_CLASSNAME::quantize_to( tensor3< I1, I2, I3, TT >& quantized_,
 			*it_quant = TT( std::min( std::max( min_tt_range, double((( value - min_value_ ) * tt_range_ / t_range) + 0.5)), max_tt_range ));
 		}
 	}
-}		
-	
-	
+}
+
+
 VMML_TEMPLATE_STRING
 template< typename TT  >
 void
-VMML_TEMPLATE_CLASSNAME::dequantize( tensor3< I1, I2, I3, TT >& dequantized_, 
-										const tensor3< I1, I2, I3, char >& signs_, 
+VMML_TEMPLATE_CLASSNAME::dequantize( tensor3< I1, I2, I3, TT >& dequantized_,
+										const tensor3< I1, I2, I3, char >& signs_,
 										const TT& min_value_, const TT& max_value_ ) const
 {
 	T max_t_range = get_max();
 	T min_t_range = get_min();
 	long t_range = long(max_t_range) - long(min_t_range);
-	
+
 	TT tt_range = max_value_ - min_value_;
-	
+
 	typedef tensor3< I1, I2, I3, TT > t3_tt_type ;
 	typedef typename t3_tt_type::iterator tt_iterator;
 	tt_iterator it_dequant = dequantized_.begin();
 	const_iterator it = begin(), it_end = end();
-	
+
 	typedef tensor3< I1, I2, I3, char > t3_sign_type ;
 	typedef typename t3_sign_type::const_iterator sign_iterator;
 	sign_iterator it_sign = signs_.begin();
-	
+
 	float sign = 0;
 	for( ; it != it_end; ++it, ++it_dequant, ++it_sign )
 	{
@@ -2184,27 +2184,27 @@ VMML_TEMPLATE_CLASSNAME::dequantize( tensor3< I1, I2, I3, TT >& dequantized_,
 			*it_dequant = sign * std::min( std::max( min_value_, TT((((TT(*it) / t_range)) * tt_range ) + min_value_ )), max_value_ );
 		}
 	}
-}	
-	
-	
+}
+
+
 VMML_TEMPLATE_STRING
 template< typename TT  >
 void
-VMML_TEMPLATE_CLASSNAME::dequantize_log( tensor3< I1, I2, I3, TT >& dequantized_, 
-										const tensor3< I1, I2, I3, char >& signs_, 
+VMML_TEMPLATE_CLASSNAME::dequantize_log( tensor3< I1, I2, I3, TT >& dequantized_,
+										const tensor3< I1, I2, I3, char >& signs_,
 										const TT& min_value_, const TT& max_value_ ) const
 {
 	T max_t_range = get_max();
 	T min_t_range = get_min();
 	long t_range = long(max_t_range) - long(min_t_range);
-	
+
 	TT tt_range = max_value_ - min_value_;
-		
+
 	typedef tensor3< I1, I2, I3, TT > t3_tt_type ;
 	typedef typename t3_tt_type::iterator tt_iterator;
 	tt_iterator it_dequant = dequantized_.begin();
 	const_iterator it = begin(), it_end = end();
-	
+
 	typedef tensor3< I1, I2, I3, char > t3_sign_type ;
 	typedef typename t3_sign_type::const_iterator sign_iterator;
 	sign_iterator it_sign = signs_.begin();
@@ -2223,8 +2223,8 @@ VMML_TEMPLATE_CLASSNAME::dequantize_log( tensor3< I1, I2, I3, TT >& dequantized_
 			*it_dequant = sign * (std::min( std::max( min_value_, dequant_value + min_value_ ), max_value_ ));
 		}
 	}
-}	
-	
+}
+
 VMML_TEMPLATE_STRING
 template< typename TT  >
 void
@@ -2233,7 +2233,7 @@ VMML_TEMPLATE_CLASSNAME::dequantize( tensor3< I1, I2, I3, TT >& dequantized_, co
 	T max_t_range = get_max();
 	T min_t_range = get_min();
 	long t_range = long(max_t_range) - long(min_t_range);
-	
+
 	TT tt_range = max_value_ - min_value_;
 
 	typedef tensor3< I1, I2, I3, TT > t3_tt_type ;
@@ -2248,7 +2248,7 @@ VMML_TEMPLATE_CLASSNAME::dequantize( tensor3< I1, I2, I3, TT >& dequantized_, co
 			*it_dequant = std::min( std::max( min_value_, TT((((TT(*it) / t_range)) * tt_range ) + min_value_ )), max_value_ );
 		}
 	}
-}	
+}
 
 
 VMML_TEMPLATE_STRING
@@ -2256,14 +2256,14 @@ const VMML_TEMPLATE_CLASSNAME&
 VMML_TEMPLATE_CLASSNAME::operator=( const VMML_TEMPLATE_CLASSNAME& source_ )
 {
     memcpy( _array, source_._array, I1 * I2 * I3 * sizeof( T ) );
-	
+
 	return *this;
 }
 
 
 
 #if 0
-	
+
 std::string format_path( const std::string& dir_, const std::string& filename_, const std::string& format_ )
 {
 	std::string path = dir_;
@@ -2279,16 +2279,16 @@ std::string format_path( const std::string& dir_, const std::string& filename_, 
 		path.append( ".");
 		path.append( format_ );
 	}
-	return path;	
+	return path;
 }
 
-#endif	
+#endif
 
-	
+
 VMML_TEMPLATE_STRING
 void
 VMML_TEMPLATE_CLASSNAME::write_to_raw( const std::string& dir_, const std::string& filename_ ) const
-{		
+{
 	int dir_length = dir_.size() -1;
 	int last_separator = dir_.find_last_of( "/");
 	std::string path = dir_;
@@ -2302,8 +2302,8 @@ VMML_TEMPLATE_CLASSNAME::write_to_raw( const std::string& dir_, const std::strin
 		path.append( "raw" );
 	}
 	std::string path_raw = path;
-	
-	std::ofstream outfile;	
+
+	std::ofstream outfile;
 	outfile.open( path_raw.c_str() );
 	if( outfile.is_open() ) {
 		size_t len_slice = sizeof(T) * I1 * I2;
@@ -2315,12 +2315,12 @@ VMML_TEMPLATE_CLASSNAME::write_to_raw( const std::string& dir_, const std::strin
 	} else {
 		std::cout << "no file open" << std::endl;
 	}
-}	
+}
 
 VMML_TEMPLATE_STRING
 void
 VMML_TEMPLATE_CLASSNAME::write_to_csv( const std::string& dir_, const std::string& filename_ ) const
-{	
+{
 	int dir_length = dir_.size() -1;
 	int last_separator = dir_.find_last_of( "/");
 	std::string path = dir_;
@@ -2333,35 +2333,35 @@ VMML_TEMPLATE_CLASSNAME::write_to_csv( const std::string& dir_, const std::strin
 		path.append( ".");
 		path.append( "csv" );
 	}
-			
-	std::ofstream outfile;	
+
+	std::ofstream outfile;
 	outfile.open( path.c_str() );
 	if( outfile.is_open() ) {
-		
+
 		for(size_t i = 0; i < I3; ++i)
         {
             outfile << get_frontal_slice_fwd( i )  << std::endl;
-        }	
+        }
 
 		outfile.close();
 	} else {
 		std::cout << "no file open" << std::endl;
 	}
 
-}		
-	
+}
+
 
 VMML_TEMPLATE_STRING
 void
 VMML_TEMPLATE_CLASSNAME::write_datfile( const std::string& dir_, const std::string& filename_ ) const
-{	
+{
 	int dir_length = dir_.size() -1;
 	int last_separator = dir_.find_last_of( "/");
 	std::string path = dir_;
 	if (last_separator < dir_length ) {
 		path.append( "/" );
 	}
-		
+
 	std::string filename = "";
 	int pos = filename_.size() -4;
 	if( ( filename_.find(".raw", pos ) == pos) || ( filename_.find(".dat", pos ) == pos) ) {
@@ -2369,18 +2369,18 @@ VMML_TEMPLATE_CLASSNAME::write_datfile( const std::string& dir_, const std::stri
 	} else {
 		filename = filename_;
 	}
-	
+
 	path.append( filename );
 	//check for format
 	if( filename_.find( "dat", filename_.size() -3) == (-1)) {
 		path.append( ".");
 		path.append( "dat" );
 	}
-	
+
 	std::string path_dat = path;
-	
+
 	const char* format = (sizeof(T) == 2) ? "USHORT": "UCHAR";
-	
+
 	FILE* datfile = fopen(path_dat.c_str(), "w");
 	fprintf(datfile, "ObjectFileName:\t%s.raw\n", filename.c_str());
 	fprintf(datfile, "TaggedFileName:\t---\nResolution:\t%i %i %i\n", int(I1), int(I2), int(I3));
@@ -2389,13 +2389,13 @@ VMML_TEMPLATE_CLASSNAME::write_datfile( const std::string& dir_, const std::stri
 	fprintf(datfile, "ObjectType:\tTEXTURE_VOLUME_OBJECT\nObjectModel:\tI\nGridType:\tEQUIDISTANT\n");
 	fprintf(datfile, "Modality:\tunknown\nTimeStep:\t0\n");
 	fclose(datfile);
-}	
+}
 
-	
+
 VMML_TEMPLATE_STRING
 void
-VMML_TEMPLATE_CLASSNAME::read_from_raw( const std::string& dir_, const std::string& filename_ ) 
-{	
+VMML_TEMPLATE_CLASSNAME::read_from_raw( const std::string& dir_, const std::string& filename_ )
+{
 	int dir_length = dir_.size() -1;
 	int last_separator = dir_.find_last_of( "/");
 	std::string path = dir_;
@@ -2403,47 +2403,47 @@ VMML_TEMPLATE_CLASSNAME::read_from_raw( const std::string& dir_, const std::stri
 		path.append( "/" );
 	}
 	path.append( filename_ );
-	
+
 	size_t max_file_len = 2147483648u - sizeof(T) ;
 	size_t len_data = sizeof(T) * SIZE;
 	size_t len_read = 0;
 	char* data = new char[ len_data ];
 	std::ifstream infile;
-	infile.open( path.c_str(), std::ios::in); 
-	
+	infile.open( path.c_str(), std::ios::in);
+
 	if( infile.is_open())
 	{
 		iterator  it = begin(),
 		it_end = end();
-		
-		while ( len_data > 0 ) 
+
+		while ( len_data > 0 )
 		{
             len_read = (len_data % max_file_len ) > 0 ? len_data % max_file_len : len_data;
 			len_data -= len_read;
 			infile.read( data, len_read );
-			
+
 			T* T_ptr = (T*)&(data[0]);
 			for( ; (it != it_end) && (len_read > 0); ++it, len_read -= sizeof(T) )
 			{
 				*it = *T_ptr; ++T_ptr;
 			}
 		}
-		
+
 		delete[] data;
 		infile.close();
 	} else {
 		std::cout << "no file open" << std::endl;
 	}
-	
-}	
-	
-	
-	
-	
+
+}
+
+
+
+
 VMML_TEMPLATE_STRING
 void
-VMML_TEMPLATE_CLASSNAME::remove_normals_from_raw( const std::string& dir_, const std::string& filename_ ) 
-{	
+VMML_TEMPLATE_CLASSNAME::remove_normals_from_raw( const std::string& dir_, const std::string& filename_ )
+{
 	int dir_length = dir_.size() -1;
 	int last_separator = dir_.find_last_of( "/");
 	std::string path = dir_;
@@ -2451,28 +2451,28 @@ VMML_TEMPLATE_CLASSNAME::remove_normals_from_raw( const std::string& dir_, const
 		path.append( "/" );
 	}
 	path.append( filename_ );
-	
-	
+
+
 	size_t max_file_len = 2147483648u - sizeof(T) ;
 	size_t len_data = sizeof(T) * SIZE;
 	size_t len_value = sizeof(T) * 4; //three normals per scalar value
 	size_t len_read = 0;
 	char* data = new char[ len_data ];
 	std::ifstream infile;
-	infile.open( path.c_str(), std::ios::in); 
-		
+	infile.open( path.c_str(), std::ios::in);
+
 	if( infile.is_open())
 	{
 		iterator  it = begin(),
 		it_end = end();
-		
+
 		size_t counter = 0;
-		while ( len_data > 0 ) 
+		while ( len_data > 0 )
 		{
             len_read = (len_data % max_file_len ) > 0 ? len_data % max_file_len : len_data;
 			len_data -= len_read;
 			infile.read( data, len_read );
-			
+
 			T* T_ptr = (T*)&(data[0]);
 			for( ; (it != it_end) && (len_read > 0); ++it, len_read -= len_value )
 			{
@@ -2484,24 +2484,24 @@ VMML_TEMPLATE_CLASSNAME::remove_normals_from_raw( const std::string& dir_, const
 				++counter;
 			}
 		}
-		
+
 		delete[] data;
 		infile.close();
 	} else {
 		std::cout << "no file open" << std::endl;
 	}
-	
+
 	std::cout << "converted normals" << std::endl;
-	
+
 	std::string filename = "";
 	filename = filename_.substr(0, filename_.size() -6);
 
-	
+
 	write_datfile( ".", filename );
 	write_to_raw( ".", filename );
-}	
+}
 
-	
+
 
 VMML_TEMPLATE_STRING
 vmml::matrix< I1, I2, T >&
@@ -2530,7 +2530,7 @@ tensor3_allocate_data( T*& array_ )
 {
     array_ = new T[ I1 * I2 * I3];
 }
-	
+
 
 VMML_TEMPLATE_STRING
 void
@@ -2538,7 +2538,7 @@ VMML_TEMPLATE_CLASSNAME::
 t3_allocate_rd_mmap(  const std::string& dir_, const std::string& filename_, T*& array_, int& fd_ )
 {
 	//void * mmap(void *addr, size_t len, int prot, int flags, int fd, off_t offset);
-	
+
 	int dir_length = dir_.size() -1;
 	int last_separator = dir_.find_last_of( "/");
 	std::string path = dir_;
@@ -2546,7 +2546,7 @@ t3_allocate_rd_mmap(  const std::string& dir_, const std::string& filename_, T*&
 		path.append( "/" );
 	}
 	path.append( filename_ );
-	
+
 	fd_ = open( path.c_str(), O_RDONLY, 0 );
 	if ( fd_ == -1 )
 	{
@@ -2555,26 +2555,26 @@ t3_allocate_rd_mmap(  const std::string& dir_, const std::string& filename_, T*&
 			std::cout << "no file open for memory mapping" << std::endl;
 		}
 	}
-	
-	
+
+
 	size_t len = sizeof(T) * SIZE;
 	off_t offset = 0;
-	
+
 	array_ = (T*)mmap( 0, len, PROT_READ, MAP_FILE | MAP_SHARED, fd_, offset ); //cast to void*? //MAP_FILE|MAP_SHARED
-	
+
 	if( array_ == MAP_FAILED)
 	{
 		std::cout << "mmap failed" << std::endl;
 	}
 }
-	
+
 VMML_TEMPLATE_STRING
 void
 VMML_TEMPLATE_CLASSNAME::
 t3_allocate_wr_mmap(  const std::string& dir_, const std::string& filename_, T*& array_, int& fd_ )
 {
 	//void * mmap(void *addr, size_t len, int prot, int flags, int fd, off_t offset);
-	
+
 	int dir_length = dir_.size() -1;
 	int last_separator = dir_.find_last_of( "/");
 	std::string path = dir_;
@@ -2588,9 +2588,9 @@ t3_allocate_wr_mmap(  const std::string& dir_, const std::string& filename_, T*&
 	{
 		tensor3<I1, I2, I3, T> tmp; tmp.zero();
 		tmp.write_to_raw( dir_, filename_ );
-		
+
 		//std::cout << "created file for memory mapping" << std::endl;
-		
+
 		fd_ = open( path.c_str(), O_RDWR, 0 ); //O_RDONLY
 		if ( fd_ == -1 )
 		{
@@ -2598,13 +2598,13 @@ t3_allocate_wr_mmap(  const std::string& dir_, const std::string& filename_, T*&
 			std::cout << "no file open for memory mapping" << std::endl;
 		}
 	}
-	
-	
+
+
 	size_t len = sizeof(T) * SIZE;
 	off_t offset = 0;
-	
+
 	array_ = (T*)mmap( 0, len, PROT_WRITE, MAP_FILE | MAP_SHARED, fd_, offset ); //cast to void*? //MAP_FILE|MAP_SHARED
-	
+
 	if( array_ == MAP_FAILED)
 	{
 		std::cout << "mmap failed" << std::endl;
@@ -2612,7 +2612,7 @@ t3_allocate_wr_mmap(  const std::string& dir_, const std::string& filename_, T*&
 }
 
 
-    
+
 VMML_TEMPLATE_STRING
 void
 VMML_TEMPLATE_CLASSNAME::
@@ -2648,7 +2648,7 @@ reconstruct_CP(
    const vmml::vector< R, T>& lambda,
    vmml::matrix< R, I1, T >& U,
    const vmml::matrix< R, I2, T >& V,
-   const vmml::matrix< R, I3, T >& W, 
+   const vmml::matrix< R, I3, T >& W,
    vmml::matrix< R, I2 * I3, T >& temp
     )
 {
@@ -2662,7 +2662,7 @@ reconstruct_CP(
             }
         }
     }
-    
+
     for (size_t i = 0; i < I1; i++)
     {
         for (size_t r = 0; r < R; r++)
@@ -2682,16 +2682,16 @@ reconstruct_CP(
             {
                 T& value = at( i, j, k );
                 value = static_cast< T >( 0.0 );
-				
+
 #if 0
 				ui = U.get_column( i );
 				tmpi = temp.get_column( j + k *I2 );
 				bdot.compute( ui, tmpi, value );
-				
+
 #else
 				for( size_t r = 0; r < R; ++r )
 					value += U(r, i) * temp(r, j + k * I2);
-				
+
 #endif
             }
         }
@@ -2707,7 +2707,7 @@ apply_spherical_weights( tensor3< I1, I2, I3, float_t >& other )
 {
 	//piecewise multiplication of every frontal slice with the weights (spherical)
 	for( size_t i3 = 0; i3 < I3; ++i3 )
-	{		
+	{
 		size_t k3 = i3 - I3/2;
 		for ( size_t i1 = 0; i1 < I1; ++i1) {
 			size_t k1 = i1 - I1/2;
@@ -2730,7 +2730,7 @@ VMML_TEMPLATE_CLASSNAME::
 get_sphere()
 {
 	for( size_t i3 = 0; i3 < I3; ++i3 )
-	{		
+	{
 		size_t k3 = i3 - I3/2;
 		for ( size_t i1 = 0; i1 < I1; ++i1) {
 			size_t k1 = i1 - I1/2;
@@ -2771,28 +2771,28 @@ VMML_TEMPLATE_CLASSNAME::tensor_inner_product(
 		}
 	}
 	return inner_prod;
-}	
-	
-	
+}
+
+
 VMML_TEMPLATE_STRING
 template< size_t K1, size_t K2, size_t K3 >
-void 
+void
 VMML_TEMPLATE_CLASSNAME::average_8to1( tensor3< K1, K2, K3, T >& other ) const
 {
 	assert(I1/2 >= K1);
 	assert(I2/2 >= K2);
-	assert(I3/2 >= K3);	
-	
+	assert(I3/2 >= K3);
+
 	typedef matrix< K1, K2, T > other_slice_type;
 	typedef matrix< K1, K2, float > other_slice_float_type;
 	typedef matrix< K1, I2, T> sub_row_slice_type;
-	
+
 	front_slice_type* slice0 = new front_slice_type;
 	front_slice_type* slice1 = new front_slice_type;
 	sub_row_slice_type* sub_row_slice = new sub_row_slice_type;
 	other_slice_type* slice_other = new other_slice_type;
 	other_slice_float_type* slice_float_other = new other_slice_float_type;
-	
+
 	other.zero();
 
 	for ( size_t i3 = 0, k3 = 0; i3 < I3; ++i3, ++k3 )
@@ -2801,28 +2801,28 @@ VMML_TEMPLATE_CLASSNAME::average_8to1( tensor3< K1, K2, K3, T >& other ) const
 		if ( i3 < I3)
 		{
 			get_frontal_slice_fwd( i3, *slice1 );
-			
+
 			*slice0 += *slice1;
 			slice0->sum_rows( *sub_row_slice );
 			sub_row_slice->sum_columns( *slice_other );
-			
+
 			*slice_float_other = *slice_other;
 			*slice_float_other /= 8.0;
 			*slice_float_other += 0.5;
-			
+
 			slice_other->cast_from( *slice_float_other );
-			
+
 			other.set_frontal_slice_fwd( k3, *slice_other );
 		}
 	}
-		
+
 	delete slice0;
 	delete slice1;
 	delete slice_other;
 	delete sub_row_slice;
 }
-		
-	
+
+
 #undef VMML_TEMPLATE_STRING
 #undef VMML_TEMPLATE_CLASSNAME
 

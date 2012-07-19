@@ -4,9 +4,9 @@ cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 project(VMMLib)
 
 set(VERSION_MAJOR 1)
-set(VERSION_MINOR 4)
+set(VERSION_MINOR 5)
 set(VERSION_PATCH 0)
-set(RELEASE_VERSION 1) # OFF or ABI version
+set(RELEASE_VERSION OFF) # OFF or ABI version
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMake)
 include(Common)
@@ -144,7 +144,11 @@ if(NOT MSVC)
   if(BLAS_FOUND)
     target_link_libraries(vmmlib_test ${BLAS_LIBRARIES})
   endif()
-  add_test(vmmlib_test vmmlib_test)
+
+  get_target_property(EXECUTABLE vmmlib_test LOCATION)
+  STRING(REGEX REPLACE "\\$\\(.*\\)" "\${CTEST_CONFIGURATION_TYPE}"
+    EXECUTABLE "${EXECUTABLE}")
+  add_test(vmmlib_test ${EXECUTABLE})
 endif()
 
 include(DoxygenRule) # must be after all targets
@@ -155,3 +159,4 @@ install(FILES CMake/FindVMMLIB.cmake DESTINATION ${CMAKE_MODULE_INSTALL_PATH}
   COMPONENT dev)
 
 include(CPackConfig)
+include(CTest)

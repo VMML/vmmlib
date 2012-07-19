@@ -1,9 +1,7 @@
-#ifndef __VMML__t3_converter__HPP__
-#define __VMML__t3_converter__HPP__
+#ifndef __VMML__T3_CONVERTER__HPP__
+#define __VMML__T3_CONVERTER__HPP__
 
 #include "tensor3.hpp"
-
-//TODO: make open file methods and move other write/read methods
 
 namespace vmml
 {

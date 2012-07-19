@@ -144,7 +144,11 @@ if(NOT MSVC)
   if(BLAS_FOUND)
     target_link_libraries(vmmlib_test ${BLAS_LIBRARIES})
   endif()
-  add_test(vmmlib_test vmmlib_test)
+
+  get_target_property(EXECUTABLE vmmlib_test LOCATION)
+  STRING(REGEX REPLACE "\\$\\(.*\\)" "\${CTEST_CONFIGURATION_TYPE}"
+    EXECUTABLE "${EXECUTABLE}")
+  add_test(vmmlib_test ${EXECUTABLE})
 endif()
 
 include(DoxygenRule) # must be after all targets
@@ -155,3 +159,4 @@ install(FILES CMake/FindVMMLIB.cmake DESTINATION ${CMAKE_MODULE_INSTALL_PATH}
   COMPONENT dev)
 
 include(CPackConfig)
+include(CTest)

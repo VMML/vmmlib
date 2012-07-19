@@ -39,37 +39,21 @@ namespace vmml
 		typedef T&                                      reference;
 		typedef float T_blas;
 		
-//		typedef typename matrix< I1, I2, T>::iterator                                matrix_iterator;
-//		
-//		typedef typename vmml::tensor4_iterator< tensor4< I1, I2, I3, T > >	         iterator;
-//		typedef typename vmml::tensor4_const_iterator< tensor4< I1, I2, I3, T > >    const_iterator;
-//		
-//		typedef typename vmml::tensor4_iterator< tensor4< I1, I2, I3, T > >          reverse_iterator;
-//		typedef typename vmml::tensor4_iterator< tensor4< I1, I2, I3, T > >          const_reverse_iterator;
-//		
-//		typedef matrix< I1, I2, T >        front_slice_type; //fwd: forward cylcling (after kiers, 2000)
-//		typedef matrix< I3, I1, T >        lat_slice_type;
-//		typedef matrix< I2, I3, T >        horiz_slice_type;
-//		
-//		typedef matrix< I1, I2*I3, T >     fwd_front_unfolding_type;
-//		typedef matrix< I2, I3*I1, T >     fwd_horiz_unfolding_type;
-//		typedef matrix< I3, I1*I2, T >     fwd_lat_unfolding_type;
-//		
-//		typedef matrix< I2, I1, T >        bwd_front_slice_type; //bwd: backward cylcling (after lathauwer et al., 2000a)
-//		typedef matrix< I1, I3, T >        bwd_lat_slice_type;
-//		typedef matrix< I3, I2, T >        bwd_horiz_slice_type;
-//		
-//		typedef matrix< I1, I2*I3, T >     bwd_lat_unfolding_type;
-//		typedef matrix< I2, I1*I3, T >     bwd_front_unfolding_type;
-//		typedef matrix< I3, I1*I2, T >     bwd_horiz_unfolding_type;
+		
+		
+		//TODO: unfolding along all modes
+		//TODO: accessors to tensor3 (along all modes)
+		//TODO: maybe tensor4 iterator
 		
 		
 		static const size_t ROWS	       = I1;
 		static const size_t COLS	       = I2;
 		static const size_t SLICES	       = I3;
-		static const size_t SIZE           = I1 * I2 * I3;
+		static const size_t T3S			   = I4;
+		static const size_t MATRIX_SIZE    = I1 * I2;
+		static const size_t T3_SIZE        = I1 * I2 * I3;
+		static const size_t SIZE           = I1 * I2 * I3 * I4;
 		
-		static const size_t MATRIX_SIZE     = I1 * I2;
 		
 		
 		// accessors
@@ -79,12 +63,6 @@ namespace vmml
 		inline T& at( size_t i1, size_t i2, size_t i3, size_t i4 );
 		inline const T& at( size_t i1, size_t i2, size_t i3, size_t i4 ) const;
 		
-		// element iterators - NOTE: column-major order
-//		iterator                begin();
-//		iterator                end();
-//		
-//		const_iterator          begin() const;
-//		const_iterator          end() const;
 		
 		// ctors
 		tensor4();
@@ -112,8 +90,6 @@ namespace vmml
 		void fill_random( int seed = -1 );
 		void fill_random_signed( int seed = -1 );
 		void fill_increasing_values( );
-		void fill_rand_sym_slices( int seed = -1 );
-		void fill_rand_sym( int seed = -1 );
 		
 		const tensor4& operator=( const tensor4& source_ );
 		
@@ -134,30 +110,6 @@ namespace vmml
 		size_t nnz() const;
 		size_t nnz( const T& threshold_ ) const;
 		void threshold( const T& threshold_value_ );
-		
-		bool operator==( const tensor4& other ) const;
-		bool operator!=( const tensor4& other ) const;
-		
-		// due to limited precision, two 'idential' tensor4 might seem different.
-		// this function allows to specify a tolerance when comparing matrices.
-		bool equals( const tensor4& other, T tolerance ) const;
-		// this version takes a comparison functor to compare the components of
-		// the two tensor4 data structures
-		template< typename compare_t >
-		bool equals( const tensor4& other, compare_t& cmp ) const;
-		
-//		
-//		void horizontal_unfolding_bwd( bwd_horiz_unfolding_type& unfolding) const;
-//		void horizontal_unfolding_fwd( fwd_horiz_unfolding_type& unfolding) const;
-//		void lateral_unfolding_bwd( bwd_lat_unfolding_type& unfolding) const;
-//		void lateral_unfolding_fwd( fwd_lat_unfolding_type& unfolding) const;
-//		void frontal_unfolding_bwd( bwd_front_unfolding_type& unfolding) const;
-//		void frontal_unfolding_fwd( fwd_front_unfolding_type& unfolding) const;
-//		
-//		void horizontal_folding_bwd( const bwd_horiz_unfolding_type& unfolding);
-//		void lateral_folding_bwd( const bwd_lat_unfolding_type& unfolding);
-//		void frontal_folding_bwd( const bwd_front_unfolding_type& unfolding);
-		
 		
 		//error computation 
 		double frobenius_norm() const;
@@ -188,9 +140,19 @@ namespace vmml
 		void write_datfile( const std::string& dir_, const std::string& filename_ ) const;
 		void write_to_csv( const std::string& dir_, const std::string& filename_ ) const;
 		
-		//note: moved to t3_converter
-		//void remove_uct_cylinder( const size_t radius_offset_, int seed_ = 0 ) ;
 	    
+		bool operator==( const tensor4& other ) const;
+		bool operator!=( const tensor4& other ) const;
+		
+		// due to limited precision, two 'idential' tensor4 might seem different.
+		// this function allows to specify a tolerance when comparing matrices.
+		bool equals( const tensor4& other, T tolerance ) const;
+		// this version takes a comparison functor to compare the components of
+		// the two tensor4 data structures
+		template< typename compare_t >
+		bool equals( const tensor4& other, compare_t& cmp ) const;
+		
+
 		inline tensor4 operator+( T scalar ) const;
 		inline tensor4 operator-( T scalar ) const;
 		
@@ -222,7 +184,7 @@ namespace vmml
 		
 		friend std::ostream& operator << ( std::ostream& os, const tensor4< I1, I2, I3, I4, T >& t4 )
 		{
-			for(size_t i = 0; i < I3; ++i)
+			for(size_t i = 0; i < I4; ++i)
 			{
 				//TODO for tensor4
 				//os << t3.get_frontal_slice_fwd( i ) << " *** " << std::endl;

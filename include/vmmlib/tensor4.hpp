@@ -4,7 +4,7 @@
  * @author Susanne Suter
  * @author Jonas Boesch
  * @author David Klaper
-* 
+ * 
  * a tensor is a generalization of a multidimensional array
  * a tensor4 is a tensor data structure with four modes I1, I2, I3 and I4
  */
@@ -22,6 +22,7 @@
 //#include <limits>
 //#undef min
 //#undef max
+#include "tensor3.hpp"
 
 
 namespace vmml
@@ -37,14 +38,14 @@ namespace vmml
 		typedef T                                       value_type;
 		typedef T*                                      pointer;
 		typedef T&                                      reference;
-		typedef float T_blas;
 		
+		typedef tensor3< I1, I2, I3, T> tensor3_t;
 		
-		
+		//TODO: maybe tensor4 iterator
 		//TODO: unfolding along all modes
 		//TODO: accessors to tensor3 (along all modes)
-		//TODO: maybe tensor4 iterator
 		
+		inline void get_tensor3( const size_t i4_, tensor3_t& t3_data_ ) const; //TODO: DK
 		
 		static const size_t ROWS	       = I1;
 		static const size_t COLS	       = I2;
@@ -57,41 +58,40 @@ namespace vmml
 		
 		
 		// accessors
-		inline T& operator()( size_t i1, size_t i2, size_t i3, size_t i4 );
-		inline const T& operator()( size_t i1, size_t i2, size_t i3, size_t i4 ) const;
+		inline T& operator()( size_t i1, size_t i2, size_t i3, size_t i4 ); //TODO: DK
+		inline const T& operator()( size_t i1, size_t i2, size_t i3, size_t i4 ) const;  //TODO: DK
 		
-		inline T& at( size_t i1, size_t i2, size_t i3, size_t i4 );
-		inline const T& at( size_t i1, size_t i2, size_t i3, size_t i4 ) const;
+		inline T& at( size_t i1, size_t i2, size_t i3, size_t i4 );  //TODO: DK
+		inline const T& at( size_t i1, size_t i2, size_t i3, size_t i4 ) const;  //TODO: DK
 		
 		
 		// ctors
 		tensor4();
         
-		tensor4( const tensor4& source );
+		tensor4( const tensor4& source );  //TODO: DK
 		
 		template< typename U >
-		tensor4( const tensor4< I1, I2, I3, I4, U >& source_ );
+		tensor4( const tensor4< I1, I2, I3, I4, U >& source_ );  //TODO: DK
 		
 		template< size_t J1, size_t J2, size_t J3, size_t J4 >
-		tensor4( const tensor4< J1, J2, J3, J4, T >& source_ );
+		tensor4( const tensor4< J1, J2, J3, J4, T >& source_ );  //TODO: DK
 		
-		~tensor4();
+		~tensor4(); 
 		
-		size_t size() const; // return I1 * I2 * I3 * I4;   
+		size_t size() const; // return I1 * I2 * I3 * I4;    //TODO: DK 
 		
 		// sets all elements to fill_value
-		void operator=( T fill_value ); //@SUS: todo
-		void fill( T fill_value ); //special case of set method (all values are set to the same value!)
+		void operator=( T fill_value ); //@SUS: todo  //TODO: DK
+		void fill( T fill_value ); //special case of set method (all values are set to the same value!)  //TODO: DK
 		
 		//sets all tensor values with random values
-		//set srand(time(NULL)) or srand( seed )
-		//if seed is set to -1, srand( seed ) was set outside set_random
-		//otherwise srand( seed ) will be called with the given seed
-		void fill_random( int seed = -1 );
-		void fill_random_signed( int seed = -1 );
-		void fill_increasing_values( );
+		//if seed is negative, srand( seed ) should have been set outside fill_random
+		//if seed is 0 or greater srand( seed ) will be called with the given seed
+		void fill_random( int seed = -1 );  //TODO: DK
+		void fill_random_signed( int seed = -1 ); //TODO: DK
+		void fill_increasing_values( ); //TODO: DK
 		
-		const tensor4& operator=( const tensor4& source_ );
+		const tensor4& operator=( const tensor4& source_ ); //TODO: DK
 		
 		
 		// note: this function copies elements until either the matrix is full or
@@ -99,7 +99,7 @@ namespace vmml
 		template< typename input_iterator_t >
 		void set( input_iterator_t begin_, input_iterator_t end_, 
 				 bool row_major_layout = true );	
-		void zero();
+		void zero(); //TODO: DK
 		
 		T get_min() const;
 		T get_max() const;
@@ -124,25 +124,18 @@ namespace vmml
 		double stdev() const; 
 		
 		template< typename TT >
-		void cast_from( const tensor4< I1, I2, I3, I4, TT >& other );
+		void cast_from( const tensor4< I1, I2, I3, I4, TT >& other ); //TODO: DK (2)
 		
 		template< size_t J1, size_t J2, size_t  J3, typename TT >
-		void cast_from( const tensor4< J1, J2, J3, I4, TT >& other, const long& slice_idx_start_ = 0 );
+		void cast_from( const tensor4< J1, J2, J3, I4, TT >& other, const long& slice_idx_start_ = 0 ); //TODO: DK (2) 
 		
 		
 		template< typename TT >
-		void float_t_to_uint_t( const tensor4< I1, I2, I3, I4, TT >& other );
+		void float_t_to_uint_t( const tensor4< I1, I2, I3, I4, TT >& other ); //TODO: DK (2) 
 		
-		
-		//TODO should move to other file. 
-		void write_to_raw( const std::string& dir_, const std::string& filename_ ) const;
-		void read_from_raw( const std::string& dir_, const std::string& filename_ ) ;
-		void write_datfile( const std::string& dir_, const std::string& filename_ ) const;
-		void write_to_csv( const std::string& dir_, const std::string& filename_ ) const;
-		
-	    
-		bool operator==( const tensor4& other ) const;
-		bool operator!=( const tensor4& other ) const;
+	    //check if corresponding tensor values are equal or not
+		bool operator==( const tensor4& other ) const; //TODO: DK
+		bool operator!=( const tensor4& other ) const; //TODO: DK
 		
 		// due to limited precision, two 'idential' tensor4 might seem different.
 		// this function allows to specify a tolerance when comparing matrices.
@@ -152,19 +145,19 @@ namespace vmml
 		template< typename compare_t >
 		bool equals( const tensor4& other, compare_t& cmp ) const;
 		
-
-		inline tensor4 operator+( T scalar ) const;
-		inline tensor4 operator-( T scalar ) const;
 		
-		void operator+=( T scalar );
-		void operator-=( T scalar );
+		inline tensor4 operator+( T scalar ) const; //TODO: DK (2)
+		inline tensor4 operator-( T scalar ) const; //TODO: DK (2)
 		
-		inline tensor4 operator+( const tensor4& other ) const;
-		inline tensor4 operator-( const tensor4& other ) const;
+		void operator+=( T scalar ); //TODO: DK (2)
+		void operator-=( T scalar ); //TODO: DK (2)
+		
+		inline tensor4 operator+( const tensor4& other ) const; //TODO: DK (2)
+		inline tensor4 operator-( const tensor4& other ) const; //TODO: DK (2)
 		
 		template< size_t J1, size_t J2, size_t J3, size_t J4 >
 		typename enable_if< J1 < I1 && J2 < I2 && J3 < I3 && J4 < I4 >::type*
-		operator+=( const tensor4< J1, J2, J3, J4, T>& other );
+		operator+=( const tensor4< J1, J2, J3, J4, T>& other ); //TODO: DK (2)
 		
 		void operator+=( const tensor4& other );
 		void operator-=( const tensor4& other );
@@ -172,22 +165,22 @@ namespace vmml
 		// 
 		// tensor4-scalar operations / scaling 
 		// 
-		tensor4 operator*( T scalar );
-		void operator*=( T scalar );
+		tensor4 operator*( T scalar ); //TODO: DK (2)
+		void operator*=( T scalar ); //TODO: DK (2)
 		
-		tensor4 operator/( T scalar );
-		void operator/=( T scalar );
+		tensor4 operator/( T scalar ); //TODO: DK (2)
+		void operator/=( T scalar ); //TODO: DK (2)
 		
 		
-		inline tensor4< I1, I2, I3, I4, T > operator-() const;
-		tensor4< I1, I2, I3, I4, T > negate() const;
+		inline tensor4< I1, I2, I3, I4, T > operator-() const; //TODO: DK  (2)
+		tensor4< I1, I2, I3, I4, T > negate() const; //TODO: DK (2)
 		
-		friend std::ostream& operator << ( std::ostream& os, const tensor4< I1, I2, I3, I4, T >& t4 )
+		friend std::ostream& operator << ( std::ostream& os, const tensor4< I1, I2, I3, I4, T >& t4 ) //TODO: DK
 		{
 			for(size_t i = 0; i < I4; ++i)
 			{
 				//TODO for tensor4
-				//os << t3.get_frontal_slice_fwd( i ) << " *** " << std::endl;
+				//os << t3.get_tensor3( i ) << " xxx " << std::endl;
 			}	
 			return os;
 		}
@@ -207,69 +200,102 @@ namespace vmml
 		
 		
 	protected:
+		tensor3_t&                   _get_tensor3( size_t index_ );
+		const tensor3_t&             _get_tensor3( size_t index_ ) const;
 		
 		T*   _array;
 		
-}; // class tensor4
+		}; // class tensor4
 		
 #define VMML_TEMPLATE_STRING    template< size_t I1, size_t I2, size_t I3, size_t I4, typename T >
 #define VMML_TEMPLATE_CLASSNAME tensor4< I1, I2, I3, I4, T >
 		
-
-
-VMML_TEMPLATE_STRING
-VMML_TEMPLATE_CLASSNAME::tensor4()
-: _array()
-{
-	tensor4_allocate_data( _array );
-}
-		
-VMML_TEMPLATE_STRING
-VMML_TEMPLATE_CLASSNAME::~tensor4()
-{
-	tensor4_deallocate_data( _array );
-}
 		
 		
-
-VMML_TEMPLATE_STRING
-void
-VMML_TEMPLATE_CLASSNAME::
-tensor4_allocate_data( T*& array_ )
-{
-	array_ = new T[ I1 * I2 * I3 * I4];
-}
+		VMML_TEMPLATE_STRING
+		VMML_TEMPLATE_CLASSNAME::tensor4()
+		: _array()
+		{
+			tensor4_allocate_data( _array );
+		}
 		
-VMML_TEMPLATE_STRING
-void
-VMML_TEMPLATE_CLASSNAME::
-tensor4_deallocate_data( T*& array_ )
-{
-	delete[] array_;
-}
-
-
-
-VMML_TEMPLATE_STRING
-T*
-VMML_TEMPLATE_CLASSNAME::get_array_ptr()
-{
-	return _array;
-}
-
-
-
-VMML_TEMPLATE_STRING
-const T*
-VMML_TEMPLATE_CLASSNAME::get_array_ptr() const
-{
-	return _array;
-}
+		VMML_TEMPLATE_STRING
+		VMML_TEMPLATE_CLASSNAME::~tensor4()
+		{
+			tensor4_deallocate_data( _array );
+		}
 		
-				   
+		
+		
+		VMML_TEMPLATE_STRING
+		void
+		VMML_TEMPLATE_CLASSNAME::
+		tensor4_allocate_data( T*& array_ )
+		{
+			array_ = new T[ I1 * I2 * I3 * I4];
+		}
+		
+		VMML_TEMPLATE_STRING
+		void
+		VMML_TEMPLATE_CLASSNAME::
+		tensor4_deallocate_data( T*& array_ )
+		{
+			delete[] array_;
+		}
+		
+		
+		
+		VMML_TEMPLATE_STRING
+		T*
+		VMML_TEMPLATE_CLASSNAME::get_array_ptr()
+		{
+			return _array;
+		}
+		
+		
+		
+		VMML_TEMPLATE_STRING
+		const T*
+		VMML_TEMPLATE_CLASSNAME::get_array_ptr() const
+		{
+			return _array;
+		}
+		
+		VMML_TEMPLATE_STRING
+		vmml::tensor3< I1, I2, I3, T >&
+		VMML_TEMPLATE_CLASSNAME::
+		_get_tensor3( size_t index_ )
+		{
+			return *reinterpret_cast< tensor3_t* >( _array + I1 * I2 * I3 * index_ );
+		}
+		
+		
+		VMML_TEMPLATE_STRING
+		const vmml::tensor3< I1, I2, I3, T >&
+		VMML_TEMPLATE_CLASSNAME::
+		_get_tensor3( size_t index_ ) const
+		{
+			return *reinterpret_cast< const tensor3_t* >( _array + I1 * I2 * I3 * index_ );
+		}	
+		
+		
+		VMML_TEMPLATE_STRING
+		inline void 
+		VMML_TEMPLATE_CLASSNAME::
+		get_tensor3( const size_t i4_, tensor3_t& t3_data_ ) const
+		{
+#ifdef VMMLIB_SAFE_ACCESSORS
+			if ( i4_ >= I4 )
+				VMMLIB_ERROR( "get_tensor3() - index out of bounds.", VMMLIB_HERE );
+#endif
+			
+			t3_data_ = _get_tensor3( i4_ );
+		}
+		
+		
 #undef VMML_TEMPLATE_STRING
 #undef VMML_TEMPLATE_CLASSNAME
-				   
-} // namespace vmml
-				   
+		
+		} // namespace vmml
+		
 #endif

@@ -87,6 +87,7 @@ set(HEADERS
   include/vmmlib/visibility.hpp
   include/vmmlib/vmmlib.hpp
   include/vmmlib/vmmlib_config.hpp
+  include/vmmlib/tensor4.hpp
 )
 
 set(TESTS
@@ -131,6 +132,7 @@ if(LAPACK_FOUND)
     tests/tensor3_test.cpp
     tests/tucker3_exporter_importer_test.cpp
     tests/tucker3_tensor_test.cpp
+    tests/tensor4_test.cpp
 )
 endif()
 

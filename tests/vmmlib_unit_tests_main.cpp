@@ -27,6 +27,7 @@
 #  include "tucker3_exporter_importer_test.hpp"
 #  include "tucker3_tensor_test.hpp"
 #  include "matrix_pseudoinverse_test.hpp"
+#  include "tensor4_test.hpp"
 #endif
 #ifdef VMMLIB_USE_CUDA
 #  include "cublas_dgemm_test.hpp"
@@ -116,6 +117,10 @@ main( int argc, const char* argv[] )
 
 	vmml::cp3_tensor_test cp3t;
     run_and_log( cp3t );
+	
+	vmml::tensor4_test t4t;
+    run_and_log( t4t );
+
 #endif
 #ifdef VMMLIB_USE_CUDA
     vmml::cublas_dgemm_test cublas_mm;

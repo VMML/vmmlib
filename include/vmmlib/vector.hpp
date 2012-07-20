@@ -28,7 +28,7 @@ public:
     typedef const T*                                const_iterator;
     typedef std::reverse_iterator< iterator >       reverse_iterator;
     typedef std::reverse_iterator< const_iterator > const_reverse_iterator;
-    
+
     static const size_t DIMENSION = M;
 
     // iterators
@@ -40,7 +40,7 @@ public:
     inline reverse_iterator rend();
     inline const_reverse_iterator rbegin() const;
     inline const_reverse_iterator rend() const;
-    
+
     #ifndef VMMLIB_NO_CONVERSION_OPERATORS
     // conversion operators
     inline operator T*();
@@ -49,15 +49,15 @@ public:
     inline T& operator[]( size_t index );
     inline const T& operator[]( size_t index ) const;
     #endif
-    
-    // accessors 
+
+    // accessors
     inline T& operator()( size_t index );
     inline const T& operator()( size_t index ) const;
     #if 0
     inline T& operator[]( size_t index );
     inline const T& operator[]( size_t index ) const;
     #endif
-    
+
     inline T& at( size_t index );
     inline const T& at( size_t index ) const;
 
@@ -83,65 +83,65 @@ public:
 
     bool operator==( const vector& other ) const;
     bool operator!=( const vector& other ) const;
-    bool equals( const vector& other, 
+    bool equals( const vector& other,
                  T tolerance = std::numeric_limits< T >::epsilon() ) const;
     bool operator<( const vector& other ) const;
-   
+
     // remember kids: c_arrays are dangerous and evil!
     const vector& operator=( const T* c_array );
     T operator=( T filler );
-    
+
     const vector& operator=( const vector& other );
     // returns void to avoid 'silent' loss of precision when chaining
     template< typename U >
     void operator=( const vector< M, U >& other );
-    
+
     // to-homogenous-coordinates assignment operator
     // non-chainable because of sfinae
     template< size_t N >
     typename enable_if< N == M - 1 >::type*
         operator=( const vector< N, T >& source_ );
-        
+
     // from-homogenous-coordinates assignment operator
     // non-chainable because of sfinae
     template< size_t N >
     typename enable_if< N == M + 1 >::type*
         operator=( const vector< N, T >& source_ );
-    
+
     vector operator*( const vector& other ) const;
-    vector operator/( const vector& other ) const;    
-    vector operator+( const vector& other ) const; 
+    vector operator/( const vector& other ) const;
+    vector operator+( const vector& other ) const;
     vector operator-( const vector& other ) const;
 
     void operator*=( const vector& other );
-    void operator/=( const vector& other );    
-    void operator+=( const vector& other ); 
+    void operator/=( const vector& other );
+    void operator+=( const vector& other );
     void operator-=( const vector& other );
 
     vector operator*( const T other ) const;
-    vector operator/( const T other ) const;    
-    vector operator+( const T other ) const; 
+    vector operator/( const T other ) const;
+    vector operator+( const T other ) const;
     vector operator-( const T other ) const;
 
     void operator*=( const T other );
-    void operator/=( const T other );    
-    void operator+=( const T other ); 
+    void operator/=( const T other );
+    void operator+=( const T other );
     void operator-=( const T other );
 
     vector operator-() const;
 
     const vector& negate();
 
-    // constructors 
+    // constructors
     vector() {}; // std ctor - WARNING: NO INITIALIZATION
     vector( const T& a ); // sets all components to a;
     vector( const T& x, const T& y );
     vector( const T& x, const T& y, const T& z );
     vector( const T& x, const T& y, const T& z, const T& w );
-    
+
     // initializes the first M-1 values from vector_, the last from last_
     vector( const vector< M-1, T >& vector_, T last_ );
-    
+
     vector( const T* values );
 
     // vec< M > with homogeneous coordinates <-> vec< M-1 > conversion ctor
@@ -157,15 +157,15 @@ public:
 
     template< typename U >
     vector( const vector< M, U >& source_ );
-    
+
     void set( T a ); // sets all components to a;
     void set( const vector< M-1, T >& v, T a );
 
     // sets the first few components to a certain value
     void set( T x, T y );
-    void set( T x, T y, T z ); 
+    void set( T x, T y, T z );
     void set( T x, T y, T z, T w );
-    
+
     template< typename input_iterator_t >
     void iter_set( input_iterator_t begin_, input_iterator_t end_ );
 
@@ -175,14 +175,14 @@ public:
 
     // result = vec1.cross( vec2 ) => retval result = vec1 x vec2
     template< typename TT >
-    inline vector cross( const vector< M, TT >& rhs, 
+    inline vector cross( const vector< M, TT >& rhs,
         typename enable_if< M == 3, TT >::type* = 0 ) const;
 
     // result.cross( vec1, vec2 ) => (this) = vec1 x vec2
     template< typename TT >
-    void cross( const vector< M, TT >& a, const vector< M, TT >& b, 
+    void cross( const vector< M, TT >& a, const vector< M, TT >& b,
         typename enable_if< M == 3, TT >::type* = 0 );
-  
+
 
     // compute the dot product of two vectors
     // note: there's also a free function:
@@ -194,19 +194,19 @@ public:
     // note: there's also a free function:
     // vector<> normalize( const vector<> );
     inline T normalize();
-	
+
 	//sets all matrix values with random values
 	//remember to set srand( seed );
 	//if seed is set to -1, srand( seed ) was set outside set_random
 	//otherwise srand( seed ) will be called with the given seed
-	void set_random( int seed = -1 );   
-	
+	void set_random( int seed = -1 );
+
     inline T length() const;
     inline T squared_length() const;
-    
+
     inline T distance( const vector& other_vector_ ) const;
     inline T squared_distance( const vector& other_vector_ ) const;
-    
+
     template< typename TT >
     vector< 3, T > rotate( const T theta, vector< M, TT > axis,
                            typename enable_if< M == 3, TT >::type* = 0 ) const;
@@ -218,38 +218,38 @@ public:
     vector compute_normal( const vector& v1, const vector& v2 ) const;
 
 	template< size_t N >
-    void get_sub_vector( vector< N, T >& sub_v_, size_t offset = 0, 
+    void get_sub_vector( vector< N, T >& sub_v_, size_t offset = 0,
 						 typename enable_if< M >= N >::type* = 0 );
-	
+
     template< size_t N >
-    vector< N, T >& get_sub_vector( size_t offset = 0, 
+    vector< N, T >& get_sub_vector( size_t offset = 0,
         typename enable_if< M >= N >::type* = 0 );
 
     template< size_t N >
-    const vector< N, T >& get_sub_vector( size_t offset = 0, 
+    const vector< N, T >& get_sub_vector( size_t offset = 0,
         typename enable_if< M >= N >::type* = 0 ) const;
-    
+
 	// sphere functions - sphere layout: center xyz, radius w
     template< typename TT >
-	inline vector< 3, T > project_point_onto_sphere( 
-        const vector< 3, TT >& point, 
+	inline vector< 3, T > project_point_onto_sphere(
+        const vector< 3, TT >& point,
         typename enable_if< M == 4, TT >::type* = 0 ) const;
-        
+
 	// returns a negative distance if the point lies in the sphere
     template< typename TT >
-	inline T distance_to_sphere( const vector< 3, TT >& point, 
+	inline T distance_to_sphere( const vector< 3, TT >& point,
         typename enable_if< M == 4, TT >::type* = 0 ) const;
 
 	// plane functions - plane layout; normal xyz, distance w
     template< typename TT >
-	inline T distance_to_plane( const vector< 3, TT >& point, 
+	inline T distance_to_plane( const vector< 3, TT >& point,
         typename enable_if< M == 4, TT >::type* = 0 ) const;
-    
+
     template< typename TT >
-    inline vector< 3, T > project_point_onto_plane( 
-        const vector< 3, TT >& point, 
+    inline vector< 3, T > project_point_onto_plane(
+        const vector< 3, TT >& point,
         typename enable_if< M == 4, TT >::type* = 0 ) const;
-    
+
     // returns the index of the minimal resp. maximal value in the vector
     size_t      find_min_index() const;
     size_t      find_max_index() const;
@@ -263,20 +263,20 @@ public:
     T&          find_max();
     const T&    find_min() const;
     const T&    find_max() const;
-    
+
     void clamp( const T& min = 0.0, const T& max = 1.0 );
 
     template< typename TT >
-    void scale_to( vector< M, TT >& scaled_vector, 
+    void scale_to( vector< M, TT >& scaled_vector,
         T min_value = -1.0, T max_value = 1.0 ) const;
-    
+
     inline static size_t size(); // returns M
-    
+
     bool is_unit_vector() const;
 
     // perturbs each component by randomly + or - the perturbation parameter
     void perturb( T perturbation = 0.0001 );
-	
+
 	void sqrt_elementwise();
 	double norm() const; //l2 norm
 
@@ -284,17 +284,17 @@ public:
     // WARNING: might result in nans if division by 0!
 	void reciprocal();
     // computes the reciprocal value for each component, x = 1/x;
-    // checks every component for 0, sets to max value if zero.    
-    void reciprocal_safe(); 
-	
+    // checks every component for 0, sets to max value if zero.
+    void reciprocal_safe();
+
 	template< typename TT >
 	void cast_from( const vector< M, TT >& other );
-	
+
 	size_t nnz() const;
 
     // test each component of the vector for isnan and isinf
 	//  inline bool is_valid() const; -> moved to class validator
-    
+
     friend std::ostream& operator<< ( std::ostream& os, const vector& vector_ )
     {
 #ifdef EQFABRIC_API_H
@@ -320,7 +320,7 @@ public:
 #endif
         return os;
     }
-        
+
 
 
 	// storage
@@ -336,7 +336,7 @@ public:
 
     static const vector ONE;
     static const vector ZERO;
-    
+
     // Unit vectors
     static const vector UNIT_X;
     static const vector UNIT_Y;
@@ -345,7 +345,7 @@ public:
 }; // class vector
 
 //
-// typedefs and statics 
+// typedefs and statics
 //
 
 #ifndef VMMLIB_NO_TYPEDEFS
@@ -393,7 +393,7 @@ bool equals( const vector< M, T >& a, const vector< M, T >& b )
 }
 
 
-// allows float * vector, not only vector * float 
+// allows float * vector, not only vector * float
 template< size_t M, typename T >
 static vector< M, T >
 operator* ( T factor, const vector< M, T >& vector_ )
@@ -404,7 +404,7 @@ operator* ( T factor, const vector< M, T >& vector_ )
 
 template< size_t M, typename T >
 inline T
-dot( const vector< M, T >& first, const vector< M, T >& second ) 
+dot( const vector< M, T >& first, const vector< M, T >& second )
 {
     return first.dot( second );
 }
@@ -645,14 +645,14 @@ vector< M, T >::operator const T*() const
 template< size_t M, typename T >
 T&
 vector< M, T >::operator[]( size_t index )
-{   
+{
     return at( index );
 }
 
 template< size_t M, typename T >
 const T&
 vector< M, T >::operator[]( size_t index ) const
-{   
+{
     return at( index );
 }
 
@@ -1057,7 +1057,7 @@ vector< M, T >::a() const
 template< size_t M, typename T >
 template< typename TT >
 inline vector< M, T >
-vector< M, T >::cross( const vector< M, TT >& rhs, 
+vector< M, T >::cross( const vector< M, TT >& rhs,
     typename enable_if< M == 3, TT >::type* ) const
 {
     vector< M, T > result;
@@ -1072,12 +1072,12 @@ template< size_t M, typename T >
 template< typename TT >
 void
 vector< M, T >::
-cross( const vector< M, TT >& aa, const vector< M, TT >& bb, 
+cross( const vector< M, TT >& aa, const vector< M, TT >& bb,
     typename enable_if< M == 3, TT >::type* )
-{ 
-    array[ 0 ] = aa.y() * bb.z() - aa.z() * bb.y(); 
-    array[ 1 ] = aa.z() * bb.x() - aa.x() * bb.z(); 
-    array[ 2 ] = aa.x() * bb.y() - aa.y() * bb.x(); 
+{
+    array[ 0 ] = aa.y() * bb.z() - aa.z() * bb.y();
+    array[ 1 ] = aa.z() * bb.x() - aa.x() * bb.z();
+    array[ 2 ] = aa.x() * bb.y() - aa.y() * bb.x();
 }
 
 
@@ -1157,8 +1157,8 @@ vector< M, T >::squared_distance( const vector< M, T >& other_vector_ ) const
 template< size_t M, typename T >
 void
 vector< M, T >::compute_normal(
-    const vector< M, T >& aa, 
-    const vector< M, T >& bb, 
+    const vector< M, T >& aa,
+    const vector< M, T >& bb,
     const vector< M, T >& cc
     )
 {
@@ -1175,7 +1175,7 @@ vector< M, T >::compute_normal(
 template< size_t M, typename T >
 vector< M, T >
 vector< M, T >::compute_normal(
-    const vector< M, T >& bb, 
+    const vector< M, T >& bb,
     const vector< M, T >& cc
     ) const
 {
@@ -1206,7 +1206,7 @@ vector< 3, T > vector< M, T >::rotate( const T theta, vector< M, TT > axis,
         (( 1 - costheta ) * axis.x() * axis.z() - axis.y() * sintheta ) * x() +
         (( 1 - costheta ) * axis.y() * axis.z() + axis.x() * sintheta ) * y() +
         ( costheta + ( 1 - costheta ) * axis.z() * axis.z() ) * z() );
-} 
+}
 
 
 // sphere layout: center xyz, radius w
@@ -1214,7 +1214,7 @@ template< size_t M, typename T >
 template< typename TT >
 inline vector< 3, T >
 vector< M, T >::
-project_point_onto_sphere( const vector< 3, TT >& point, 
+project_point_onto_sphere( const vector< 3, TT >& point,
     typename enable_if< M == 4, TT >::type* ) const
 {
     const vector< 3, T >& _center = get_sub_vector< 3 >( 0 );
@@ -1233,7 +1233,7 @@ template< size_t M, typename T >
 template< typename TT >
 inline T
 vector< M, T >::
-distance_to_sphere( const vector< 3, TT >& point, 
+distance_to_sphere( const vector< 3, TT >& point,
     typename enable_if< M == 4, TT >::type* ) const
 {
     const vector< 3, T >& center_ = get_sub_vector< 3 >( 0 );
@@ -1243,19 +1243,19 @@ distance_to_sphere( const vector< 3, TT >& point,
 template< size_t M, typename T >
 template< size_t N >
 void
-vector< M, T >::get_sub_vector( vector< N, T >& sub_v, size_t offset, 
+vector< M, T >::get_sub_vector( vector< N, T >& sub_v, size_t offset,
 							   typename enable_if< M >= N >::type* )
 {
     assert( offset <= M - N );
     sub_v = reinterpret_cast< vector< N, T >& >( *( begin() + offset ) );
 }
-	
+
 
 
 template< size_t M, typename T >
 template< size_t N >
 inline vector< N, T >&
-vector< M, T >::get_sub_vector( size_t offset, 
+vector< M, T >::get_sub_vector( size_t offset,
     typename enable_if< M >= N >::type* )
 {
     assert( offset <= M - N );
@@ -1267,7 +1267,7 @@ vector< M, T >::get_sub_vector( size_t offset,
 template< size_t M, typename T >
 template< size_t N >
 inline const vector< N, T >&
-vector< M, T >::get_sub_vector( size_t offset, 
+vector< M, T >::get_sub_vector( size_t offset,
     typename enable_if< M >= N >::type* ) const
 {
     assert( offset <= M - N );
@@ -1280,7 +1280,7 @@ vector< M, T >::get_sub_vector( size_t offset,
 template< size_t M, typename T >
 template< typename TT >
 inline T
-vector< M, T >::distance_to_plane( const vector< 3, TT >& point, 
+vector< M, T >::distance_to_plane( const vector< 3, TT >& point,
     typename enable_if< M == 4, TT >::type* ) const
 {
     const vector< 3, T >& normal = get_sub_vector< 3 >( 0 );
@@ -1293,7 +1293,7 @@ vector< M, T >::distance_to_plane( const vector< 3, TT >& point,
 template< size_t M, typename T >
 template< typename TT >
 vector< 3, T >
-vector< M, T >::project_point_onto_plane( const vector< 3, TT >& point, 
+vector< M, T >::project_point_onto_plane( const vector< 3, TT >& point,
     typename enable_if< M == 4, TT >::type* ) const
 {
     const vector< 3, T >& normal = get_sub_vector< 3 >( 0 );
@@ -1364,7 +1364,7 @@ operator=( const vector< N, T >& source_ )
     return 0;
 }
 
-    
+
 // from-homogenous-coordinates assignment operator
 // non-chainable because of sfinae
 template< size_t M, typename T >
@@ -1464,19 +1464,19 @@ void vector< M, T >::clamp( const T& min, const T& max )
 template< size_t M, typename T >
 template< typename TT >
 void
-vector< M, T >::scale_to( vector< M, TT >& result_, 
+vector< M, T >::scale_to( vector< M, TT >& result_,
     T min_value, T max_value ) const
 {
     T range       = max_value-min_value;
     T half_range  = range * 0.5;
     T scale       = ( 1.0 / range ) * static_cast< T >( std::numeric_limits< TT >::max() );
-    
+
     for( size_t index = 0; index < M; ++index )
     {
-        result_.at( index ) 
+        result_.at( index )
             = static_cast< TT >( ( at( index ) + half_range ) * scale );
     }
-    
+
 }
 
 
@@ -1660,7 +1660,7 @@ vector< M, T >::perturb( T perturbation )
     {
         (*it) += ( rand() & 1u ) ? perturbation : -perturbation;
     }
-    
+
 }
 
 template< size_t M, typename T >
@@ -1672,7 +1672,7 @@ vector< M, T >::sqrt_elementwise()
 		(*it) = sqrt(*it);
 	}
 }
-	
+
 
 
 template< size_t M, typename T >
@@ -1706,61 +1706,61 @@ vector< M, T >::reciprocal_safe()
 
 template< size_t M, typename T >
 template< typename TT >
-void 
+void
 vector< M, T >::cast_from( const vector< M, TT >& other )
 {
 	typedef vmml::vector< M, TT > vector_tt_type ;
 	typedef typename vector_tt_type::const_iterator tt_const_iterator;
-	
+
 	iterator it = begin(), it_end = end();
     tt_const_iterator other_it = other.begin();
     for( ; it != it_end; ++it, ++other_it )
     {
         *it = static_cast< T >( *other_it );
-    }	
+    }
 }
-	
+
 template< size_t M, typename T >
 size_t
 vector< M, T >::nnz() const
 {
 	size_t counter = 0;
-	
+
 	const_iterator  it = begin(),
 	it_end = end();
 	for( ; it != it_end; ++it)
-	{		
+	{
 		if ( *it != 0 ) {
 			++counter;
 		}
 	}
-	
+
 	return counter;
 }
 
-	
+
 template< size_t M, typename T >
-double 
+double
 vector< M, T >::norm( ) const
 {
 	double norm_v = 0.0;
-	
-	const_iterator it = begin(), it_end = end(); 
+
+	const_iterator it = begin(), it_end = end();
 	for( ; it != it_end; ++it )
 	{
 		norm_v += *it * *it;
 	}
-		
+
 	return sqrt(norm_v);
-}	
+}
 
 template< size_t M, typename T >
-void 
+void
 vector< M, T >::set_random( int seed )
 {
 	if ( seed >= 0 )
 		srand( seed );
-	
+
 	double fillValue = 0.0f;
 	for( size_t i = 0; i < M; ++i )
 	{
@@ -1768,9 +1768,9 @@ vector< M, T >::set_random( int seed )
 		fillValue /= RAND_MAX;
 		at( i ) = -1.0 + 2.0 * static_cast< double >( fillValue )  ;
 	}
-}		
+}
 
-	
+
 } // namespace vmml
 
 #endif

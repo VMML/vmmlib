@@ -1,6 +1,7 @@
 
 VMMLIB_UNIT_TESTS =\
     tests/unit_test.cpp\
+    tests/unit_test_globals.cpp\
     tests/vector_test.cpp\
     tests/matrix_test.cpp\
     tests/quaternion_test.cpp\

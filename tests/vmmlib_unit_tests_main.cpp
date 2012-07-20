@@ -1,11 +1,13 @@
 
+#include <iostream>
+
+#include "unit_test_globals.hpp"
+
 #include "vector_test.hpp"
 #include "matrix_test.hpp"
 #include "quaternion_test.hpp"
 #include "qr_decomposition_test.hpp"
 #include "svd_test.hpp"
-
-#include <iostream>
 
 #ifdef VMMLIB_USE_LAPACK
 #  include "lapack_linear_least_squares_test.hpp"
@@ -129,6 +131,8 @@ main( int argc, const char* argv[] )
     vmml::cutensor_tests cut3;
     run_and_log( cut3 );
 #endif
+
+    std::cout << vmml::unit_test_globals::get_instance() << std::endl;
 	
 }
 

@@ -5,6 +5,8 @@ namespace vmml
 
 unit_test::unit_test( const std::string& test_name )
     : _tolerance( 1e-9 )
+    , _log()
+    , _globals( unit_test_globals::get_instance() )
 {
 	_log = "UNIT TEST: ";
 	_log += test_name;
@@ -14,28 +16,39 @@ unit_test::unit_test( const std::string& test_name )
 
 
 void
-unit_test::log( const std::string& event, bool status_ok, bool warning_only )
+unit_test::log( const std::string& msg, bool status_ok, bool warning_only )
 {
-	if ( status_ok )
-		_log += "[  ok  ] ";
-	else if ( ! warning_only )
-		_log += "[ FAIL ] ";
-	else
-		_log += "[ WARN ] ";	
-	
-	_log += event;
+    _globals.notify_test();
+
+    if ( status_ok )
+        _log += _globals.get_ok_prefix();
+    else 
+    {
+        if ( warning_only ) 
+        {
+            _log += _globals.get_warn_prefix();
+            _globals.notify_warn();
+        }
+        else 
+        {
+            _log += _globals.get_fail_prefix();
+            _globals.notify_fail();
+        }
+    }
+
+	_log += " ";
+	_log += msg;
 	_log += "\n";
 }
 
 
 
 void
-unit_test::log_error( const std::string& error_msg, bool warning_only  )
+unit_test::log_error( const std::string& msg, bool warning_only  )
 {
-	_log += "[ WARN ] ";
-	_log += error_msg;
-	_log += "\n";
+    log(msg, false, warning_only);
 }
+
 
 } // namespace vmml
 

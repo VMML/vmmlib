@@ -101,6 +101,7 @@ set(TESTS
   tests/svd_test.cpp
   tests/timer.cpp
   tests/unit_test.cpp
+  tests/unit_test_globals.cpp
   tests/vector_test.cpp
   tests/vmmlib_unit_tests_main.cpp
 # tests/matrix_compare_perf_test.cpp

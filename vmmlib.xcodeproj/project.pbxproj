@@ -34,6 +34,9 @@
 		98B7A26A0E24CB140064264E /* performance_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98B7A2680E24CB140064264E /* performance_test.cpp */; };
 		98B7A2A50E24DF910064264E /* matrix_compare_perf_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98B7A2A30E24DF910064264E /* matrix_compare_perf_test.cpp */; };
 		98C561060F1BA62B0026B925 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9839FE0E0E2BB16D00A16721 /* Accelerate.framework */; };
+		98D23D8E15B964590012DABB /* unit_test_globals.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98D23D8C15B964590012DABB /* unit_test_globals.cpp */; };
+		98D23D9015B96A930012DABB /* unit_test_globals.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98D23D8C15B964590012DABB /* unit_test_globals.cpp */; };
+		98D23D9115B96AA30012DABB /* unit_test_globals.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98D23D8C15B964590012DABB /* unit_test_globals.cpp */; };
 		98D402D60E38D6A000B24DF1 /* quaternion_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98D402D40E38D6A000B24DF1 /* quaternion_test.cpp */; };
 		98D402D70E38D6A000B24DF1 /* quaternion_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98D402D40E38D6A000B24DF1 /* quaternion_test.cpp */; };
 		98D402D80E38D6A000B24DF1 /* quaternion_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98D402D40E38D6A000B24DF1 /* quaternion_test.cpp */; };
@@ -111,6 +114,8 @@
 		98B7A2A30E24DF910064264E /* matrix_compare_perf_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = matrix_compare_perf_test.cpp; path = tests/matrix_compare_perf_test.cpp; sourceTree = "<group>"; };
 		98B7A2A40E24DF910064264E /* matrix_compare_perf_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = matrix_compare_perf_test.hpp; path = tests/matrix_compare_perf_test.hpp; sourceTree = "<group>"; };
 		98B7A3F00E24EAA30064264E /* matrix_functors.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = matrix_functors.hpp; path = include/vmmlib/matrix_functors.hpp; sourceTree = "<group>"; };
+		98D23D8C15B964590012DABB /* unit_test_globals.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = unit_test_globals.cpp; path = tests/unit_test_globals.cpp; sourceTree = "<group>"; };
+		98D23D8D15B964590012DABB /* unit_test_globals.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = unit_test_globals.hpp; path = tests/unit_test_globals.hpp; sourceTree = "<group>"; };
 		98D402D30E38D6A000B24DF1 /* quaternion.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = quaternion.hpp; path = include/vmmlib/quaternion.hpp; sourceTree = "<group>"; };
 		98D402D40E38D6A000B24DF1 /* quaternion_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = quaternion_test.cpp; path = tests/quaternion_test.cpp; sourceTree = "<group>"; };
 		98D402D50E38D6A000B24DF1 /* quaternion_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = quaternion_test.hpp; path = tests/quaternion_test.hpp; sourceTree = "<group>"; };
@@ -375,6 +380,8 @@
 				98B7A2500E24C8E70064264E /* vmmlib_unit_tests_main.cpp */,
 				98FE7DCE0E224EC400B1E17F /* unit_test.hpp */,
 				98FE7DCD0E224EC400B1E17F /* unit_test.cpp */,
+				98D23D8D15B964590012DABB /* unit_test_globals.hpp */,
+				98D23D8C15B964590012DABB /* unit_test_globals.cpp */,
 				98B7A2620E24CA760064264E /* unit tests */,
 			);
 			name = "unit testing";
@@ -584,6 +591,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				98D23D9115B96AA30012DABB /* unit_test_globals.cpp in Sources */,
 				9839FE5E0E2BB5B300A16721 /* vmmlib_lapack_main.cpp in Sources */,
 				9839FEF80E2BC67400A16721 /* svd_lapack_vs_old.cpp in Sources */,
 				9839FF000E2BC75D00A16721 /* performance_test.cpp in Sources */,
@@ -599,6 +607,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				98D23D9015B96A930012DABB /* unit_test_globals.cpp in Sources */,
 				98B7A2540E24C8F40064264E /* vmmlib_performance_tests_main.cpp in Sources */,
 				98B7A2570E24C9540064264E /* timer.cpp in Sources */,
 				98B7A26A0E24CB140064264E /* performance_test.cpp in Sources */,
@@ -647,6 +656,7 @@
 				CF906B8914F6313A0043CF23 /* cutensor_tests.cpp in Sources */,
 				CFCE7024150A004300A29C68 /* blas_daxpy_test.cpp in Sources */,
 				CFF98C5515B817BC00F599FE /* tensor4_test.cpp in Sources */,
+				98D23D8E15B964590012DABB /* unit_test_globals.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -180,9 +180,36 @@ namespace vmml
 
 		friend std::ostream& operator << ( std::ostream& os, const tensor4< I1, I2, I3, I4, T >& t4 ) //TODO: DK
 		{
-			for(size_t i = 0; i < I4; ++i)
+			for(size_t i4 = 0; i4 < I4; ++i4)
 			{
-				os << t4.get_tensor3( i ) << " xxx " << std::endl;
+				for(size_t i3 = 0; i3 < I3; ++i3)
+				{
+					for(size_t i1 = 0; i1 < I1; ++i1)
+					{
+						os << "(";
+
+						for(size_t i2 = 0; i2 < I2; ++i2)
+						{
+							if (i2 == (I2 - 1) )
+							{
+								os << t4.at( i1, i2, i3, i4 ) ;
+							} else {
+								os << t4.at( i1, i2, i3, i4 ) << ", " ;
+							}
+
+						}
+						os << ")" << std::endl;
+					}
+					if ( i3 < (I3 -1 ))
+					{
+						os << " xxx " << std::endl;
+					}
+				}
+				if ( i4 < (I4 -1 ))
+				{
+					os << "---- " << std::endl;
+				}
+				//os << t4.get_tensor3( i ) << " xxx " << std::endl;
 			}
 			return os;
 		}
@@ -262,6 +289,88 @@ VMML_TEMPLATE_CLASSNAME::get_array_ptr() const
 {
 	return _array;
 }
+	
+VMML_TEMPLATE_STRING
+VMML_TEMPLATE_CLASSNAME::tensor4( const tensor4& source_ )
+{
+	tensor4_allocate_data( _array );
+	(*this) = source_;
+	
+}
+
+VMML_TEMPLATE_STRING
+template< typename U >
+VMML_TEMPLATE_CLASSNAME::tensor4( const tensor4< I1, I2, I3, I4, U >& source_ )
+{
+	const U* s_array = source_.get_array_ptr();
+	tensor4_allocate_data( _array );
+	for (size_t index = 0; index < SIZE; ++index)
+	{
+		_array[ index ] = static_cast< T >( s_array[ index ] );
+	}
+}
+
+VMML_TEMPLATE_STRING
+template< size_t J1, size_t J2, size_t J3, size_t J4 >
+VMML_TEMPLATE_CLASSNAME::tensor4( const tensor4< J1, J2, J3, J4, T >& source_ )
+{
+	tensor4_allocate_data( _array );
+	size_t min1 = J1 < I1 ? J1 : I1;
+	size_t min2 = J2 < I2 ? J2 : I2;
+	size_t min3 = J3 < I3 ? J3 : I3;
+	size_t min4 = J4 < I4 ? J4 : I4;
+	
+	zero();
+	
+	for(size_t i4 = 0; i4 < min4; ++i4 )
+	{
+		for(size_t i3 = 0; i3 < min3; ++i3)
+		{
+			for(size_t i2 = 0; i2 < min2; ++i2)
+			{
+				for(size_t i1 = 0; i1 < min1; ++i1)
+				{
+					at(i1, i2, i3, i4) = source_(i1, i2, i3, i4);
+				}
+			}
+		}
+	}
+	
+} 
+
+
+
+VMML_TEMPLATE_STRING
+size_t 
+VMML_TEMPLATE_CLASSNAME::size() const
+{
+	return SIZE;
+}
+
+VMML_TEMPLATE_STRING
+bool 
+VMML_TEMPLATE_CLASSNAME::operator==( const tensor4< I1, I2, I3, I4, T >& other ) const
+{
+	const T* other_array = other.get_array_ptr();
+	for(size_t index = 0; index < SIZE; ++index)
+	{
+		if(_array[ index ] != other_array[ index] )
+		{
+			return false;
+		}
+	}
+	
+	return true;
+}
+
+
+VMML_TEMPLATE_STRING
+bool 
+VMML_TEMPLATE_CLASSNAME::operator!=( const tensor4< I1, I2, I3, I4, T >& other ) const
+{
+	return ! operator==( other );
+}	
+
 
 VMML_TEMPLATE_STRING
 typename VMML_TEMPLATE_CLASSNAME::tensor3_t&
@@ -322,14 +431,6 @@ get_tensor3( size_t i4_ ) const
 }
 
 	
-VMML_TEMPLATE_STRING
-void
-VMML_TEMPLATE_CLASSNAME::zero()
-{
-	fill( static_cast< T >( 0.0 ) );
-}
-	
-	
 //fill
 VMML_TEMPLATE_STRING
 void
@@ -338,9 +439,150 @@ fill( T fillValue )
 {
 	for( size_t i4 = 0; i4 < I4; ++i4 )
 	{
-		_get_tensor3( i4 ).fill( fillValue );
+		for( size_t i3 = 0; i3 < I3; ++i3 )
+		{
+			for( size_t i1 = 0; i1 < I1; ++i1 )
+			{
+				for( size_t i2 = 0; i2 < I2; ++i2 )
+				{
+					at(i1, i2, i3, i4) = fillValue;
+				}
+			}
+		}
+	}
+	//_get_tensor3( i4 ).fill( fillValue );
+
+}
+	
+
+VMML_TEMPLATE_STRING
+inline T&
+VMML_TEMPLATE_CLASSNAME::at( size_t i1, size_t i2, size_t i3, size_t i4 )
+{
+#ifdef VMMLIB_SAFE_ACCESSORS
+	if ( i1 >= I1 || i2 >= I2 || i3 >= I3 || i4 >= I4 )
+		VMMLIB_ERROR( "at( i1, i2, i3, i4 ) - index out of bounds", VMMLIB_HERE );
+#endif
+	return _array[ i4 * T3_SIZE + i3 * MATRIX_SIZE + i2 * ROWS + i1 ];
+	
+}
+
+
+
+VMML_TEMPLATE_STRING
+const inline T&
+VMML_TEMPLATE_CLASSNAME::at( size_t i1, size_t i2, size_t i3, size_t i4 ) const
+{
+#ifdef VMMLIB_SAFE_ACCESSORS
+	if ( i1 >= I1 || i2 >= I2 || i3 >= I3 || i4 >= I4 )
+		VMMLIB_ERROR( "at( i1, i2, i3, i4 ) - index out of bounds", VMMLIB_HERE );
+#endif
+	return _array[ i4 * T3_SIZE + i3 * MATRIX_SIZE + i2 * ROWS + i1 ];
+}
+
+
+
+VMML_TEMPLATE_STRING
+inline T&
+VMML_TEMPLATE_CLASSNAME::operator()( size_t i1, size_t i2, size_t i3, size_t i4 )
+{
+	return at( i1, i2, i3, i4 );
+}
+
+
+
+VMML_TEMPLATE_STRING
+const inline T&
+VMML_TEMPLATE_CLASSNAME::operator()(  size_t i1, size_t i2, size_t i3, size_t i4 ) const
+{     
+	return at( i1, i2, i3, i4 );
+}
+
+/*VMML_TEMPLATE_STRING
+void 
+VMML_TEMPLATE_CLASSNAME::fill( T fill_value )
+{
+	for(size_t index = 0; index < SIZE; ++index)
+	{
+		_array[ index ] = fill_value;
+	}
+}*/
+
+VMML_TEMPLATE_STRING
+void 
+VMML_TEMPLATE_CLASSNAME::operator=( T fill_value )
+{
+	fill( fill_value );
+}
+
+VMML_TEMPLATE_STRING
+void 
+VMML_TEMPLATE_CLASSNAME::zero()
+{
+	fill( static_cast< T >( 0.0 ) );
+}
+
+VMML_TEMPLATE_STRING
+void 
+VMML_TEMPLATE_CLASSNAME::fill_increasing_values()
+{
+	for(size_t index = 0; index < SIZE; ++index)
+	{
+		_array[ index ] = index;
 	}
 }
+
+VMML_TEMPLATE_STRING
+void 
+VMML_TEMPLATE_CLASSNAME::fill_random(int seed)
+{
+	if ( seed >= 0 )
+		srand( seed );
+	
+	double fillValue = 0.0f;
+	for( size_t index = 0; index < SIZE; ++index )
+	{
+		fillValue = rand();
+		fillValue /= RAND_MAX;
+		fillValue *= std::numeric_limits< T >::max();
+		_array[ index ] = static_cast< T >( fillValue )  ;
+	}
+}
+
+VMML_TEMPLATE_STRING
+void
+VMML_TEMPLATE_CLASSNAME::fill_random_signed(int seed)
+{
+	if ( seed >= 0 )
+		srand( seed );
+	
+	double fillValue = 0.0f;
+	for( size_t index = 0; index < SIZE; ++index )
+	{
+		
+		fillValue = rand();
+		fillValue /= RAND_MAX;
+		fillValue *= std::numeric_limits< T >::max();
+		T fillValue2 = static_cast< T >(fillValue) % std::numeric_limits< T >::max();
+		fillValue2 -= std::numeric_limits< T >::max()/2;
+		_array[ index ] = fillValue2  ;
+		// test if ever > max/2 or < -max/2
+		
+	}
+}
+
+VMML_TEMPLATE_STRING
+const VMML_TEMPLATE_CLASSNAME&
+VMML_TEMPLATE_CLASSNAME::operator=( const VMML_TEMPLATE_CLASSNAME& source_ )
+{
+	if(this != &source_) // avoid self assignment
+	{
+		memcpy( _array, source_._array, I1 * I2 * I3 * I4 * sizeof( T ) );
+	}
+	return *this;
+}
+	
+	
 
 #undef VMML_TEMPLATE_STRING
 #undef VMML_TEMPLATE_CLASSNAME

@@ -6,9 +6,9 @@ namespace vmml
 unit_test_globals* unit_test_globals::_instance = 0;
 
 unit_test_globals::unit_test_globals()
-    : _ok_prefix(   "[  ok  ]" )
+    : _fail_prefix( "[ FAIL ]" )
     , _warn_prefix( "[ WARN ]" )
-    , _fail_prefix( "[ FAIL ]" )
+    , _ok_prefix(   "[  ok  ]" )
     , _test_count( 0 )
     , _warn_count( 0 )
     , _fail_count( 0 )

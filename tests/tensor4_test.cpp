@@ -12,6 +12,7 @@ namespace vmml
 		bool ok = false;
 		
 		tensor4< 2, 3, 4, 2, int >  t4;
+		//t4.zero();
 		
 		if ( ok )
 		{	
@@ -22,7 +23,7 @@ namespace vmml
 			error 
 			<< "tensor4 method x. t4 should be: " 
 			<< std::endl 
-			<< t4
+			//<< t4
 			<< std::endl;
 			log_error( error.str() );
 		}

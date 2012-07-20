@@ -46,6 +46,9 @@ namespace vmml
 		//TODO: accessors to tensor3 (along all modes)
 
 		inline void get_tensor3( const size_t i4_, tensor3_t& t3_data_ ) const; //TODO: DK
+		
+		inline tensor3_t& get_tensor3( size_t i4_ );
+		inline const tensor3_t& get_tensor3( size_t i4_ ) const;
 
 		static const size_t ROWS	       = I1;
 		static const size_t COLS	       = I2;
@@ -179,8 +182,7 @@ namespace vmml
 		{
 			for(size_t i = 0; i < I4; ++i)
 			{
-				//TODO for tensor4
-				//os << t3.get_tensor3( i ) << " xxx " << std::endl;
+				os << t4.get_tensor3( i ) << " xxx " << std::endl;
 			}
 			return os;
 		}
@@ -212,86 +214,133 @@ namespace vmml
 
 
 
-		VMML_TEMPLATE_STRING
-		VMML_TEMPLATE_CLASSNAME::tensor4()
-		: _array()
-		{
-			tensor4_allocate_data( _array );
-		}
+VMML_TEMPLATE_STRING
+VMML_TEMPLATE_CLASSNAME::tensor4()
+: _array()
+{
+	tensor4_allocate_data( _array );
+}
 
-		VMML_TEMPLATE_STRING
-		VMML_TEMPLATE_CLASSNAME::~tensor4()
-		{
-			tensor4_deallocate_data( _array );
-		}
-
-
-
-		VMML_TEMPLATE_STRING
-		void
-		VMML_TEMPLATE_CLASSNAME::
-		tensor4_allocate_data( T*& array_ )
-		{
-			array_ = new T[ I1 * I2 * I3 * I4];
-		}
-
-		VMML_TEMPLATE_STRING
-		void
-		VMML_TEMPLATE_CLASSNAME::
-		tensor4_deallocate_data( T*& array_ )
-		{
-			delete[] array_;
-		}
+VMML_TEMPLATE_STRING
+VMML_TEMPLATE_CLASSNAME::~tensor4()
+{
+	tensor4_deallocate_data( _array );
+}
 
 
 
-		VMML_TEMPLATE_STRING
-		T*
-		VMML_TEMPLATE_CLASSNAME::get_array_ptr()
-		{
-			return _array;
-		}
+VMML_TEMPLATE_STRING
+void
+VMML_TEMPLATE_CLASSNAME::
+tensor4_allocate_data( T*& array_ )
+{
+	array_ = new T[ I1 * I2 * I3 * I4];
+}
+
+VMML_TEMPLATE_STRING
+void
+VMML_TEMPLATE_CLASSNAME::
+tensor4_deallocate_data( T*& array_ )
+{
+	delete[] array_;
+}
 
 
 
-		VMML_TEMPLATE_STRING
-		const T*
-		VMML_TEMPLATE_CLASSNAME::get_array_ptr() const
-		{
-			return _array;
-		}
-
-		VMML_TEMPLATE_STRING
-		vmml::tensor3< I1, I2, I3, T >&
-		VMML_TEMPLATE_CLASSNAME::
-		_get_tensor3( size_t index_ )
-		{
-			return *reinterpret_cast< tensor3_t* >( _array + I1 * I2 * I3 * index_ );
-		}
+VMML_TEMPLATE_STRING
+T*
+VMML_TEMPLATE_CLASSNAME::get_array_ptr()
+{
+	return _array;
+}
 
 
-		VMML_TEMPLATE_STRING
-		const vmml::tensor3< I1, I2, I3, T >&
-		VMML_TEMPLATE_CLASSNAME::
-		_get_tensor3( size_t index_ ) const
-		{
-			return *reinterpret_cast< const tensor3_t* >( _array + I1 * I2 * I3 * index_ );
-		}
+
+VMML_TEMPLATE_STRING
+const T*
+VMML_TEMPLATE_CLASSNAME::get_array_ptr() const
+{
+	return _array;
+}
+
+VMML_TEMPLATE_STRING
+typename VMML_TEMPLATE_CLASSNAME::tensor3_t&
+VMML_TEMPLATE_CLASSNAME::
+_get_tensor3( size_t index_ )
+{
+	return *reinterpret_cast< tensor3_t* >( _array + I1 * I2 * I3 * index_ );
+}
 
 
-		VMML_TEMPLATE_STRING
-		inline void
-		VMML_TEMPLATE_CLASSNAME::
-		get_tensor3( const size_t i4_, tensor3_t& t3_data_ ) const
-		{
+VMML_TEMPLATE_STRING
+const typename VMML_TEMPLATE_CLASSNAME::tensor3_t&
+VMML_TEMPLATE_CLASSNAME::
+_get_tensor3( size_t index_ ) const
+{
+	return *reinterpret_cast< const tensor3_t* >( _array + I1 * I2 * I3 * index_ );
+}
+
+
+VMML_TEMPLATE_STRING
+inline void
+VMML_TEMPLATE_CLASSNAME::
+get_tensor3( const size_t i4_, tensor3_t& t3_data_ ) const
+{
 #ifdef VMMLIB_SAFE_ACCESSORS
-			if ( i4_ >= I4 )
-				VMMLIB_ERROR( "get_tensor3() - index out of bounds.", VMMLIB_HERE );
+	if ( i4_ >= I4 )
+		VMMLIB_ERROR( "get_tensor3() - index out of bounds.", VMMLIB_HERE );
 #endif
 
-			t3_data_ = _get_tensor3( i4_ );
-		}
+	t3_data_ = _get_tensor3( i4_ );
+}
 
+	
+	
+VMML_TEMPLATE_STRING
+inline typename VMML_TEMPLATE_CLASSNAME::tensor3_t&
+VMML_TEMPLATE_CLASSNAME::
+get_tensor3( size_t i4_ )
+{
+#ifdef VMMLIB_SAFE_ACCESSORS
+	if ( i4_ >= I4 )
+		VMMLIB_ERROR( "get_tensor3() - index out of bounds.", VMMLIB_HERE );
+#endif
+	return _get_tensor3( i4_ );
+}
+
+
+VMML_TEMPLATE_STRING
+inline const typename VMML_TEMPLATE_CLASSNAME::tensor3_t&
+VMML_TEMPLATE_CLASSNAME::
+get_tensor3( size_t i4_ ) const
+{
+#ifdef VMMLIB_SAFE_ACCESSORS
+	if ( i4_ >= I4 )
+		VMMLIB_ERROR( "get_tensor3() - index out of bounds.", VMMLIB_HERE );
+#endif
+	return _get_tensor3( i4_ );
+}
+
+	
+VMML_TEMPLATE_STRING
+void
+VMML_TEMPLATE_CLASSNAME::zero()
+{
+	fill( static_cast< T >( 0.0 ) );
+}
+	
+	
+//fill
+VMML_TEMPLATE_STRING
+void
+VMML_TEMPLATE_CLASSNAME::
+fill( T fillValue )
+{
+	for( size_t i4 = 0; i4 < I4; ++i4 )
+	{
+		_get_tensor3( i4 ).fill( fillValue );
+	}
+}
 
 #undef VMML_TEMPLATE_STRING
 #undef VMML_TEMPLATE_CLASSNAME

@@ -377,7 +377,421 @@ namespace vmml
             }
 		}
         
- 
+        // Test casts
+        ok = false;
+        vmml::tensor4<a, b, c, d, ushort> t4same;
+        t4same.fill_random();
+        vmml::tensor4<a, b, c, d, T> t4control(t4same); // tested before so we can use the constructor
+        t4.cast_from(t4same);
+        if(t4 == t4control)
+        {
+            log( "tensor4 cast_from same size", true  );
+        }else
+        {
+            std::stringstream error;
+			error
+			<< "tensor4 cast_from same size. t4 is: " 
+			<< std::endl 
+			<< t4
+			<< std::endl
+            << "t4 should be: " << std::endl
+            << t4control << std::endl;
+            
+            log_error( error.str(),  fail_test);
+        }
+        vmml::tensor4<4, 2, 4, 1, ushort> t4diff;
+        vmml::tensor4<3, 2, 4, 4, T>    t4cast;
+        t4diff.fill_increasing_values();
+        t4cast.cast_from(t4diff);
+        T val = 0;
+        T* dat = t4cast.get_array_ptr();
+        ok = true;
+        for(size_t index = 0; index < 3*2*4 && ok; ++index)
+        {
+            if( (val+1) % 4 == 0)
+            {
+                ++val;
+            }
+            
+            if(dat[index] != val)
+            {
+                ok = false;
+            }
+            
+            ++val;
+        }
+        
+        if(ok)
+        {
+            log( "tensor4 cast_from different size", true  );
+        }else
+        {
+            std::stringstream error;
+			error
+			<< "tensor4 cast_from different size. t4 is: " 
+			<< std::endl 
+			<< t4
+			<< std::endl
+            << "t4 should be like: " << std::endl
+            << t4diff << std::endl;
+            
+            log_error( error.str(),  fail_test);
+        }
+        
+        
+        vmml::tensor4<a, b, c, d, float> t4float;
+        vmml::tensor4<a, b, c, d, uint16_t> t4unsigned;
+        
+        t4float.fill_increasing_values();
+        float* datafloatptr = t4float.get_array_ptr();
+        for(size_t index = 0; index < t4float.size(); ++index)
+        {
+            datafloatptr[index] = datafloatptr[index] + 0.45f;
+        }
+        
+        t4unsigned.float_t_to_uint_t(t4float);
+        vmml::tensor4<a, b, c, d, uint16_t> control;
+        control.fill_increasing_values();
+        
+        if( control == t4unsigned)
+        {
+            log( "tensor4 float_t_to_uint_t", true  );
+        }else
+        {
+            std::stringstream error;
+			error
+			<< "tensor4 float_t_to_uint_t. t4 is: " 
+			<< std::endl 
+			<< t4unsigned
+			<< std::endl
+            << "t4 should be: " << std::endl
+            << control << std::endl;
+            
+            log_error( error.str(),  fail_test);
+        }
+        
+        
+        // Test scalar operators
+        vmml::tensor4<a, b, c, d, T> t4calc;
+        vmml::tensor4<a, b, c, d, T> t4correct;
+        t4.fill_increasing_values();
+        t4calc = t4 + 1;
+        ok = true;
+        T* calcptr = t4calc.get_array_ptr();
+        T* correctptr = t4correct.get_array_ptr();
+        for(size_t index = 0; index < t4calc.size(); ++index)
+        {
+            correctptr[ index ] = index+1;
+            if(calcptr[ index ] != index+1)
+            {
+                ok = false;
+                break;
+            }
+        }
+        
+        t4 += 1;
+        
+        if(ok && (t4 == t4calc))
+        {
+            log( "tensor4 scalar addition operators +/+=", true  );
+        }else
+        {
+            std::stringstream error;
+			error
+			<< "tensor4 scalar addition operators +/+=. t4 += is: " 
+			<< std::endl 
+			<< t4
+			<< std::endl
+            << "t4 copy + is: " 
+			<< std::endl 
+			<< t4calc
+			<< std::endl
+            << "both should be: " << std::endl
+            << t4correct << std::endl;
+            
+            log_error( error.str(),  fail_test);
+        }
+        
+        
+        t4.fill_increasing_values();
+        t4calc = t4 - 1;
+        ok = true;
+        
+        for(size_t index = 0; index < t4calc.size(); ++index)
+        {
+            correctptr[ index ] = index-1;
+            if(calcptr[ index ] != index-1)
+            {
+                ok = false;
+                break;
+            }
+        }
+        
+        t4 -= 1;
+        
+        if(ok && (t4 == t4calc))
+        {
+            log( "tensor4 scalar substraction operators -/-=", true  );
+        }else
+        {
+            std::stringstream error;
+			error
+			<< "tensor4 scalar substraction operators -/-=. t4 -= is: " 
+			<< std::endl 
+			<< t4
+			<< std::endl
+            << "t4 copy - is: " 
+			<< std::endl 
+			<< t4calc
+			<< std::endl
+            << "both should be: " << std::endl
+            << t4correct << std::endl;
+            
+            log_error( error.str(),  fail_test);
+        }
+        
+        
+        t4.fill_increasing_values();
+        t4calc = t4 * 2;
+        ok = true;
+        
+        for(size_t index = 0; index < t4calc.size(); ++index)
+        {
+            correctptr[ index ] = index*2;
+            if(calcptr[ index ] != index*2)
+            {
+                ok = false;
+                break;
+            }
+        }
+        
+        t4 *= 2;
+        
+        if(ok && (t4 == t4calc))
+        {
+            log( "tensor4 scalar multiplication operators */*=", true  );
+        }else
+        {
+            std::stringstream error;
+			error
+			<< "tensor4 scalar multiplication operators */*=. t4 *= is: " 
+			<< std::endl 
+			<< t4
+			<< std::endl
+            << "t4 copy * is: " 
+			<< std::endl 
+			<< t4calc
+			<< std::endl
+            << "both should be: " << std::endl
+            << t4correct << std::endl;
+            
+            log_error( error.str(),  fail_test);
+        }
+        
+        t4.fill_increasing_values();
+        t4calc = t4 / 2;
+        ok = true;
+        
+        for(size_t index = 0; index < t4calc.size(); ++index)
+        {
+            correctptr[ index ] = index/2;
+            if(calcptr[ index ] != index/2)
+            {
+                ok = false;
+                break;
+            }
+        }
+        
+        t4 /= 2;
+        
+        if(ok && (t4 == t4calc))
+        {
+            log( "tensor4 scalar division operators / and /=", true  );
+        }else
+        {
+            std::stringstream error;
+			error
+			<< "tensor4 scalar division operators / and /=. t4 /= is: " 
+			<< std::endl 
+			<< t4
+			<< std::endl
+            << "t4 copy / is: " 
+			<< std::endl 
+			<< t4calc
+			<< std::endl
+            << "both should be: " << std::endl
+            << t4correct << std::endl;
+            
+            log_error( error.str(),  fail_test);
+        }
+        
+        
+        // Test Tensor scalar operators
+        vmml::tensor4<a, b, c, d, T> t4offset;
+        t4offset.fill_increasing_values();
+        t4.fill_increasing_values();
+        
+        t4calc = t4 + t4offset;
+        ok = true;
+        
+        for(size_t index = 0; index < t4calc.size(); ++index)
+        {
+            correctptr[ index ] = index*2;
+            if(calcptr[ index ] != index*2)
+            {
+                ok = false;
+                break;
+            }
+        }
+        
+        t4 += t4offset;
+        
+        if(ok && (t4 == t4calc))
+        {
+            log( "tensor4 tensor addition operators + and +=", true  );
+        }else
+        {
+            std::stringstream error;
+			error
+			<< "tensor4 tensor addition operators + and +=. t4 += is: " 
+			<< std::endl 
+			<< t4
+			<< std::endl
+            << "t4 copy + is: " 
+			<< std::endl 
+			<< t4calc
+			<< std::endl
+            << "both should be: " << std::endl
+            << t4correct << std::endl;
+            
+            log_error( error.str(),  fail_test);
+        }
+        
+        t4offset.fill_increasing_values();
+        t4.fill_increasing_values();
+        
+        t4calc = t4 - t4offset;
+        ok = true;
+        
+        for(size_t index = 0; index < t4calc.size(); ++index)
+        {
+            correctptr[ index ] = 0;
+            if(calcptr[ index ] != 0)
+            {
+                ok = false;
+                break;
+            }
+        }
+        
+        t4 -= t4offset;
+        
+        if(ok && (t4 == t4calc))
+        {
+            log( "tensor4 tensor substraction operators - and -=", true  );
+        }else
+        {
+            std::stringstream error;
+			error
+			<< "tensor4 tensor substraction operators - and -=. t4 -= is: " 
+			<< std::endl 
+			<< t4
+			<< std::endl
+            << "t4 copy - is: " 
+			<< std::endl 
+			<< t4calc
+			<< std::endl
+            << "both should be: " << std::endl
+            << t4correct << std::endl;
+            
+            log_error( error.str(),  fail_test);
+        }
+        
+        vmml::tensor4<2, 2, 4, 4, T> t4smaller;
+        vmml::tensor4<3, 2, 4, 4, T> t4orig;
+        vmml::tensor4<3, 2, 4, 4, T> t4origcrr;
+        t4smaller.fill_increasing_values();
+        t4orig.fill_increasing_values();
+        t4orig += t4smaller;
+        
+        T* crrptr = t4origcrr.get_array_ptr();
+        T* addedptr = t4orig.get_array_ptr();
+        //T* smallerptr = t4smaller.get_array_ptr();
+        
+        ok = true;
+        T value = 0;
+        for(size_t index = 0; index < t4.size(); ++index)
+        {
+            crrptr[index] = ((index+1) % 3 == 0? index : index+value);
+            if( addedptr[index] !=  crrptr[index])
+            {
+                ok = false;
+            }
+            
+            if ((index +1) % 3 != 0)
+            {
+                ++value;
+            }
+        }
+        
+        t4smaller.zero();
+        t4orig += t4smaller;
+        
+        if(ok && t4orig == t4origcrr)
+        {
+            log( "tensor4 tensor different size addition +=", true  );
+        }else
+        {
+            std::stringstream error;
+			error
+			<< "tensor4 tensor different size addition +=. t4 += is: " 
+			<< std::endl 
+			<< t4orig
+			<< std::endl
+            << "t4 should be: " << std::endl
+            << t4origcrr << std::endl;
+            
+            log_error( error.str(),  fail_test);
+        }
+        
+        
+        // Negation operators
+        t4.fill_increasing_values();
+        
+        t4calc = -(t4);
+        
+        ok = true;
+        for(size_t index = 0; index < t4calc.size(); ++ index)
+        {
+            correctptr[index] = -1 * (int) index;
+            if(calcptr[index] != -1*(int)index )
+            {
+                ok = false;
+            }
+        }
+        
+        t4 = t4.negate();
+        
+        if(ok && (t4 == t4calc))
+        {
+            log( "tensor4 tensor negation", true  );
+        }else
+        {
+            std::stringstream error;
+			error
+			<< "tensor4 tensor negation. t4.negate() is: " 
+			<< std::endl 
+			<< t4
+			<< std::endl
+            << "-(t4) is: " 
+			<< std::endl 
+			<< t4calc
+			<< std::endl
+            << "both should be: " << std::endl
+            << t4correct << std::endl;
+            
+            log_error( error.str(),  fail_test);
+        }
+        
 		return ok;
 	}
 	

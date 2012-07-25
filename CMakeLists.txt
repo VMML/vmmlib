@@ -99,6 +99,7 @@ set(TESTS
   tests/qr_decomposition_test.cpp
   tests/quaternion_test.cpp
   tests/svd_test.cpp
+  tests/t4_converter_test.cpp
   tests/timer.cpp
   tests/unit_test.cpp
   tests/unit_test_globals.cpp

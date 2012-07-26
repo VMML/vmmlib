@@ -99,7 +99,6 @@ set(TESTS
   tests/qr_decomposition_test.cpp
   tests/quaternion_test.cpp
   tests/svd_test.cpp
-  tests/t4_converter_test.cpp
   tests/timer.cpp
   tests/unit_test.cpp
   tests/unit_test_globals.cpp
@@ -122,6 +121,7 @@ if(LAPACK_FOUND)
     tests/lapack_linear_least_squares_test.cpp
     tests/lapack_svd_test.cpp
     tests/lapack_sym_eigs_test.cpp
+    tests/t4_converter_test.cpp
     tests/matrix_pseudoinverse_test.cpp
     tests/qtucker3_tensor_test.cpp
     tests/svd_lapack_vs_old.cpp

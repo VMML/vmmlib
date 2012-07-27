@@ -69,9 +69,12 @@ public:
     static const size_t SIZE           = MATRIX_SIZE * I3;
 
 	
-    static size_t get_array_size_bytes() { return (sizeof(T) * SIZE); };
+    static size_t get_array_size_in_bytes();
 
-
+    // WARNING: dangerous. Use before destruction if you want to prevent
+    // a delete call for the assigned T* _array in the destructor.
+    void clear_array_pointer();
+	
     // accessors
     inline T& operator()( size_t i1, size_t i2, size_t i3 );
     inline const T& operator()( size_t i1, size_t i2, size_t i3 ) const;
@@ -377,7 +380,7 @@ protected:
 #define VMML_TEMPLATE_CLASSNAME tensor3< I1, I2, I3, T >
 
 // WARNING: make sure that memory is a pointer to a memory block of 
-// sufficient size
+// sufficient size (that is, is at least get_array_size_in_bytes())
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::tensor3( void* memory ) 
 : _array( reinterpret_cast<T*>( memory ) )
@@ -2494,7 +2497,10 @@ void
 VMML_TEMPLATE_CLASSNAME::
 tensor3_deallocate_data( T*& array_ )
 {
-    delete[] array_;
+	if (array_)
+	{
+		delete[] array_;
+	}
 }
 
 
@@ -2697,6 +2703,24 @@ VMML_TEMPLATE_CLASSNAME::average_8to1( tensor3< K1, K2, K3, T >& other ) const
 	delete slice_other;
 	delete sub_row_slice;
 }
+	
+VMML_TEMPLATE_STRING
+size_t
+VMML_TEMPLATE_CLASSNAME::get_array_size_in_bytes()
+{
+	return (sizeof(T) * SIZE);
+}
+
+
+
+// WARNING: dangerous. Use before destruction if you want to prevent
+// a delete call for the assigned T* _array in the destructor.
+VMML_TEMPLATE_STRING
+void
+VMML_TEMPLATE_CLASSNAME::clear_array_pointer() {
+	_array = 0;
+}
+	
 
 
 #undef VMML_TEMPLATE_STRING

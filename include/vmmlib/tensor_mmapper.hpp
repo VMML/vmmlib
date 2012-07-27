@@ -24,8 +24,8 @@ namespace vmml
 		protected:
 		static std::string concat_path( const std::string& dir_, const std::string& filename_ );
 
-	    void     t3_allocate_rd_mmap( const std::string& dir_, const std::string& filename_ );
-		void     t3_allocate_wr_mmap( const std::string& dir_, const std::string& filename_ );
+	    void*     t3_allocate_rd_mmap( const std::string& dir_, const std::string& filename_ );
+		void*    t3_allocate_wr_mmap( const std::string& dir_, const std::string& filename_ );
 
 		int _fd;            // one mmap for all tensors
 		size_t _file_size;  // sizeof tensors * tensor_count
@@ -66,10 +66,15 @@ VMML_TEMPLATE_CLASSNAME::tensor_mmapper( const std::string& dir_, const std::str
 VMML_TEMPLATE_STRING
 VMML_TEMPLATE_CLASSNAME::~tensor_mmapper()
 {
+    if (_tensor)
+    {
+        _tensor->clear_array_pointer();
+        delete _tensor;
+    }
+	
 	munmap( _data, _file_size ); //get error
 	close( _fd );
-
-	//delete _tensor;
+	
 }
 	
 	
@@ -78,7 +83,7 @@ VMML_TEMPLATE_CLASSNAME::tensor_mmapper( const std::string& dir_, const std::str
 : _file_size(0), _data(0)
 {
 	
-	_file_size = T::get_array_size_bytes();
+	_file_size = T::get_array_size_in_bytes();
 	
 	if ( prot_read_ ) {
 		t3_allocate_rd_mmap( dir_, filename_ );
@@ -86,13 +91,16 @@ VMML_TEMPLATE_CLASSNAME::tensor_mmapper( const std::string& dir_, const std::str
 		t3_allocate_wr_mmap( dir_, filename_ );
 	}
 	
-	_tensor = new T( _data );
+	if (_data != 0)
+	{
+		_tensor = new T( _data );
+	}
 }
 	
 	
 	
 VMML_TEMPLATE_STRING
-void
+void*
 VMML_TEMPLATE_CLASSNAME::
 t3_allocate_rd_mmap(  const std::string& dir_, const std::string& filename_ )
 {
@@ -117,11 +125,14 @@ t3_allocate_rd_mmap(  const std::string& dir_, const std::string& filename_ )
 	if( _data == MAP_FAILED)
 	{
 		std::cout << "mmap failed" << std::endl;
+		return 0;
 	}
+	
+	return _data;
 }
 
 VMML_TEMPLATE_STRING
-void
+void*
 VMML_TEMPLATE_CLASSNAME::
 t3_allocate_wr_mmap(  const std::string& dir_, const std::string& filename_ )
 {
@@ -151,7 +162,10 @@ t3_allocate_wr_mmap(  const std::string& dir_, const std::string& filename_ )
 	if( _data == MAP_FAILED)
 	{
 		std::cout << "mmap failed" << std::endl;
+		return 0;
 	}
+	
+	return _data;
 }
 	
 VMML_TEMPLATE_STRING

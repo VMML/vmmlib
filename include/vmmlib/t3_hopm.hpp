@@ -157,6 +157,8 @@ VMML_TEMPLATE_CLASSNAME::als( const t3_type& data_,
 
     assert( validator::is_valid( u2_) && validator::is_valid( u3_ ) );
     assert( validator::is_valid( lambdas_ ) );
+	
+	u1_.zero();
 
 #if CP_LOG
 	std::cout << "CP ALS: HOPM (for tensor3) " << std::endl;

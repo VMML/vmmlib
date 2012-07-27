@@ -88,6 +88,7 @@ set(HEADERS
   include/vmmlib/vmmlib.hpp
   include/vmmlib/vmmlib_config.hpp
   include/vmmlib/tensor4.hpp
+  include/vmmlib/t4_converter.hpp
 )
 
 set(TESTS
@@ -135,6 +136,7 @@ if(LAPACK_FOUND)
     tests/tucker3_exporter_importer_test.cpp
     tests/tucker3_tensor_test.cpp
     tests/tensor4_test.cpp
+    tests/t4_converter_test.cpp
 )
 endif()
 

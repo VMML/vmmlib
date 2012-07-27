@@ -58,7 +58,8 @@ namespace vmml
 		static const size_t T3_SIZE        = I1 * I2 * I3;
 		static const size_t SIZE           = I1 * I2 * I3 * I4;
 		
-		
+	    static size_t get_array_size_bytes() { return (sizeof(T) * I1 * I2 * I3 * I4); };
+	
 		
 		// accessors
 		inline T& operator()( size_t i1, size_t i2, size_t i3, size_t i4 ); //TODO: DK done
@@ -70,6 +71,8 @@ namespace vmml
 		
 		// ctors
 		tensor4();
+		
+		explicit tensor4(void* memory) ;
 		
 		tensor4( const tensor4& source );  //TODO: DK done
 		
@@ -239,6 +242,16 @@ namespace vmml
 #define VMML_TEMPLATE_STRING    template< size_t I1, size_t I2, size_t I3, size_t I4, typename T >
 #define VMML_TEMPLATE_CLASSNAME tensor4< I1, I2, I3, I4, T >
 		
+		
+		
+		// WARNING: make sure that memory is a pointer to a memory block of 
+		// sufficient size
+		VMML_TEMPLATE_STRING
+		VMML_TEMPLATE_CLASSNAME::tensor4( void* memory ) 
+		: _array( reinterpret_cast<T*>( memory ) )
+		{
+			assert( _array );
+		}	
 		
 		
 		VMML_TEMPLATE_STRING

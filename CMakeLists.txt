@@ -22,13 +22,13 @@ if(APPLE)
   if(LAPACK_LIBRARIES)
     set(LAPACK_FOUND TRUE)
   endif(LAPACK_LIBRARIES)
-else(APPLE)
+elseif(NOT CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 #  enable_language(Fortran OPTIONAL) # eile: Why needed?
   find_package(BLAS)
   if(BLAS_FOUND)
     find_package(LAPACK)
   endif()
-endif(APPLE)
+endif()
 
 set(DOCS README AUTHORS LICENSE.txt ACKNOWLEDGEMENTS)
 

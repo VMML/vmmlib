@@ -7,11 +7,11 @@ set(VERSION_MAJOR 1)
 set(VERSION_MINOR 5)
 set(VERSION_PATCH 0)
 set(RELEASE_VERSION OFF) # OFF or ABI version
+set(LAST_RELEASE 1.4.0)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMake)
 include(Common)
 include(GitTargets)
-include(DoxygenSetup)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-shadow -Wno-sign-compare -Wno-extra -Wno-strict-aliasing")
 

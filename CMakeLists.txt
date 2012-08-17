@@ -10,6 +10,11 @@ set(RELEASE_VERSION OFF) # OFF or ABI version
 set(LAST_RELEASE 1.4.0)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMake)
+
+# override for now...
+set(GIT_ORIGIN_ORG Eyescale)
+set(GIT_ORIGIN_org eyescale)
+
 include(Common)
 include(GitTargets)
 

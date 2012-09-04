@@ -140,13 +140,17 @@ t3_allocate_wr_mmap(  const std::string& dir_, const std::string& filename_ )
 	
 	std::string path = concat_path( dir_, filename_ );
 	
-	_fd = open( path.c_str(), O_RDWR, 0 ); //O_RDONLY
+	_fd = open( path.c_str(), O_RDWR, 0 );
 	if ( _fd == -1 )
 	{
+		if ( ! _tensor )
+		{
+			_tensor = new T();
+		}
 		_tensor->zero();
 		_tensor->write_to_raw( dir_, filename_ );
 		
-		_fd = open( path.c_str(), O_RDWR, 0 ); //O_RDONLY
+		_fd = open( path.c_str(), O_RDWR, 0 );
 		if ( _fd == -1 )
 		{
 			close(_fd);

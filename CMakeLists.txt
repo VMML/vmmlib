@@ -11,9 +11,7 @@ set(LAST_RELEASE 1.4.0)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMake)
 
-# override for now...
-set(GIT_ORIGIN_ORG Eyescale)
-set(GIT_ORIGIN_org eyescale)
+set(MACPORTS_DIR eyescalePorts) # override for now...
 
 include(Common)
 include(GitTargets)

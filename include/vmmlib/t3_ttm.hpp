@@ -15,8 +15,9 @@
 
 #include <vmmlib/tensor3.hpp>
 #include <vmmlib/blas_dgemm.hpp>
-
-#include<omp.h>
+#ifdef VMMLIB_USE_OPENMP
+#  include <omp.h>
+#endif
 
 namespace vmml
 {

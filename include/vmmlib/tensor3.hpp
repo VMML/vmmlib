@@ -17,8 +17,10 @@
 #include <vmmlib/blas_dot.hpp>
 #include <sys/mman.h>
 #include <fcntl.h>
-#include <omp.h>
 #include <limits>
+#ifdef VMMLIB_USE_OPENMP
+#  include <omp.h>
+#endif
 #undef min
 #undef max
 

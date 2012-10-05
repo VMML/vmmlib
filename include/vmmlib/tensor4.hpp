@@ -211,7 +211,7 @@ namespace vmml
 						os << " xxx " << std::endl;
 					}
 				}
-				if ( i4 < (I4 -1 ))
+				if ( i4 + 1 < I4 )
 				{
 					os << "---- " << std::endl;
 				}

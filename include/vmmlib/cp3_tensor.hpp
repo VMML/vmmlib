@@ -67,12 +67,12 @@ namespace vmml
 		void get_u2( u2_type& U2 ) const { U2 = *_u2; } ;
 		void get_u3( u3_type& U3 ) const { U3 = *_u3; } ;
 		
-		void set_core( const lambda_type& lambdas_ )  { _lambdas = lambda_type( lambdas_ ); _lambdas_comp.cast_from( _lambdas ); } ;
+		void set_core( const lambda_type& lambdas_ )  { _lambdas = lambda_type( lambdas_ ); _lambdas_comp->cast_from( _lambdas ); } ;
 		void set_u1( u1_type& U1 ) { *_u1 = U1; _u1_comp->cast_from( U1 ); } ;
 		void set_u2( u2_type& U2 ) { *_u2 = U2; _u1_comp->cast_from( U2 ); } ;
 		void set_u3( u3_type& U3 ) { *_u3 = U3; _u1_comp->cast_from( U3 ); } ;
 		
-		void set_lambda_comp( lambda_comp_type& lambdas_ )  { _lambdas_comp = lambda_comp_type( lambdas_ ); _lambdas.cast_from( _lambdas_comp ); } ;
+		void set_lambda_comp( lambda_comp_type& lambdas_ )  { _lambdas_comp = lambda_comp_type( lambdas_ ); _lambdas->cast_from( _lambdas_comp ); } ;
 		void set_u1_comp( u1_comp_type& U1 ) { *_u1_comp = U1; _u1->cast_from( U1 ); } ;
 		void set_u2_comp( u2_comp_type& U2 ) { *_u2_comp = U2; _u1->cast_from( U2 ); } ;
 		void set_u3_comp( u3_comp_type& U3 ) { *_u3_comp = U3; _u1->cast_from( U3 ); } ;
@@ -224,22 +224,22 @@ VMML_TEMPLATE_STRING
 void
 VMML_TEMPLATE_CLASSNAME::export_to( std::vector< T_coeff >& data_ ) const
 {
-	u1_const_iterator  it = _u1.begin(),
-	it_end = _u1.end();
+	u1_const_iterator  it = _u1->begin(),
+	it_end = _u1->end();
 	for( ; it != it_end; ++it )
 	{
 		data_.push_back( *it );
 	}
 	
-	u2_const_iterator  u2_it = _u2.begin(),
-	u2_it_end = _u2.end();
+	u2_const_iterator  u2_it = _u2->begin(),
+	u2_it_end = _u2->end();
 	for( ; u2_it != u2_it_end; ++u2_it )
 	{
 		data_.push_back( *u2_it );
 	}
 	
-	u3_const_iterator  u3_it = _u3.begin(),
-	u3_it_end = _u3.end();
+	u3_const_iterator  u3_it = _u3->begin(),
+	u3_it_end = _u3->end();
 	for( ; u3_it != u3_it_end; ++u3_it )
 	{
 		data_.push_back( *u3_it );
@@ -255,22 +255,22 @@ VMML_TEMPLATE_CLASSNAME::import_from( std::vector< T_coeff >& data_ )
 {
 	size_t i = 0; //iterator over data_
 	
-	u1_iterator  it = _u1.begin(),
-	it_end = _u1.end();
+	u1_iterator  it = _u1->begin(),
+	it_end = _u1->end();
 	for( ; it != it_end; ++it, ++i )
 	{
 		*it = data_.at(i);
 	}
 	
-	u2_iterator  u2_it = _u2.begin(),
-	u2_it_end = _u2.end();
+	u2_iterator  u2_it = _u2->begin(),
+	u2_it_end = _u2->end();
 	for( ; u2_it != u2_it_end; ++u2_it, ++i )
 	{
 		*u2_it = data_.at(i);
 	}
 	
-	u3_iterator  u3_it = _u3.begin(),
-	u3_it_end = _u3.end();
+	u3_iterator  u3_it = _u3->begin(),
+	u3_it_end = _u3->end();
 	for( ; u3_it != u3_it_end; ++u3_it, ++i )
 	{
 		*u3_it = data_.at(i);

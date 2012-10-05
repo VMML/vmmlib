@@ -460,7 +460,7 @@ public:
 				} else {
 					os << matrix.at( row_index, col_index );
 				}
-                if (col_index < (N-1) )
+                if (col_index + 1 < N )
                     os << ", ";
             }
             os << ")" << std::endl;

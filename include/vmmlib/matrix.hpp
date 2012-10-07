@@ -1860,13 +1860,13 @@ typename enable_if< O == M-1 && P == N-1 && M == N && M >= 2 >::type* ) const
 	ssize_t col_offset = 0;
 	for( ssize_t row_index = 0; row_index < M; ++row_index )
 	{
-		if ( row_index == row_to_cut )
+		if ( row_index == ssize_t( row_to_cut ))
 			row_offset = -1;
 		else
 		{
 			for( ssize_t col_index = 0; col_index < M; ++col_index )
 			{
-				if ( col_index == col_to_cut )
+				if ( col_index == ssize_t( col_to_cut ))
 					col_offset = -1;
 				else
 					minor_.at( row_index + row_offset, col_index + col_offset )
@@ -2741,7 +2741,8 @@ matrix< M, N, T >::write_to_raw( const std::string& dir_, const std::string& fil
 	}
 	path.append( filename_ );
 	//check for format
-	if( filename_.find( "raw", filename_.size() -3) == (-1)) {
+	if( filename_.find( "raw", filename_.size() -3) == std::string::npos )
+    {
 		path.append( ".");
 		path.append( "raw" );
 	}

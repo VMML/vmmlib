@@ -180,7 +180,7 @@ public:
     vector( const vector< N, T >& source_,
         typename enable_if< N == M - 1 >::type* = 0 );
 
-    // from-homogenous-coordinates ctor
+    // from-homogenous-coordinates vector
     template< size_t N >
     vector( const vector< N, T >& source_,
         typename enable_if< N == M + 1 >::type* = 0  );
@@ -190,6 +190,8 @@ public:
 
     void set( T a ); // sets all components to a;
     void set( const vector< M-1, T >& v, T a );
+    template< size_t N >
+    void set( const vector< N, T >& v );
 
     // sets the first few components to a certain value
     void set( T x, T y );
@@ -574,8 +576,15 @@ vector< M, T >::set( const vector< M-1, T >& v, T _a )
     at( M-1 ) = _a;
 }
 
-
-
+template< size_t M, typename T >
+template< size_t N >
+void
+vector< M, T >::set( const vector< N, T >& v )
+{
+    size_t minimum = M;
+    if (N < M) minimum = N;
+    memcpy( array, v.array, sizeof( T ) * minimum );
+}
 
 template< size_t M, typename T >
 void

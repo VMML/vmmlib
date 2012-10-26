@@ -12,9 +12,7 @@ namespace vmml
 		
 		double precision = 0.001;
 		
-		typedef tensor3< 4, 4, 4, double > cp_t3_type;
-		
-		cp_t3_type t3_cp_input;
+		tensor3< 4, 4, 4, double > t3_cp_input;
 		double data_in_cp[] = { 
 			0.3780, 0.3150, 0.3386, 0.2047, 0.2913, 0.3071, 0.2835, 0.1024, 0.2362, 0.2835, 0.2677, 0.1024, 0.3543, 1.1181, 1.5354, 0.3858, 
 			0.2520, 0.2283, 0.3228, 0.2835, 0.2677, 0.2598, 0.2992, 0.2126, 0.2441, 0.2205, 0.2441, 0.2913, 0.9213, 0.6457, 0.4331, 0.1890,
@@ -31,7 +29,7 @@ namespace vmml
 		cp3_u_type u2;
 		cp3_u_type u3;
 
-		t3_ihopm< W, L, 4, 4, 4, double, double >::incremental_als( t3_cp_input, u1, u2, u3, lambda );
+		t3_ihopm< W*L, L, 4, 4, 4, double, double >::incremental_als( t3_cp_input, u1, u2, u3, lambda );
 		
 		//std::cout << "u1:\n" << u1 << std::endl << "u2:\n" << u2 << std::endl << "u3:\n" << u3 << std::endl << "lambda\n" << lambda << std::endl;
 
@@ -100,4 +98,3 @@ namespace vmml
 	}
 	
 } //end vmml namespace
-

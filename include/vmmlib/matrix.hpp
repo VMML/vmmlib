@@ -75,7 +75,7 @@ public:
     bool operator==( const matrix& other ) const;
     bool operator!=( const matrix& other ) const;
 
-    // due to limited precision, two 'idential' matrices might seem different.
+    // due to limited precision, two 'identical' matrices might seem different.
     // this function allows to specify a tolerance when comparing matrices.
     bool equals( const matrix& other, T tolerance ) const;
     // this version takes a comparison functor to compare the components of
@@ -211,6 +211,7 @@ public:
     void identity();
 
 	double frobenius_norm() const;
+	double p_norm( double p ) const;
 
 	template< typename TT >
 	void cast_from( const matrix< M, N, TT >& other );
@@ -988,8 +989,6 @@ equals( const matrix< M, N, T >& other_matrix, compare_t& cmp ) const
     }
     return ok;
 }
-
-
 
 template< size_t M, size_t N, typename T >
 const matrix< M, N, T >&
@@ -2398,6 +2397,21 @@ matrix< M, N, T >::frobenius_norm( ) const
 	}
 
 	return sqrt(norm);
+}
+
+template< size_t M, size_t N, typename T >
+double 
+matrix< M, N, T >::p_norm( double p ) const
+{
+	double norm = 0.0;
+	
+	const_iterator it = begin(), it_end = end(); 
+	for( ; it != it_end; ++it )
+	{
+		norm += pow(*it, p);
+	}
+	
+	return pow(norm,1./p);
 }
 
 

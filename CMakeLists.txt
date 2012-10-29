@@ -37,6 +37,7 @@ elseif(NOT CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 set(DOCS README AUTHORS LICENSE.txt ACKNOWLEDGEMENTS)
+set(BLAS_LIBRARIES blas)
 
 set(HEADERS
   include/vmmlib/aabb.hpp
@@ -81,6 +82,7 @@ set(HEADERS
   include/vmmlib/t3_hopm.hpp
   include/vmmlib/t3_hosvd.hpp
   include/vmmlib/t3_ihopm.hpp
+  include/vmmlib/t3_ihooi.hpp
   include/vmmlib/t3_ttm.hpp
   include/vmmlib/tensor3.hpp
   include/vmmlib/tensor3_iterator.hpp

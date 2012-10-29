@@ -11,7 +11,7 @@ namespace vmml
 	{
 		bool ok = false;
 		
-		typedef tensor3< 4,4,4, float > t3_type;
+		typedef tensor3< 4, 4, 4, float > t3_type;
 		typedef cp3_tensor< 3, 4, 4, 4, float, float > cp3_dec_type;
 		typedef t3_hopm< 3, 4, 4, 4, float > t3_hopm_type;
 		
@@ -44,7 +44,7 @@ namespace vmml
 		t3_cp_input.set(data_in_cp, data_in_cp + 64);
 		
 		cp3_dec_type cp3_dec;
-		cp3_dec.decompose( t3_cp_input, t3_hopm_type::init_hosvd() );
+		cp3_dec.cp_als( t3_cp_input, t3_hopm_type::init_hosvd() );
 		
 		t3_type t3_cp_reco;
 		cp3_dec.reconstruct( t3_cp_reco );

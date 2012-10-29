@@ -166,43 +166,43 @@ namespace vmml {
         //        std::cerr << "Lambdas = " << lambdas_ << std::endl;
         //        std::cerr << "Valen " << norm_ktensor(u1_, u2_, u3_, lambdas_) << std::endl;
 
-<<<<<<< HEAD
-=======
-	
-VMML_TEMPLATE_STRING
-template< typename T_init>
-void 
-VMML_TEMPLATE_CLASSNAME::als( const t3_type& data_, 
-							 u1_type& u1_, u2_type& u2_, u3_type& u3_, 
-							 lambda_type& lambdas_, 
-							 T_init init,
-							 const size_t max_iterations_ )
-{
-	t3_type* approximated_data = new t3_type;
-	t3_type* residual_data = new t3_type;
-	residual_data->zero();
-	
-	double max_f_norm = data_.frobenius_norm();
-	double normresidual  = 0;
-	double norm1  = 0;
-	double norm2  = 0;
-	double norm3  = 0;
-	double fit = 0;
-	if (max_f_norm == 0 )
-		fit = 1;
-	double fitchange = 1;
-	double fitold = fit;
-	double fitchange_tolerance = 1.0e-4;
-	
-	//intialize u1-u3
-	//inital guess not needed for u1 since it will be computed in the first optimization step
-	init( data_, u2_, u3_ );
-
-    assert( validator::is_valid( u2_) && validator::is_valid( u3_ ) );
-    assert( validator::is_valid( lambdas_ ) );
-	
-	u1_.zero();
->>>>>>> upstream/master
+//<<<<<<< HEAD
+//=======
+//	
+//VMML_TEMPLATE_STRING
+//template< typename T_init>
+//void 
+//VMML_TEMPLATE_CLASSNAME::als( const t3_type& data_, 
+//							 u1_type& u1_, u2_type& u2_, u3_type& u3_, 
+//							 lambda_type& lambdas_, 
+//							 T_init init,
+//							 const size_t max_iterations_ )
+//{
+//	t3_type* approximated_data = new t3_type;
+//	t3_type* residual_data = new t3_type;
+//	residual_data->zero();
+//	
+//	double max_f_norm = data_.frobenius_norm();
+//	double normresidual  = 0;
+//	double norm1  = 0;
+//	double norm2  = 0;
+//	double norm3  = 0;
+//	double fit = 0;
+//	if (max_f_norm == 0 )
+//		fit = 1;
+//	double fitchange = 1;
+//	double fitold = fit;
+//	double fitchange_tolerance = 1.0e-4;
+//	
+//	//intialize u1-u3
+//	//inital guess not needed for u1 since it will be computed in the first optimization step
+//	init( data_, u2_, u3_ );
+//
+//    assert( validator::is_valid( u2_) && validator::is_valid( u3_ ) );
+//    assert( validator::is_valid( lambdas_ ) );
+//	
+//	u1_.zero();
+//>>>>>>> upstream/master
 
 #if CP_LOG
         std::ostringstream convert;

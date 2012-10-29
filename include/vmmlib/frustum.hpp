@@ -178,12 +178,8 @@ frustum< T >::operator=( const frustum& source_ )
     return *this;
 }
 
-
-
-template< typename T >
-template< typename U >
-void
-frustum< T >::operator=( const frustum< U >& source_ )
+template< typename T > template< typename U >
+void frustum< T >::operator = ( const frustum< U >& source_ )
 {
     for( size_t index = 0; index < 6; ++index )
     {
@@ -320,8 +316,7 @@ frustum< T >::compute_ortho_matrix( matrix< 4, 4, T >& M ) const
 }
 
 template < typename T >
-void
-frustum< T >::apply_jitter( const vector< 2, T >& jitter_ )
+void frustum< T >::apply_jitter( const vector< 2, T >& jitter_ )
 {
     left()   = left() + jitter_.x();
     right()  = right() + jitter_.x();
@@ -330,107 +325,73 @@ frustum< T >::apply_jitter( const vector< 2, T >& jitter_ )
 }
 
 template< typename T >
-inline T&
-frustum< T >::left()
+inline T& frustum< T >::left()
 {
     return array[ 0 ];
 }
 
-
-
 template< typename T >
-inline const T&
-frustum< T >::left() const
+inline const T& frustum< T >::left() const
 {
     return array[ 0 ];
 }
 
-
-
 template< typename T >
-inline T&
-frustum< T >::right()
+inline T& frustum< T >::right()
 {
     return array[ 1 ];
 }
 
-
-
 template< typename T >
-inline const T&
-frustum< T >::right() const
+inline const T& frustum< T >::right() const
 {
     return array[ 1 ];
 }
 
-
-
 template< typename T >
-inline T&
-frustum< T >::bottom()
+inline T& frustum< T >::bottom()
 {
     return array[ 2 ];
 }
 
-
-
 template< typename T >
-inline const T&
-frustum< T >::bottom() const
+inline const T& frustum< T >::bottom() const
 {
     return array[ 2 ];
 }
 
-
-
 template< typename T >
-inline T&
-frustum< T >::top()
+inline T& frustum< T >::top()
 {
     return array[ 3 ];
 }
 
-
-
 template< typename T >
-inline const T&
-frustum< T >::top() const
+inline const T& frustum< T >::top() const
 {
     return array[ 3 ];
 }
 
-
-
 template< typename T >
-inline T&
-frustum< T >::near_plane()
+inline T& frustum< T >::near_plane()
 {
     return array[ 4 ];
 }
 
-
-
 template< typename T >
-inline const T&
-frustum< T >::near_plane() const
+inline const T& frustum< T >::near_plane() const
 {
     return array[ 4 ];
 }
 
-
-
 template< typename T >
-inline T&
-frustum< T >::far_plane()
+inline T& frustum< T >::far_plane()
 {
     return array[ 5 ];
 }
 
-
-
 template< typename T >
-inline const T&
-frustum< T >::far_plane() const
+inline const T& frustum< T >::far_plane() const
 {
     return array[ 5 ];
 }

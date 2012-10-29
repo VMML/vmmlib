@@ -7,7 +7,9 @@
 #include <vmmlib/exception.hpp>
 #include <vmmlib/blas_includes.hpp>
 #include <vmmlib/blas_types.hpp>
-#include <omp.h>
+#ifdef VMMLIB_USE_OPENMP
+#  include <omp.h>
+#endif
 
 /** 
  *

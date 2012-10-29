@@ -7,13 +7,19 @@ set(VERSION_MAJOR 1)
 set(VERSION_MINOR 5)
 set(VERSION_PATCH 0)
 set(RELEASE_VERSION OFF) # OFF or ABI version
+set(LAST_RELEASE 1.4.0)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMake)
+
+set(MACPORTS_DIR eyescalePorts) # override for now...
+
 include(Common)
 include(GitTargets)
-include(DoxygenSetup)
+include(FindPackages)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-shadow -Wno-sign-compare -Wno-extra -Wno-strict-aliasing")
+if(CMAKE_COMPILER_IS_GNUCXX)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-shadow -Wno-sign-compare -Wno-extra -Wno-strict-aliasing")
+endif()
 
 include_directories(BEFORE ${CMAKE_SOURCE_DIR}/include)
 
@@ -22,13 +28,13 @@ if(APPLE)
   if(LAPACK_LIBRARIES)
     set(LAPACK_FOUND TRUE)
   endif(LAPACK_LIBRARIES)
-else(APPLE)
+elseif(NOT CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 #  enable_language(Fortran OPTIONAL) # eile: Why needed?
   find_package(BLAS)
   if(BLAS_FOUND)
     find_package(LAPACK)
   endif()
-endif(APPLE)
+endif()
 
 set(DOCS README AUTHORS LICENSE.txt ACKNOWLEDGEMENTS)
 set(BLAS_LIBRARIES blas)
@@ -90,6 +96,7 @@ set(HEADERS
   include/vmmlib/vmmlib.hpp
   include/vmmlib/vmmlib_config.hpp
   include/vmmlib/tensor4.hpp
+  include/vmmlib/t4_converter.hpp
 )
 
 set(TESTS
@@ -137,6 +144,7 @@ if(LAPACK_FOUND)
     tests/tucker3_exporter_importer_test.cpp
     tests/tucker3_tensor_test.cpp
     tests/tensor4_test.cpp
+    tests/t4_converter_test.cpp
 )
 endif()
 

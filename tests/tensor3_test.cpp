@@ -2,6 +2,7 @@
 
 #include <vmmlib/t3_converter.hpp>
 #include <vmmlib/tensor3.hpp>
+#include <vmmlib/tensor_mmapper.hpp>
 #include <sstream>
 
 namespace vmml
@@ -1282,8 +1283,13 @@ tensor3_test::run()
 		t3_testdata.fill_random( 3 );
 		t3_testdata.write_to_raw( dir, filename );
 		
-		tensor3< 4,4,4, unsigned char > t3( dir, filename, false );
+		typedef tensor3< 4,4,4, unsigned char > t3_t;
+		typedef tensor_mmapper< t3_t > t3map_t;
 		
+		t3map_t t3_mmap( dir, filename, false );
+		t3_t t3;
+		t3_mmap.get_tensor( t3 );
+				
 		unsigned int data_mmp_t3[] = { 
 			0, 152, 9, 125,
 			100, 167, 205, 26,

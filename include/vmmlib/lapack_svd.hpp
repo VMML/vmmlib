@@ -311,15 +311,12 @@ lapack_svd< M, N, float_t >::compute_and_overwrite_input(
 
 
 template< size_t M, size_t N, typename float_t >
-bool
-lapack_svd< M, N, float_t >::compute( 
-    const matrix< M, N, float_t >& A,
-    vector< N, float_t >& S
-    )
+bool lapack_svd< M, N, float_t >::compute( const matrix< M, N, float_t >& A,
+                                           vector< N, float_t >& S )
 {
     // lapack destroys the contents of the input matrix
     typedef matrix< M, N, float_t > m_type;
-	m_type* AA = new m_type( A );
+	m_type AA( A );
     
     p.jobu      = 'N';
     p.jobvt     = 'N';

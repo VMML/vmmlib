@@ -441,7 +441,7 @@ namespace vmml {
         // reduce vector of lambdas
         vector< K, T_coeff >* lambdas;
         other.get_lambdas(lambdas);
-        _lambdas_comp.set(lambdas);
+        _lambdas_comp->set(lambdas);
 
         cast_comp_members();
 

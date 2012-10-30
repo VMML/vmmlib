@@ -104,7 +104,7 @@ namespace vmml
 			t3_block_.zero();
 			//FIXME: check sizes
 			//Maybe do it withouth templates
-			const size_t k1 = 1;
+			const size_t k1 = 1; //B - (I - I1 - j1_ )
 			const size_t k2 = 1;
 			const size_t k3 = 1;
 			//std::cout << "subvolume: (" << k1 << "," << k2 << "," << k3 << ")" << std::endl;

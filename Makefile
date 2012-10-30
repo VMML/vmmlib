@@ -27,6 +27,8 @@ VMMLIB_UNIT_TESTS =\
     tests/blas_dgemm_test.cpp \
     tests/blas_dot_test.cpp \
     tests/blas_daxpy_test.cpp \
+    tests/tensor4_test.cpp \
+    tests/t4_converter_test.cpp \
 
 VMMLIB_UNIT_TESTS_OBJECTS = ${VMMLIB_UNIT_TESTS:%.cpp=%.o}  
 
@@ -55,7 +57,8 @@ CXXFLAGS += -DVMMLIB_USE_LAPACK
 LDFLAGS +=  -fopenmp
 
 # adjust libs depending on your LAPACK and BLAS distribution
-LIBS += -lclapack -lf2c -lcblas -llapack
+#LIBS += -lclapack -lf2c -lblas -llapack
+LIBS += -lblas -llapack -lf2c
 # LIBS += -llapack -lblas
 
 

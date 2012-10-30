@@ -48,7 +48,6 @@ namespace vmml
 		
 		t3_type t3_cp_reco;
 		cp3_dec.reconstruct( t3_cp_reco );
-                std::cout << "IEEEEEEEEEEEEEEEEEE" << t3_cp_reco << std::endl;
 		
 		t3_type t3_cp_reco_check;
 		float data_out_cp[] = { 

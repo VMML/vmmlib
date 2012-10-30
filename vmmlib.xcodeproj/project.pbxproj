@@ -417,8 +417,6 @@
 		98B7A2620E24CA760064264E /* unit tests */ = {
 			isa = PBXGroup;
 			children = (
-				CFFAA7FB16402F880054BF54 /* t3_padder_test.hpp */,
-				CFFAA7FC16402F880054BF54 /* t3_padder_test.cpp */,
 				98F556360E24377F0044BA3E /* matrix_test.hpp */,
 				98F556350E24377F0044BA3E /* matrix_test.cpp */,
 				986834C00E24FFD400618F55 /* vector_test.hpp */,
@@ -475,6 +473,8 @@
 				CF906A1F14F562F90043CF23 /* cublas_dgemm_test.cpp */,
 				CF906B8714F6313A0043CF23 /* cutensor_tests.hpp */,
 				CF906B8814F6313A0043CF23 /* cutensor_tests.cpp */,
+				CFFAA7FB16402F880054BF54 /* t3_padder_test.hpp */,
+				CFFAA7FC16402F880054BF54 /* t3_padder_test.cpp */,
 				CFF98C5415B817BC00F599FE /* tensor4_test.hpp */,
 				CFF98C5315B817BC00F599FE /* tensor4_test.cpp */,
 				CFF98F5415BF0DC600F599FE /* t4_converter_test.hpp */,

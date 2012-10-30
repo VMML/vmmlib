@@ -1,74 +1,81 @@
-<!DOCTYPE html>
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<title>vmmlib - a vector and matrix math library</title>
+		<link rel="stylesheet" href="style.css" />
+	</head>
+	<body>
+	<div id="container">
+			<div id="content">
+				<div id="header"><a href="http://vmmlib.sourceforge.net" title="vmmlib.sourceforge.net" id="home"> </a></div>
+				<h1>about. <a href="http://vmmlib.sf.net" title="vmmlib.sourceforge.net">vmmlib.sourceforge.net</a></h1>
+				<p><strong>vmmlib - a templatized C++ vector and matrix math library</strong></p>
+				<p>Its basic functionality includes a vector and a matrix class, with additional functionality for the often-used 3d and 4d vectors and 3x3 and 4x4 matrices.</p>
 
-  <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="Vmmlib : A templatized C++ vector and matrix math library " />
+				<p>More advanced functionality include solvers, frustum computations and frustum culling classes, and spatial data structures.</p>
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+				<p>It is implemented using C++ templates, making it versatile, and being a header library, it is very easy to integrate 
+				into other ( your ) libraries and programs. There is no need to build and install a library, just include the headers 
+				and you’re set.</p>
+				
+				<p>The BSD license allows the usage both in open source and commercial closed source software.</p>
+				<div class="hr"></div>
+				<p>It is easy to use, yet powerful, and was written with OpenGL in mind. This means that the vector and matrix classes 
+				can be used in OpenGL calls:</p>
+				<pre>
+					<code>
+vec3f position; // fill
+glVertex3fv( position );
 
-    <title>Vmmlib</title>
-  </head>
+mat4f modelview; // fill
+glLoadMatrixf( modelview );
 
-  <body>
+					</code>
+				</pre>
+			
+				<p>vmmlib was developed and tested on Unix ( including Mac OS X, GNU/Linux and *BSD ) and Windows.</p>
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/VMML/vmmlib">View on GitHub</a>
+				<p>The library is actively developed, used and maintained: vmmlib was developed at the 
+				<a href="http://vmml.ifi.uzh.ch" title="visit: Visualization and MultiMedia Lab">Visualization and Multimedia Lab</a>
+				at the <a href="http://www.uzh.ch" title="visit: University of Zurich">University of Zurich</a> and is being used in 
+				research projects and in the industry. It is currently being maintained by Stefan Eilemann and Jonas B&ouml;sch.</p>
 
-          <h1 id="project_title">Vmmlib</h1>
-          <h2 id="project_tagline">A templatized C++ vector and matrix math library </h2>
+				<p>Other sourceforge projects that use VMMLib:<br />
+    			&raquo; <a href="http://www.equalizergraphics.com/" title="visit: Equalizergraphics.com">Equalizer ( parallel rendering )</a></p>
+    			<div class="hr"></div>
+    			<a href="http://vmml.ifi.uzh.ch" title="visit: Visualization and MultiMedia Lab"><img src="src/vmml.gif" alt="Visualization and MultiMedia Lab" /></a>
+    			<a href="http://www.sf.net"><img src="src/sf.gif" alt="sourceforge.net" /></a>
+				</div>
 
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/VMML/vmmlib/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/VMML/vmmlib/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
+			<div id="sidebar">
+				<div id="pic"></div>
+				<span class="link sf">visit: <a href="http://sourceforge.net/projects/vmmlib/">sf.net project page</a></span>
+				<h1>vmmlib.</h1>
+					<div class="box">
+						<p>vmmlib is a vector and matrix math library implemented using C++ templates, thus 
+						making it very easy to integrate into other libraries and programs.</p>
 
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <h3>Welcome to GitHub Pages.</h3>
+						<p>It is developed at the <a href="http://vmml.ifi.uzh.ch/" title="visit: Visualization and MultiMedia Lab">VMML</a>, 
+						<a href="http://www.uzh.ch" title="visit: University of Zurich">University of Z&uuml;rich</a>.</p>
+					</div>
+					<div class="box_bottom"></div>
+				<h1>download.</h1>
+					<div class="box">
+							<p>For downloads and further information, please visit the <a href="http://sourceforge.net/projects/vmmlib">SourceForge 
+							project page</a>. Currently, there is no prepackaged version, since as a header library, it will be compiled into 
+							your program directly. There is no need to build and install a library.</p>
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+							<p>Quick download command for subversion users:</p>
+							<pre><code>$ svn co https://vmmlib.svn.sourceforge.net/svnroot/vmmlib</code></pre>
+							<p>If you are using subversion, you can <a href="http://svnbook.red-bean.com/en/1.0/ch07s03.html">easily integrate the VMMLib into your repository.</a></p>
+					</div>
+					<div class="box_bottom"></div>
+				<span class="link">design &copy; 2007/08 - <a href="http://www.goldfisch.li" class="gf" title="visit:goldfisch.li | vera boesch - portfolio &amp; hobby">goldfisch.li</a></span>
+	</div> <!-- end sidebar //-->
+	<br style="clear: both" /><!-- without this little <br /> NS6 and IE5PC do not stretch the frame div down to encopass the content DIVs -->
+	</div>
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
-
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
-
-<h3>Designer Templates</h3>
-
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
-
-<h3>Rather Drive Stick?</h3>
-
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
-
-<h3>Authors and Contributors</h3>
-
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
-
-<h3>Support or Contact</h3>
-
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
-      </section>
-    </div>
-
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">Vmmlib maintained by <a href="https://github.com/VMML">VMML</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
-      </footer>
-    </div>
-
-    
-
-  </body>
+	</body>
 </html>

@@ -57,9 +57,7 @@ CXXFLAGS += -DVMMLIB_USE_LAPACK
 LDFLAGS +=  -fopenmp
 
 # adjust libs depending on your LAPACK and BLAS distribution
-#LIBS += -lclapack -lf2c -lblas -llapack
 LIBS += -lblas -llapack -lf2c
-# LIBS += -llapack -lblas
 
 
 

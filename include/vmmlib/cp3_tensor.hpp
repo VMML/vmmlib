@@ -78,9 +78,9 @@ namespace vmml {
             U3 = *_u3;
         };
 
-        void set_lambdas(const lambda_type& lambdas_) {
-            _lambdas = lambda_type(lambdas_);
-            _lambdas_comp.cast_from(_lambdas);
+        void set_lambdas(lambda_type& lambdas) {
+            *_lambdas = lambdas;
+            _lambdas_comp->cast_from(lambdas);
         };
 
         void set_u1(u1_type& U1) {
@@ -98,9 +98,9 @@ namespace vmml {
             _u1_comp->cast_from(U3);
         };
 
-        void set_lambda_comp(lambda_comp_type& lambdas_) {
-            _lambdas_comp = lambda_comp_type(lambdas_);
-            _lambdas.cast_from(_lambdas_comp);
+        void set_lambda_comp(lambda_comp_type& lambdas) {
+            *_lambdas_comp = lambdas;
+            _lambdas->cast_from(lambdas);
         };
 
         void set_u1_comp(u1_comp_type& U1) {

@@ -453,20 +453,20 @@ namespace vmml {
     VMML_TEMPLATE_STRING
     void
     VMML_TEMPLATE_CLASSNAME::export_to(std::vector< T_coeff >& data_) const {
-        u1_const_iterator it = _u1.begin(),
-                it_end = _u1.end();
+        u1_const_iterator it = _u1->begin(),
+                it_end = _u1->end();
         for (; it != it_end; ++it) {
             data_.push_back(*it);
         }
 
-        u2_const_iterator u2_it = _u2.begin(),
-                u2_it_end = _u2.end();
+        u2_const_iterator u2_it = _u2->begin(),
+                u2_it_end = _u2->end();
         for (; u2_it != u2_it_end; ++u2_it) {
             data_.push_back(*u2_it);
         }
 
-        u3_const_iterator u3_it = _u3.begin(),
-                u3_it_end = _u3.end();
+        u3_const_iterator u3_it = _u3->begin(),
+                u3_it_end = _u3->end();
         for (; u3_it != u3_it_end; ++u3_it) {
             data_.push_back(*u3_it);
         }
@@ -479,20 +479,20 @@ namespace vmml {
     VMML_TEMPLATE_CLASSNAME::import_from(std::vector< T_coeff >& data_) {
         size_t i = 0; //iterator over data_
 
-        u1_iterator it = _u1.begin(),
-                it_end = _u1.end();
+        u1_iterator it = _u1->begin(),
+                it_end = _u1->end();
         for (; it != it_end; ++it, ++i) {
             *it = data_.at(i);
         }
 
-        u2_iterator u2_it = _u2.begin(),
-                u2_it_end = _u2.end();
+        u2_iterator u2_it = _u2->begin(),
+                u2_it_end = _u2->end();
         for (; u2_it != u2_it_end; ++u2_it, ++i) {
             *u2_it = data_.at(i);
         }
 
-        u3_iterator u3_it = _u3.begin(),
-                u3_it_end = _u3.end();
+        u3_iterator u3_it = _u3->begin(),
+                u3_it_end = _u3->end();
         for (; u3_it != u3_it_end; ++u3_it, ++i) {
             *u3_it = data_.at(i);
         }

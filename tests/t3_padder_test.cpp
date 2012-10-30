@@ -25,7 +25,7 @@ namespace vmml
 		typedef t3_padder< b, i, i1, i2, i3, T >  t3_padder_t;
 		
 		std::string dir = "./";
-		std::string filename = "tmp_sus.raw";
+		std::string filename = "tmp_t3_padder.raw";
 		std::string path = dir; path.append( filename );
 		
 		

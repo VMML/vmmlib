@@ -1,9 +1,12 @@
 /* 
- * File:   t3_ihooi.hpp
- * Author: rballester
+ * VMMLib - Tensor Classes
+ *  
+ * @author Rafael Ballester
  *
- * Created on August 27, 2012, 10:09 AM
+ * incremental version of higher-order orthogonal iteration (HOOI), see t3_hooi.hpp 
+ * 
  */
+
 
 #ifndef T3_IHOOI_HPP
 #define	T3_IHOOI_HPP

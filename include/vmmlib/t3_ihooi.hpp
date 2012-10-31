@@ -48,11 +48,11 @@ namespace vmml {
 
         // Incremental Tucker-ALS
         template< typename T_init >
-        static stats i_als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, t3_core_type& core_, T_init init, const size_t max_iterations_ = 20);
+        static tensor_stats i_als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, t3_core_type& core_, T_init init, const size_t max_iterations_ = 20);
 
         // Incremental CP-Tucker-ALS: at each iteration, R-rank CP is performed, but a (R1,R2,R3)-Tucker core (R1,R2,R3 <= R) is computed from the resulting matrices.
         template< size_t R, typename T_init >
-        static stats i_cp_als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, t3_core_type& core_, T_init init, const size_t max_iterations_ = 20);
+        static tensor_stats i_cp_als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, t3_core_type& core_, T_init init, const size_t max_iterations_ = 20);
     };
 
 
@@ -62,9 +62,9 @@ namespace vmml {
 
     VMML_TEMPLATE_STRING
     template< typename T_init>
-    stats
+    tensor_stats
     VMML_TEMPLATE_CLASSNAME::i_als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, t3_core_type& core_, T_init init, const size_t max_iterations_) {
-        stats result;
+        tensor_stats result;
         
         if ((R1 % NBLOCKS != 0) or (R2 % NBLOCKS != 0) or (R3 % NBLOCKS != 0)) {
             std::ostringstream convert1, convert2, convert3, convert4;
@@ -155,9 +155,9 @@ namespace vmml {
 
     VMML_TEMPLATE_STRING
     template< size_t R, typename T_init>
-    stats
+    tensor_stats
     VMML_TEMPLATE_CLASSNAME::i_cp_als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, t3_core_type& core_, T_init init, const size_t max_iterations_) {
-        stats result;
+        tensor_stats result;
         
         if ((R1 % NBLOCKS != 0) or (R2 % NBLOCKS != 0) or (R3 % NBLOCKS != 0)) {
             std::ostringstream convert1, convert2, convert3, convert4, convert5;

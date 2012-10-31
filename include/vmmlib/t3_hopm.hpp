@@ -23,7 +23,7 @@
 #include <vmmlib/blas_dot.hpp>
 #include <vmmlib/validator.hpp>
 #include <vmmlib/t3_ttv.hpp>
-#include <vmmlib/stats.hpp>
+#include <vmmlib/tensor_stats.hpp>
 
 namespace vmml {
 
@@ -55,7 +55,7 @@ namespace vmml {
         //higher-order power method (lathauwer et al., 2000b)
 
         template< typename T_init >
-        static stats als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, lambda_type& lambdas_, T_init init, const size_t max_iterations_ = 100);
+        static tensor_stats als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, lambda_type& lambdas_, T_init init, const size_t max_iterations_ = 100);
         static void reconstruct(t3_type& data_, const u1_type& u1_, const u2_type& u2_, const u3_type& u3_, const lambda_type& lambdas_);
 
         //ktensor = kruskal tensor, i.e., lambda, U1, U2, U3
@@ -126,14 +126,14 @@ namespace vmml {
 
     VMML_TEMPLATE_STRING
     template< typename T_init>
-    stats
+    tensor_stats
     VMML_TEMPLATE_CLASSNAME::als(const t3_type& data_,
             u1_type& u1_, u2_type& u2_, u3_type& u3_,
             lambda_type& lambdas_,
             T_init init,
             const size_t max_iterations_) {
 
-        stats result;
+        tensor_stats result;
         t3_type* approximated_data = new t3_type;
         t3_type* residual_data = new t3_type;
         residual_data->zero();

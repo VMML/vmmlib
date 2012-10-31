@@ -86,7 +86,7 @@ namespace vmml {
 
         //incremental cp als (zang&golub, 2001)
 //        template< typename T_init >
-        static stats incremental_als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, lambda_type& lambdas_, const size_t max_iterations_ = 20);
+        static tensor_stats incremental_als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, lambda_type& lambdas_, const size_t max_iterations_ = 20);
         static void reconstruct(t3_type& data_, const u1_type& u1_, const u2_type& u2_, const u3_type& u3_, const lambda_type& lambdas_);
 
     };
@@ -98,9 +98,9 @@ namespace vmml {
 
     VMML_TEMPLATE_STRING
 //    template< typename T_init>
-    stats
+    tensor_stats
     VMML_TEMPLATE_CLASSNAME::incremental_als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, lambda_type& lambdas_, const size_t max_iterations_) {
-        stats result; 
+        tensor_stats result; 
         
         if (R % NBLOCKS != 0) {
             std::ostringstream convert1, convert2;

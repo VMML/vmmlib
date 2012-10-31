@@ -1,6 +1,6 @@
-/* 
+/*
  * VMMLib - Tensor Classes
- *  
+ *
  * @author Susanne Suter
  * @author Jonas Boesch
  *
@@ -10,22 +10,24 @@
  * - Harshman, 1970: Foundations of the PARAFAC procedure: Models and conditions for an 'explanatory' multi-modal factor analysis,UCLA Working Papers in Phonetics.
  * - De Lathauwer, De Moor, Vandewalle, 2000: A multilinear singular value decomposition, SIAM J. Matrix Anal. Appl.
  * - Kolda & Bader, 2009: Tensor Decompositions and Applications, SIAM Review.
- * 
+ *
  */
 
 #ifndef __VMML__CP3_TENSOR__HPP__
 #define __VMML__CP3_TENSOR__HPP__
 
+#include <vmmlib/matrix_pseudoinverse.hpp>
 #include <vmmlib/t3_hopm.hpp>
 #include <vmmlib/t3_ihopm.hpp>
 #include <vmmlib/tensor3_iterator.hpp>
-#include <vmmlib/matrix_pseudoinverse.hpp>
 
 
 namespace vmml {
 
-    template< size_t R, size_t I1, size_t I2, size_t I3, typename T_value = double, typename T_coeff = float>
-            class cp3_tensor {
+    template< size_t R, size_t I1, size_t I2, size_t I3,
+              typename T_value = double, typename T_coeff = float >
+    class cp3_tensor
+    {
     public:
         typedef float T_internal;
 
@@ -368,20 +370,20 @@ namespace vmml {
     VMML_TEMPLATE_STRING
     void
     VMML_TEMPLATE_CLASSNAME::export_to(std::vector< T_coeff >& data_) const {
-        u1_const_iterator it = _u1.begin(),
-                it_end = _u1.end();
+        u1_const_iterator it = _u1->begin(),
+                it_end = _u1->end();
         for (; it != it_end; ++it) {
             data_.push_back(*it);
         }
 
-        u2_const_iterator u2_it = _u2.begin(),
-                u2_it_end = _u2.end();
+        u2_const_iterator u2_it = _u2->begin(),
+                u2_it_end = _u2->end();
         for (; u2_it != u2_it_end; ++u2_it) {
             data_.push_back(*u2_it);
         }
 
-        u3_const_iterator u3_it = _u3.begin(),
-                u3_it_end = _u3.end();
+        u3_const_iterator u3_it = _u3->begin(),
+                u3_it_end = _u3->end();
         for (; u3_it != u3_it_end; ++u3_it) {
             data_.push_back(*u3_it);
         }
@@ -394,20 +396,20 @@ namespace vmml {
     VMML_TEMPLATE_CLASSNAME::import_from(std::vector< T_coeff >& data_) {
         size_t i = 0; //iterator over data_
 
-        u1_iterator it = _u1.begin(),
-                it_end = _u1.end();
+        u1_iterator it = _u1->begin(),
+                it_end = _u1->end();
         for (; it != it_end; ++it, ++i) {
             *it = data_.at(i);
         }
 
-        u2_iterator u2_it = _u2.begin(),
-                u2_it_end = _u2.end();
+        u2_iterator u2_it = _u2->begin(),
+                u2_it_end = _u2->end();
         for (; u2_it != u2_it_end; ++u2_it, ++i) {
             *u2_it = data_.at(i);
         }
 
-        u3_iterator u3_it = _u3.begin(),
-                u3_it_end = _u3.end();
+        u3_iterator u3_it = _u3->begin(),
+                u3_it_end = _u3->end();
         for (; u3_it != u3_it_end; ++u3_it, ++i) {
             *u3_it = data_.at(i);
         }
@@ -428,8 +430,6 @@ namespace vmml {
 
         return counter;
     }
-
-
 
 #undef VMML_TEMPLATE_STRING
 #undef VMML_TEMPLATE_CLASSNAME

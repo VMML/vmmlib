@@ -2,6 +2,7 @@
  * VMMLib - Tensor Classes
  *  
  * @author Susanne Suter
+ * @author Rafa Ballester
  *
  * The higher-order orthogonal iteration (HOOI) is also known as Tucker-ALS (Tuck-ALS)
  * The t3_hooi implements a HOOI for a third-order tensor

@@ -2,6 +2,7 @@
  * VMMLib - Tensor Classes
  *  
  * @author Susanne Suter
+ * @author Rafa Ballester
  *
  * iHOPM stands for incremental higher-order power method.
  * in other words, it is an incremental rank-r CP-ALS

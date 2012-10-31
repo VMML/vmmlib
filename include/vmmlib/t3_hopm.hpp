@@ -2,6 +2,7 @@
  * VMMLib - Tensor Classes
  *  
  * @author Susanne Suter
+ * @author Rafa Ballester
  *
  * the higher-order power method (HOPM) is also known as CP-ALS (ALS: alternating least squares)
  * CP stands for Candecomp/Parafac (1970)

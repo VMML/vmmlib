@@ -1,3 +1,13 @@
+/* 
+ * VMMLib - Tensor Classes
+ *  
+ * @author David Klaper
+ * @author Susanne Suter
+ *
+ * class to read/write and convert tensor4 files (from raw, to csv...)
+ * 
+ */
+
 #ifndef __VMML__T4_CONVERTER__HPP__
 #define __VMML__T4_CONVERTER__HPP__
 

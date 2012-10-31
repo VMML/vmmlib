@@ -1,3 +1,13 @@
+/* 
+ * VMMLib - Tensor Classes
+ *  
+ * @author Susanne Suter
+ * @author Jonas Boesch
+ * @author David Klaper
+ *
+ * class to read/write and convert tensor4 files (from raw, to csv...)
+ * 
+ */
 #ifndef __VMML__TENSOR_MMAPPER__HPP__
 #define __VMML__TENSOR_MMAPPER__HPP__
 
@@ -25,7 +35,7 @@ namespace vmml
 	protected:
 		static std::string concat_path( const std::string& dir_, const std::string& filename_ );
 		
-	    void*     t3_allocate_rd_mmap( const std::string& dir_, const std::string& filename_ );
+	    void*    t3_allocate_rd_mmap( const std::string& dir_, const std::string& filename_ );
 		void*    t3_allocate_wr_mmap( const std::string& dir_, const std::string& filename_, const C& tx_converter );
 		
 		int _fd;            // one mmap for all tensors

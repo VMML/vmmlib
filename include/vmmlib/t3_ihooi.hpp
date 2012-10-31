@@ -8,8 +8,8 @@
  */
 
 
-#ifndef T3_IHOOI_HPP
-#define	T3_IHOOI_HPP
+#ifndef __VMML__T3_IHOOI_HPP__
+#define	__VMML__T3_IHOOI_HPP__
 
 #include <vmmlib/t3_hopm.hpp>
 #include <vmmlib/t3_hooi.hpp>

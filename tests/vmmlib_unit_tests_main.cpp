@@ -23,6 +23,7 @@
 #  include "t3_hopm_test.hpp"
 #  include "t3_hosvd_test.hpp"
 #  include "t3_ihopm_test.hpp"
+#  include "t3_ihooi_test.hpp"
 #  include "t3_ttm_test.hpp"
 #  include "tensor3_iterator_test.hpp"
 #  include "tensor3_test.hpp"
@@ -108,6 +109,9 @@ main( int argc, const char* argv[] )
 	
 	vmml::t3_ihopm_test t3ihopm;
     run_and_log( t3ihopm );
+    
+    vmml::t3_ihooi_test t3ihooi;
+    run_and_log( t3ihooi );
 	
     vmml::tucker3_tensor_test tt3t;
     run_and_log( tt3t );

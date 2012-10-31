@@ -20,8 +20,6 @@ namespace vmml {
         typedef tensor3< I1, I2, I3, T_val > t3_type;
         typedef tensor3< I1, I2, I3, T_coeff > t3_coeff_type;
 
-
-
         // The output data
         typedef tensor3< R1, R2, R3, T_val > t3_core_type;
         typedef matrix< I1, R1, T_val > u1_type;
@@ -47,12 +45,11 @@ namespace vmml {
 
         // Incremental Tucker-ALS
         template< typename T_init >
-        static stats i_als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, t3_core_type& core_, T_init init, const size_t max_iterations_ = 100);
+        static stats i_als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, t3_core_type& core_, T_init init, const size_t max_iterations_ = 20);
 
         // Incremental CP-Tucker-ALS: at each iteration, R-rank CP is performed, but a (R1,R2,R3)-Tucker core (R1,R2,R3 <= R) is computed from the resulting matrices.
         template< size_t R, typename T_init >
-        static stats i_cp_als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, t3_core_type& core_, T_init init, const size_t max_iterations_ = 100);
-
+        static stats i_cp_als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, t3_core_type& core_, T_init init, const size_t max_iterations_ = 20);
     };
 
 
@@ -173,10 +170,6 @@ namespace vmml {
         approx_data->zero();
         t3_coeff_type* residual_data = new t3_coeff_type;
         residual_data->cast_from(data_);
-        
-        ///////////////////////////
-        std::cerr << "residual = " << residual_data->frobenius_norm() << std::endl;
-        ///////////////////////////
 
         t3_core_tmp_type* t3_core_tmp = new t3_core_tmp_type;
         t3_core_tmp->zero();

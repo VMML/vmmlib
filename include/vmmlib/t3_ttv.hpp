@@ -1,11 +1,11 @@
-/* 
+/*
  * VMMLib - Tensor Classes
- *  
+ *
  * @author Rafa Ballester
  *
  * Tensor times vector multiplication for tensor3 (t3)
  * Only mode 1 is implemented. This is used for fast inner product calculation. The basic idea is that the inner product between a tensor X and a 1-rank tensor (expressed as the outer product of three vectors u, v and w) is the same as ((X x u).v).w .
- * 
+ *
  */
 
 #ifndef __VMML__T3_TTV__HPP__
@@ -13,7 +13,9 @@
 
 #include <vmmlib/tensor3.hpp>
 
-#include<omp.h>
+#ifdef VMMLIB_USE_OPENMP
+#  include <omp.h>
+#endif
 
 namespace vmml {
 

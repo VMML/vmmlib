@@ -3,6 +3,7 @@
  *
  * @author Susanne Suter
  * @author Jonas Boesch
+ * @author Rafael Ballester
  *
  * The cp3 tensor class is consists of three basis matrices u1-u3 and R lambda values for a given rank-R approximation
  * CP stands for Candecomp/Parafac (1970)

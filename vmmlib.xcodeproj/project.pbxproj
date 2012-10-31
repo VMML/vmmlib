@@ -188,7 +188,7 @@
 		CFD85C8313990A0E00266D85 /* t3_hopm_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = t3_hopm_test.cpp; path = tests/t3_hopm_test.cpp; sourceTree = "<group>"; };
 		CFE117B216416A030085B653 /* t3_ihooi_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = t3_ihooi_test.hpp; path = tests/t3_ihooi_test.hpp; sourceTree = "<group>"; };
 		CFE117B316416A030085B653 /* t3_ihooi_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = t3_ihooi_test.cpp; path = tests/t3_ihooi_test.cpp; sourceTree = "<group>"; };
-		CFE117BD16417A490085B653 /* stats.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = stats.hpp; path = include/vmmlib/stats.hpp; sourceTree = "<group>"; };
+		CFE118A71641AAEA0085B653 /* tensor_stats.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = tensor_stats.hpp; path = include/vmmlib/tensor_stats.hpp; sourceTree = "<group>"; };
 		CFF0C1F21406E4DC00C3ADDB /* blas_dgemm.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = blas_dgemm.hpp; path = include/vmmlib/blas_dgemm.hpp; sourceTree = "<group>"; };
 		CFF0C1F31406E4DC00C3ADDB /* blas_includes.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = blas_includes.hpp; path = include/vmmlib/blas_includes.hpp; sourceTree = "<group>"; };
 		CFF0C1F41406E4DC00C3ADDB /* blas_types.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = blas_types.hpp; path = include/vmmlib/blas_types.hpp; sourceTree = "<group>"; };
@@ -335,7 +335,7 @@
 				CFFAA7F516402F4C0054BF54 /* t3_ihooi.hpp */,
 				CFD85BC81398E2D400266D85 /* t3_hopm.hpp */,
 				CFA7FE00142242BD001EE112 /* t3_ihopm.hpp */,
-				CFE117BD16417A490085B653 /* stats.hpp */,
+				CFE118A71641AAEA0085B653 /* tensor_stats.hpp */,
 				CF7F632B151F8D4400F033B4 /* t3_converter.hpp */,
 				CFFAA7F616402F4C0054BF54 /* t3_padder.hpp */,
 				CFF98C5215B8178100F599FE /* tensor4.hpp */,

@@ -272,6 +272,7 @@ namespace vmml
 	void
 	VMML_TEMPLATE_CLASSNAME::read_from_raw( t3_t& data_, const std::string& dir_, const std::string& filename_ ) 
 	{	
+		std::cout << "read_from_raw todo:" << std::endl;
 #if FIXME
 		int dir_length = dir_.size() -1;
 		int last_separator = dir_.find_last_of( "/");

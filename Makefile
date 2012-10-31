@@ -24,6 +24,7 @@ VMMLIB_UNIT_TESTS =\
     tests/t3_ihopm_test.cpp \
     tests/t3_ihooi_test.cpp \
     tests/t3_ttm_test.cpp \
+    tests/t3_padder_test.cpp \
     tests/matrix_pseudoinverse_test.cpp \
     tests/blas_dgemm_test.cpp \
     tests/blas_dot_test.cpp \

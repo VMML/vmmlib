@@ -32,7 +32,7 @@ namespace vmml {
         t3_u_type u3;
 
         typedef t3_hooi< R, R, R, I, I, I > hooi_type;
-        t3_ihooi< R, R, R, NBLOCKS, I, I, I, double, double >::i_als(t3_input, u1, u2, u3, t3_core, typename hooi_type::init_hosvd(), 20);
+        t3_ihooi< R, R, R, NBLOCKS, I, I, I, double, double >::i_als(t3_input, u1, u2, u3, t3_core, hooi_type::init_hosvd(), 20);
 
         //std::cout << "u1:\n" << u1 << std::endl << "u2:\n" << u2 << std::endl << "u3:\n" << u3 << std::endl << "lambda\n" << lambda << std::endl;
 
@@ -110,7 +110,7 @@ namespace vmml {
             log_error(error.str());
         }
 
-        t3_ihooi< R, R, R, NBLOCKS, I, I, I, double >::i_cp_als<R > (t3_input, u1, u2, u3, t3_core, typename hooi_type::init_hosvd(), 20);
+        t3_ihooi< R, R, R, NBLOCKS, I, I, I, double >::i_cp_als<R > (t3_input, u1, u2, u3, t3_core, hooi_type::init_hosvd(), 20);
 
         double data_check2[] = {
 	    2.8832,   -0.0128,         0,         0,

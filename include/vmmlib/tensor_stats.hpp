@@ -1,24 +1,26 @@
 /* 
- * File:   result.hpp
- * Author: rballester
+ * VMMLib - Tensor Classes
+ *  
+ * @author Rafael Ballester
  *
- * Created on August 29, 2012, 3:13 PM
+ * Class for encapsulating several tensor experimental properties, so that they can be easily returned, manipulated and printed (approximation error, decomposition and reconstruction times, etc.).
+ * 
  */
 #include <string>
 
-#ifndef __VMML__STATS__HPP__
-#define	__VMML__STATS__HPP__
+#ifndef __VMML__TENSOR_STATS__HPP__
+#define	__VMML__TENSOR_STATS__HPP__
 
 namespace vmml {
 
-    class stats {
+    class tensor_stats {
     public:
 
-        stats() {
+        tensor_stats() {
             ranks = n_iterations = error = nnz = dec_time = rec_time = 0;
         }
 
-        stats(const stats& other) {
+        tensor_stats(const tensor_stats& other) {
             description = other.description;
             ranks = other.ranks;
             n_iterations = other.n_iterations;
@@ -28,13 +30,13 @@ namespace vmml {
             rec_time = other.rec_time;
         }
 
-        inline stats operator+(const stats& other) const {
-            stats result(*this);
+        inline tensor_stats operator+(const tensor_stats& other) const {
+            tensor_stats result(*this);
             result += other;
             return result;
         }
 
-        void operator+=(const stats& other) {
+        void operator+=(const tensor_stats& other) {
             ranks += other.ranks;
             n_iterations += other.n_iterations;
             error += other.error;
@@ -44,7 +46,7 @@ namespace vmml {
         }
 
         friend std::ostream& operator <<(std::ostream& os,
-                const stats& stats) {
+                const tensor_stats& stats) {
             os << stats.description << " " << stats.ranks << " " << stats.n_iterations << " " << stats.error << " " << stats.nnz << " " << stats.dec_time << " " << stats.rec_time;
             return os;
         }

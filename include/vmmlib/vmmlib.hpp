@@ -5,6 +5,7 @@
 * @author Stefan Eilemann
 * @author Renato Pajarola
 * @author Susanne Suter
+* @author Rafa Ballester
 * @author Philipp Schlegel
 * @author Daniel Pfeifer
 * @author David H. Eberly ( Wild Magic )

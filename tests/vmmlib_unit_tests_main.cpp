@@ -23,6 +23,7 @@
 #  include "t3_hopm_test.hpp"
 #  include "t3_hosvd_test.hpp"
 #  include "t3_ihopm_test.hpp"
+#  include "t3_ihooi_test.hpp"
 #  include "t3_ttm_test.hpp"
 #  include "tensor3_iterator_test.hpp"
 #  include "tensor3_test.hpp"
@@ -31,6 +32,7 @@
 #  include "matrix_pseudoinverse_test.hpp"
 #  include "tensor4_test.hpp"
 #  include "t4_converter_test.hpp"
+#  include "t3_padder_test.hpp"
 #endif
 #ifdef VMMLIB_USE_CUDA
 #  include "cublas_dgemm_test.hpp"
@@ -108,6 +110,9 @@ main( int argc, const char* argv[] )
 	
 	vmml::t3_ihopm_test t3ihopm;
     run_and_log( t3ihopm );
+    
+    vmml::t3_ihooi_test t3ihooi;
+    run_and_log( t3ihooi );
 	
     vmml::tucker3_tensor_test tt3t;
     run_and_log( tt3t );
@@ -127,6 +132,10 @@ main( int argc, const char* argv[] )
 	vmml::t4_converter_test t4ct;
     run_and_log( t4ct );
 
+	vmml::t3_padder_test t3pt;
+    run_and_log( t3pt );
+
+	
 #endif
 #ifdef VMMLIB_USE_CUDA
     vmml::cublas_dgemm_test cublas_mm;

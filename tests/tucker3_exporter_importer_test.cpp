@@ -13,7 +13,7 @@ namespace vmml
 	{
 		bool ok = false;
 		
-		double precision = 1.0e-6;
+		double precision = 1.0e-5;
 
 		typedef tensor3< 3, 2, 2, double> t3_type;
 		typedef t3_hooi< 2, 2, 1, 3, 2, 2, float > hooi_type;
@@ -283,7 +283,7 @@ namespace vmml
 		}	
 		
 		//prepare check data
-		T_coeff dchlo[] = { 127, 26, 28, 52, 0, 85, 82, 65 };
+		T_coeff dchlo[] = { 127, 27, 29, 53, 3, 85, 82, 65 };
 		coreq_check.zero();
 		coreq_check.set(dchlo, dchlo + 8);
 		

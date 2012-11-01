@@ -149,13 +149,13 @@ namespace vmml {
         double error(t3_type& original) const;
 
         template< typename T_init>
-        stats tucker_als(const t3_type& data_, T_init init);
+        tensor_stats tucker_als(const t3_type& data_, T_init init);
 
         template< size_t NBLOCKS, typename T_init>
-        stats i_tucker_als(const t3_type& data_, T_init init);
+        tensor_stats i_tucker_als(const t3_type& data_, T_init init);
 
         template< size_t R, size_t NBLOCKS, typename T_init>
-        stats i_cp_tucker_als(const t3_type& data_, T_init init);
+        tensor_stats i_cp_tucker_als(const t3_type& data_, T_init init);
 
         //        void als_rand(const t3_type& data_);
         //        template< typename T_init>
@@ -448,9 +448,9 @@ namespace vmml {
 
     VMML_TEMPLATE_STRING
     template< typename T_init>
-    stats
+    tensor_stats
     VMML_TEMPLATE_CLASSNAME::tucker_als(const t3_type& data_, T_init init) {
-        stats result;
+        tensor_stats result;
 
         t3_comp_type data;
         data.cast_from(data_);
@@ -465,9 +465,9 @@ namespace vmml {
 
     VMML_TEMPLATE_STRING
     template< size_t NBLOCKS, typename T_init>
-    stats
+    tensor_stats
     VMML_TEMPLATE_CLASSNAME::i_tucker_als(const t3_type& data_, T_init init) {
-        stats result;
+        tensor_stats result;
 
         t3_comp_type data;
         data.cast_from(data_);
@@ -482,9 +482,9 @@ namespace vmml {
 
     VMML_TEMPLATE_STRING
     template< size_t R, size_t NBLOCKS, typename T_init>
-    stats
+    tensor_stats
     VMML_TEMPLATE_CLASSNAME::i_cp_tucker_als(const t3_type& data_, T_init init) {
-        stats result;
+        tensor_stats result;
 
         t3_comp_type data;
         data.cast_from(data_);

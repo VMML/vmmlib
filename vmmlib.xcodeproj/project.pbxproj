@@ -59,10 +59,12 @@
 		CFD85C551399060300266D85 /* t3_hosvd_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CFD85C541399060300266D85 /* t3_hosvd_test.cpp */; };
 		CFD85C81139909EF00266D85 /* t3_hooi_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CFD85C80139909EF00266D85 /* t3_hooi_test.cpp */; };
 		CFD85C8413990A0E00266D85 /* t3_hopm_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CFD85C8313990A0E00266D85 /* t3_hopm_test.cpp */; };
+		CFE117B416416A030085B653 /* t3_ihooi_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CFE117B316416A030085B653 /* t3_ihooi_test.cpp */; };
 		CFF0C1FA1406E55200C3ADDB /* blas_dgemm_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CFF0C1F81406E55200C3ADDB /* blas_dgemm_test.cpp */; };
 		CFF95533131CECD100071FB3 /* lapack_sym_eigs_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CFF95532131CECD100071FB3 /* lapack_sym_eigs_test.cpp */; };
 		CFF98C5515B817BC00F599FE /* tensor4_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CFF98C5315B817BC00F599FE /* tensor4_test.cpp */; };
 		CFF98F5615BF0DC600F599FE /* t4_converter_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CFF98F5515BF0DC600F599FE /* t4_converter_test.cpp */; };
+		CFFAA7FD16402F880054BF54 /* t3_padder_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CFFAA7FC16402F880054BF54 /* t3_padder_test.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -184,6 +186,9 @@
 		CFD85C80139909EF00266D85 /* t3_hooi_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = t3_hooi_test.cpp; path = tests/t3_hooi_test.cpp; sourceTree = "<group>"; };
 		CFD85C8213990A0E00266D85 /* t3_hopm_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = t3_hopm_test.hpp; path = tests/t3_hopm_test.hpp; sourceTree = "<group>"; };
 		CFD85C8313990A0E00266D85 /* t3_hopm_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = t3_hopm_test.cpp; path = tests/t3_hopm_test.cpp; sourceTree = "<group>"; };
+		CFE117B216416A030085B653 /* t3_ihooi_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = t3_ihooi_test.hpp; path = tests/t3_ihooi_test.hpp; sourceTree = "<group>"; };
+		CFE117B316416A030085B653 /* t3_ihooi_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = t3_ihooi_test.cpp; path = tests/t3_ihooi_test.cpp; sourceTree = "<group>"; };
+		CFE118A71641AAEA0085B653 /* tensor_stats.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = tensor_stats.hpp; path = include/vmmlib/tensor_stats.hpp; sourceTree = "<group>"; };
 		CFF0C1F21406E4DC00C3ADDB /* blas_dgemm.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = blas_dgemm.hpp; path = include/vmmlib/blas_dgemm.hpp; sourceTree = "<group>"; };
 		CFF0C1F31406E4DC00C3ADDB /* blas_includes.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = blas_includes.hpp; path = include/vmmlib/blas_includes.hpp; sourceTree = "<group>"; };
 		CFF0C1F41406E4DC00C3ADDB /* blas_types.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = blas_types.hpp; path = include/vmmlib/blas_types.hpp; sourceTree = "<group>"; };
@@ -200,6 +205,11 @@
 		CFF98F5415BF0DC600F599FE /* t4_converter_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = t4_converter_test.hpp; path = tests/t4_converter_test.hpp; sourceTree = "<group>"; };
 		CFF98F5515BF0DC600F599FE /* t4_converter_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = t4_converter_test.cpp; path = tests/t4_converter_test.cpp; sourceTree = "<group>"; };
 		CFF98FFD15C1C03400F599FE /* tensor_mmapper.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = tensor_mmapper.hpp; path = include/vmmlib/tensor_mmapper.hpp; sourceTree = "<group>"; };
+		CFFAA7F416402F4C0054BF54 /* t3_ttv.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = t3_ttv.hpp; path = include/vmmlib/t3_ttv.hpp; sourceTree = "<group>"; };
+		CFFAA7F516402F4C0054BF54 /* t3_ihooi.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = t3_ihooi.hpp; path = include/vmmlib/t3_ihooi.hpp; sourceTree = "<group>"; };
+		CFFAA7F616402F4C0054BF54 /* t3_padder.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = t3_padder.hpp; path = include/vmmlib/t3_padder.hpp; sourceTree = "<group>"; };
+		CFFAA7FB16402F880054BF54 /* t3_padder_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = t3_padder_test.hpp; path = tests/t3_padder_test.hpp; sourceTree = "<group>"; };
+		CFFAA7FC16402F880054BF54 /* t3_padder_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = t3_padder_test.cpp; path = tests/t3_padder_test.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -318,12 +328,16 @@
 				CF0647981446E152007DD062 /* tucker3_exporter.hpp */,
 				CF06479A1446E17B007DD062 /* tucker3_importer.hpp */,
 				CF2DD1EF126C7A4A0036DE05 /* cp3_tensor.hpp */,
+				CFFAA7F416402F4C0054BF54 /* t3_ttv.hpp */,
 				CF906ABE14F56D510043CF23 /* t3_ttm.hpp */,
 				CFD85BC61398E2A100266D85 /* t3_hosvd.hpp */,
 				CFD85BC71398E2BE00266D85 /* t3_hooi.hpp */,
+				CFFAA7F516402F4C0054BF54 /* t3_ihooi.hpp */,
 				CFD85BC81398E2D400266D85 /* t3_hopm.hpp */,
 				CFA7FE00142242BD001EE112 /* t3_ihopm.hpp */,
+				CFE118A71641AAEA0085B653 /* tensor_stats.hpp */,
 				CF7F632B151F8D4400F033B4 /* t3_converter.hpp */,
+				CFFAA7F616402F4C0054BF54 /* t3_padder.hpp */,
 				CFF98C5215B8178100F599FE /* tensor4.hpp */,
 				CFF98CEF15B8556B00F599FE /* t4_converter.hpp */,
 			);
@@ -450,6 +464,8 @@
 				CFD85C541399060300266D85 /* t3_hosvd_test.cpp */,
 				CFD85C7F139909EF00266D85 /* t3_hooi_test.hpp */,
 				CFD85C80139909EF00266D85 /* t3_hooi_test.cpp */,
+				CFE117B216416A030085B653 /* t3_ihooi_test.hpp */,
+				CFE117B316416A030085B653 /* t3_ihooi_test.cpp */,
 				CFD85C8213990A0E00266D85 /* t3_hopm_test.hpp */,
 				CFD85C8313990A0E00266D85 /* t3_hopm_test.cpp */,
 				CFA7FE4914225C03001EE112 /* t3_ihopm_test.hpp */,
@@ -464,6 +480,8 @@
 				CF906A1F14F562F90043CF23 /* cublas_dgemm_test.cpp */,
 				CF906B8714F6313A0043CF23 /* cutensor_tests.hpp */,
 				CF906B8814F6313A0043CF23 /* cutensor_tests.cpp */,
+				CFFAA7FB16402F880054BF54 /* t3_padder_test.hpp */,
+				CFFAA7FC16402F880054BF54 /* t3_padder_test.cpp */,
 				CFF98C5415B817BC00F599FE /* tensor4_test.hpp */,
 				CFF98C5315B817BC00F599FE /* tensor4_test.cpp */,
 				CFF98F5415BF0DC600F599FE /* t4_converter_test.hpp */,
@@ -665,6 +683,8 @@
 				CFF98C5515B817BC00F599FE /* tensor4_test.cpp in Sources */,
 				98D23D8E15B964590012DABB /* unit_test_globals.cpp in Sources */,
 				CFF98F5615BF0DC600F599FE /* t4_converter_test.cpp in Sources */,
+				CFFAA7FD16402F880054BF54 /* t3_padder_test.cpp in Sources */,
+				CFE117B416416A030085B653 /* t3_ihooi_test.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

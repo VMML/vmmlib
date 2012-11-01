@@ -1,27 +1,30 @@
+
 #include "cp3_tensor_test.hpp"
+
 #include <vmmlib/cp3_tensor.hpp>
 #include <vmmlib/t3_hopm.hpp>
+
 #include <sstream>
 
 namespace vmml
 {
-	
+
 	bool
 	cp3_tensor_test::run()
 	{
 		bool ok = false;
-		
+
 		typedef tensor3< 4, 4, 4, float > t3_type;
 		typedef cp3_tensor< 3, 4, 4, 4, float, float > cp3_dec_type;
 		typedef t3_hopm< 3, 4, 4, 4, float > t3_hopm_type;
-		
+
 		t3_type t3_cp_input;
-		float data_in_cp[] = { 
-		/*	0.3780, 0.3150, 0.3386, 0.2047, 0.2913, 0.3071, 0.2835, 0.1024, 0.2362, 0.2835, 0.2677, 0.1024, 0.3543, 1.1181, 1.5354, 0.3858, 
+		float data_in_cp[] = {
+		/*	0.3780, 0.3150, 0.3386, 0.2047, 0.2913, 0.3071, 0.2835, 0.1024, 0.2362, 0.2835, 0.2677, 0.1024, 0.3543, 1.1181, 1.5354, 0.3858,
 			0.2520, 0.2283, 0.3228, 0.2835, 0.2677, 0.2598, 0.2992, 0.2126, 0.2441, 0.2205, 0.2441, 0.2913, 0.9213, 0.6457, 0.4331, 0.1890,
 			0.4409, 0.4409, 0.5591, 0.5039, 0.2362, 0.4409, 0.5984, 0.6142, 0.2520, 0.2835, 0.3465, 0.3543, 0.5748, 0.2835, 0.2992, 0.2835,
 			0.3386, 0.3150, 0.4488, 0.4173, 0.2756, 0.3150, 0.3465, 0.3386, 0.2835, 0.2677, 0.2362, 0.2913, 0.2598, 0.2520, 0.2756, 0.3071 */
-		
+
 			0.8147, 0.6324, 0.9575, 0.9572,
 			0.9058, 0.0975, 0.9649, 0.4854,
 			0.1270, 0.2785, 0.1576, 0.8003,
@@ -39,19 +42,19 @@ namespace vmml
 			0.7547, 0.1626, 0.3404, 0.2551,
 			0.2760, 0.1190, 0.5853, 0.5060,
 			0.6797, 0.4984, 0.2238, 0.6991
-		
+
 		};
 		t3_cp_input.set(data_in_cp, data_in_cp + 64);
-		
+
 		cp3_dec_type cp3_dec;
 		cp3_dec.cp_als( t3_cp_input, t3_hopm_type::init_hosvd(), 20 );
-		
+
 		t3_type t3_cp_reco;
 		cp3_dec.reconstruct( t3_cp_reco );
-		
+
 		t3_type t3_cp_reco_check;
-		float data_out_cp[] = { 
-                    
+		float data_out_cp[] = {
+
                 0.6516,    0.5677,    0.7854,    0.7902,
                 1.0803,    0.0669,    0.8750,    0.3177,
                 0.2160,    0.5307,    0.4704,    0.7794,
@@ -70,14 +73,14 @@ namespace vmml
                 0.5309,    0.5830,    0.5385,    0.2972,
 		};
 		t3_cp_reco_check.set(data_out_cp, data_out_cp + 64);
-				
+
 		ok = t3_cp_reco.equals( t3_cp_reco_check, 0.0001 );
-		
+
 		log( "cp3 tensor reconstruction ", ok  );
-		
+
 		return ok;
 	}
-	
-	
+
+
 } // namespace vmml
 

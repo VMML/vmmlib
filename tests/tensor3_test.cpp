@@ -715,7 +715,6 @@ namespace vmml
 			log_error( error.str() );
 		}
 		
-                t3_converter<8,8,2,unsigned char>::read_from_raw(uct_t3,dir,out_filename);
 //		uct_t3.read_from_raw( dir, out_filename );
 		
 		//set diagonal values in a cubic tensor3, i.e., R=I1, R=I2, R=I3
@@ -1184,13 +1183,13 @@ namespace vmml
 			std::string dir = ".";
 			std::string in_filename = "in.raw";
 			std::string out_filename = "out.raw";
-			uct_t3.write_to_raw( dir, in_filename );
+			t3_converter<8,8,2,unsigned char>::write_to_raw( uct_t3, dir, in_filename );
 			
 			double sigma = uct_t3.stdev();
 			
 			t3_converter<8,8,8, unsigned char>::remove_uct_cylinder( dir, in_filename, out_filename, sigma, 0, 0, 2 ); //remove_uct_cylinder
 			
-			uct_t3.read_from_raw( dir, out_filename );
+			t3_converter<8,8,2,unsigned char>::read_from_raw( uct_t3, dir, out_filename );
 			
 			ok = uct_t3 == uct_t3_check;
 			
@@ -1283,7 +1282,7 @@ namespace vmml
 			tensor3< 4,4,4, unsigned char > t3_testdata;
 			t3_converter< 4,4,4, unsigned char > t3_conv;
 			t3_testdata.fill_random( 3 );
-			t3_testdata.write_to_raw( dir, filename );
+			t3_converter<4,4,4,unsigned char>::write_to_raw( t3_testdata, dir, filename );
 			
 			typedef tensor3< 4,4,4, unsigned char > t3_t;
 			typedef tensor_mmapper< t3_t, t3_converter<4, 4, 4, unsigned char > > t3map_t;
@@ -1337,12 +1336,12 @@ namespace vmml
 			std::string out_filename = "out.raw";
 			tensor3< 4,4,4, unsigned char > t3_in;
 			t3_in.fill_random( 3 );
-			t3_in.write_to_raw( dir, in_filename );
+			t3_converter<4,4,4,unsigned char>::write_to_raw( t3_in, dir, in_filename );
 			
 			t3_converter<4,4,4, unsigned char>::convert_raw<float>( dir, in_filename, out_filename );
 			
 			tensor3< 4,4,4, float > t3_out;
-			t3_out.read_from_raw( dir, out_filename );
+			t3_converter<4,4,4,float>::read_from_raw( t3_out, dir, out_filename );
 			
 			ok = t3_out.equals( t3_in, 0.001);
 			log( "t3 converter: convert raw" , ok  );

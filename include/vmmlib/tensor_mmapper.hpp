@@ -133,7 +133,7 @@ namespace vmml {
                 _tensor = new T();
             }
             _tensor->zero();
-            //                Susanne: can you translate this line?
+            //                TODO Susanne: can you translate this line?
             //		_tensor->write_to_raw( dir_, filename_ );
 
             _fd = open(path.c_str(), O_RDWR, 0);

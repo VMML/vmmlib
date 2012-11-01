@@ -12,6 +12,8 @@ namespace vmml
 	public:
 		t3_ihopm_test() : unit_test( "tensor3 incremental rank-r CP-ALS (or iHOPM)" ) {}
 		bool run();
+                bool cp();
+                bool cp_tucker();
 		
 	protected:
 		

@@ -113,9 +113,15 @@ namespace vmml {
 
         size_t size() const; // return I1 * I2 * I3;
 
-        template< size_t J1, size_t J2, size_t J3 >
-        tensor3<J1, J2, J3, T>
-        get_sub_tensor3(size_t row_offset, size_t col_offset, size_t slice_offset = 0,
+		void
+		get_sub_tensor3(char* data_, 
+						const size_t i1_start, const size_t i1_end, 
+						const size_t i2_start, const size_t i2_end,
+						const size_t i3_start, const size_t i3_end ) const;
+		
+		template< size_t J1, size_t J2, size_t J3 >
+		tensor3<J1, J2, J3, T>
+		get_sub_tensor3(size_t row_offset, size_t col_offset, size_t slice_offset = 0,
                 typename enable_if< J1 <= I1 && J2 <= I2 && J3 <= I3 >::type* = 0) const;
 
         template< size_t J1, size_t J2, size_t J3 >
@@ -1059,6 +1065,28 @@ namespace vmml {
         }
         return 0;
     }
+	
+	VMML_TEMPLATE_STRING
+	void
+    VMML_TEMPLATE_CLASSNAME::
+    get_sub_tensor3( char* data_, 
+					const size_t i1_start, const size_t i1_end, 
+					const size_t i2_start, const size_t i2_end,
+					const size_t i3_start, const size_t i3_end ) const 
+	{
+
+		T* t_ptr = (T*)&(data_[0]);
+		for ( size_t slice = i3_start; slice <= i3_end; ++slice ) {
+            for ( size_t row = i2_start; row <= i1_end; ++row ) {
+                for ( size_t col = i2_start; col <= i2_end; ++col ) {
+					//std::cout << "at("<< row << "," << col << "," << slice << ") of (" <<I1 << "," << I2 << "," << I3 << ")" << std::endl;
+                    *t_ptr = at( row, col, slice );
+					++t_ptr;
+                }
+            }
+        }
+    }
+	
 
     VMML_TEMPLATE_STRING
     typename VMML_TEMPLATE_CLASSNAME::iterator

@@ -53,7 +53,9 @@ namespace vmml
 		//std::cout << "empty data block\n" << block << std::endl;
 		ok = ( block == block_check );
 		
-		block_check.at( 0,0,0 ) = 34;
+		block_check.at( 0,0,0 ) = 34; block_check.at( 0,0,1 ) = 46;
+		block_check.at( 0,1,0 ) = 35; block_check.at( 0,1,1 ) = 47;
+
 		t3_p.get_data_block( block, 2, 2, 2 );
 		//std::cout << "half full data block\n" << block << std::endl;
 		ok = ok && ( block == block_check );

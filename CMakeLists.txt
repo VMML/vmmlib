@@ -108,8 +108,6 @@ set(TESTS
   tests/qr_decomposition_test.cpp
   tests/quaternion_test.cpp
   tests/svd_test.cpp
-  tests/t3_ihooi_test.cpp
-  tests/t3_padder_test.cpp
   tests/timer.cpp
   tests/unit_test.cpp
   tests/unit_test_globals.cpp
@@ -124,30 +122,35 @@ set(TESTS
 if(LAPACK_FOUND)
   add_definitions(-DVMMLIB_USE_LAPACK)
   list(APPEND TESTS
-    tests/blas_dot_test.cpp
     tests/blas_daxpy_test.cpp
     tests/blas_dgemm_test.cpp
+    tests/blas_dot_test.cpp
     tests/cp3_tensor_test.cpp
     tests/lapack_gaussian_elimination_test.cpp
     tests/lapack_linear_least_squares_test.cpp
     tests/lapack_svd_test.cpp
     tests/lapack_sym_eigs_test.cpp
-    tests/t4_converter_test.cpp
     tests/matrix_pseudoinverse_test.cpp
     tests/qtucker3_tensor_test.cpp
     tests/svd_lapack_vs_old.cpp
     tests/t3_hooi_test.cpp
     tests/t3_hopm_test.cpp
     tests/t3_hosvd_test.cpp
+    tests/t3_ihooi_test.cpp
     tests/t3_ihopm_test.cpp
+    tests/t3_padder_test.cpp
     tests/t3_ttm_test.cpp
+    tests/t4_converter_test.cpp
+    tests/t4_converter_test.cpp
     tests/tensor3_iterator_test.cpp
     tests/tensor3_test.cpp
+    tests/tensor4_test.cpp
     tests/tucker3_exporter_importer_test.cpp
     tests/tucker3_tensor_test.cpp
-    tests/tensor4_test.cpp
-    tests/t4_converter_test.cpp
 )
+endif()
+if(BLAS_FOUND)
+  add_definitions(-DVMMLIB_USE_BLAS)
 endif()
 
 if(NOT MSVC)

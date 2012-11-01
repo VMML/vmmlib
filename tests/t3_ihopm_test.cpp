@@ -124,7 +124,7 @@ namespace vmml {
         t3_input.set(data_input, data_input + 64);
         t3_ihooi< R, R, R, NBLOCKS, I, I, I, double >::i_cp_als<R > (t3_input, u1, u2, u3, t3_core, hooi_type::init_hosvd(), 20);
 
-        double data_check2[] = {
+        double data_check[] = {
             2.8832, -0.0128, 0, 0,
             -0.0161, 0.0144, 0, 0,
             0, 0, 0, 0,
@@ -146,32 +146,32 @@ namespace vmml {
         t3_u_type u1_check;
         t3_u_type u2_check;
         t3_u_type u3_check;
-        t3_core_check.set(data_check2, data_check2 + I * I * I);
+        t3_core_check.set(data_check, data_check + I * I * I);
 
-        double data_u1_check2[] = {
+        double data_u1_check[] = {
             0.5130, 0.0172, -0.2173, -0.3829,
             0.4671, -0.0112, -0.2194, -0.7334,
             0.3632, 0.0641, -0.1147, -0.2528,
             0.6218, 0.9977, 0.9442, 0.5015,
         };
-        u1_check.set(data_u1_check2, data_u1_check2 + I * R);
+        u1_check.set(data_u1_check, data_u1_check + I * R);
 
-        double data_u2_check2[] = {
+        double data_u2_check[] = {
             -0.4996, -0.0615, 0.8671, -0.6219,
             -0.4958, -0.5782, 0.2828, -0.1101,
             -0.5648, -0.8075, -0.1982, 0.2193,
             -0.4309, -0.0994, -0.3589, 0.7437,
         };
-        u2_check.set(data_u2_check2, data_u2_check2 + I * R);
+        u2_check.set(data_u2_check, data_u2_check + I * R);
 
-        double data_u3_check2[] = {
+        double data_u3_check[] = {
             -0.3748, -0.9273, -0.0115, 0.2556,
             -0.4621, -0.0808, 0.9320, 0.3446,
             -0.6483, 0.3165, -0.1927, -0.8196,
             -0.4750, 0.1828, -0.3066, -0.3798,
         };
 
-        u3_check.set(data_u3_check2, data_u3_check2 + I * R);
+        u3_check.set(data_u3_check, data_u3_check + I * R);
 
         bool ok = t3_core.equals(t3_core_check, precision);
         ok = u1.equals(u1_check, precision);

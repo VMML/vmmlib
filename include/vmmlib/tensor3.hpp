@@ -299,11 +299,11 @@ public:
 
     void export_to( std::vector< T >& data_ ) const ;
     void import_from( const std::vector< T >& data_ ) ;
-	void write_to_raw( const std::string& dir_, const std::string& filename_ ) const;
-	void read_from_raw( const std::string& dir_, const std::string& filename_ ) ;
-	void write_datfile( const std::string& dir_, const std::string& filename_ ) const;
-	void write_to_csv( const std::string& dir_, const std::string& filename_ ) const;
-	void remove_normals_from_raw( const std::string& dir_, const std::string& filename_ ) ;
+	//void write_to_raw( const std::string& dir_, const std::string& filename_ ) const;
+//	void read_from_raw( const std::string& dir_, const std::string& filename_ ) ;
+//	void write_datfile( const std::string& dir_, const std::string& filename_ ) const;
+//	void write_to_csv( const std::string& dir_, const std::string& filename_ ) const;
+//	void remove_normals_from_raw( const std::string& dir_, const std::string& filename_ ) ;
 
 	//note: moved to t3_converter
 	//void remove_uct_cylinder( const size_t radius_offset_, int seed_ = 0 ) ;
@@ -2246,221 +2246,158 @@ std::string format_path( const std::string& dir_, const std::string& filename_, 
 #endif
 
 
-VMML_TEMPLATE_STRING
-void
-VMML_TEMPLATE_CLASSNAME::write_to_raw( const std::string& dir_, const std::string& filename_ ) const
-{
-	int dir_length = dir_.size() -1;
-	int last_separator = dir_.find_last_of( "/");
-	std::string path = dir_;
-	if (last_separator < dir_length ) {
-		path.append( "/" );
-	}
-	path.append( filename_ );
-	//check for format
-	if( filename_.find( "raw", filename_.size() -3) == (-1)) {
-		path.append( ".");
-		path.append( "raw" );
-	}
-	std::string path_raw = path;
+//VMML_TEMPLATE_STRING
+//void
+//VMML_TEMPLATE_CLASSNAME::write_to_raw( const std::string& dir_, const std::string& filename_ ) const
+//{
+//	int dir_length = dir_.size() -1;
+//	int last_separator = dir_.find_last_of( "/");
+//	std::string path = dir_;
+//	if (last_separator < dir_length ) {
+//		path.append( "/" );
+//	}
+//	path.append( filename_ );
+//	//check for format
+//	if( filename_.find( "raw", filename_.size() -3) == (-1)) {
+//		path.append( ".");
+//		path.append( "raw" );
+//	}
+//	std::string path_raw = path;
+//
+//	std::ofstream outfile;
+//	outfile.open( path_raw.c_str() );
+//	if( outfile.is_open() ) {
+//		size_t len_slice = sizeof(T) * I1 * I2;
+//		for( size_t index = 0; index < I3; ++index )
+//		{
+//			outfile.write( (char*)&(get_frontal_slice_fwd( index )), len_slice );
+//		}
+//		outfile.close();
+//	} else {
+//		std::cout << "no file open" << std::endl;
+//	}
+//}
 
-	std::ofstream outfile;
-	outfile.open( path_raw.c_str() );
-	if( outfile.is_open() ) {
-		size_t len_slice = sizeof(T) * I1 * I2;
-		for( size_t index = 0; index < I3; ++index )
-		{
-			outfile.write( (char*)&(get_frontal_slice_fwd( index )), len_slice );
-		}
-		outfile.close();
-	} else {
-		std::cout << "no file open" << std::endl;
-	}
-}
-
-VMML_TEMPLATE_STRING
-void
-VMML_TEMPLATE_CLASSNAME::write_to_csv( const std::string& dir_, const std::string& filename_ ) const
-{
-	int dir_length = dir_.size() -1;
-	int last_separator = dir_.find_last_of( "/");
-	std::string path = dir_;
-	if (last_separator < dir_length ) {
-		path.append( "/" );
-	}
-	path.append( filename_ );
-	//check for format
-	if( filename_.find( "csv", filename_.size() -3) == (-1)) {
-		path.append( ".");
-		path.append( "csv" );
-	}
-
-	std::ofstream outfile;
-	outfile.open( path.c_str() );
-	if( outfile.is_open() ) {
-
-		for(size_t i = 0; i < I3; ++i)
-        {
-            outfile << get_frontal_slice_fwd( i )  << std::endl;
-        }
-
-		outfile.close();
-	} else {
-		std::cout << "no file open" << std::endl;
-	}
-
-}
-
-
-VMML_TEMPLATE_STRING
-void
-VMML_TEMPLATE_CLASSNAME::write_datfile( const std::string& dir_, const std::string& filename_ ) const
-{
-	int dir_length = dir_.size() -1;
-	int last_separator = dir_.find_last_of( "/");
-	std::string path = dir_;
-	if (last_separator < dir_length ) {
-		path.append( "/" );
-	}
-
-	std::string filename = "";
-	int pos = filename_.size() -4;
-	if( ( filename_.find(".raw", pos ) == pos) || ( filename_.find(".dat", pos ) == pos) ) {
-		filename = filename_.substr(0, filename_.size() -4);
-	} else {
-		filename = filename_;
-	}
-
-	path.append( filename );
-	//check for format
-	if( filename_.find( "dat", filename_.size() -3) == (-1)) {
-		path.append( ".");
-		path.append( "dat" );
-	}
-
-	std::string path_dat = path;
-
-	const char* format = (sizeof(T) == 2) ? "USHORT": "UCHAR";
-
-	FILE* datfile = fopen(path_dat.c_str(), "w");
-	fprintf(datfile, "ObjectFileName:\t%s.raw\n", filename.c_str());
-	fprintf(datfile, "TaggedFileName:\t---\nResolution:\t%i %i %i\n", int(I1), int(I2), int(I3));
-	fprintf(datfile, "SliceThickness:\t1.0 1.0 1.0\n");
-	fprintf(datfile, "Format:\t%s\nNbrTags:\t0\n", format);
-	fprintf(datfile, "ObjectType:\tTEXTURE_VOLUME_OBJECT\nObjectModel:\tI\nGridType:\tEQUIDISTANT\n");
-	fprintf(datfile, "Modality:\tunknown\nTimeStep:\t0\n");
-	fclose(datfile);
-}
+//VMML_TEMPLATE_STRING
+//void
+//VMML_TEMPLATE_CLASSNAME::write_to_csv( const std::string& dir_, const std::string& filename_ ) const
+//{
+//	int dir_length = dir_.size() -1;
+//	int last_separator = dir_.find_last_of( "/");
+//	std::string path = dir_;
+//	if (last_separator < dir_length ) {
+//		path.append( "/" );
+//	}
+//	path.append( filename_ );
+//	//check for format
+//	if( filename_.find( "csv", filename_.size() -3) == (-1)) {
+//		path.append( ".");
+//		path.append( "csv" );
+//	}
+//
+//	std::ofstream outfile;
+//	outfile.open( path.c_str() );
+//	if( outfile.is_open() ) {
+//
+//		for(size_t i = 0; i < I3; ++i)
+//        {
+//            outfile << get_frontal_slice_fwd( i )  << std::endl;
+//        }
+//
+//		outfile.close();
+//	} else {
+//		std::cout << "no file open" << std::endl;
+//	}
+//
+//}
 
 
-VMML_TEMPLATE_STRING
-void
-VMML_TEMPLATE_CLASSNAME::read_from_raw( const std::string& dir_, const std::string& filename_ )
-{
-	int dir_length = dir_.size() -1;
-	int last_separator = dir_.find_last_of( "/");
-	std::string path = dir_;
-	if (last_separator < dir_length ) {
-		path.append( "/" );
-	}
-	path.append( filename_ );
-
-	size_t max_file_len = 2147483648u - sizeof(T) ;
-	size_t len_data = sizeof(T) * SIZE;
-	size_t len_read = 0;
-	char* data = new char[ len_data ];
-	std::ifstream infile;
-	infile.open( path.c_str(), std::ios::in);
-
-	if( infile.is_open())
-	{
-		iterator  it = begin(),
-		it_end = end();
-
-		while ( len_data > 0 )
-		{
-            len_read = (len_data % max_file_len ) > 0 ? len_data % max_file_len : len_data;
-			len_data -= len_read;
-			infile.read( data, len_read );
-
-			T* T_ptr = (T*)&(data[0]);
-			for( ; (it != it_end) && (len_read > 0); ++it, len_read -= sizeof(T) )
-			{
-				*it = *T_ptr; ++T_ptr;
-			}
-		}
-
-		delete[] data;
-		infile.close();
-	} else {
-		std::cout << "no file open" << std::endl;
-	}
-
-}
+//VMML_TEMPLATE_STRING
+//void
+//VMML_TEMPLATE_CLASSNAME::write_datfile( const std::string& dir_, const std::string& filename_ ) const
+//{
+//	int dir_length = dir_.size() -1;
+//	int last_separator = dir_.find_last_of( "/");
+//	std::string path = dir_;
+//	if (last_separator < dir_length ) {
+//		path.append( "/" );
+//	}
+//
+//	std::string filename = "";
+//	int pos = filename_.size() -4;
+//	if( ( filename_.find(".raw", pos ) == pos) || ( filename_.find(".dat", pos ) == pos) ) {
+//		filename = filename_.substr(0, filename_.size() -4);
+//	} else {
+//		filename = filename_;
+//	}
+//
+//	path.append( filename );
+//	//check for format
+//	if( filename_.find( "dat", filename_.size() -3) == (-1)) {
+//		path.append( ".");
+//		path.append( "dat" );
+//	}
+//
+//	std::string path_dat = path;
+//
+//	const char* format = (sizeof(T) == 2) ? "USHORT": "UCHAR";
+//
+//	FILE* datfile = fopen(path_dat.c_str(), "w");
+//	fprintf(datfile, "ObjectFileName:\t%s.raw\n", filename.c_str());
+//	fprintf(datfile, "TaggedFileName:\t---\nResolution:\t%i %i %i\n", int(I1), int(I2), int(I3));
+//	fprintf(datfile, "SliceThickness:\t1.0 1.0 1.0\n");
+//	fprintf(datfile, "Format:\t%s\nNbrTags:\t0\n", format);
+//	fprintf(datfile, "ObjectType:\tTEXTURE_VOLUME_OBJECT\nObjectModel:\tI\nGridType:\tEQUIDISTANT\n");
+//	fprintf(datfile, "Modality:\tunknown\nTimeStep:\t0\n");
+//	fclose(datfile);
+//}
 
 
+//VMML_TEMPLATE_STRING
+//void
+//VMML_TEMPLATE_CLASSNAME::read_from_raw( const std::string& dir_, const std::string& filename_ )
+//{
+//	int dir_length = dir_.size() -1;
+//	int last_separator = dir_.find_last_of( "/");
+//	std::string path = dir_;
+//	if (last_separator < dir_length ) {
+//		path.append( "/" );
+//	}
+//	path.append( filename_ );
+//
+//	size_t max_file_len = 2147483648u - sizeof(T) ;
+//	size_t len_data = sizeof(T) * SIZE;
+//	size_t len_read = 0;
+//	char* data = new char[ len_data ];
+//	std::ifstream infile;
+//	infile.open( path.c_str(), std::ios::in);
+//
+//	if( infile.is_open())
+//	{
+//		iterator  it = begin(),
+//		it_end = end();
+//
+//		while ( len_data > 0 )
+//		{
+//            len_read = (len_data % max_file_len ) > 0 ? len_data % max_file_len : len_data;
+//			len_data -= len_read;
+//			infile.read( data, len_read );
+//
+//			T* T_ptr = (T*)&(data[0]);
+//			for( ; (it != it_end) && (len_read > 0); ++it, len_read -= sizeof(T) )
+//			{
+//				*it = *T_ptr; ++T_ptr;
+//			}
+//		}
+//
+//		delete[] data;
+//		infile.close();
+//	} else {
+//		std::cout << "no file open" << std::endl;
+//	}
+//
+//}
 
-
-VMML_TEMPLATE_STRING
-void
-VMML_TEMPLATE_CLASSNAME::remove_normals_from_raw( const std::string& dir_, const std::string& filename_ )
-{
-	int dir_length = dir_.size() -1;
-	int last_separator = dir_.find_last_of( "/");
-	std::string path = dir_;
-	if (last_separator < dir_length ) {
-		path.append( "/" );
-	}
-	path.append( filename_ );
-
-
-	size_t max_file_len = 2147483648u - sizeof(T) ;
-	size_t len_data = sizeof(T) * SIZE;
-	size_t len_value = sizeof(T) * 4; //three normals per scalar value
-	size_t len_read = 0;
-	char* data = new char[ len_data ];
-	std::ifstream infile;
-	infile.open( path.c_str(), std::ios::in);
-
-	if( infile.is_open())
-	{
-		iterator  it = begin(),
-		it_end = end();
-
-		size_t counter = 0;
-		while ( len_data > 0 )
-		{
-            len_read = (len_data % max_file_len ) > 0 ? len_data % max_file_len : len_data;
-			len_data -= len_read;
-			infile.read( data, len_read );
-
-			T* T_ptr = (T*)&(data[0]);
-			for( ; (it != it_end) && (len_read > 0); ++it, len_read -= len_value )
-			{
-				++T_ptr;
-				++T_ptr;
-				++T_ptr;
-				*it = *T_ptr;
-				++T_ptr;
-				++counter;
-			}
-		}
-
-		delete[] data;
-		infile.close();
-	} else {
-		std::cout << "no file open" << std::endl;
-	}
-
-	std::cout << "converted normals" << std::endl;
-
-	std::string filename = "";
-	filename = filename_.substr(0, filename_.size() -6);
-
-
-	write_datfile( ".", filename );
-	write_to_raw( ".", filename );
-}
 
 
 

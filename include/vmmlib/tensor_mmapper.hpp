@@ -206,11 +206,10 @@ namespace vmml
 	}		
 	
 	
-	
 #undef VMML_TEMPLATE_STRING
 #undef VMML_TEMPLATE_CLASSNAME
-	
-	
+
+
 }//end vmml namespace
 
 #endif

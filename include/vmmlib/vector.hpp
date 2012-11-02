@@ -1213,10 +1213,8 @@ vector< M, T >::compute_normal(
 
 template< size_t M, typename T >
 vector< M, T >
-vector< M, T >::compute_normal(
-    const vector< M, T >& bb,
-    const vector< M, T >& cc
-    ) const
+vector< M, T >::compute_normal( const vector< M, T >& bb,
+                                const vector< M, T >& cc ) const
 {
     vector< M, T > tmp;
     tmp.compute_normal( *this, bb, cc);

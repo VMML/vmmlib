@@ -106,15 +106,32 @@ namespace vmml
 			else 
 			{
 				t3_block_.zero();
-				//FIXME: check sizes
-				//Maybe do it withouth templates
-				const size_t k1 = 1; //B - (I - I1 - j1_ )
-				const size_t k2 = 1;
-				const size_t k3 = 1;
-				//std::cout << "subvolume: (" << k1 << "," << k2 << "," << k3 << ")" << std::endl;
-				tensor3< k1, k2, k3, T > t3_sub_block;
-				_cached_data.get_sub_tensor3( t3_sub_block, j1_, j2_ );
-				t3_block_.set_sub_tensor3( t3_sub_block, B-k1-1, B-k2-1, B-k3-1 );
+				const size_t len1 = I1 - j1_ ;
+				const size_t len2 = I2 - j2_ ;
+				const size_t len3 = I3 - j3_ ;
+				
+				size_t block_data_len = len1 * len2 * len3 * sizeof(T);
+				char* data = new char[ block_data_len ];
+				
+				//std::cout << "cached data:\n" << _cached_data << std::endl;
+				_cached_data.get_sub_tensor3( data, j1_, j1_+len1-1, j2_, j2_+len2-1, 0, len3-1 );
+				
+				//assume that block size is small
+				
+				T* t_ptr = (T*)&(data[0]);
+				for ( size_t k3 = 0; k3 < len3; ++k3)
+				{
+					for ( size_t k1 = 0; k1 < len1; ++k1)
+					{
+						for ( size_t k2 = 0; k2 < len2; ++k2)
+						{
+							t3_block_.at( k1, k2, k3 ) = *t_ptr;
+							//std::cout << "ptr_val = " << int(*t_ptr) << std::endl;
+							++t_ptr;
+						}
+					}
+				}
+				delete[] data;
 			}
 		}
 
@@ -124,11 +141,11 @@ namespace vmml
 	void
 	VMML_TEMPLATE_CLASSNAME::read_from_raw()
 	{
-		//FIXME: if data is shorter than z-dir, update size of read data
-		//out of bounds handling
+		_cached_data.zero();
 		
 		size_t max_file_len = 2147483648u - sizeof(T) ;
-		size_t cache_data_len = I1 * I2 * B * sizeof(T);
+		size_t len3 = (_cache_idx < (I3 - B)) ? B : (I3 - _cache_idx);
+		size_t cache_data_len = I1 * I2 * len3 * sizeof(T);
 		size_t len_read = 0;
 		size_t start_idx = _cache_idx * I1 * I2 * sizeof(T);
 		char* data = new char[ cache_data_len ];

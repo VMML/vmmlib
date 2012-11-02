@@ -149,13 +149,13 @@ namespace vmml {
         double error(t3_type& original) const;
 
         template< typename T_init>
-        tensor_stats tucker_als(const t3_type& data_, T_init init, const size_t max_iterations = 3, const float tolerance = -1);
+        tensor_stats tucker_als(const t3_type& data_, T_init init, const size_t max_iterations = 3, const float tolerance = 1e-04);
 
         template< size_t NBLOCKS, typename T_init>
-        tensor_stats i_tucker_als(const t3_type& data_, T_init init, const size_t max_iterations = 3, const float tolerance = -1);
+        tensor_stats i_tucker_als(const t3_type& data_, T_init init, const size_t max_iterations = 3, const float tolerance = 1e-04);
 
         template< size_t R, size_t NBLOCKS, typename T_init>
-        tensor_stats i_cp_tucker_als(const t3_type& data_, T_init init, const size_t max_iterations = 3, const float tolerance = -1);
+        tensor_stats i_cp_tucker_als(const t3_type& data_, T_init init, const size_t max_iterations = 3, const float tolerance = 1e-04);
 
         //        void als_rand(const t3_type& data_);
         //        template< typename T_init>

@@ -56,7 +56,7 @@ namespace vmml {
         //higher-order power method (lathauwer et al., 2000b)
 
         template< typename T_init >
-        static tensor_stats als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, lambda_type& lambdas_, T_init init, const size_t max_iterations_ = 20, const float tolerance = -1);
+        static tensor_stats als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, lambda_type& lambdas_, T_init init, const size_t max_iterations_ = 20, const float tolerance = 1e-04);
         static void reconstruct(t3_type& data_, const u1_type& u1_, const u2_type& u2_, const u3_type& u3_, const lambda_type& lambdas_);
 
         //ktensor = kruskal tensor, i.e., lambda, U1, U2, U3
@@ -139,14 +139,14 @@ namespace vmml {
         t3_type* residual_data = new t3_type;
         residual_data->zero();
 
-        double max_f_norm, fit, fitchange, norm2, norm3, fitold, normresidual;
-        if (tolerance_ != -1) {
+        double max_f_norm, fit, fitchange, norm2, innerprod, fitold, normresidual;
+        if (tolerance_ > 0) {
             max_f_norm = data_.frobenius_norm();
             fit = 0;
             if (max_f_norm == 0)
                 fit = 1;
             fitchange = 1;
-            norm2 = norm3 = 0;
+            norm2 = innerprod = 0;
             fitold = fit;
             normresidual = 0;
         }
@@ -155,56 +155,8 @@ namespace vmml {
         //inital guess not needed for u1 since it will be computed in the first optimization step
         init(data_, u2_, u3_);
 
-        //        std::cerr << "SAMPLE: " << data_.at(10,11,12) << std::endl;
-        //        std::cerr << "SAMPLE: " << u2_.at(10,11) << std::endl;
-        //        u1_.zero();
         assert(validator::is_valid(u2_) && validator::is_valid(u3_));
         assert(validator::is_valid(lambdas_));
-        //        std::cerr << u2_ << std::endl << std::endl << std::endl;
-        //        std::cerr << u3_ << std::endl;
-
-        //        std::cerr << "Frob u2 = " << u2_.frobenius_norm() << std::endl;
-        //        std::cerr << "Frob u3 = " << u3_.frobenius_norm() << std::endl;
-        //        std::cerr << "Lambdas = " << lambdas_ << std::endl;
-        //        std::cerr << "Valen " << norm_ktensor(u1_, u2_, u3_, lambdas_) << std::endl;
-
-        //<<<<<<< HEAD
-        //=======
-        //	
-        //VMML_TEMPLATE_STRING
-        //template< typename T_init>
-        //void 
-        //VMML_TEMPLATE_CLASSNAME::als( const t3_type& data_, 
-        //							 u1_type& u1_, u2_type& u2_, u3_type& u3_, 
-        //							 lambda_type& lambdas_, 
-        //							 T_init init,
-        //							 const size_t max_iterations_ )
-        //{
-        //	t3_type* approximated_data = new t3_type;
-        //	t3_type* residual_data = new t3_type;
-        //	residual_data->zero();
-        //	
-        //	double max_f_norm = data_.frobenius_norm();
-        //	double normresidual  = 0;
-        //	double norm1  = 0;
-        //	double norm2  = 0;
-        //	double norm3  = 0;
-        //	double fit = 0;
-        //	if (max_f_norm == 0 )
-        //		fit = 1;
-        //	double fitchange = 1;
-        //	double fitold = fit;
-        //	double fitchange_tolerance = 1.0e-4;
-        //	
-        //	//intialize u1-u3
-        //	//inital guess not needed for u1 since it will be computed in the first optimization step
-        //	init( data_, u2_, u3_ );
-        //
-        //    assert( validator::is_valid( u2_) && validator::is_valid( u3_ ) );
-        //    assert( validator::is_valid( lambdas_ ) );
-        //	
-        //	u1_.zero();
-        //>>>>>>> upstream/master
 
 #if CP_LOG
         std::ostringstream convert;
@@ -215,7 +167,7 @@ namespace vmml {
         size_t i = 0;
         while (i < max_iterations_ && (tolerance_ == -1 || fitchange >= tolerance_)) //do until converges
         {
-                        fitold = fit;
+            fitold = fit;
 
             //            timer myTimer;
             //            myTimer.start();
@@ -235,7 +187,7 @@ namespace vmml {
             //            std::cerr << myTimer.get_seconds() << " ";
             //#endif
 
-            if (tolerance_ != -1) {
+            if (tolerance_ > 0) {
                 norm2 = norm_ktensor(u1_, u2_, u3_, lambdas_);
 
                 T val2 = 0;
@@ -245,12 +197,13 @@ namespace vmml {
                     vector<I2, T> res2 = res1 * u3_.get_column(j);
                     val2 += lambdas_.at(j) * (res2.dot(u2_.get_column(j)));
                 }
-                norm3 = 2 * val2;
-                normresidual = sqrt(max_f_norm * max_f_norm + norm2 * norm2 - norm3);
+                innerprod = 2 * val2;
+                // ||X-P|| = sqrt( ||X||^2 + ||P||^2 - 2 * X.P );
+                normresidual = sqrt(max_f_norm * max_f_norm + norm2 * norm2 - innerprod);
                 fit = 1 - (normresidual / max_f_norm);
                 fitchange = fabs(fitold - fit);
 #if CP_LOG      
-//                std::cerr << myTimer.get_seconds() << " ";
+                //                std::cerr << myTimer.get_seconds() << " ";
                 std::cout << "iteration '" << i
                         << "', fit: " << fit
                         << ", fitdelta: " << fit - fitold
@@ -259,61 +212,17 @@ namespace vmml {
                 std::cout << std::endl;
 #endif
             }
-            //#if 0
-            //            myTimer.start();
-            //
-            //            //Reconstruct tensor and measure norm of approximation
-            //            //slower version since cp reconstruction is slow
-            //            reconstruct(*approximated_data, u1_, u2_, u3_, lambdas_);
-            //            //            approx_norm = approximated_data->frobenius_norm();
-            //            *residual_data = data_ - *approximated_data;
-            //            normresidual = residual_data->frobenius_norm();
-            //            std::cerr << myTimer.get_seconds() << " ";
-            //#else
-            //            //normresidual = sqrt( normX^2 + norm(P)^2 - 2 * innerprod(X,P) );
-            //            //norm1 = data_.frobenius_norm(); // why calculating it again? it's max_f_norm
-            //            //norm1 *= norm1;
-            //            //std::cout << "norm1 = " << norm1 << ", max_f_norm = " << max_f_norm << std::endl;
-            //            norm2 = norm_ktensor(u1_, u2_, u3_, lambdas_);
-            //
-            //
-            //            myTimer.start();
-            //            //////////////////
-            //            //            std::cerr << "It's " << data_.COLS << std::endl;
-            //            //            T val1 = data_.tensor_inner_product_efficient(lambdas_, u1_, u2_, u3_);
-            //
-            //            //            std::cerr << "BIG1: " << myTimer.get_seconds() << " ";
-            //            //            myTimer.start();
-            //            //            
-            //            T val2 = 0;
-            //            for (int j = 0; j < lambdas_.size(); ++j) {
-            //                matrix<I2, I3, T> res1;
-            //                t3_ttv::multiply_first_mode(data_, u1_.get_column(j), res1);
-            //                vector<I2, T> res2 = res1 * u3_.get_column(j);
-            //                val2 += lambdas_.at(j) * (res2.dot(u2_.get_column(j)));
-            //            }
-            //
-            //#if CP_LOG
-            //            std::cerr << "BIG2: " << myTimer.get_seconds() << " ";
-            //#endif	
-            //
-            //
-            //            //            std::cerr << "val1 = " << val1 << ", val2 = " << val2 << std::endl;
-            //            //////////////////
-            //
-            //
-            //            //            norm3 = 2 * data_.tensor_inner_product_efficient(lambdas_, u1_, u2_, u3_);
-            //            norm3 = 2 * val2;
-            //
-            //            myTimer.start();
-            //            normresidual = sqrt(max_f_norm * max_f_norm + norm2 * norm2 - norm3);
-            //#endif
-            //            //            std::cerr << "norm2 = " << norm2 << ", norm3 = " << norm3 << std::endl;
-            //            fit = 1 - (normresidual / max_f_norm);
-            //            fitchange = fabs(fitold - fit);
+#if 0
+            myTimer.start();
 
-
-            //            fit = -42;
+            //Reconstruct tensor and measure norm of approximation
+            //slower version since cp reconstruction is slow
+            reconstruct(*approximated_data, u1_, u2_, u3_, lambdas_);
+            //            approx_norm = approximated_data->frobenius_norm();
+            *residual_data = data_ - *approximated_data;
+            normresidual = residual_data->frobenius_norm();
+            std::cerr << myTimer.get_seconds() << " ";
+#endif
 
             ++i;
         } // end ALS

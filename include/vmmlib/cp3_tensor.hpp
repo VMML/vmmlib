@@ -144,10 +144,10 @@ namespace vmml {
         size_t nnz() const;
 
         template< typename T_init >
-        tensor_stats cp_als(const t3_type& data_, T_init init, const size_t max_iterations_ = 20, const float tolerance = -1);
+        tensor_stats cp_als(const t3_type& data_, T_init init, const size_t max_iterations_ = 20, const float tolerance = 1e-04);
 
         template< size_t NBLOCKS, typename T_init >
-        tensor_stats i_cp_als(const t3_type& data_, T_init init, const size_t max_iterations_ = 20, const float tolerance = -1);
+        tensor_stats i_cp_als(const t3_type& data_, T_init init, const size_t max_iterations_ = 20, const float tolerance = 1e-04);
 
         template< size_t K >
         void reduce_ranks(const cp3_tensor< K, I1, I2, I3, T_value, T_coeff >& other);

@@ -48,11 +48,11 @@ namespace vmml {
 
         // Incremental Tucker-ALS
         template< typename T_init >
-        static tensor_stats i_als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, t3_core_type& core_, T_init init, const size_t max_iterations_ = 20, const float tolerance = -1);
+        static tensor_stats i_als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, t3_core_type& core_, T_init init, const size_t max_iterations_ = 20, const float tolerance = 1e-04);
 
         // Incremental CP-Tucker-ALS: at each iteration, R-rank CP is performed, but a (R1,R2,R3)-Tucker core (R1,R2,R3 <= R) is computed from the resulting matrices.
         template< size_t R, typename T_init >
-        static tensor_stats i_cp_als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, t3_core_type& core_, T_init init, const size_t max_iterations_ = 20, const float tolerance = -1);
+        static tensor_stats i_cp_als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, t3_core_type& core_, T_init init, const size_t max_iterations_ = 20, const float tolerance = 1e-04);
     };
 
 

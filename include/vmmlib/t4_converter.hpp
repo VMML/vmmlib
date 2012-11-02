@@ -1,3 +1,13 @@
+/* 
+ * VMMLib - Tensor Classes
+ *  
+ * @author David Klaper
+ * @author Susanne Suter
+ *
+ * class to read/write and convert tensor4 files (from raw, to csv...)
+ * 
+ */
+
 #ifndef __VMML__T4_CONVERTER__HPP__
 #define __VMML__T4_CONVERTER__HPP__
 
@@ -14,10 +24,6 @@ namespace vmml
 		
 		
 		typedef tensor4< I1, I2, I3, I4, T > t4_t;
-		
-		template< typename T_convert >
-		static void convert_raw( const std::string& dir_, const std::string& in_filename_, const std::string& out_filename_ );
-		
 		
 		static void export_to( std::vector< T >& data_ ) ;
 		static void import_from( const std::vector< T >& data_ ) ;
@@ -60,13 +66,6 @@ namespace vmml
 		}
 	}		
 	
-	
-	VMML_TEMPLATE_STRING
-	template< typename T_convert >
-	void
-	VMML_TEMPLATE_CLASSNAME::convert_raw( const std::string& dir_, const std::string& in_filename_, const std::string& out_filename_ )
-	{
-	}
     
 	VMML_TEMPLATE_STRING
 	void

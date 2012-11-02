@@ -1,6 +1,8 @@
 #include "tensor4_test.hpp"
 
 #include <vmmlib/tensor4.hpp>
+#include <vmmlib/t4_converter.hpp>
+#include <vmmlib/tensor_mmapper.hpp>
 #include <sstream>
 
 namespace vmml
@@ -18,7 +20,7 @@ namespace vmml
         const size_t d = 4;
         typedef int T;
 		tensor4< a, b, c, d, T >  t4;
-
+		
         // Test size
         if ( t4.size() == a*b*c*d )
 		{
@@ -483,7 +485,6 @@ namespace vmml
             if(calcptr[ index ] != index+1)
             {
                 ok = false;
-                break;
             }
         }
 		
@@ -521,7 +522,6 @@ namespace vmml
             if(calcptr[ index ] != index-1)
             {
                 ok = false;
-                break;
             }
         }
 		
@@ -559,7 +559,6 @@ namespace vmml
             if(calcptr[ index ] != index*2)
             {
                 ok = false;
-                break;
             }
         }
 		
@@ -596,7 +595,6 @@ namespace vmml
             if(calcptr[ index ] != index/2)
             {
                 ok = false;
-                break;
             }
         }
 		
@@ -638,7 +636,6 @@ namespace vmml
             if(calcptr[ index ] != index*2)
             {
                 ok = false;
-                break;
             }
         }
 		
@@ -677,7 +674,6 @@ namespace vmml
             if(calcptr[ index ] != 0)
             {
                 ok = false;
-                break;
             }
         }
 		
@@ -789,9 +785,9 @@ namespace vmml
 			
             log_error( error.str(),  fail_test);
         }
-
+		
         //get_tensor 3 testing
-        /*t4.fill_increasing_values();
+        t4.fill_increasing_values();
         
         tensor3<a, b, c, T> t3 = t4.get_tensor3(0);
         tensor3<a, b, c, T> t3last = t4.get_tensor3(d-1);
@@ -838,13 +834,91 @@ namespace vmml
             
             
             log_error( error.str(),  fail_test);
-        }*/
-		
-		return ok;
+        }
+        
+        {
+            //load mmap for tensor4
+            
+            //create test data
+            std::string dir = ".";
+            std::string filename = "mmap_testdata.raw";
+            vmml::t4_converter<a,b,c,d,T> conv;
+			
+            t4.fill_increasing_values();
+            conv.write_to_raw(t4, dir, filename);
+            t4.fill_random(); // reset to make sure data is gone
+            
+            tensor_mmapper< tensor4<a,b,c,d,T>, vmml::t4_converter<a,b,c,d,T> > t4_mmap( dir, filename, false, conv );
+			
+            t4_mmap.get_tensor( t4 );
+            
+            tensor4< a,b,c,d,T > t4_check;
+            t4_check.fill_increasing_values();            
+            
+            ok = t4_check == t4;
+            if(ok)
+            {
+                log( "tensor4 load from memory mapped file", true  );
+            }else
+            {
+                std::stringstream error;
+                error
+                << "tensor4 load from memory mapped file. t4 is: "
+                << std::endl
+                << t4
+                << std::endl
+                << "t4 should be:"
+                << std::endl
+                <<  t4_check << std::endl;
+                
+                log_error( error.str(),  fail_test);
+            }
+			
+			
+            remove("mmap_testdata.raw");
+        }
+        
+        
+        t4.fill_increasing_values();
+        t3.zero();
+        t3correct.zero();
+        
+        t4.average_I4(t3);
+        ok = true;
+        for (size_t index = 0; index < t3.size(); ++index)
+        {
+            t3correctptr[index] = ((d-1)*(a*b*c))/2+index;
+            
+            if(t3ptr[index] != t3correctptr[index])
+            {
+                ok = false;
+            }
+        }
+        
+        if (ok)
+        {
+            log( "tensor4 method average_I4()", true  );
+        }else
+        {
+            std::stringstream error;
+            error
+            << "tensor4 method average_I4(). t3 is: "
+            << std::endl
+            << t3
+            << std::endl
+            << "t3 should be:"
+            << std::endl
+            << t3correct << std::endl;
+            
+            log_error( error.str(),  fail_test);
+			
+        }
+        
+        return ok;
 	}
-
-
-
+	
+	
+	
 	
 } // namespace vmml
 

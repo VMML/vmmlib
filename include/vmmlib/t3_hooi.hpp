@@ -2,6 +2,7 @@
  * VMMLib - Tensor Classes
  *  
  * @author Susanne Suter
+ * @author Rafa Ballester
  *
  * The higher-order orthogonal iteration (HOOI) is also known as Tucker-ALS (Tuck-ALS)
  * The t3_hooi implements a HOOI for a third-order tensor
@@ -21,7 +22,7 @@
 #include <vmmlib/t3_hosvd.hpp>
 #include <vmmlib/t3_ttm.hpp>
 #include <vmmlib/matrix_pseudoinverse.hpp>
-#include <vmmlib/stats.hpp>
+#include <vmmlib/tensor_stats.hpp>
 
 namespace vmml {
 
@@ -49,11 +50,11 @@ namespace vmml {
          with the dimensions I1xI2I3, which corresponds to a matrizitation alonge mode I1.
          */
         template< typename T_init>
-        static stats als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, t3_core_type& core_, T_init init, const double& max_f_norm_ = 0.0);
+        static tensor_stats als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, t3_core_type& core_, T_init init, const double& max_f_norm_ = 0.0);
 
         //core not needed
         template< typename T_init>
-        static stats als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, T_init init, const double& max_f_norm_ = 0.0);
+        static tensor_stats als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, T_init init, const double& max_f_norm_ = 0.0);
 
         /* derive core
          implemented according to core = data x_1 U1_pinv x_2 U2_pinv x_3 U3_pinv, 
@@ -118,7 +119,7 @@ namespace vmml {
 
     VMML_TEMPLATE_STRING
     template< typename T_init>
-    stats
+    tensor_stats
     VMML_TEMPLATE_CLASSNAME::als(const t3_type& data_,
             u1_type& u1_, u2_type& u2_, u3_type& u3_,
             T_init init, const double& max_f_norm_) {
@@ -129,13 +130,13 @@ namespace vmml {
 
     VMML_TEMPLATE_STRING
     template< typename T_init>
-    stats
+    tensor_stats
     VMML_TEMPLATE_CLASSNAME::als(const t3_type& data_,
             u1_type& u1_, u2_type& u2_, u3_type& u3_,
             t3_core_type& core_,
             T_init init,
             const double& max_f_norm_) {
-        stats result;
+        tensor_stats result;
 
         //intialize basis matrices
         init(data_, u1_, u2_, u3_);

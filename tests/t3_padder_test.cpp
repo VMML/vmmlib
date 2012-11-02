@@ -33,6 +33,7 @@ namespace vmml
 		t3_t t3; 
  		t3_t t3_2; 
 		t3.fill_increasing_values();
+		//std::cout << t3 << std::endl;
 
 		// current working directory '.' is the same in different OS
         remove( path.c_str() ); // remove just for security
@@ -52,7 +53,7 @@ namespace vmml
 		//std::cout << "empty data block\n" << block << std::endl;
 		ok = ( block == block_check );
 		
-		block_check.at( 1,1,1 ) = 10;
+		block_check.at( 0,0,0 ) = 34;
 		t3_p.get_data_block( block, 2, 2, 2 );
 		//std::cout << "half full data block\n" << block << std::endl;
 		ok = ok && ( block == block_check );

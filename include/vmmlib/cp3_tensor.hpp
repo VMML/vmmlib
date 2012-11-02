@@ -3,6 +3,7 @@
  *
  * @author Susanne Suter
  * @author Jonas Boesch
+ * @author Rafael Ballester
  *
  * The cp3 tensor class is consists of three basis matrices u1-u3 and R lambda values for a given rank-R approximation
  * CP stands for Candecomp/Parafac (1970)
@@ -143,10 +144,10 @@ namespace vmml {
         size_t nnz() const;
 
         template< typename T_init >
-        stats cp_als(const t3_type& data_, T_init init, const size_t max_iterations_ = 20);
+        tensor_stats cp_als(const t3_type& data_, T_init init, const size_t max_iterations_ = 20);
 
         template< size_t NBLOCKS, typename T_init >
-        stats i_cp_als(const t3_type& data_, T_init init, const size_t max_iterations_ = 20);
+        tensor_stats i_cp_als(const t3_type& data_, T_init init, const size_t max_iterations_ = 20);
 
         template< size_t K >
         void reduce_ranks(const cp3_tensor< K, I1, I2, I3, T_value, T_coeff >& other);
@@ -296,9 +297,9 @@ namespace vmml {
 
     VMML_TEMPLATE_STRING
     template< typename T_init >
-    stats
+    tensor_stats
     VMML_TEMPLATE_CLASSNAME::cp_als(const t3_type& data_, T_init init, const size_t max_iterations_) {
-        stats result;
+        tensor_stats result;
 
         t3_comp_type data;
         data.cast_from(data_);
@@ -319,9 +320,9 @@ namespace vmml {
 
     VMML_TEMPLATE_STRING
     template< size_t NBLOCKS, typename T_init >
-    stats
+    tensor_stats
     VMML_TEMPLATE_CLASSNAME::i_cp_als(const t3_type& data_, T_init init, const size_t max_iterations_) {
-        stats result;
+        tensor_stats result;
 
         t3_comp_type data;
         data.cast_from(data_);

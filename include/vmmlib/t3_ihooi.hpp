@@ -48,11 +48,11 @@ namespace vmml {
 
         // Incremental Tucker-ALS
         template< typename T_init >
-        static tensor_stats i_als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, t3_core_type& core_, T_init init, const size_t max_iterations_ = 20);
+        static tensor_stats i_als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, t3_core_type& core_, T_init init, const size_t max_iterations_ = 20, const float tolerance = -1);
 
         // Incremental CP-Tucker-ALS: at each iteration, R-rank CP is performed, but a (R1,R2,R3)-Tucker core (R1,R2,R3 <= R) is computed from the resulting matrices.
         template< size_t R, typename T_init >
-        static tensor_stats i_cp_als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, t3_core_type& core_, T_init init, const size_t max_iterations_ = 20);
+        static tensor_stats i_cp_als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, t3_core_type& core_, T_init init, const size_t max_iterations_ = 20, const float tolerance = -1);
     };
 
 
@@ -63,7 +63,7 @@ namespace vmml {
     VMML_TEMPLATE_STRING
     template< typename T_init>
     tensor_stats
-    VMML_TEMPLATE_CLASSNAME::i_als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, t3_core_type& core_, T_init init, const size_t max_iterations_) {
+    VMML_TEMPLATE_CLASSNAME::i_als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, t3_core_type& core_, T_init init, const size_t max_iterations_, const float tolerance) {
         tensor_stats result;
         
         if ((R1 % NBLOCKS != 0) or (R2 % NBLOCKS != 0) or (R3 % NBLOCKS != 0)) {
@@ -106,7 +106,7 @@ namespace vmml {
 #endif
 
             // Do Tucker-ALS for this block
-            result += hooi_type::als(*residual_data, *u1_tmp, *u2_tmp, *u3_tmp, *t3_core_tmp, typename hooi_type::init_hosvd());
+            result += hooi_type::als(*residual_data, *u1_tmp, *u2_tmp, *u3_tmp, *t3_core_tmp, typename hooi_type::init_hosvd(), tolerance);
 
             // Copy the newly obtained columns into ui_incr
             for (size_t r = 0; r < R1 / NBLOCKS; ++r) {
@@ -156,7 +156,7 @@ namespace vmml {
     VMML_TEMPLATE_STRING
     template< size_t R, typename T_init>
     tensor_stats
-    VMML_TEMPLATE_CLASSNAME::i_cp_als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, t3_core_type& core_, T_init init, const size_t max_iterations_) {
+    VMML_TEMPLATE_CLASSNAME::i_cp_als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, t3_core_type& core_, T_init init, const size_t max_iterations_, const float tolerance) {
         tensor_stats result;
         
         if ((R1 % NBLOCKS != 0) or (R2 % NBLOCKS != 0) or (R3 % NBLOCKS != 0)) {
@@ -222,7 +222,7 @@ namespace vmml {
 #endif
 
             // Do CP-ALS for this block
-            result += hopm_type::als(*residual_data, *u1_cp_tmp, *u2_cp_tmp, *u3_cp_tmp, *lambdas_tmp, typename hopm_type::init_hosvd(), max_iterations_);
+            result += hopm_type::als(*residual_data, *u1_cp_tmp, *u2_cp_tmp, *u3_cp_tmp, *lambdas_tmp, typename hopm_type::init_hosvd(), max_iterations_, tolerance);
 
             // Compute the pseudoinverses 
             u1_cp_tmp->get_sub_matrix(*u1_tmp, 0, 0);

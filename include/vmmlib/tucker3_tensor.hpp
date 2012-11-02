@@ -149,13 +149,13 @@ namespace vmml {
         double error(t3_type& original) const;
 
         template< typename T_init>
-        tensor_stats tucker_als(const t3_type& data_, T_init init);
+        tensor_stats tucker_als(const t3_type& data_, T_init init, const size_t max_iterations = 3, const float tolerance = -1);
 
         template< size_t NBLOCKS, typename T_init>
-        tensor_stats i_tucker_als(const t3_type& data_, T_init init);
+        tensor_stats i_tucker_als(const t3_type& data_, T_init init, const size_t max_iterations = 3, const float tolerance = -1);
 
         template< size_t R, size_t NBLOCKS, typename T_init>
-        tensor_stats i_cp_tucker_als(const t3_type& data_, T_init init);
+        tensor_stats i_cp_tucker_als(const t3_type& data_, T_init init, const size_t max_iterations = 3, const float tolerance = -1);
 
         //        void als_rand(const t3_type& data_);
         //        template< typename T_init>
@@ -449,14 +449,14 @@ namespace vmml {
     VMML_TEMPLATE_STRING
     template< typename T_init>
     tensor_stats
-    VMML_TEMPLATE_CLASSNAME::tucker_als(const t3_type& data_, T_init init) {
+    VMML_TEMPLATE_CLASSNAME::tucker_als(const t3_type& data_, T_init init, const size_t max_iterations, const float tolerance) {
         tensor_stats result;
 
         t3_comp_type data;
         data.cast_from(data_);
 
         typedef t3_hooi< R1, R2, R3, I1, I2, I3, T_internal > hooi_type;
-        result += hooi_type::als(data, *_u1_comp, *_u2_comp, *_u3_comp, _core_comp, init);
+        result += hooi_type::als(data, *_u1_comp, *_u2_comp, *_u3_comp, _core_comp, init, 0, max_iterations, tolerance);
 
         cast_members();
 
@@ -466,14 +466,14 @@ namespace vmml {
     VMML_TEMPLATE_STRING
     template< size_t NBLOCKS, typename T_init>
     tensor_stats
-    VMML_TEMPLATE_CLASSNAME::i_tucker_als(const t3_type& data_, T_init init) {
+    VMML_TEMPLATE_CLASSNAME::i_tucker_als(const t3_type& data_, T_init init, const size_t max_iterations, const float tolerance) {
         tensor_stats result;
 
         t3_comp_type data;
         data.cast_from(data_);
 
         typedef t3_ihooi< R1, R2, R3, NBLOCKS, I1, I2, I3, T_internal > ihooi_type;
-        result += ihooi_type::i_als(data, *_u1_comp, *_u2_comp, *_u3_comp, _core_comp, init);
+        result += ihooi_type::i_als(data, *_u1_comp, *_u2_comp, *_u3_comp, _core_comp, init, 0, max_iterations, tolerance);
 
         cast_members();
 
@@ -483,14 +483,14 @@ namespace vmml {
     VMML_TEMPLATE_STRING
     template< size_t R, size_t NBLOCKS, typename T_init>
     tensor_stats
-    VMML_TEMPLATE_CLASSNAME::i_cp_tucker_als(const t3_type& data_, T_init init) {
+    VMML_TEMPLATE_CLASSNAME::i_cp_tucker_als(const t3_type& data_, T_init init, const size_t max_iterations, const float tolerance) {
         tensor_stats result;
 
         t3_comp_type data;
         data.cast_from(data_);
 
         typedef t3_ihooi< R1, R2, R3, NBLOCKS, I1, I2, I3, T_internal > ihooi_type;
-        result += ihooi_type::template i_cp_als < R > (data, *_u1_comp, *_u2_comp, *_u3_comp, _core_comp, init);
+        result += ihooi_type::template i_cp_als < R > (data, *_u1_comp, *_u2_comp, *_u3_comp, _core_comp, init, 0, max_iterations, tolerance);
 
         cast_members();
 

@@ -50,11 +50,11 @@ namespace vmml {
          with the dimensions I1xI2I3, which corresponds to a matrizitation alonge mode I1.
          */
         template< typename T_init>
-        static tensor_stats als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, t3_core_type& core_, T_init init, const double& max_f_norm_ = 0.0);
+        static tensor_stats als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, t3_core_type& core_, T_init init, const double& max_f_norm_ = 0.0, const size_t max_iterations = 3, const float tolerance = -1);
 
         //core not needed
         template< typename T_init>
-        static tensor_stats als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, T_init init, const double& max_f_norm_ = 0.0);
+        static tensor_stats als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, T_init init, const double& max_f_norm_ = 0.0, const size_t max_iterations = 3, const float tolerance = -1);
 
         /* derive core
          implemented according to core = data x_1 U1_pinv x_2 U2_pinv x_3 U3_pinv, 
@@ -122,10 +122,10 @@ namespace vmml {
     tensor_stats
     VMML_TEMPLATE_CLASSNAME::als(const t3_type& data_,
             u1_type& u1_, u2_type& u2_, u3_type& u3_,
-            T_init init, const double& max_f_norm_) {
+            T_init init, const double& max_f_norm_, const size_t max_iterations, const float tolerance) {
         t3_core_type core;
         core.zero();
-        return als(data_, u1_, u2_, u3_, core, init, max_f_norm_);
+        return als(data_, u1_, u2_, u3_, core, init, max_f_norm_, max_iterations, tolerance);
     }
 
     VMML_TEMPLATE_STRING
@@ -135,7 +135,7 @@ namespace vmml {
             u1_type& u1_, u2_type& u2_, u3_type& u3_,
             t3_core_type& core_,
             T_init init,
-            const double& max_f_norm_) {
+            const double& max_f_norm_, const size_t max_iterations_, const float tolerance_) {
         tensor_stats result;
 
         //intialize basis matrices
@@ -151,16 +151,16 @@ namespace vmml {
         //t3_type approximated_data;
         //t3_ttm::full_tensor3_matrix_multiplication( core_, u1_, u2_, u3_, approximated_data );
 
-//        double f_norm = 0; // approximated_data.frobenius_norm();
+        //        double f_norm = 0; // approximated_data.frobenius_norm();
 
-//        double max_f_norm = max_f_norm_;
+        //        double max_f_norm = max_f_norm_;
 
-//        if (max_f_norm <= 0.0) {
-//            max_f_norm = data_.frobenius_norm();
-//        }
+        //        if (max_f_norm <= 0.0) {
+        //            max_f_norm = data_.frobenius_norm();
+        //        }
 
-//        double normresidual = 0; //sqrt( (max_f_norm * max_f_norm) - (f_norm * f_norm));
-//        double fit = 0;
+        //        double normresidual = 0; //sqrt( (max_f_norm * max_f_norm) - (f_norm * f_norm));
+        //        double fit = 0;
         //removed to save computation
         /*if ( (max_f_norm != 0) && (max_f_norm > f_norm) ) 
         {
@@ -169,9 +169,26 @@ namespace vmml {
                 fit = 1;
         }*/
 
-//        double fitchange = 1;
-//        double fitold = fit;
-//        double fitchange_tolerance = 1.0e-4;
+        double max_f_norm, f_norm, fit, fitchange, norm2, norm3, fitold, normresidual;
+        if (tolerance_ != -1) {
+            max_f_norm = max_f_norm_;
+
+            if (max_f_norm <= 0.0) {
+                max_f_norm = data_.frobenius_norm();
+            }
+            fit = 0;
+            //removed to save computation
+            /*if ( (max_f_norm != 0) && (max_f_norm > f_norm) ) 
+            {
+                    fit = 1 - (normresidual / max_f_norm);
+            } else { 
+                    fit = 1;
+            }*/
+            fitchange = 1;
+            norm2 = norm3 = 0;
+            fitold = fit;
+            normresidual = 0;
+        }
 
         tensor3< I1, R2, R3, T > projection1;
         tensor3< R1, I2, R3, T > projection2;
@@ -180,16 +197,14 @@ namespace vmml {
         tensor3< I1, R2, I3, T > tmp1;
         tensor3< R1, I2, I3, T > tmp2;
 
-//#if TUCKER_LOG
-//        std::cout << "HOOI ALS (for tensor3) " << std::endl
-//                << "initial fit: " << fit << ", "
-//                << "frobenius norm original: " << max_f_norm << std::endl;
-//#endif	
+        #if TUCKER_LOG
+                std::cout << "HOOI ALS (for tensor3) " << std::endl
+                        << "initial fit: " << fit << ", "
+                        << "frobenius norm original: " << max_f_norm << std::endl;
+        #endif	
         size_t i = 0;
-        size_t max_iterations = 3;
-//        while ((fitchange >= fitchange_tolerance) && (i < max_iterations)) {
-        while (i < max_iterations) {
-//            fitold = fit;
+        while (i < max_iterations_ && (tolerance_ == -1 || fitchange >= tolerance_)) { //do until converges
+            fitold = fit;
 
             //optimize modes
             optimize_mode1(data_, u2_, u3_, projection1, tmp1);
@@ -202,19 +217,18 @@ namespace vmml {
             t3_hosvd< R1, R2, R3, R1, R2, I3, T >::apply_mode3(projection3, u3_);
 
             t3_ttm::multiply_horizontal_bwd(projection3, transpose(u3_), core_);
-            
-            ////////////////// Now we don't do the reconstruction each time...
-//            f_norm = core_.frobenius_norm();
-//            normresidual = sqrt(max_f_norm * max_f_norm - f_norm * f_norm);
-//            fit = 1 - (normresidual / max_f_norm);
-//            fit = -42;
-//            fitchange = fabs(fitold - fit);
 
-//#if TUCKER_LOG
-//            std::cout << "iteration '" << i << "', fit: " << fit
-//                    << ", fitdelta: " << fitchange
-//                    << ", frobenius norm of core: " << f_norm << std::endl;
-//#endif
+            if (tolerance_ != -1) {
+                f_norm = core_.frobenius_norm();
+                normresidual = sqrt(max_f_norm * max_f_norm - f_norm * f_norm);
+                fit = 1 - (normresidual / max_f_norm);
+                fitchange = fabs(fitold - fit);
+#if TUCKER_LOG
+                std::cout << "iteration '" << i << "', fit: " << fit
+                        << ", fitdelta: " << fitchange
+                        << ", frobenius norm of core: " << f_norm << std::endl;
+#endif
+            }
             ++i;
         }
         result.set_n_iterations(i);

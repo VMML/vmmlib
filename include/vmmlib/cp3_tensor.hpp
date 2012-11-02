@@ -144,10 +144,10 @@ namespace vmml {
         size_t nnz() const;
 
         template< typename T_init >
-        tensor_stats cp_als(const t3_type& data_, T_init init, const size_t max_iterations_ = 20);
+        tensor_stats cp_als(const t3_type& data_, T_init init, const size_t max_iterations_ = 20, const float tolerance = -1);
 
         template< size_t NBLOCKS, typename T_init >
-        tensor_stats i_cp_als(const t3_type& data_, T_init init, const size_t max_iterations_ = 20);
+        tensor_stats i_cp_als(const t3_type& data_, T_init init, const size_t max_iterations_ = 20, const float tolerance = -1);
 
         template< size_t K >
         void reduce_ranks(const cp3_tensor< K, I1, I2, I3, T_value, T_coeff >& other);
@@ -298,14 +298,14 @@ namespace vmml {
     VMML_TEMPLATE_STRING
     template< typename T_init >
     tensor_stats
-    VMML_TEMPLATE_CLASSNAME::cp_als(const t3_type& data_, T_init init, const size_t max_iterations_) {
+    VMML_TEMPLATE_CLASSNAME::cp_als(const t3_type& data_, T_init init, const size_t max_iterations_, const float tolerance) {
         tensor_stats result;
 
         t3_comp_type data;
         data.cast_from(data_);
 
         typedef t3_hopm< R, I1, I2, I3, T_internal > hopm_type;
-        result += hopm_type::als(data, *_u1_comp, *_u2_comp, *_u3_comp, *_lambdas_comp, init, max_iterations_);
+        result += hopm_type::als(data, *_u1_comp, *_u2_comp, *_u3_comp, *_lambdas_comp, init, max_iterations_, tolerance);
 
         cast_members();
         return result;
@@ -321,14 +321,14 @@ namespace vmml {
     VMML_TEMPLATE_STRING
     template< size_t NBLOCKS, typename T_init >
     tensor_stats
-    VMML_TEMPLATE_CLASSNAME::i_cp_als(const t3_type& data_, T_init init, const size_t max_iterations_) {
+    VMML_TEMPLATE_CLASSNAME::i_cp_als(const t3_type& data_, T_init init, const size_t max_iterations_, const float tolerance) {
         tensor_stats result;
 
         t3_comp_type data;
         data.cast_from(data_);
 
         typedef t3_ihopm< R, NBLOCKS, I1, I2, I3, T_internal > ihopm_type;
-        result += ihopm_type::incremental_als(data, *_u1_comp, *_u2_comp, *_u3_comp, *_lambdas_comp, init, max_iterations_);
+        result += ihopm_type::incremental_als(data, *_u1_comp, *_u2_comp, *_u3_comp, *_lambdas_comp, init, max_iterations_, tolerance);
 
 
         cast_members();

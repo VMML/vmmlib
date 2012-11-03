@@ -1,6 +1,6 @@
-/* 
+/*
  * VMMLib - Tensor Classes
- *  
+ *
  * @author Susanne Suter
  * @author Rafa Ballester
  *
@@ -12,7 +12,7 @@
  * - De Lathauwer, De Moor, Vandewalle, 2000: A multilinear singular value decomposition, SIAM J. Matrix Anal. Appl.
  * - Kolda & Bader, 2009: Tensor Decompositions and Applications, SIAM Review.
  * - Bader & Kolda, 2006: Algorithm 862: Matlab tensor classes for fast algorithm prototyping. ACM Transactions on Mathematical Software.
- * 
+ *
  */
 
 #ifndef __VMML__T3_HOPM__HPP__
@@ -62,7 +62,7 @@ namespace vmml {
         //ktensor = kruskal tensor, i.e., lambda, U1, U2, U3
         static double norm_ktensor(const u1_type& u1_, const u2_type& u2_, const u3_type& u3_, const lambda_type& lambdas_);
 
-        // init functors 
+        // init functors
 
         struct init_hosvd {
 
@@ -109,7 +109,7 @@ namespace vmml {
 
         static void sort_dec(u1_type& u1_, u2_type& u2_, u3_type& u3_, lambda_type& lambdas_);
 
-        // comparison functor 
+        // comparison functor
 
         struct lambda_compare {
 
@@ -162,7 +162,7 @@ namespace vmml {
         std::ostringstream convert;
         convert << R;
         std::cout << convert.str() + "-R rank CP ALS: HOPM (for tensor3) " << std::endl;
-#endif	
+#endif
 
         size_t i = 0;
         while (i < max_iterations_ && (tolerance_ == -1 || fitchange >= tolerance_)) //do until converges
@@ -191,7 +191,8 @@ namespace vmml {
                 norm2 = norm_ktensor(u1_, u2_, u3_, lambdas_);
 
                 T val2 = 0;
-                for (int j = 0; j < lambdas_.size(); ++j) {
+                for( size_t j = 0; j < lambdas_.size(); ++j)
+                {
                     matrix<I2, I3, T> res1;
                     t3_ttv::multiply_first_mode(data_, u1_.get_column(j), res1);
                     vector<I2, T> res2 = res1 * u3_.get_column(j);
@@ -202,7 +203,7 @@ namespace vmml {
                 normresidual = sqrt(max_f_norm * max_f_norm + norm2 * norm2 - innerprod);
                 fit = 1 - (normresidual / max_f_norm);
                 fitchange = fabs(fitold - fit);
-#if CP_LOG      
+#if CP_LOG
                 //                std::cerr << myTimer.get_seconds() << " ";
                 std::cout << "iteration '" << i
                         << "', fit: " << fit

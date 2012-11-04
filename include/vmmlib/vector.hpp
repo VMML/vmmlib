@@ -164,7 +164,7 @@ public:
 
     // constructors
     vector() {}; // std ctor - WARNING: NO INITIALIZATION
-    vector( const T& a ); // sets all components to a;
+    explicit vector( const T& a ); // sets all components to a;
     vector( const T& x, const T& y );
     vector( const T& x, const T& y, const T& z );
     vector( const T& x, const T& y, const T& z, const T& w );

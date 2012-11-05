@@ -142,7 +142,7 @@ namespace vmml {
         init(data_, u1_, u2_, u3_);
 
         core_.zero();
-        double max_f_norm, f_norm, fit, fitchange, norm2, norm3, fitold, normresidual;
+        double max_f_norm, f_norm, fit, fitchange, fitold, normresidual;
         if (tolerance_ > 0) {
             max_f_norm = max_f_norm_;
 
@@ -158,7 +158,6 @@ namespace vmml {
                     fit = 1;
             }*/
             fitchange = 1;
-            norm2 = norm3 = 0;
             fitold = fit;
             normresidual = 0;
         }

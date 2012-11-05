@@ -451,14 +451,12 @@ cross( const vector< 3, T >& a, const vector< 3, T >& b )
 
 
 template< size_t M, typename T >
-inline vector< M, T >
-normalize( const vector< M, T >& vector_ )
+inline vector< M, T > normalize( const vector< M, T >& vector_ )
 {
     vector< M, T > v( vector_ );
     v.normalize();
     return v;
 }
-
 
 template< size_t M, typename T >
 vector< M, T >::vector( const T& _a )
@@ -468,8 +466,6 @@ vector< M, T >::vector( const T& _a )
         *it = _a;
     }
 }
-
-
 
 template< size_t M, typename T >
 vector< M, T >::vector( const T& _x, const T& _y )
@@ -1213,10 +1209,8 @@ vector< M, T >::compute_normal(
 
 template< size_t M, typename T >
 vector< M, T >
-vector< M, T >::compute_normal(
-    const vector< M, T >& bb,
-    const vector< M, T >& cc
-    ) const
+vector< M, T >::compute_normal( const vector< M, T >& bb,
+                                const vector< M, T >& cc ) const
 {
     vector< M, T > tmp;
     tmp.compute_normal( *this, bb, cc);

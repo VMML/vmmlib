@@ -17,44 +17,38 @@
 #  include <omp.h>
 #endif
 
-namespace vmml {
-
-    class t3_ttv {
+namespace vmml
+{
+    class t3_ttv
+    {
     public:
 
         template< size_t I1, size_t I2, size_t I3, typename T >
         static void multiply_first_mode(const tensor3< I1, I2, I3, T >& t3_in_, const vector< I1, T >& u, matrix< I2, I3, T >& m_res_);
 
     protected:
-
-
     };
 
-#define VMML_TEMPLATE_CLASSNAME     t3_ttv
-
     template< size_t I1, size_t I2, size_t I3, typename T >
-    void VMML_TEMPLATE_CLASSNAME::multiply_first_mode(const tensor3< I1, I2, I3, T >& t3_in_,
-            const vector< I1, T >& u,
-            matrix< I2, I3, T >& m_res_) {
-
-        for (int j = 0; j < I2; ++j) {
-            for (int k = 0; k < I3; ++k) {
+    void t3_ttv::multiply_first_mode(const tensor3< I1, I2, I3, T >& t3_in_,
+                                     const vector< I1, T >& u,
+                                     matrix< I2, I3, T >& m_res_ )
+    {
+        for( unsigned j = 0; j < I2; ++j)
+        {
+            for( unsigned k = 0; k < I3; ++k)
+            {
                 T vtv = 0;
-                for (int i = 0; i < I1; ++i) {
+                for( unsigned i = 0; i < I1; ++i)
                     vtv += t3_in_.at(i, j, k) * u.at(i);
-                }
+
                 m_res_.at(j, k) = vtv;
             }
         }
 
     }
 
-
-
-
-#undef VMML_TEMPLATE_CLASSNAME
-
-}//end vmml namespace
+} //end vmml namespace
 
 #endif
 

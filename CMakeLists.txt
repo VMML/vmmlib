@@ -102,7 +102,7 @@ set(HEADERS
 set(TESTS
   tests/frustum_test.cpp
   tests/jacobi_test.cpp
-  tests/matrix_test.cpp
+#  tests/matrix_test.cpp
   tests/perf_test.cpp
   tests/performance_test.cpp
   tests/qr_decomposition_test.cpp
@@ -111,7 +111,7 @@ set(TESTS
   tests/timer.cpp
   tests/unit_test.cpp
   tests/unit_test_globals.cpp
-  tests/vector_test.cpp
+#  tests/vector_test.cpp
   tests/vmmlib_unit_tests_main.cpp
 # tests/matrix_compare_perf_test.cpp
 # tests/stringtests.cpp
@@ -143,7 +143,7 @@ if(LAPACK_FOUND)
     tests/t4_converter_test.cpp
     tests/t4_converter_test.cpp
     tests/tensor3_iterator_test.cpp
-    tests/tensor3_test.cpp
+#    tests/tensor3_test.cpp
     tests/tensor4_test.cpp
     tests/tucker3_exporter_importer_test.cpp
     tests/tucker3_tensor_test.cpp

@@ -1,10 +1,10 @@
-/* 
+/*
  * VMMLib - Tensor Classes
- *  
+ *
  * @author Rafael Ballester
  *
  * Class for encapsulating several tensor experimental properties, so that they can be easily returned, manipulated and printed (approximation error, decomposition and reconstruction times, etc.).
- * 
+ *
  */
 #include <string>
 
@@ -83,37 +83,25 @@ namespace vmml {
             return rec_time;
         }
 
-        void set_description(std::string description) {
-            this->description = description;
+        void set_description( const std::string& desc ) {
+            description = desc;
         }
 
-        void set_short_description(std::string short_description) {
-            this->short_description = short_description;
+        void set_short_description( const std::string& short_desc ) {
+            short_description = short_desc;
         }
 
-        void set_ranks(int ranks) {
-            this->ranks = ranks;
-        }
+        void set_ranks( const int r ) { ranks = r; }
 
-        void set_n_iterations(int n_iterations) {
-            this->n_iterations = n_iterations;
-        }
+        void set_n_iterations( const int n_it ) { n_iterations = n_it; }
 
-        void set_error(double error) {
-            this->error = error;
-        }
+        void set_error( const double err ) { error = err; }
 
-        void set_nnz(int nnz) {
-            this->nnz = nnz;
-        }
+        void set_nnz( const int nnz_ ) { nnz = nnz_; }
 
-        void set_dec_time(double dec_time) {
-            this->dec_time = dec_time;
-        }
+        void set_dec_time( const double dec ) { dec_time = dec; }
 
-        void set_rec_time(double rec_time) {
-            this->rec_time = rec_time;
-        }
+        void set_rec_time( const double rec ) { rec_time = rec; }
 
         static std::string get_content() {
             return "description n_iterations error nnz dec_time rec_time";

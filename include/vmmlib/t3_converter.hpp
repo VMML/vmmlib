@@ -1,10 +1,10 @@
-/* 
+/*
  * VMMLib - Tensor Classes
- *  
+ *
  * @author Susanne Suter
  *
  * class to read/write and convert tensor3 files (from raw, to csv...)
- * 
+ *
  */
 #ifndef __VMML__T3_CONVERTER__HPP__
 #define __VMML__T3_CONVERTER__HPP__
@@ -14,10 +14,9 @@
 namespace vmml {
 
     template< size_t I1, size_t I2, size_t I3, typename T = float >
-            class t3_converter {
+    class t3_converter
+    {
     public:
-
-
         typedef tensor3< I1, I2, I3, T > t3_t;
 
         template< typename T_convert >
@@ -130,7 +129,8 @@ namespace vmml {
         path_.append(filename_);
 
         //check for format
-        if (filename_.find("raw", filename_.size() - 3) == (-1)) {
+        if( filename_.find("raw", filename_.size() - 3) == std::string::npos )
+        {
             path_.append(".");
             path_.append("raw");
         }
@@ -361,7 +361,7 @@ namespace vmml {
         }
         path.append(filename_);
         //check for format
-        if (filename_.find("raw", filename_.size() - 3) == (-1)) {
+        if (filename_.find("raw", filename_.size() - 3) == std::string::npos) {
             path.append(".");
             path.append("raw");
         }
@@ -391,17 +391,16 @@ namespace vmml {
             path.append("/");
         }
 
-        std::string filename = "";
-        int pos = filename_.size() - 4;
-        if ((filename_.find(".raw", pos) == pos) || (filename_.find(".dat", pos) == pos)) {
+        std::string filename = filename_;
+        const size_t pos = filename_.size();
+        if ((filename_.find(".raw", pos) + 4 == pos) ||
+            (filename_.find(".dat", pos) + 4 == pos))
+        {
             filename = filename_.substr(0, filename_.size() - 4);
-        } else {
-            filename = filename_;
         }
-
         path.append(filename);
         //check for format
-        if (filename_.find("dat", filename_.size() - 3) == (-1)) {
+        if (filename_.find("dat", filename_.size() - 3) == std::string::npos) {
             path.append(".");
             path.append("dat");
         }
@@ -431,7 +430,8 @@ namespace vmml {
         }
         path.append(filename_);
         //check for format
-        if (filename_.find("csv", filename_.size() - 3) == (-1)) {
+        if (filename_.find("csv", filename_.size() - 3) == std::string::npos)
+        {
             path.append(".");
             path.append("csv");
         }

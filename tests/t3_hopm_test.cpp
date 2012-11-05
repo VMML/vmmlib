@@ -61,7 +61,7 @@ namespace vmml
 		cp1_u_type u2;
 		cp1_u_type u3;
 		typedef t3_hopm< 4, 4, 4, 4, double > hopm_type;
-		hopm_type::als( t3_cp_input, u1, u2, u3, lambda, hopm_type::init_hosvd(), 20 );
+		hopm_type::als( t3_cp_input, u1, u2, u3, lambda, hopm_type::init_hosvd(), 20, -1 );
 				
 		ok = u1.equals( u1_check, precision );
 		ok = u2.equals( u2_check, precision ) && ok;
@@ -127,7 +127,7 @@ namespace vmml
 		cp2_u_type u3_2;
 		
 		typedef t3_hopm< 2, 4, 4, 4, double > hopm2_type;
-		hopm2_type::als( t3_cp_input, u1_2, u2_2, u3_2, lambda_2, hopm2_type::init_hosvd(), 20 );
+		hopm2_type::als( t3_cp_input, u1_2, u2_2, u3_2, lambda_2, hopm2_type::init_hosvd(), 20, -1 );
 		
 		precision = 0.0001;
 		ok = u1_2.equals( u1_check2, precision );

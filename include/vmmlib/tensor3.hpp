@@ -970,7 +970,7 @@ namespace vmml {
     VMML_TEMPLATE_STRING
     bool
     VMML_TEMPLATE_CLASSNAME::operator==(const tensor3< I1, I2, I3, T >& other) const {
-        bool ok = true;
+        bool is_ok = true;
         for (size_t index = 0; index < I1 * I2 * I3; ++index) {
             if (_array[ index ] != other._array[ index ])
                 return false;
@@ -982,7 +982,7 @@ namespace vmml {
             ok = array[ i3 ] == other.array[ i3 ];
         }
 #endif
-        return ok;
+        return is_ok;
     }
 
     VMML_TEMPLATE_STRING
@@ -999,11 +999,11 @@ namespace vmml {
     VMML_TEMPLATE_STRING
     bool
     VMML_TEMPLATE_CLASSNAME::equals(const tensor3< I1, I2, I3, T >& other, T tolerance) const {
-        bool ok = true;
-        for (size_t i3 = 0; ok && i3 < I3; ++i3) {
-            ok = _get_slice(i3).equals(other.get_frontal_slice_fwd(i3), tolerance);
+        bool is_ok = true;
+        for (size_t i3 = 0; is_ok && i3 < I3; ++i3) {
+            is_ok = _get_slice(i3).equals(other.get_frontal_slice_fwd(i3), tolerance);
         }
-        return ok;
+        return is_ok;
     }
 
     VMML_TEMPLATE_STRING

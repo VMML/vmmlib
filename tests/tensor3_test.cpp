@@ -1099,7 +1099,7 @@ namespace vmml
 			tensor3< 4, 3, 4, int >::iterator 
             it      = t3x.begin();
 			
-			bool ok = *it == 23;
+			ok = *it == 23;
 			if ( ! ok ) 
 			{
 				std::cout << "*it should be " << 23 << " but is " << *it << std::endl;

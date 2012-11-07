@@ -11,7 +11,8 @@ namespace vmml
 bool matrix_test::run()
 {
     // TODO eile: test 'ok' handling totally broken
-    //bool ok = true;
+	//SUS: I think it is fixed now (2012-11-07)
+    bool ok = false;
 
     matrix< 2, 3, double > m0;
     double data[] = { 1, 2, 3, 4, 5, 6 };
@@ -29,7 +30,7 @@ bool matrix_test::run()
 
         m0.set( data, data + 6 );
 
-        bool ok = m0 == m_correct;
+        ok = m0 == m_correct;
 
         if ( ok )
         {
@@ -71,7 +72,7 @@ bool matrix_test::run()
 
     // test operator== / operator !=
     {
-        bool ok = true;
+        ok = true;
 		matrix< 2, 3, double > m0_copy;
 		m0.set( data, data + 6 );
 		m0_copy.set( data, data + 6 );
@@ -91,7 +92,7 @@ bool matrix_test::run()
 
     // test equal
     {
-        bool ok = true;
+        ok = true;
 		matrix< 2, 3, double > m0_copy;
 		m0.set( data, data + 6 );
 		m0_copy.set( data, data + 6 );
@@ -113,7 +114,7 @@ bool matrix_test::run()
 
     // test copy ctor
     {
-        bool ok = true;
+        ok = true;
 		matrix< 2, 3, double > m0_copy( m0 );
 		ok = m0 == m0_copy;
 		if ( ok )
@@ -132,7 +133,7 @@ bool matrix_test::run()
 
     // test ::IDENTITY / ::ZERO
     {
-        bool ok = true;
+        ok = true;
 		matrix< 5, 5, double > identity( matrix< 5, 5, double >::IDENTITY );
 		matrix< 5, 2, double > zero( matrix< 5, 2, double >::ZERO );
 
@@ -161,7 +162,7 @@ bool matrix_test::run()
 
     // test operator+, operator +=
     {
-        bool ok = true;
+        ok = true;
 
         matrix< 2, 2, double > m0, m1;
         double m0_data[] = { 1, 2, 3, 4 };
@@ -188,7 +189,7 @@ bool matrix_test::run()
 
     // test operator+, operator +=
     {
-        bool ok = true;
+        ok = true;
 
         matrix< 2, 2, double > m0, m1;
         double m0_data[] = { 3, 5, 7, 9 };
@@ -214,7 +215,7 @@ bool matrix_test::run()
 
     // test operator[]
     {
-        bool ok = true;
+        ok = true;
 		m0 = data;
 		ok = m0[ 1 ][ 1 ] == 5;
 		if ( ok )
@@ -240,7 +241,7 @@ bool matrix_test::run()
 
     // test getRow/setRow/getColumn/setColumn
     {
-        bool ok = true;
+        ok = true;
 		matrix< 2, 3, double > M;
 		double Mdata[] = { 1, 2, 3, 4, 5, 6 };
 		M = Mdata;
@@ -304,7 +305,7 @@ bool matrix_test::run()
 
     // test transpose functionality
     {
-        bool ok = true;
+        ok = true;
 		m0 = data;
         matrix< 3, 2, double > m1;
         matrix< 3, 2, double > m0t = transpose( m0 );
@@ -323,7 +324,7 @@ bool matrix_test::run()
 
     // test multiplication
     {
-        bool ok = true;
+        ok = true;
         matrix< 2, 3, double > mul0;
         double mul0data[] = { 1, 0, 2, -1, 3, 1 };
         mul0 = mul0data;
@@ -388,7 +389,7 @@ bool matrix_test::run()
 
     // test matrix * column vector multiplication
     {
-        bool ok = true;
+        ok = true;
         matrix< 4, 4, double > transform;
         double transformData[] =
         {
@@ -433,7 +434,7 @@ bool matrix_test::run()
 
     // test matrix4x4 * vector3 multiplication
     {
-        bool ok = true;
+        ok = true;
         matrix< 4, 4, double > transform;
         double transformData[] =
         {
@@ -482,7 +483,7 @@ bool matrix_test::run()
 
 #ifdef VMMLIB_SAFE_ACCESSORS
 	
-	bool ok = true;
+	ok = true;
 	{
 		matrix< 3, 2 > m;
 		try
@@ -527,7 +528,7 @@ bool matrix_test::run()
         double res_data[] = { 5, 6 };
         result = res_data;
 
-        bool ok = m_sub == result;
+        ok = m_sub == result;
         log( "get_sub_matrix()", ok );
 	}
 
@@ -546,7 +547,7 @@ bool matrix_test::run()
         double res_data[] = { 1, 7, 8, 4, 9, 0 };
         result = res_data;
 
-        bool ok = m_src == result;
+        ok = m_src == result;
         log( "set_sub_matrix()", ok );
 
     }
@@ -554,7 +555,7 @@ bool matrix_test::run()
 
     // matrix inversion for 2x2
     {
-        bool ok = true;
+        ok = true;
         matrix< 2, 2, double > M, M_inverse, M_inverse_correct;
         double Mdata[] =
         #if 1
@@ -602,7 +603,7 @@ bool matrix_test::run()
 
     // matrix inversion for 3x3
     {
-        bool ok = true;
+        ok = true;
         matrix< 3, 3 > M, M_inverse, M_inverse_correct;
         double Mdata[] = { 8, 1, 6, 3, 5, 7, 4, 9, 2 };
         M.set( Mdata, Mdata + 9 );
@@ -638,7 +639,7 @@ bool matrix_test::run()
 
     // matrix inversion for 4x4
     {
-        bool ok = true;
+        ok = true;
         matrix< 4, 4, double > M, M_inverse, M_inverse_correct;
         double Mdata[] = { 17., 24., 1., 8., 23., 5., 7., 14.,
              4., 6., 13., 20., 10., 12., 19., 21. };
@@ -675,7 +676,7 @@ bool matrix_test::run()
 
     // set( .... )
     {
-        bool ok = true;
+        ok = true;
 
         double mData[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
 
@@ -717,7 +718,7 @@ bool matrix_test::run()
         correct_result = corr_res_data;
 
         result.direct_sum( upper_left, lower_right );
-        bool ok = result == correct_result;
+        ok = result == correct_result;
         log( "direct_sum", ok );
     }
 
@@ -743,7 +744,7 @@ bool matrix_test::run()
         double det33 = m33.det();
         double det22 = m22.det();
 
-        bool ok = det44 == 5.0 && det33 == -7.0 && det22 == -3.0;
+        ok = det44 == 5.0 && det33 == -7.0 && det22 == -3.0;
 
         log( "determinant for 2x2, 3x3 and 4x4 matrices", ok );
     }
@@ -773,14 +774,14 @@ bool matrix_test::run()
             273, 250, 217, 196,
             231, 198, 153, 126 };
         correct_result = corr_res_data;
-		bool ok = m1 == correct_result;
+		ok = m1 == correct_result;
 		log( "convolution", ok );
 	}
 
 
 
     {
-       // bool ok = true;
+        ok = true;
         matrix< 4, 4, double > m;
         identity( m );
 

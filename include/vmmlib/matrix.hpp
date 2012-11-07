@@ -934,12 +934,12 @@ bool
 matrix< M, N, T >::
 operator==( const matrix< M, N, T >& other ) const
 {
-    bool ok = true;
-    for( size_t i = 0; ok && i < M * N; ++i )
+    bool is_ok = true;
+    for( size_t i = 0; is_ok && i < M * N; ++i )
     {
-        ok = array[ i ] == other.array[ i ];
+        is_ok = array[ i ] == other.array[ i ];
     }
-    return ok;
+    return is_ok;
 }
 
 
@@ -960,15 +960,15 @@ bool
 matrix< M, N, T >::
 equals( const matrix< M, N, T >& other, T tolerance ) const
 {
-    bool ok = true;
-    for( size_t row_index = 0; ok && row_index < M; row_index++)
+    bool is_ok = true;
+    for( size_t row_index = 0; is_ok && row_index < M; row_index++)
     {
-        for( size_t col_index = 0; ok && col_index < N; col_index++)
+        for( size_t col_index = 0; is_ok && col_index < N; col_index++)
         {
-            ok = fabs( at( row_index, col_index ) - other( row_index, col_index ) ) < tolerance;
+            is_ok = fabs( at( row_index, col_index ) - other( row_index, col_index ) ) < tolerance;
         }
     }
-    return ok;
+    return is_ok;
 }
 
 
@@ -979,15 +979,15 @@ bool
 matrix< M, N, T >::
 equals( const matrix< M, N, T >& other_matrix, compare_t& cmp ) const
 {
-    bool ok = true;
-    for( size_t row = 0; ok && row < M; ++row )
+    bool is_ok = true;
+    for( size_t row = 0; is_ok && row < M; ++row )
     {
-        for( size_t col = 0; ok && col < N; ++col)
+        for( size_t col = 0; is_ok && col < N; ++col)
         {
-            ok = cmp( at( row, col ), other_matrix.at( row, col ) );
+            is_ok = cmp( at( row, col ), other_matrix.at( row, col ) );
         }
     }
-    return ok;
+    return is_ok;
 }
 
 template< size_t M, size_t N, typename T >

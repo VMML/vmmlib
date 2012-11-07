@@ -1,7 +1,10 @@
 #include "quaternion_test.hpp"
-#include <iostream>
 
 #include <vmmlib/math.hpp>
+#include <vmmlib/quaternion.hpp>
+
+#include <iostream>
+
 
 using namespace std;
 namespace vmml
@@ -10,8 +13,7 @@ typedef quaternion< float > quaternionf;
 typedef quaternion< double > quaterniond;
 
 
-bool
-quaternion_test::run()
+bool quaternion_test::run()
 {
     quaternion< double > q;
     double QData[] = { 1., 6., 3., 8.  };

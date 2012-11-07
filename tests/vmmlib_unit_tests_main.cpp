@@ -51,11 +51,11 @@ int
 main( int argc, const char* argv[] )
 {
 
-    vmml::vector_test vector_test_;
-    run_and_log( vector_test_ );
+//    vmml::vector_test vector_test_;
+//    run_and_log( vector_test_ );
 
-    vmml::matrix_test matrix_test_;
-    run_and_log( matrix_test_ );
+//    vmml::matrix_test matrix_test_;
+//    run_and_log( matrix_test_ );
 
     vmml::frustum_test frustum_test_;
     run_and_log( frustum_test_ );
@@ -94,8 +94,8 @@ main( int argc, const char* argv[] )
     vmml::matrix_pseudoinverse_test m_pinv;
     run_and_log( m_pinv );
 
-    vmml::tensor3_test t3t;
-    run_and_log( t3t );
+//    vmml::tensor3_test t3t;
+//    run_and_log( t3t );
 
     vmml::tensor3_iterator_test t3it;
     run_and_log( t3it );

@@ -299,8 +299,8 @@ vector_test::run()
     }
 
     // constructor tests
+	ok = true;
     {
-        ok = true;
         double vData[] = { 1, 2, 3, 4 };
         vector< 4, double > v4( 1, 2, 3, 4 );
         
@@ -367,8 +367,8 @@ vector_test::run()
 
 
     // set tests 
+	ok = true;
 	{
-        ok = true;
         vector< 4, double > vec;
         vec.set( 2, 3, 4, 5 );
         vector< 4, double > vecCorrect;
@@ -399,8 +399,8 @@ vector_test::run()
 
 
     // component accessors
-    {
-        ok = true;
+	ok = true;
+   {
         vector< 4, double > vd( 1, 2, 3, 4 );
         if ( vd.x() == 1 && vd.y() == 2 && vd.z() == 3 && vd.w() == 4 )
         {}
@@ -413,8 +413,8 @@ vector_test::run()
 
 
     // dot product
+	ok = true;
     {
-        ok = true;
         vector< 3, float > v0( 1, 2, 3 );
         vector< 3, float > v1( -6, 5, -4 );
         if ( v0.dot( v1 ) != -8 )
@@ -424,8 +424,8 @@ vector_test::run()
 
 
     // cross product
+	ok = true;
     {
-        ok = true;
         vector< 3, float > v0( 1, 2, 3 );
         vector< 3, float > v1( -6, 5, -4 );
         vector< 3, float > vcorrect( -23, -14, 17 );
@@ -435,6 +435,7 @@ vector_test::run()
     
     }
     
+	ok = true;
     {
         // TODO 
         vector< 3, float > v0( 1, 2, 3 );
@@ -450,12 +451,12 @@ vector_test::run()
         
     }
     
+	ok = true;
     {
     
         vector< 4, float > vf( -1.0f, 3.0f, -99.0f, -0.9f );
         vector< 4, size_t > vui( 0, 5, 2, 4 );
     
-        ok = true;
         size_t index = vf.find_min_index();
         float f = vf.find_min();
         
@@ -496,12 +497,12 @@ vector_test::run()
     
     }
 
+	ok = true;
     {
         vector< 4, float > v( -1.0f, 3.0f, -99.0f, -0.9f );
         float f = 4.0f;
         vector< 4, float > v_scaled = f * v;
 
-        ok = true;
         if ( v_scaled != vector< 4, float >( -4.0f, 12.0f, -396.0f, -3.6f ) )
         {
             ok = false;
@@ -511,12 +512,12 @@ vector_test::run()
 
     }
 
+	ok = true;
     {
         vector< 3, float > vf( 3.0, 2.0, 1.0 );
         vector< 3, double > vd( vf );
         vector< 3, double >::const_iterator it = vd.begin(), it_end = vd.end();
         vector< 3, float >::const_iterator fit = vf.begin();
-        ok = true;
         for( ; ok && it != it_end; ++it, ++fit )
         {
             if ( *it != *fit )
@@ -538,7 +539,8 @@ vector_test::run()
     }
     
     
-    {
+	ok = true;
+   {
         vector< 4, float > vf( 3.0, 2.0, 1.0, 1.0 );
         vector< 3, float >& v3 = vf.get_sub_vector< 3 >();
         ok = v3.x() == vf.x() && v3.y() == vf.y();

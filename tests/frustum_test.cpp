@@ -10,7 +10,7 @@
             std::ostringstream os;                                      \
             os << #x << ": " << info;                                   \
             log( os.str(), false );                                     \
-            return false;                                               \
+            ok = false;                                                 \
         }                                                               \
         else                                                            \
         {                                                               \
@@ -23,6 +23,8 @@ namespace vmml
 
 bool frustum_test::run() 
 {
+    bool ok = true;
+
     const frustum< float > f( -1.f, 1., -1.f, 1., 1.f, 100.f );
     const matrix< 4, 4, float > mvp = f.compute_matrix();
 
@@ -39,7 +41,20 @@ bool frustum_test::run()
           fc.test_sphere( sphereOut ));
     TEST( fc.test_sphere( sphereBorder ) == VISIBILITY_PARTIAL,
           fc.test_sphere( sphereBorder ));
-    return true;
+
+    const vector< 2, float > xy( -1.f, 1.f );
+    const vector< 2, float > zIn( -2.f, -4.f );
+    const vector< 2, float > zOut( 0.f, -.5f );
+    const vector< 2, float > zBorder( -.5f, -1.5f );
+
+    TEST( fc.test_aabb( xy, xy, zIn ) == VISIBILITY_FULL,
+          fc.test_aabb( xy, xy, zIn ));
+    TEST( fc.test_aabb( xy, xy, zOut ) == VISIBILITY_NONE,
+          fc.test_aabb( xy, xy, zOut ));
+    TEST( fc.test_aabb( xy, xy, zBorder ) == VISIBILITY_PARTIAL,
+          fc.test_aabb( xy, xy, zBorder ));
+
+    return ok;
 }
 
 

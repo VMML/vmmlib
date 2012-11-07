@@ -1,7 +1,7 @@
 /* 
 * VMMLib - Vector & Matrix Math Lib
 *  
-* @author Stefan Eilemann
+* @author Stefan Eilemann <eilemann@gmail.com>
 *
 * @license revised BSD license, check LICENSE
 */ 
@@ -23,18 +23,22 @@ template< class T >
 class frustum_culler
 {
 public:
-    typedef vector< 3, T >              vec3;
-    typedef vector< 4, T >              vec4;
+    typedef vector< 2, T >    vec2;
+    typedef vector< 3, T >    vec3;
+    typedef vector< 4, T >    vec4;
 
     // contructors
     frustum_culler() {}// warning: components NOT initialised ( for performance )
     ~frustum_culler(){}
 
     void setup( const matrix< 4, 4, T >& proj_modelview );
-    Visibility test_sphere( const vector< 4, T >& sphere );
+    Visibility test_sphere( const vec4& sphere );
+    Visibility test_aabb( const vec2& x, const vec2& y, const vec2& z );
 
 private:
-    inline void _normalize_plane( vector< 4, T >& plane ) const;
+    inline void _normalize_plane( vec4& plane ) const;
+    inline Visibility _test_aabb( const vec4& plane, const vec3& middle,
+                                  const vec3& size_2 );
 
     vec4    _left_plane;
     vec4    _right_plane;
@@ -106,7 +110,6 @@ frustum_culler< T >::_normalize_plane( vector< 4, T >& plane ) const
 }
 
 
-
 template < class T > 
 Visibility frustum_culler< T >::test_sphere( const vector< 4, T >& sphere )
 {
@@ -170,6 +173,77 @@ Visibility frustum_culler< T >::test_sphere( const vector< 4, T >& sphere )
     return visibility;
 }	
 
+template < class T > 
+Visibility frustum_culler< T >::_test_aabb( const vec4& plane,
+                                            const vec3& middle,
+                                            const vec3& size_2 )
+{
+    // http://www.cescg.org/CESCG-2002/DSykoraJJelinek/index.html
+    const T m = middle.x() * plane.x() + middle.y() * plane.y() +
+                middle.z() * plane.z() + plane.w();
+    const T n = size_2.x() * fabs( plane.x( )) + size_2.y() * fabs( plane.y( )) +
+                size_2.z() * fabs( plane.z( ));
+
+    if( m + n < 0 )
+        return VISIBILITY_NONE;
+    if( m - n < 0 )
+        return VISIBILITY_PARTIAL;
+    return VISIBILITY_FULL;
+}
+
+template < class T > 
+Visibility frustum_culler< T >::test_aabb( const vec2& x, const vec2& y,
+                                           const vec2& z )
+{
+    Visibility result = VISIBILITY_FULL;
+    const vec3& middle = vec3( x[0] + x[1], y[0] + y[1], z[0] + z[1] ) * .5;
+    const vec3& size_2 = vec3( fabs(x[1] - x[0]), fabs(y[1] - y[0]),
+                               fabs(z[1] - z[0]) ) * .5; 
+
+    switch( _test_aabb( _left_plane, middle, size_2 ))
+    {
+        case VISIBILITY_FULL: break;
+        case VISIBILITY_PARTIAL: result = VISIBILITY_PARTIAL; break;
+        case VISIBILITY_NONE: return VISIBILITY_NONE;
+    }
+
+    switch( _test_aabb( _right_plane, middle, size_2 ))
+    {
+        case VISIBILITY_FULL: break;
+        case VISIBILITY_PARTIAL: result = VISIBILITY_PARTIAL; break;
+        case VISIBILITY_NONE: return VISIBILITY_NONE;
+    }
+
+    switch( _test_aabb( _bottom_plane, middle, size_2 ))
+    {
+        case VISIBILITY_FULL: break;
+        case VISIBILITY_PARTIAL: result = VISIBILITY_PARTIAL; break;
+        case VISIBILITY_NONE: return VISIBILITY_NONE;
+    }
+
+    switch( _test_aabb( _top_plane, middle, size_2 ))
+    {
+        case VISIBILITY_FULL: break;
+        case VISIBILITY_PARTIAL: result = VISIBILITY_PARTIAL; break;
+        case VISIBILITY_NONE: return VISIBILITY_NONE;
+    }
+
+    switch( _test_aabb( _near_plane, middle, size_2 ))
+    {
+        case VISIBILITY_FULL: break;
+        case VISIBILITY_PARTIAL: result = VISIBILITY_PARTIAL; break;
+        case VISIBILITY_NONE: return VISIBILITY_NONE;
+    }
+
+    switch( _test_aabb( _far_plane, middle, size_2 ))
+    {
+        case VISIBILITY_FULL: break;
+        case VISIBILITY_PARTIAL: result = VISIBILITY_PARTIAL; break;
+        case VISIBILITY_NONE: return VISIBILITY_NONE;
+    }
+
+    return result;
+}
 
 } // namespace vmml
 

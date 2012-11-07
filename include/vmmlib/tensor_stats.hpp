@@ -104,7 +104,7 @@ namespace vmml {
         void set_rec_time( const double rec ) { rec_time = rec; }
 
         static std::string get_content() {
-            return "description n_iterations error nnz dec_time rec_time";
+            return "description ranks n_iterations error nnz dec_time rec_time";
         }
 
     private:

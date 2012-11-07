@@ -480,8 +480,9 @@ bool matrix_test::run()
 
 
 
-	#ifdef VMMLIB_SAFE_ACCESSORS
-	ok = true;
+#ifdef VMMLIB_SAFE_ACCESSORS
+	
+	bool ok = true;
 	{
 		matrix< 3, 2 > m;
 		try
@@ -511,7 +512,7 @@ bool matrix_test::run()
 		{}
 		log( "safe accessors (debug option)", ok );
 	}
-	#endif
+#endif
 
 	// getSubMatrix
     {

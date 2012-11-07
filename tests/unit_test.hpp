@@ -1,10 +1,10 @@
 #ifndef __VMML__UNIT_TEST__HPP__
 #define __VMML__UNIT_TEST__HPP__
 
+#include "unit_test_globals.hpp"
+
 #include <string>
 #include <iostream>
-
-#include "unit_test_globals.hpp"
 
 namespace vmml
 {

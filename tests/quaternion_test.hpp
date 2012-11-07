@@ -1,7 +1,6 @@
 #ifndef __VMML_QUATERNION_TEST__HPP__
 #define __VMML_QUATERNION_TEST__HPP__
 
-#include <vmmlib/quaternion.hpp>
 #include "unit_test.hpp"
 
 namespace vmml

@@ -6,7 +6,7 @@
 namespace vmml
 {
 
-class frustum_test : unit_test
+class frustum_test : public unit_test
 {
 public:
     frustum_test() : unit_test( "frustum" ) {}

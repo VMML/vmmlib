@@ -138,12 +138,12 @@ if(LAPACK_FOUND)
     tests/t3_hosvd_test.cpp
     tests/t3_ihooi_test.cpp
     tests/t3_ihopm_test.cpp
-    tests/t3_padder_test.cpp
+    tests/t3_virtual_padder_test.cpp
     tests/t3_ttm_test.cpp
     tests/t4_converter_test.cpp
     tests/t4_converter_test.cpp
     tests/tensor3_iterator_test.cpp
-#    tests/tensor3_test.cpp
+    tests/tensor3_test.cpp
     tests/tensor4_test.cpp
     tests/tucker3_exporter_importer_test.cpp
     tests/tucker3_tensor_test.cpp

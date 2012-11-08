@@ -1339,12 +1339,12 @@ template< size_t M, typename T >
 bool
 vector< M, T >::operator==( const vector< M, T >& other ) const
 {
-    bool ok = true;
-    for( size_t index = 0; ok && index < M; ++index )
+    bool is_ok = true;
+    for( size_t index = 0; is_ok && index < M; ++index )
     {
-        ok = at( index ) == other.at( index );
+        is_ok = at( index ) == other.at( index );
     }
-    return ok;
+    return is_ok;
 }
 
 
@@ -1361,12 +1361,12 @@ bool
 vector< M, T >::
 equals( const vector< M, T >& other, T tolerance ) const
 {
-    bool ok = true;
-    for( size_t index = 0; ok && index < M; ++index )
+    bool is_ok = true;
+    for( size_t index = 0; is_ok && index < M; ++index )
     {
-        ok = fabs( at( index ) - other( index ) ) < tolerance;
+        is_ok = fabs( at( index ) - other( index ) ) < tolerance;
     }
-    return ok;
+    return is_ok;
 
 }
 

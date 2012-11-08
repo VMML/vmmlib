@@ -3,13 +3,13 @@
  *  
  * @author Susanne Suter
  *
- * t3_padder is a cubic tensor3 data structure, but not all of its content is filled
+ * t3_virtual_padder is a cubic tensor3 data structure, but not all of its content is filled
  * blocks of data can be accessed (read) on demand: if the data is available it is read, if there is no data available it is zero-padded and returned
  * 
  */
 
-#ifndef __VMML__T3_PADDER__HPP__
-#define __VMML__T3_PADDER__HPP__
+#ifndef __VMML__T3_VIRTUAL_PADDER__HPP__
+#define __VMML__T3_VIRTUAL_PADDER__HPP__
 
 #include <vmmlib/tensor3.hpp>
 
@@ -17,7 +17,7 @@ namespace vmml
 {
 	// I = cubic virtual data structure, I1-I2: data dimensions where data is available
 	template< size_t B, size_t I, size_t I1, size_t I2, size_t I3, typename T = float >
-	class t3_padder
+	class t3_virtual_padder
 	{ //tensor3 block reader, 
 	public:    
 		
@@ -29,9 +29,9 @@ namespace vmml
 		typedef typename vmml::tensor3_iterator< t3_cached_t >	         iterator;
 
 
-		t3_padder( const std::string& dir_, const std::string& filename_ );  
+		t3_virtual_padder( const std::string& dir_, const std::string& filename_ );  
 		
-		~t3_padder();
+		~t3_virtual_padder();
 		
 		void get_data_block( t3_block_t& t3_block_, size_t j1_, size_t j2_, size_t j3_ );
 		void read_from_raw();
@@ -42,15 +42,15 @@ namespace vmml
 		t3_cached_t _cached_data;
 		size_t _cache_idx;
 		
-	}; // class t3_padder
+	}; // class t3_virtual_padder
 	
 	
 #define VMML_TEMPLATE_STRING       template< size_t B, size_t I, size_t I1, size_t I2, size_t I3, typename T >
-#define VMML_TEMPLATE_CLASSNAME    t3_padder< B, I, I1, I2, I3, T >
+#define VMML_TEMPLATE_CLASSNAME    t3_virtual_padder< B, I, I1, I2, I3, T >
 	
 	
 	VMML_TEMPLATE_STRING
-	VMML_TEMPLATE_CLASSNAME::t3_padder( const std::string& dir_, const std::string& filename_ )
+	VMML_TEMPLATE_CLASSNAME::t3_virtual_padder( const std::string& dir_, const std::string& filename_ )
 	: _cache_idx( 0 )
 	{
 		_path = dir_;
@@ -61,7 +61,7 @@ namespace vmml
 		
 		if( ! infile.is_open() )
 		{
-			VMMLIB_ERROR( "t3_padder - no input file open", VMMLIB_HERE );
+			VMMLIB_ERROR( "t3_virtual_padder - no input file open", VMMLIB_HERE );
 		}
 		
 		read_from_raw();
@@ -70,7 +70,7 @@ namespace vmml
 
 	
 	VMML_TEMPLATE_STRING
-	VMML_TEMPLATE_CLASSNAME::~t3_padder( )
+	VMML_TEMPLATE_CLASSNAME::~t3_virtual_padder( )
 	{
 	}
 	

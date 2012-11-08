@@ -1,13 +1,13 @@
-#include "t3_padder_test.hpp"
+#include "t3_virtual_padder_test.hpp"
 
-#include <vmmlib/t3_padder.hpp>
+#include <vmmlib/t3_virtual_padder.hpp>
 #include <vmmlib/t3_converter.hpp>
 #include <sstream>
 
 namespace vmml
 {
 	
-	bool t3_padder_test::run()
+	bool t3_virtual_padder_test::run()
 	{
         bool ok = false;
 		
@@ -22,10 +22,10 @@ namespace vmml
         typedef tensor3< i1, i2, i3, T >  t3_t;
         typedef tensor3< b, b, b, T >  t3_block_t;
 		typedef t3_converter< i1, i2, i3, T >  t3_conv_t;
-		typedef t3_padder< b, i, i1, i2, i3, T >  t3_padder_t;
+		typedef t3_virtual_padder< b, i, i1, i2, i3, T >  t3_virtual_padder_t;
 		
 		std::string dir = "./";
-		std::string filename = "tmp_t3_padder.raw";
+		std::string filename = "tmp_t3_virtual_padder.raw";
 		std::string path = dir; path.append( filename );
 		
 		
@@ -46,7 +46,7 @@ namespace vmml
 		//actual padder access test
 		t3_block_t block; block.zero();
 		t3_block_t block_check; block_check.zero();
-		t3_padder_t t3_p( dir, filename );
+		t3_virtual_padder_t t3_p( dir, filename );
 		
 		
 		t3_p.get_data_block( block, 4, 4, 4 );
@@ -84,7 +84,7 @@ namespace vmml
 		} else
 		{
 			std::stringstream error;
-			error << "t3 padder test: "
+			error << "t3 virtual padder test: "
             << std::endl
 			<< t3
 			<< std::endl;

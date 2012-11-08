@@ -48,6 +48,7 @@
 		CF0649C814472249007DD062 /* qtucker3_tensor_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CF0649C714472249007DD062 /* qtucker3_tensor_test.cpp */; };
 		CF2DD25E126C8EAE0036DE05 /* tensor3_iterator_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CF2DD25D126C8EAE0036DE05 /* tensor3_iterator_test.cpp */; };
 		CF2DD265126C91670036DE05 /* cp3_tensor_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CF2DD264126C91670036DE05 /* cp3_tensor_test.cpp */; };
+		CF41EF6A164AD04700DE162D /* t3_virtual_padder_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CF41EF68164AD04700DE162D /* t3_virtual_padder_test.cpp */; };
 		CF42E5EA125F738600C0A38E /* matrix_pseudoinverse_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CF42E5E9125F738600C0A38E /* matrix_pseudoinverse_test.cpp */; };
 		CF75FFF51432383D00CFD46E /* blas_dot_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CF75FFF41432383D00CFD46E /* blas_dot_test.cpp */; };
 		CF7FA8D5114EB617003076E4 /* tucker3_tensor_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CF7FA8D4114EB617003076E4 /* tucker3_tensor_test.cpp */; };
@@ -64,7 +65,6 @@
 		CFF95533131CECD100071FB3 /* lapack_sym_eigs_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CFF95532131CECD100071FB3 /* lapack_sym_eigs_test.cpp */; };
 		CFF98C5515B817BC00F599FE /* tensor4_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CFF98C5315B817BC00F599FE /* tensor4_test.cpp */; };
 		CFF98F5615BF0DC600F599FE /* t4_converter_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CFF98F5515BF0DC600F599FE /* t4_converter_test.cpp */; };
-		CFFAA7FD16402F880054BF54 /* t3_padder_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CFFAA7FC16402F880054BF54 /* t3_padder_test.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -148,6 +148,9 @@
 		CF2DD25D126C8EAE0036DE05 /* tensor3_iterator_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = tensor3_iterator_test.cpp; path = tests/tensor3_iterator_test.cpp; sourceTree = "<group>"; };
 		CF2DD263126C91670036DE05 /* cp3_tensor_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = cp3_tensor_test.hpp; path = tests/cp3_tensor_test.hpp; sourceTree = "<group>"; };
 		CF2DD264126C91670036DE05 /* cp3_tensor_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = cp3_tensor_test.cpp; path = tests/cp3_tensor_test.cpp; sourceTree = "<group>"; };
+		CF41EF67164AD02300DE162D /* t3_virtual_padder.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = t3_virtual_padder.hpp; path = include/vmmlib/t3_virtual_padder.hpp; sourceTree = "<group>"; };
+		CF41EF68164AD04700DE162D /* t3_virtual_padder_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = t3_virtual_padder_test.cpp; path = tests/t3_virtual_padder_test.cpp; sourceTree = "<group>"; };
+		CF41EF69164AD04700DE162D /* t3_virtual_padder_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = t3_virtual_padder_test.hpp; path = tests/t3_virtual_padder_test.hpp; sourceTree = "<group>"; };
 		CF42E5E7125F736E00C0A38E /* matrix_pseudoinverse_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = matrix_pseudoinverse_test.hpp; path = tests/matrix_pseudoinverse_test.hpp; sourceTree = "<group>"; };
 		CF42E5E9125F738600C0A38E /* matrix_pseudoinverse_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = matrix_pseudoinverse_test.cpp; path = tests/matrix_pseudoinverse_test.cpp; sourceTree = "<group>"; };
 		CF42E65B125F7F2100C0A38E /* matrix_pseudoinverse.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = matrix_pseudoinverse.hpp; path = include/vmmlib/matrix_pseudoinverse.hpp; sourceTree = "<group>"; };
@@ -207,9 +210,6 @@
 		CFF98FFD15C1C03400F599FE /* tensor_mmapper.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = tensor_mmapper.hpp; path = include/vmmlib/tensor_mmapper.hpp; sourceTree = "<group>"; };
 		CFFAA7F416402F4C0054BF54 /* t3_ttv.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = t3_ttv.hpp; path = include/vmmlib/t3_ttv.hpp; sourceTree = "<group>"; };
 		CFFAA7F516402F4C0054BF54 /* t3_ihooi.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = t3_ihooi.hpp; path = include/vmmlib/t3_ihooi.hpp; sourceTree = "<group>"; };
-		CFFAA7F616402F4C0054BF54 /* t3_padder.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = t3_padder.hpp; path = include/vmmlib/t3_padder.hpp; sourceTree = "<group>"; };
-		CFFAA7FB16402F880054BF54 /* t3_padder_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = t3_padder_test.hpp; path = tests/t3_padder_test.hpp; sourceTree = "<group>"; };
-		CFFAA7FC16402F880054BF54 /* t3_padder_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = t3_padder_test.cpp; path = tests/t3_padder_test.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -335,9 +335,9 @@
 				CFFAA7F516402F4C0054BF54 /* t3_ihooi.hpp */,
 				CFD85BC81398E2D400266D85 /* t3_hopm.hpp */,
 				CFA7FE00142242BD001EE112 /* t3_ihopm.hpp */,
+				CF41EF67164AD02300DE162D /* t3_virtual_padder.hpp */,
 				CFE118A71641AAEA0085B653 /* tensor_stats.hpp */,
 				CF7F632B151F8D4400F033B4 /* t3_converter.hpp */,
-				CFFAA7F616402F4C0054BF54 /* t3_padder.hpp */,
 				CFF98C5215B8178100F599FE /* tensor4.hpp */,
 				CFF98CEF15B8556B00F599FE /* t4_converter.hpp */,
 			);
@@ -470,6 +470,8 @@
 				CFD85C8313990A0E00266D85 /* t3_hopm_test.cpp */,
 				CFA7FE4914225C03001EE112 /* t3_ihopm_test.hpp */,
 				CFA7FE4A14225C03001EE112 /* t3_ihopm_test.cpp */,
+				CF41EF69164AD04700DE162D /* t3_virtual_padder_test.hpp */,
+				CF41EF68164AD04700DE162D /* t3_virtual_padder_test.cpp */,
 				CFF0C1F91406E55200C3ADDB /* blas_dgemm_test.hpp */,
 				CFF0C1F81406E55200C3ADDB /* blas_dgemm_test.cpp */,
 				CF75FFF31432383D00CFD46E /* blas_dot_test.hpp */,
@@ -480,8 +482,6 @@
 				CF906A1F14F562F90043CF23 /* cublas_dgemm_test.cpp */,
 				CF906B8714F6313A0043CF23 /* cutensor_tests.hpp */,
 				CF906B8814F6313A0043CF23 /* cutensor_tests.cpp */,
-				CFFAA7FB16402F880054BF54 /* t3_padder_test.hpp */,
-				CFFAA7FC16402F880054BF54 /* t3_padder_test.cpp */,
 				CFF98C5415B817BC00F599FE /* tensor4_test.hpp */,
 				CFF98C5315B817BC00F599FE /* tensor4_test.cpp */,
 				CFF98F5415BF0DC600F599FE /* t4_converter_test.hpp */,
@@ -683,8 +683,8 @@
 				CFF98C5515B817BC00F599FE /* tensor4_test.cpp in Sources */,
 				98D23D8E15B964590012DABB /* unit_test_globals.cpp in Sources */,
 				CFF98F5615BF0DC600F599FE /* t4_converter_test.cpp in Sources */,
-				CFFAA7FD16402F880054BF54 /* t3_padder_test.cpp in Sources */,
 				CFE117B416416A030085B653 /* t3_ihooi_test.cpp in Sources */,
+				CF41EF6A164AD04700DE162D /* t3_virtual_padder_test.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

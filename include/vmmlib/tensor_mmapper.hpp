@@ -13,7 +13,9 @@
 
 #include "tensor4.hpp"
 #include <sys/mman.h>
-
+#ifndef _MSC_VER
+#  include <unistd.h>
+#endif
 
 namespace vmml
 {
@@ -84,8 +86,7 @@ namespace vmml
 		}
 
 		munmap( _data, _file_size ); //get error
-		close( _fd );
-
+		::close( _fd );
 	}
 
 

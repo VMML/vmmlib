@@ -27,13 +27,13 @@
 #  include "t3_ihooi_test.hpp"
 #  include "t3_ttm_test.hpp"
 #  include "tensor3_iterator_test.hpp"
-//#  include "tensor3_test.hpp"
+#  include "tensor3_test.hpp"
 #  include "tucker3_exporter_importer_test.hpp"
 #  include "tucker3_tensor_test.hpp"
 #  include "matrix_pseudoinverse_test.hpp"
 #  include "tensor4_test.hpp"
 #  include "t4_converter_test.hpp"
-#  include "t3_padder_test.hpp"
+#  include "t3_virtual_padder_test.hpp"
 #endif
 #ifdef VMMLIB_USE_CUDA
 #  include "cublas_dgemm_test.hpp"
@@ -94,8 +94,8 @@ main( int argc, const char* argv[] )
     vmml::matrix_pseudoinverse_test m_pinv;
     run_and_log( m_pinv );
 
-//    vmml::tensor3_test t3t;
-//    run_and_log( t3t );
+    vmml::tensor3_test t3t;
+    run_and_log( t3t );
 
     vmml::tensor3_iterator_test t3it;
     run_and_log( t3it );
@@ -136,7 +136,7 @@ main( int argc, const char* argv[] )
 	vmml::t4_converter_test t4ct;
     run_and_log( t4ct );
 
-	vmml::t3_padder_test t3pt;
+	vmml::t3_virtual_padder_test t3pt;
     run_and_log( t3pt );
 
 

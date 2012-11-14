@@ -308,69 +308,67 @@ public:
     * @param rotation axis - must be normalized!
     */
     template< typename TT >
-    void rotate( const TT angle, const vector< M-1, T >& axis,
+    matrix< M, N, T >& rotate( const TT angle, const vector< M-1, T >& axis,
         typename enable_if< M == N && M == 4, TT >::type* = 0 );
 
     template< typename TT >
-    void rotate_x( const TT angle,
+    matrix< M, N, T >& rotate_x( const TT angle,
         typename enable_if< M == N && M == 4, TT >::type* = 0 );
 
     template< typename TT >
-    void rotate_y( const TT angle,
+    matrix< M, N, T >& rotate_y( const TT angle,
         typename enable_if< M == N && M == 4, TT >::type* = 0 );
 
     template< typename TT >
-    void rotate_z( const TT angle,
+    matrix< M, N, T >& rotate_z( const TT angle,
         typename enable_if< M == N && M == 4, TT >::type* = 0 );
 
     template< typename TT >
-    void pre_rotate_x( const TT angle,
+    matrix< M, N, T >& pre_rotate_x( const TT angle,
         typename enable_if< M == N && M == 4, TT >::type* = 0 );
 
     template< typename TT >
-    void pre_rotate_y( const TT angle,
+    matrix< M, N, T >& pre_rotate_y( const TT angle,
         typename enable_if< M == N && M == 4, TT >::type* = 0 );
 
     template< typename TT >
-    void pre_rotate_z( const TT angle,
+    matrix< M, N, T >& pre_rotate_z( const TT angle,
         typename enable_if< M == N && M == 4, TT >::type* = 0 );
 
     template< typename TT >
-    void scale( const TT scale[3],
+    matrix< M, N, T >& scale( const TT scale[3],
         typename enable_if< M == N && M == 4, TT >::type* = 0 );
 
     template< typename TT >
-    void scale( const TT x_, const T y, const T z,
+    matrix< M, N, T >& scale( const TT x_, const T y, const T z,
         typename enable_if< M == N && M == 4, TT >::type* = 0 );
 
     template< typename TT >
-    inline void
-    scale( const vector< 3, TT >& scale_,
+    matrix< M, N, T >& scale( const vector< 3, TT >& scale_,
         typename enable_if< M == N && M == 4, TT >::type* = 0 );
 
     template< typename TT >
-    inline void
-    scale_translation( const TT scale_[3],
+    matrix< M, N, T >& scale_translation( const TT scale_[3],
         typename enable_if< M == N && M == 4, TT >::type* = 0 );
 
     template< typename TT >
-    inline void scale_translation( const vector< 3, TT >& scale_,
+    matrix< M, N, T >& scale_translation( const vector< 3, TT >& scale_,
         typename enable_if< M == N && M == 4, TT >::type* = 0 );
 
     template< typename TT >
-    inline void set_translation( const TT x_, const TT y_, const TT z_,
+    matrix< M, N, T >& set_translation( const TT x_, const TT y_, const TT z_,
         typename enable_if< M == N && M == 4, TT >::type* = 0 );
 
     template< typename TT >
-    inline void set_translation( const TT trans[3],
+    matrix< M, N, T >& set_translation( const TT trans[3],
         typename enable_if< M == N && M == 4, TT >::type* = 0 );
 
     template< typename TT >
-    inline void set_translation( const vector< 3, TT >& translation_,
-        typename enable_if< M == N && M == 4, TT >::type* = 0 );
+    matrix< M, N, T >& set_translation( const vector< 3, TT >& t,
+                         typename enable_if< M == N && M == 4, TT >::type* = 0 );
 
     template< typename TT >
-    inline void get_translation( vector< 3, TT >& translation_,
+    void get_translation( vector< 3, TT >& translation_,
         typename enable_if< M == N && M == 4, TT >::type* = 0 ) const;
 
 	// hack for static-member-init
@@ -1877,14 +1875,11 @@ typename enable_if< O == M-1 && P == N-1 && M == N && M >= 2 >::type* ) const
     return compute_determinant( minor_ );
 }
 
-
-
 template< size_t M, size_t N, typename T >
 template< typename TT >
-void
-matrix< M, N, T >::
-rotate( const TT angle_, const vector< M-1, T >& axis,
-typename enable_if< M == N && M == 4, TT >::type* )
+matrix< M, N, T >& matrix< M, N, T >::rotate(
+    const TT angle_, const vector< M-1, T >& axis,
+    typename enable_if< M == N && M == 4, TT >::type* )
 {
     const T angle = static_cast< T >( angle_ );
 
@@ -1920,15 +1915,13 @@ typename enable_if< M == N && M == 4, TT >::type* )
     array[14] = _zero;
     array[15] = one;
 
+    return *this;
 }
-
-
 
 template< size_t M, size_t N, typename T >
 template< typename TT >
-void
-matrix< M, N, T >::
-rotate_x( const TT angle_, typename enable_if< M == N && M == 4, TT >::type* )
+matrix< M, N, T >& matrix< M, N, T >::rotate_x( const TT angle_,
+                              typename enable_if< M == N && M == 4, TT >::type* )
 {
     const T angle       = static_cast< T >( angle_ );
 
@@ -1952,15 +1945,14 @@ rotate_x( const TT angle_, typename enable_if< M == N && M == 4, TT >::type* )
     tmp         = array[ 7 ] * cosine + array[ 11 ] * sine;
     array[ 11 ] = - array[ 7 ] * sine + array[ 11 ] * cosine;
     array[ 7 ]  = tmp;
+
+    return *this;
 }
-
-
 
 template< size_t M, size_t N, typename T >
 template< typename TT >
-void
-matrix< M, N, T >::
-rotate_y( const TT angle_, typename enable_if< M == N && M == 4, TT >::type* )
+matrix< M, N, T >& matrix< M, N, T >::rotate_y( const TT angle_,
+                              typename enable_if< M == N && M == 4, TT >::type* )
 {
     const T angle = static_cast< T >( angle_ );
 
@@ -1984,15 +1976,14 @@ rotate_y( const TT angle_, typename enable_if< M == N && M == 4, TT >::type* )
     tmp         = array[ 3 ] * cosine   - array[ 11 ] * sine;
     array[ 11 ] = array[ 3 ] * sine     + array[ 11 ] * cosine;
     array[ 3 ]  = tmp;
+
+    return *this;
 }
-
-
 
 template< size_t M, size_t N, typename T >
 template< typename TT >
-void
-matrix< M, N, T >::
-rotate_z( const TT angle_, typename enable_if< M == N && M == 4, TT >::type* )
+matrix< M, N, T >& matrix< M, N, T >::rotate_z( const TT angle_,
+                              typename enable_if< M == N && M == 4, TT >::type* )
 {
     const T angle = static_cast< T >( angle_ );
 
@@ -2016,16 +2007,14 @@ rotate_z( const TT angle_, typename enable_if< M == N && M == 4, TT >::type* )
     tmp         = array[ 3 ] * cosine + array[ 7 ] * sine;
     array[ 7 ]  = - array[ 3 ] * sine + array[ 7 ] * cosine;
     array[ 3 ]  = tmp;
+
+    return *this;
 }
-
-
 
 template< size_t M, size_t N, typename T >
 template< typename TT >
-void
-matrix< M, N, T >::
-pre_rotate_x( const TT angle_,
-              typename enable_if< M == N && M == 4, TT >::type* )
+matrix< M, N, T >& matrix< M, N, T >::pre_rotate_x( const TT angle_,
+                              typename enable_if< M == N && M == 4, TT >::type* )
 {
     const T angle = static_cast< T >( angle_ );
 
@@ -2049,15 +2038,14 @@ pre_rotate_x( const TT angle_,
     tmp         = array[ 13 ];
     array[ 13 ] = array[ 13 ] * cosine + array[ 14 ] * sine;
     array[ 14 ] = tmp * -sine + array[ 14 ] * cosine;
+
+    return *this;
 }
-
-
 
 template< size_t M, size_t N, typename T >
 template< typename TT >
-void
-matrix< M, N, T >::
-pre_rotate_y( const TT angle_, typename enable_if< M == N && M == 4, TT >::type* )
+matrix< M, N, T >& matrix< M, N, T >::pre_rotate_y( const TT angle_,
+                              typename enable_if< M == N && M == 4, TT >::type* )
 {
     const T angle = static_cast< T >( angle_ );
 
@@ -2081,15 +2069,14 @@ pre_rotate_y( const TT angle_, typename enable_if< M == N && M == 4, TT >::type*
     tmp         = array[ 12 ];
     array[ 12 ] = array[ 12 ] * cosine - array[ 14 ] * sine;
     array[ 14 ] = tmp * sine + array[ 14 ] * cosine;
+
+    return *this;
 }
-
-
 
 template< size_t M, size_t N, typename T >
 template< typename TT >
-void
-matrix< M, N, T >::
-pre_rotate_z( const TT angle_, typename enable_if< M == N && M == 4, TT >::type* )
+matrix< M, N, T >& matrix< M, N, T >::pre_rotate_z( const TT angle_,
+                              typename enable_if< M == N && M == 4, TT >::type* )
 {
     const T angle = static_cast< T >( angle_ );
 
@@ -2114,16 +2101,13 @@ pre_rotate_z( const TT angle_, typename enable_if< M == N && M == 4, TT >::type*
     array[ 12 ] = array[ 12 ] * cosine + array[ 13 ] * sine;
     array[ 13 ] = tmp * -sine + array[ 13 ] * cosine;
 
+    return *this;
 }
-
-
 
 template< size_t M, size_t N, typename T >
 template< typename TT >
-void
-matrix< M, N, T >::
-scale( const TT _scale[3],
-    typename enable_if< M == N && M == 4, TT >::type* )
+matrix< M, N, T >& matrix< M, N, T >::scale( const TT _scale[3],
+                              typename enable_if< M == N && M == 4, TT >::type* )
 {
     const T scale0 = static_cast< T >( _scale[ 0 ] );
     const T scale1 = static_cast< T >( _scale[ 1 ] );
@@ -2142,16 +2126,13 @@ scale( const TT _scale[3],
     array[10] *= scale2;
     array[11] *= scale2;
 
+    return *this;
 }
-
-
 
 template< size_t M, size_t N, typename T >
 template< typename TT >
-void
-matrix< M, N, T >::
-scale( const TT x_, const T y_, const T z_,
-    typename enable_if< M == N && M == 4, TT >::type* )
+matrix< M, N, T >& matrix< M, N, T >::scale( const TT x_, const T y_, const T z_,
+                              typename enable_if< M == N && M == 4, TT >::type* )
 {
     const T _x = static_cast< T >( x_ );
 
@@ -2168,87 +2149,71 @@ scale( const TT x_, const T y_, const T z_,
     array[10] *= z_;
     array[11] *= z_;
 
+    return *this;
 }
-
-
 
 template< size_t M, size_t N, typename T >
 template< typename TT >
-inline void
-matrix< M, N, T >::
-scale( const vector< 3, TT >& scale_,
+inline matrix< M, N, T >& matrix< M, N, T >::scale(
+    const vector< 3, TT >& scale_,
     typename enable_if< M == N && M == 4, TT >::type* )
 {
-    scale( scale_.array );
+    return scale( scale_.array );
 }
 
 
 
 template< size_t M, size_t N, typename T >
 template< typename TT >
-void
-matrix< M, N, T >::
-scale_translation( const TT scale_[3],
-    typename enable_if< M == N && M == 4, TT >::type* )
+matrix< M, N, T >& matrix< M, N, T >::scale_translation( const TT scale_[3],
+                              typename enable_if< M == N && M == 4, TT >::type* )
 {
     array[12] *= static_cast< T >( scale_[0] );
     array[13] *= static_cast< T >( scale_[1] );
     array[14] *= static_cast< T >( scale_[2] );
+    return *this;
 }
-
-
 
 template< size_t M, size_t N, typename T >
 template< typename TT >
-inline void
-matrix< M, N, T >::
-scale_translation( const vector< 3, TT >& scale_,
+inline matrix< M, N, T >& matrix< M, N, T >::scale_translation(
+    const vector< 3, TT >& scale_,
     typename enable_if< M == N && M == 4, TT >::type* )
 {
-    scale_translation( scale_.array );
+    return scale_translation( scale_.array );
 }
-
-
 
 template< size_t M, size_t N, typename T >
 template< typename TT >
-inline void
-matrix< M, N, T >::
-set_translation( const TT x_, const TT y_, const TT z_,
-  typename enable_if< M == N && M == 4, TT >::type* )
+inline matrix< M, N, T >& matrix< M, N, T >::set_translation(
+    const TT x_, const TT y_, const TT z_,
+    typename enable_if< M == N && M == 4, TT >::type* )
 {
     array[12] = static_cast< T >( x_ );
     array[13] = static_cast< T >( y_ );
     array[14] = static_cast< T >( z_ );
+    return *this;
 }
-
-
 
 template< size_t M, size_t N, typename T >
 template< typename TT >
-inline void
-matrix< M, N, T >::
-set_translation( const TT trans[3],
-    typename enable_if< M == N && M == 4, TT >::type* )
+inline matrix< M, N, T >& matrix< M, N, T >::set_translation( const TT trans[3],
+                              typename enable_if< M == N && M == 4, TT >::type* )
 {
     array[12] = static_cast< T >( trans[ 0 ] );
     array[13] = static_cast< T >( trans[ 1 ] );
     array[14] = static_cast< T >( trans[ 2 ] );
+    return *this;
 }
-
-
 
 template< size_t M, size_t N, typename T >
 template< typename TT >
-inline void
-matrix< M, N, T >::
-set_translation( const vector< 3, TT >& translation_,
+inline matrix< M, N, T >& matrix< M, N, T >::set_translation(
+    const vector< 3, TT >& translation_,
     typename enable_if< M == N && M == 4, TT >::type* )
 {
-    set_translation( translation_.array );
+    return set_translation( translation_.array );
 }
-
-
 
 template< size_t M, size_t N, typename T >
 template< typename TT >

@@ -139,7 +139,9 @@ namespace vmml {
         t3_type* residual_data = new t3_type;
         residual_data->zero();
 
-        double max_f_norm, fit, fitchange, norm2, innerprod, fitold, normresidual;
+        T max_f_norm = 0.0;
+        T fit = 0.;
+        T fitchange, norm2, innerprod, fitold, normresidual;
         if (tolerance_ > 0) {
             max_f_norm = data_.frobenius_norm();
             fit = 0;

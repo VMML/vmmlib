@@ -1,6 +1,6 @@
-/* 
+/*
  * VMMLib - Tensor Classes
- *  
+ *
  * @author Susanne Suter
  * @author Rafa Ballester
  *
@@ -12,7 +12,7 @@
  * - De Lathauwer, De Moor, Vandewalle, 2000b: On the Best rank-1 and Rank-(R_1, R_2, ..., R_N) Approximation and Applications of Higher-Order Tensors, SIAM J. Matrix Anal. Appl.
  * - Kolda & Bader, 2009: Tensor Decompositions and Applications, SIAM Review.
  * - Bader & Kolda, 2006: Algorithm 862: Matlab tensor classes for fast algorithm prototyping. ACM Transactions on Mathematical Software.
- * 
+ *
  */
 
 #ifndef __VMML__T3_HOOI__HPP__
@@ -42,10 +42,10 @@ namespace vmml {
         typedef matrix< R2, I2, T > u2_t_type;
         typedef matrix< R3, I3, T > u3_t_type;
 
-        /*	higher-order orthogonal iteration (HOOI) is a truncated HOSVD decompositions, i.e., the HOSVD components are of lower-ranks. An optimal rank-reduction is 
+        /*	higher-order orthogonal iteration (HOOI) is a truncated HOSVD decompositions, i.e., the HOSVD components are of lower-ranks. An optimal rank-reduction is
          performed with an alternating least-squares (ALS) algorithm, which minimizes the error between the approximated and orignal tensor based on the Frobenius norm
          see: De Lathauwer et al, 2000b; On the best rank-1 and rank-(RRR) approximation of higher-order tensors.
-         the HOOI can be computed based on (a) n-mode PCA, i.e., an eigenvalue decomposition on the covariance matrix of every mode's matriciziation, and 
+         the HOOI can be computed based on (a) n-mode PCA, i.e., an eigenvalue decomposition on the covariance matrix of every mode's matriciziation, and
          (b) by performing a 2D SVD on the matricization of every mode. Matrix matricization means that a tensor I1xI2xI3 is unfolded/sliced into one matrix
          with the dimensions I1xI2I3, which corresponds to a matrizitation alonge mode I1.
          */
@@ -57,7 +57,7 @@ namespace vmml {
         static tensor_stats als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, T_init init, const double& max_f_norm_ = 0.0, const size_t max_iterations = 3, const float tolerance = 1e-04);
 
         /* derive core
-         implemented according to core = data x_1 U1_pinv x_2 U2_pinv x_3 U3_pinv, 
+         implemented according to core = data x_1 U1_pinv x_2 U2_pinv x_3 U3_pinv,
          where x_1 ... x_3 are n-mode products and U1_pinv ... U3_pinv are inverted basis matrices
          the inversion is done with a matrix pseudoinverse computation
          */
@@ -65,7 +65,7 @@ namespace vmml {
         //faster: but only if basis matrices are orthogonal
         static void derive_core_orthogonal_bases(const t3_type& data_, const u1_type& u1_, const u2_type& u2_, const u3_type& u3_, t3_core_type& core_);
 
-        // init functors 
+        // init functors
 
         struct init_hosvd {
 
@@ -142,7 +142,8 @@ namespace vmml {
         init(data_, u1_, u2_, u3_);
 
         core_.zero();
-        double max_f_norm, f_norm, fit, fitchange, fitold, normresidual;
+        T max_f_norm = 0.0;
+        T f_norm, fit, fitchange, fitold, normresidual;
         if (tolerance_ > 0) {
             max_f_norm = max_f_norm_;
 
@@ -151,10 +152,10 @@ namespace vmml {
             }
             fit = 0;
             //removed to save computation
-            /*if ( (max_f_norm != 0) && (max_f_norm > f_norm) ) 
+            /*if ( (max_f_norm != 0) && (max_f_norm > f_norm) )
             {
                     fit = 1 - (normresidual / max_f_norm);
-            } else { 
+            } else {
                     fit = 1;
             }*/
             fitchange = 1;
@@ -173,7 +174,7 @@ namespace vmml {
         std::cout << "HOOI ALS (for tensor3) " << std::endl
                 << "initial fit: " << fit << ", "
                 << "frobenius norm original: " << max_f_norm << std::endl;
-#endif	
+#endif
         size_t i = 0;
         while (i < max_iterations_ && (tolerance_ == -1 || fitchange >= tolerance_)) { //do until converges
             fitold = fit;
@@ -334,7 +335,7 @@ namespace vmml {
         delete u3_pinv_t;
 
 #else
-        //previous version of compute core	
+        //previous version of compute core
         for (size_t r3 = 0; r3 < R3; ++r3) {
             for (size_t r1 = 0; r1 < R1; ++r1) {
                 for (size_t r2 = 0; r2 < R2; ++r2) {

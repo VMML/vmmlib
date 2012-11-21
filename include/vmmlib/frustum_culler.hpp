@@ -32,13 +32,13 @@ public:
     ~frustum_culler(){}
 
     void setup( const matrix< 4, 4, T >& proj_modelview );
-    Visibility test_sphere( const vec4& sphere );
-    Visibility test_aabb( const vec2& x, const vec2& y, const vec2& z );
+    Visibility test_sphere( const vec4& sphere ) const;
+    Visibility test_aabb( const vec2& x, const vec2& y, const vec2& z ) const;
 
 private:
     inline void _normalize_plane( vec4& plane ) const;
     inline Visibility _test_aabb( const vec4& plane, const vec3& middle,
-                                  const vec3& size_2 );
+                                  const vec3& size_2 ) const;
 
     vec4    _left_plane;
     vec4    _right_plane;
@@ -111,7 +111,7 @@ frustum_culler< T >::_normalize_plane( vector< 4, T >& plane ) const
 
 
 template < class T > 
-Visibility frustum_culler< T >::test_sphere( const vector< 4, T >& sphere )
+Visibility frustum_culler< T >::test_sphere( const vector< 4, T >& sphere ) const
 {
     Visibility visibility = VISIBILITY_FULL;
 
@@ -176,7 +176,7 @@ Visibility frustum_culler< T >::test_sphere( const vector< 4, T >& sphere )
 template < class T > 
 Visibility frustum_culler< T >::_test_aabb( const vec4& plane,
                                             const vec3& middle,
-                                            const vec3& size_2 )
+                                            const vec3& size_2 ) const
 {
     // http://www.cescg.org/CESCG-2002/DSykoraJJelinek/index.html
     const T m = middle.x() * plane.x() + middle.y() * plane.y() +
@@ -193,7 +193,7 @@ Visibility frustum_culler< T >::_test_aabb( const vec4& plane,
 
 template < class T > 
 Visibility frustum_culler< T >::test_aabb( const vec2& x, const vec2& y,
-                                           const vec2& z )
+                                           const vec2& z ) const
 {
     Visibility result = VISIBILITY_FULL;
     const vec3& middle = vec3( x[0] + x[1], y[0] + y[1], z[0] + z[1] ) * .5;

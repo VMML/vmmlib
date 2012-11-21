@@ -157,12 +157,12 @@ namespace vmml {
         template< size_t R, size_t NBLOCKS, typename T_init>
         tensor_stats i_cp_tucker_als(const t3_type& data_, T_init init, const size_t max_iterations = 3, const float tolerance = 1e-04);
 
-        //        void als_rand(const t3_type& data_);
-        //        template< typename T_init>
-        //        void tucker_als(const t3_type& data_, T_init init);
-        //        template< size_t NBLOCKS, typename T_init >
-        //        void incr_block_diag_als(const t3_type& data_, T_init init);
-        //	void incr_block_diag_als( T_init init );	
+		void als_rand(const t3_type& data_);
+	//template< typename T_init>
+	//        void tucker_als(const t3_type& data_, T_init init);
+	//        template< size_t NBLOCKS, typename T_init >
+	//        void incr_block_diag_als(const t3_type& data_, T_init init);
+	//	void incr_block_diag_als( T_init init );	
 
 
         template< size_t K1, size_t K2, size_t K3>
@@ -439,12 +439,12 @@ namespace vmml {
         _core.cast_from(_core_comp);
     }
 
-    //    VMML_TEMPLATE_STRING
-    //    void
-    //    VMML_TEMPLATE_CLASSNAME::als_rand(const t3_type& data_) {
-    //        typedef t3_hooi< R1, R2, R3, I1, I2, I3, T_internal > hooi_type;
-    //        tucker_als(data_, typename hooi_type::init_random());
-    //    }
+    VMML_TEMPLATE_STRING
+    void
+    VMML_TEMPLATE_CLASSNAME::als_rand(const t3_type& data_) {
+        typedef t3_hooi< R1, R2, R3, I1, I2, I3, T_internal > hooi_type;
+        tucker_als(data_, typename hooi_type::init_random());
+    }
 
     VMML_TEMPLATE_STRING
     template< typename T_init>

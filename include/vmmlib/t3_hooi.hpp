@@ -176,7 +176,7 @@ namespace vmml {
                 << "frobenius norm original: " << max_f_norm << std::endl;
 #endif
         size_t i = 0;
-        while (i < max_iterations_ && (tolerance_ == -1 || fitchange >= tolerance_)) { //do until converges
+        while (i < max_iterations_ && (tolerance_ < 0 || fitchange >= tolerance_)) { //do until converges
             fitold = fit;
 
             //optimize modes

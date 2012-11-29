@@ -364,9 +364,6 @@ namespace vmml {
             data_.cast_from(data);
         }
 
-        ///////////////////
-        //        std::cerr << "Before: " << data.frobenius_norm() << ", after: " << data_.frobenius_norm() << std::endl;
-        ///////////////////
     }
 
     VMML_TEMPLATE_STRING
@@ -376,12 +373,6 @@ namespace vmml {
         t3_comp_type data;
         t3_ttm::full_tensor3_matrix_multiplication(_core_comp, *_u1_comp, *_u2_comp, *_u3_comp, data);
         
-        ///////////////////
-//        std::cerr << "Data: " << data.frobenius_norm() << std::endl;
-//        std::cerr << "Original: " << original.frobenius_norm() << std::endl;
-//        std::cerr << "Difference: " << data.frobenius_norm(original) << std::endl;
-//        std::cerr << "Other difference: " << original.frobenius_norm(data) << std::endl;
-        ///////////////////
         double err = data.frobenius_norm(original) / original.frobenius_norm() * 100;
         return err;
     }

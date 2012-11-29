@@ -248,16 +248,8 @@ namespace vmml {
         t3_comp_type data;
         data.cast_from(data_);
 
-        ///////////////////
-        //        std::cerr << "Before: " << data_.frobenius_norm() << std::endl;
-        ///////////////////
-
         typedef t3_hopm< R, I1, I2, I3, T_internal > hopm_type;
         hopm_type::reconstruct(data, *_u1_comp, *_u2_comp, *_u3_comp, *_lambdas_comp);
-
-        ///////////////////
-        //        std::cerr << "After: " << data.frobenius_norm() << std::endl;
-        ///////////////////
 
         //convert reconstructed data, which is in type T_internal (double, float) to T_value (uint8 or uint16)
         if ((sizeof (T_value) == 1) || (sizeof (T_value) == 2)) {
@@ -265,10 +257,6 @@ namespace vmml {
         } else {
             data_.cast_from(data);
         }
-
-        ///////////////////
-        //        std::cerr << "After2: " << data_.frobenius_norm() << std::endl;
-        ///////////////////
 
     }
 
@@ -278,22 +266,9 @@ namespace vmml {
         typedef t3_hopm< R, I1, I2, I3, T_internal > hopm_type;
         t3_comp_type data;
         hopm_type::reconstruct(data, *_u1_comp, *_u2_comp, *_u3_comp, *_lambdas_comp);
-        ///////////////////
-        //        std::cerr << "Data: " << data.frobenius_norm() << std::endl;
-        //        std::cerr << "Original: " << original.frobenius_norm() << std::endl;
-        //        std::cerr << "Difference: " << data.frobenius_norm(original) << std::endl;
-        //        std::cerr << "Other difference: " << original.frobenius_norm(data) << std::endl;
-        ///////////////////
         double err = data.frobenius_norm(original) / original.frobenius_norm() * 100;
         return err;
     }
-
-    //    VMML_TEMPLATE_STRING
-    //    template< typename T_init >
-    //    void
-    //    VMML_TEMPLATE_CLASSNAME::decompose(const t3_type& data_, T_init init, const size_t max_iterations_) {
-    //        cp_als(data_, init, max_iterations_);
-    //    }
 
     VMML_TEMPLATE_STRING
     template< typename T_init >
@@ -310,13 +285,6 @@ namespace vmml {
         cast_members();
         return result;
     }
-
-    //    VMML_TEMPLATE_STRING
-    //    template< size_t NBLOCKS, typename T_init >
-    //    void
-    //    VMML_TEMPLATE_CLASSNAME::idecompose(const t3_type& data_, T_init init, const size_t max_iterations_) {
-    //        i_cp_als<NBLOCKS> (data_, init, max_iterations_);
-    //    }
 
     VMML_TEMPLATE_STRING
     template< size_t NBLOCKS, typename T_init >

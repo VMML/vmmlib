@@ -280,12 +280,8 @@ lapack_svd< M, N, float_t >::compute(
 	p.vt        = Vt.array;
 	p.ldvt      = N;
 	
-//        std::cerr << "size array: " << S.array[0] << std::endl;
 	lapack::svd_call< float_t >( p );
-//        std::cerr << "array despres: " << S.array[0] << " " << S.array[1] << " " << S.array[2] << std::endl;
 	delete AA;
-//        std::cerr << "ie, info val *" << p.info << "*" << std::endl;
-//        std::cerr << "matriu: " << A.det() << std::endl;
 	return p.info == 0;
 }
 	

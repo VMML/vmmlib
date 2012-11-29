@@ -167,7 +167,7 @@ namespace vmml {
 #endif
 
         size_t i = 0;
-        while (i < max_iterations_ && (tolerance_ == -1 || fitchange >= tolerance_)) //do until converges
+        while (i < max_iterations_ && (tolerance_ < 0 || fitchange >= tolerance_)) //do until converges
         {
             fitold = fit;
 
@@ -320,17 +320,7 @@ namespace vmml {
         m_r2_type* pinv_t = new m_r2_type;
         compute_pseudoinverse< m_r2_type > compute_pinv;
 
-        //        std::cerr << "----------" << std::endl;
-        //        std::cerr << (*pinv_t).p_norm(3) << std::endl;
-        //        std::cerr << "----------" << std::endl;
         compute_pinv(*uk_r, *pinv_t);
-
-        //        std::cerr << "----------" << std::endl;
-        //        std::cerr << (*uk_r).p_norm(3) << std::endl;
-        //        std::cerr << "----------" << std::endl;
-        //        std::cerr << "----------" << std::endl;
-        //        std::cerr << (*pinv_t).p_norm(1) << std::endl;
-        //        std::cerr << "----------" << std::endl;
 
         blas_dgemm< J, R, R, T> blas_dgemm4;
         blas_dgemm4.compute_bt(*u_new, *pinv_t, uj_);
@@ -356,10 +346,6 @@ namespace vmml {
         blas_dgemm4.compute(*tmp_uj, *diag_lambdas, uj_);
 
         assert(validator::is_valid(uj_));
-
-        //        std::cerr << "----------" << std::endl;
-        //        std::cerr << uj_.p_norm(1) << std::endl;
-        //        std::cerr << "----------" << std::endl;
 
         delete krp_prod;
         delete uk_r;

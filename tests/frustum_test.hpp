@@ -3,6 +3,8 @@
 
 #include "unit_test.hpp"
 
+#include <vmmlib/frustum_culler.hpp>
+
 namespace vmml
 {
 
@@ -11,11 +13,12 @@ class frustum_test : public unit_test
 public:
     frustum_test() : unit_test( "frustum" ) {}
     bool run();
-protected:
 
-}; // class frustum_test
+private:
+    bool _test( const frustum_culler< float > fc );
+};
 
-} // namespace vmml
+}
 
 #endif
 

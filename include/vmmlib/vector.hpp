@@ -458,6 +458,21 @@ inline vector< M, T > normalize( const vector< M, T >& vector_ )
     return v;
 }
 
+template< typename T >
+inline vector< 4, T > compute_plane( const vector< 3, T >& a,
+                                     const vector< 3, T >& b,
+                                     const vector< 3, T >& c )
+{
+    const vector< 3, T > cb = b - c;
+    const vector< 3, T > ba = a - b;
+
+    vector< 4, T > plane = cb.cross( ba );
+    plane.normalize();
+    plane.w() = -plane.x() * a.x() - plane.y() * a.y() - plane.z() * a.z();
+    return plane;
+}
+
+
 template< size_t M, typename T >
 vector< M, T >::vector( const T& _a )
 {
@@ -1308,12 +1323,9 @@ vector< M, T >::get_sub_vector( size_t offset,
 }
 
 
-
 // plane: normal xyz, distance w
-template< size_t M, typename T >
-template< typename TT >
-inline T
-vector< M, T >::distance_to_plane( const vector< 3, TT >& point,
+template< size_t M, typename T > template< typename TT >
+inline T vector< M, T >::distance_to_plane( const vector< 3, TT >& point,
     typename enable_if< M == 4, TT >::type* ) const
 {
     const vector< 3, T >& normal = get_sub_vector< 3 >( 0 );

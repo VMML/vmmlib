@@ -31,14 +31,25 @@ public:
     frustum_culler() {}// warning: components NOT initialised ( for performance )
     ~frustum_culler(){}
 
+    /** Set up the culling state using a 4x4 projection*modelView matrix. */
     void setup( const matrix< 4, 4, T >& proj_modelview );
-    Visibility test_sphere( const vec4& sphere );
-    Visibility test_aabb( const vec2& x, const vec2& y, const vec2& z );
+
+    /**
+     * Set up the culling state using the eight frustum corner points.
+     * Corner naming is n(ear)|f(ar), l(eft)|r(ight), t(op)|b(ottom)
+     */
+    void setup( const vec3& nlt, const vec3& nrt,
+                const vec3& nlb, const vec3& nrb,
+                const vec3& flt, const vec3& frt,
+                const vec3& flb, const vec3& frb );
+
+    Visibility test_sphere( const vec4& sphere ) const;
+    Visibility test_aabb( const vec2& x, const vec2& y, const vec2& z ) const;
 
 private:
     inline void _normalize_plane( vec4& plane ) const;
     inline Visibility _test_aabb( const vec4& plane, const vec3& middle,
-                                  const vec3& size_2 );
+                                  const vec3& size_2 ) const;
 
     vec4    _left_plane;
     vec4    _right_plane;
@@ -95,7 +106,25 @@ void frustum_culler< T >::setup( const matrix< 4, 4, T >& proj_modelview )
 
 }
 
-
+template < class T >
+void frustum_culler< T >::setup( const vec3& a, const vec3& b,
+                                 const vec3& c, const vec3& d,
+                                 const vec3& e, const vec3& f,
+                                 const vec3& g, const vec3& h )
+{
+    //   e_____f
+    //  /     /|
+    // | a b | |
+    // | c d |/h
+    //  -----
+    // CCW winding
+    _left_plane   = compute_plane( c, a, e );
+    _right_plane  = compute_plane( f, b, d );
+    _bottom_plane = compute_plane( h, d, c );
+    _top_plane    = compute_plane( e, a, b );
+    _near_plane   = compute_plane( d, b, a );
+    _far_plane    = compute_plane( e, f, h );
+}
 
 template < class T >
 inline void
@@ -110,8 +139,8 @@ frustum_culler< T >::_normalize_plane( vector< 4, T >& plane ) const
 }
 
 
-template < class T >
-Visibility frustum_culler< T >::test_sphere( const vector< 4, T >& sphere )
+template < class T > Visibility
+frustum_culler< T >::test_sphere( const vector< 4, T >& sphere ) const
 {
     Visibility visibility = VISIBILITY_FULL;
 
@@ -176,7 +205,7 @@ Visibility frustum_culler< T >::test_sphere( const vector< 4, T >& sphere )
 template < class T >
 Visibility frustum_culler< T >::_test_aabb( const vec4& plane,
                                             const vec3& middle,
-                                            const vec3& size_2 )
+                                            const vec3& size_2 ) const
 {
     // http://www.cescg.org/CESCG-2002/DSykoraJJelinek/index.html
     const T m = middle.x() * plane.x() + middle.y() * plane.y() +
@@ -194,7 +223,7 @@ Visibility frustum_culler< T >::_test_aabb( const vec4& plane,
 
 template < class T >
 Visibility frustum_culler< T >::test_aabb( const vec2& x, const vec2& y,
-                                           const vec2& z )
+                                           const vec2& z ) const
 {
     Visibility result = VISIBILITY_FULL;
     const vec3& middle = vec3( x[0] + x[1], y[0] + y[1], z[0] + z[1] ) * .5;

@@ -39,7 +39,11 @@ endif()
 set(DOCS README AUTHORS LICENSE.txt ACKNOWLEDGEMENTS)
 set(BLAS_LIBRARIES blas)
 
+update_file(${CMAKE_CURRENT_SOURCE_DIR}/include/vmmlib/version.in.hpp
+  ${OUTPUT_INCLUDE_DIR}/vmmlib/version.hpp)
+
 set(HEADERS
+  ${OUTPUT_INCLUDE_DIR}/vmmlib/version.hpp
   include/vmmlib/aabb.hpp
   include/vmmlib/blas_daxpy.hpp
   include/vmmlib/blas_dgemm.hpp

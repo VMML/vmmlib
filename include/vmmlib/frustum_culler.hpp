@@ -1,10 +1,10 @@
-/* 
+/*
 * VMMLib - Vector & Matrix Math Lib
-*  
+*
 * @author Stefan Eilemann <eilemann@gmail.com>
 *
 * @license revised BSD license, check LICENSE
-*/ 
+*/
 
 #ifndef __VMML__FRUSTUM_CULLER__HPP__
 #define __VMML__FRUSTUM_CULLER__HPP__
@@ -19,7 +19,7 @@ namespace vmml
 {
 
 /** Helper class for OpenGL view frustum culling. */
-template< class T > 
+template< class T >
 class frustum_culler
 {
 public:
@@ -65,15 +65,15 @@ typedef frustum_culler< double > frustum_cullerd;
 namespace vmml
 {
 
-/** 
+/**
  * Setup the culler by extracting the frustum planes from the projection
  * matrix. The projection matrix should contain the viewing transformation.
  */
-template < class T > 
+template < class T >
 void frustum_culler< T >::setup( const matrix< 4, 4, T >& proj_modelview )
 {
     // See http://www2.ravensoft.com/users/ggribb/plane%20extraction.pdf pp.5
-    
+
     const vec4& row0 = proj_modelview.get_row( 0 );
     const vec4& row1 = proj_modelview.get_row( 1 );
     const vec4& row2 = proj_modelview.get_row( 2 );
@@ -85,7 +85,7 @@ void frustum_culler< T >::setup( const matrix< 4, 4, T >& proj_modelview )
     _top_plane    = row3 - row1;
     _near_plane   = row3 + row2;
     _far_plane    = row3 - row2;
-    
+
     _normalize_plane( _left_plane );
     _normalize_plane( _right_plane );
     _normalize_plane( _bottom_plane );
@@ -97,7 +97,7 @@ void frustum_culler< T >::setup( const matrix< 4, 4, T >& proj_modelview )
 
 
 
-template < class T > 
+template < class T >
 inline void
 frustum_culler< T >::_normalize_plane( vector< 4, T >& plane ) const
 {
@@ -110,7 +110,7 @@ frustum_culler< T >::_normalize_plane( vector< 4, T >& plane ) const
 }
 
 
-template < class T > 
+template < class T >
 Visibility frustum_culler< T >::test_sphere( const vector< 4, T >& sphere )
 {
     Visibility visibility = VISIBILITY_FULL;
@@ -171,9 +171,9 @@ Visibility frustum_culler< T >::test_sphere( const vector< 4, T >& sphere )
         visibility = VISIBILITY_PARTIAL;
 
     return visibility;
-}	
+}
 
-template < class T > 
+template < class T >
 Visibility frustum_culler< T >::_test_aabb( const vec4& plane,
                                             const vec3& middle,
                                             const vec3& size_2 )
@@ -181,7 +181,8 @@ Visibility frustum_culler< T >::_test_aabb( const vec4& plane,
     // http://www.cescg.org/CESCG-2002/DSykoraJJelinek/index.html
     const T m = middle.x() * plane.x() + middle.y() * plane.y() +
                 middle.z() * plane.z() + plane.w();
-    const T n = size_2.x() * fabs( plane.x( )) + size_2.y() * fabs( plane.y( )) +
+    const T n = size_2.x() * fabs( plane.x( )) +
+                size_2.y() * fabs( plane.y( )) +
                 size_2.z() * fabs( plane.z( ));
 
     if( m + n < 0 )
@@ -191,14 +192,14 @@ Visibility frustum_culler< T >::_test_aabb( const vec4& plane,
     return VISIBILITY_FULL;
 }
 
-template < class T > 
+template < class T >
 Visibility frustum_culler< T >::test_aabb( const vec2& x, const vec2& y,
                                            const vec2& z )
 {
     Visibility result = VISIBILITY_FULL;
     const vec3& middle = vec3( x[0] + x[1], y[0] + y[1], z[0] + z[1] ) * .5;
     const vec3& size_2 = vec3( fabs(x[1] - x[0]), fabs(y[1] - y[0]),
-                               fabs(z[1] - z[0]) ) * .5; 
+                               fabs(z[1] - z[0]) ) * .5;
 
     switch( _test_aabb( _left_plane, middle, size_2 ))
     {
@@ -248,4 +249,3 @@ Visibility frustum_culler< T >::test_aabb( const vec2& x, const vec2& y,
 } // namespace vmml
 
 #endif // include protection
-

@@ -139,8 +139,8 @@ frustum_culler< T >::_normalize_plane( vector< 4, T >& plane ) const
 }
 
 
-template < class T >
-Visibility frustum_culler< T >::test_sphere( const vector< 4, T >& sphere ) const
+template < class T > Visibility
+frustum_culler< T >::test_sphere( const vector< 4, T >& sphere ) const
 {
     Visibility visibility = VISIBILITY_FULL;
 
@@ -210,7 +210,8 @@ Visibility frustum_culler< T >::_test_aabb( const vec4& plane,
     // http://www.cescg.org/CESCG-2002/DSykoraJJelinek/index.html
     const T m = middle.x() * plane.x() + middle.y() * plane.y() +
                 middle.z() * plane.z() + plane.w();
-    const T n = size_2.x() * fabs( plane.x( )) + size_2.y() * fabs( plane.y( )) +
+    const T n = size_2.x() * fabs( plane.x( )) +
+                size_2.y() * fabs( plane.y( )) +
                 size_2.z() * fabs( plane.z( ));
 
     if( m + n < 0 )
@@ -277,4 +278,3 @@ Visibility frustum_culler< T >::test_aabb( const vec2& x, const vec2& y,
 } // namespace vmml
 
 #endif // include protection
-

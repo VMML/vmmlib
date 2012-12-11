@@ -5,7 +5,7 @@ project(VMMLib)
 
 set(VERSION_MAJOR 1)
 set(VERSION_MINOR 5)
-set(VERSION_PATCH 0)
+set(VERSION_PATCH 1)
 set(RELEASE_VERSION OFF) # OFF or ABI version
 set(LAST_RELEASE 1.4.0)
 

@@ -174,16 +174,22 @@ public:
 
     vector( const T* values );
 
+#ifdef __OSG_MATH
+    template< typename OSGVEC3 >
+    explicit vector( const OSGVEC3& from,
+                     typename enable_if< M == 3, OSGVEC3 >::type* = 0 );
+#endif
+
     // vec< M > with homogeneous coordinates <-> vec< M-1 > conversion ctor
     // to-homogenous-coordinates ctor
     template< size_t N >
     vector( const vector< N, T >& source_,
-        typename enable_if< N == M - 1 >::type* = 0 );
+            typename enable_if< N == M - 1 >::type* = 0 );
 
     // from-homogenous-coordinates vector
     template< size_t N >
     vector( const vector< N, T >& source_,
-        typename enable_if< N == M + 1 >::type* = 0  );
+            typename enable_if< N == M + 1 >::type* = 0  );
 
     template< typename U >
     vector( const vector< M, U >& source_ );
@@ -207,13 +213,13 @@ public:
 
     // result = vec1.cross( vec2 ) => retval result = vec1 x vec2
     template< typename TT >
-    inline vector cross( const vector< M, TT >& rhs,
-        typename enable_if< M == 3, TT >::type* = 0 ) const;
+    vector cross( const vector< M, TT >& rhs,
+                  typename enable_if< M == 3, TT >::type* = 0 ) const;
 
     // result.cross( vec1, vec2 ) => (this) = vec1 x vec2
     template< typename TT >
     void cross( const vector< M, TT >& a, const vector< M, TT >& b,
-        typename enable_if< M == 3, TT >::type* = 0 );
+                typename enable_if< M == 3, TT >::type* = 0 );
 
 
     // compute the dot product of two vectors
@@ -517,6 +523,17 @@ vector< M, T >::vector( const T* values )
     memcpy( array, values, M * sizeof( T ));
 }
 
+#ifdef __OSG_MATH
+template< size_t M, typename T >
+template< typename OSGVEC3 >
+vector< M, T >::vector( const OSGVEC3& from,
+                        typename enable_if< M == 3, OSGVEC3 >::type* )
+{
+    array[ 0 ] = from.x();
+    array[ 1 ] = from.y();
+    array[ 2 ] = from.z();
+}
+#endif
 
 template< size_t M, typename T >
 // initializes the first M-1 values from vector_, the last from last_
@@ -539,8 +556,8 @@ vector< M, T >::vector( const vector< M-1, T >& vector_, T last_ )
 // to-homogenous-coordinates ctor
 template< size_t M, typename T >
 template< size_t N >
-vector< M, T >::
-vector( const vector< N, T >& source_, typename enable_if< N == M - 1 >::type* )
+vector< M, T >::vector( const vector< N, T >& source_,
+                        typename enable_if< N == M - 1 >::type* )
 {
     (*this) = source_;
 }
@@ -551,8 +568,8 @@ vector( const vector< N, T >& source_, typename enable_if< N == M - 1 >::type* )
 // from-homogenous-coordinates ctor
 template< size_t M, typename T >
 template< size_t N >
-vector< M, T >::
-vector( const vector< N, T >& source_, typename enable_if< N == M + 1 >::type*  )
+vector< M, T >::vector( const vector< N, T >& source_,
+                        typename enable_if< N == M + 1 >::type* )
 {
     (*this) = source_;
 }
@@ -1819,4 +1836,3 @@ vector< M, T >::set_random( int seed )
 } // namespace vmml
 
 #endif
-

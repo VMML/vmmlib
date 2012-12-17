@@ -28,7 +28,7 @@ public:
     typedef vector< 4, T >    vec4;
 
     // contructors
-    frustum_culler() {}// warning: components NOT initialised ( for performance )
+    frustum_culler() {} // warning: components NOT initialised
     ~frustum_culler(){}
 
     /** Set up the culling state using a 4x4 projection*modelView matrix. */
@@ -45,6 +45,17 @@ public:
 
     Visibility test_sphere( const vec4& sphere ) const;
     Visibility test_aabb( const vec2& x, const vec2& y, const vec2& z ) const;
+
+    friend std::ostream& operator << (std::ostream& os, const frustum_culler& f)
+    {
+        return os << "Frustum cull planes: " << std::endl
+                  << "    left   " << f._left_plane << std::endl
+                  << "    right  " << f._right_plane << std::endl
+                  << "    top    " << f._top_plane << std::endl
+                  << "    bottom " << f._bottom_plane << std::endl
+                  << "    near   " << f._near_plane << std::endl
+                  << "    far    " << f._far_plane << std::endl;
+    }
 
 private:
     inline void _normalize_plane( vec4& plane ) const;

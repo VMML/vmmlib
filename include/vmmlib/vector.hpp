@@ -441,16 +441,14 @@ operator* ( T factor, const vector< M, T >& vector_ )
 
 
 template< size_t M, typename T >
-inline T
-dot( const vector< M, T >& first, const vector< M, T >& second )
+inline T dot( const vector< M, T >& first, const vector< M, T >& second )
 {
     return first.dot( second );
 }
 
 
 template< size_t M, typename T >
-inline vector< M, T >
-cross( const vector< 3, T >& a, const vector< 3, T >& b )
+inline vector< M, T > cross( const vector< 3, T >& a, const vector< 3, T >& b )
 {
     return a.cross( b );
 }
@@ -477,7 +475,6 @@ inline vector< 4, T > compute_plane( const vector< 3, T >& a,
     plane.w() = -plane.x() * a.x() - plane.y() * a.y() - plane.z() * a.z();
     return plane;
 }
-
 
 template< size_t M, typename T >
 vector< M, T >::vector( const T& _a )
@@ -1123,9 +1120,8 @@ vector< M, T >::a() const
 // result = vec1.cross( vec2 ) => result = vec1 x vec2
 template< size_t M, typename T >
 template< typename TT >
-inline vector< M, T >
-vector< M, T >::cross( const vector< M, TT >& rhs,
-    typename enable_if< M == 3, TT >::type* ) const
+inline vector< M, T > vector< M, T >::cross( const vector< M, TT >& rhs,
+                                 typename enable_if< M == 3, TT >::type* ) const
 {
     vector< M, T > result;
     result.cross( *this, rhs );
@@ -1137,10 +1133,9 @@ vector< M, T >::cross( const vector< M, TT >& rhs,
 // result.cross( vec1, vec2 ) => (this) = vec1 x vec2
 template< size_t M, typename T >
 template< typename TT >
-void
-vector< M, T >::
-cross( const vector< M, TT >& aa, const vector< M, TT >& bb,
-    typename enable_if< M == 3, TT >::type* )
+void vector< M, T >::cross( const vector< M, TT >& aa,
+                            const vector< M, TT >& bb,
+                            typename enable_if< M == 3, TT >::type* )
 {
     array[ 0 ] = aa.y() * bb.z() - aa.z() * bb.y();
     array[ 1 ] = aa.z() * bb.x() - aa.x() * bb.z();
@@ -1150,8 +1145,7 @@ cross( const vector< M, TT >& aa, const vector< M, TT >& bb,
 
 
 template< size_t M, typename T >
-inline T
-vector< M, T >::dot( const vector< M, T >& other ) const
+inline T vector< M, T >::dot( const vector< M, T >& other ) const
 {
     T tmp = 0.0;
     for( size_t index = 0; index < M; ++index )
@@ -1163,8 +1157,7 @@ vector< M, T >::dot( const vector< M, T >& other ) const
 
 
 template< size_t M, typename T >
-inline T
-vector< M, T >::normalize()
+inline T vector< M, T >::normalize()
 {
     T len = length();
 
@@ -1176,26 +1169,19 @@ vector< M, T >::normalize()
     return len;
 }
 
-
-
 template< size_t M, typename T >
-inline T
-vector< M, T >::length() const
+inline T vector< M, T >::length() const
 {
     return sqrt( squared_length() );
 }
 
-
-
 template< size_t M, typename T >
-inline T
-vector< M, T >::squared_length() const
+inline T vector< M, T >::squared_length() const
 {
     T _squared_length = 0.0;
     for( const_iterator it = begin(), it_end = end(); it != it_end; ++it )
-    {
         _squared_length += (*it) * (*it);
-    }
+
     return _squared_length;
 }
 

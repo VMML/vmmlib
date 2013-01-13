@@ -176,10 +176,7 @@ include(DoxygenRule) # must be after all targets
 
 install(FILES ${HEADERS} DESTINATION include/vmmlib COMPONENT dev)
 install(FILES ${DOCS} DESTINATION share/vmmlib COMPONENT dev)
-install(FILES CMake/FindVMMLIB.cmake DESTINATION ${CMAKE_MODULE_INSTALL_PATH}
-  COMPONENT dev)
-install(FILES CMake/FindLibraryPackage.cmake
-  DESTINATION ${CMAKE_MODULE_INSTALL_PATH}/FindVMMLIB COMPONENT dev)
 
 include(CPackConfig)
 include(CTest)
+include(PackageConfig)

@@ -1,12 +1,13 @@
 # Common settings
 
+cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 if(CMAKE_VERSION VERSION_LESS 2.8.3)
   # WAR bug
   get_filename_component(CMAKE_CURRENT_LIST_DIR ${CMAKE_CURRENT_LIST_FILE} PATH)
   list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/2.8.3)
 endif()
-if(CMAKE_VERSION VERSION_LESS 2.8)
-  list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/2.8)
+if(CMAKE_VERSION VERSION_LESS 2.8.8)
+  list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/2.8.8)
 endif()
 
 include(${CMAKE_CURRENT_LIST_DIR}/System.cmake)
@@ -25,6 +26,7 @@ endif(NOT CMAKE_BUILD_TYPE)
 
 set(VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH})
 string(TOUPPER ${CMAKE_PROJECT_NAME} UPPER_PROJECT_NAME)
+string(TOLOWER ${CMAKE_PROJECT_NAME} LOWER_PROJECT_NAME)
 add_definitions(-D${UPPER_PROJECT_NAME}_VERSION=${VERSION})
 if(NOT VERSION_ABI)
   if(RELEASE_VERSION)
@@ -54,8 +56,11 @@ set(OUTPUT_INCLUDE_DIR ${CMAKE_BINARY_DIR}/include)
 file(MAKE_DIRECTORY ${OUTPUT_INCLUDE_DIR})
 include_directories(BEFORE ${CMAKE_SOURCE_DIR} ${OUTPUT_INCLUDE_DIR})
 
-string(REGEX REPLACE ".*\\/(share\\/.*)" "\\1/Modules" CMAKE_MODULE_INSTALL_PATH
-  ${CMAKE_ROOT})
+if(MSVC)
+  set(CMAKE_MODULE_INSTALL_PATH ${CMAKE_PROJECT_NAME})
+else()
+  set(CMAKE_MODULE_INSTALL_PATH share/${CMAKE_PROJECT_NAME}/CMake)
+endif()
 
 # Boost settings
 if(MSVC)
@@ -89,7 +94,9 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_CLANG)
   if(GCC_COMPILER_VERSION VERSION_LESS 4.1)
     message(ERROR "GCC 4.1 or later required, found ${GCC_COMPILER_VERSION}")
   endif()
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Winvalid-pch -Wnon-virtual-dtor -Wsign-promo -Winit-self -Wno-unknown-pragmas -Wno-unused-parameter")
+  set(COMMON_GCC_FLAGS "-Wall -Wextra -Winvalid-pch -Winit-self -Wno-unknown-pragmas -Wno-unused-parameter")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${COMMON_GCC_FLAGS} ")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMMON_GCC_FLAGS} -Wnon-virtual-dtor -Wsign-promo")
   if(GCC_COMPILER_VERSION VERSION_GREATER 4.1) # < 4.2 doesn't know -isystem
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wshadow")
   endif()
@@ -163,13 +170,31 @@ if(APPLE)
     "Building ${CMAKE_PROJECT_NAME} ${VERSION} for ${CMAKE_OSX_ARCHITECTURES}")
 endif(APPLE)
 
-# hooks to gather all targets (libaries & executables)
+# hooks to gather all targets (libraries & executables)
 set(ALL_DEP_TARGETS "")
+set(ALL_LIB_TARGETS "")
 macro(add_executable _target)
   _add_executable(${_target} ${ARGN})
   set_property(GLOBAL APPEND PROPERTY ALL_DEP_TARGETS ${_target})
 endmacro()
 macro(add_library _target)
   _add_library(${_target} ${ARGN})
+
+  # add defines TARGET_DSO_NAME and TARGET_SHARED
+  get_target_property(THIS_DEFINITIONS ${_target} COMPILE_DEFINITIONS)
+  if(NOT THIS_DEFINITIONS)
+    set(THIS_DEFINITIONS) # clear THIS_DEFINITIONS-NOTFOUND
+  endif()
+  string(TOUPPER ${_target} _TARGET)
+  get_target_property(_libraryname ${_target} LOCATION)
+  get_filename_component(_libraryname ${_libraryname} NAME)
+
+  list(APPEND THIS_DEFINITIONS
+    ${_TARGET}_SHARED ${_TARGET}_DSO_NAME=\"${_libraryname}\")
+
+  set_target_properties(${_target} PROPERTIES
+    COMPILE_DEFINITIONS "${THIS_DEFINITIONS}")
+
   set_property(GLOBAL APPEND PROPERTY ALL_DEP_TARGETS ${_target})
+  set_property(GLOBAL APPEND PROPERTY ALL_LIB_TARGETS ${_target})
 endmacro()

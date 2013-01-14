@@ -1,7 +1,7 @@
 # Copyright (c) 2011 Daniel Pfeifer <daniel@pfeifer-mail.de>
 
 cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
-project(VMMLib)
+project(vmmlib)
 
 set(VERSION_MAJOR 1)
 set(VERSION_MINOR 5)

@@ -936,7 +936,7 @@ slerp( T a, const quaternion< T >& p, const quaternion< T >& q, const T epsilon 
         // standard slerp
         T sine = sqrt( 1. - ( cosine * cosine ) );
         T angle = atan2( sine, cosine );
-        T coeff1 = sin( 1.0 - a ) * angle / sine;
+        T coeff1 = sin( ( 1.0 - a ) * angle) / sine;
         T coeff2 = sin( a * angle ) / sine;
 
         qx *= coeff2;

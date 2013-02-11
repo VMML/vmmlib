@@ -160,6 +160,28 @@ namespace vmml {
         cp3_tensor< R, I1, I1, I1, T_value, T_coeff > operator=(const cp3_tensor< R, I1, I1, I1, T_value, T_coeff >& other) {
             return *this;
         };
+        
+        typedef cp3_tensor< R, I1, I2, I3, T_value, T_coeff > cp3_type;
+	    friend std::ostream& operator <<(std::ostream& os, const cp3_type& dec_ ) {
+            lambda_type lambdas;
+            dec_.get_lambdas(lambdas);
+            u1_type* u1 = new u1_type;
+            dec_.get_u1(*u1);
+            u2_type* u2 = new u2_type;
+            dec_.get_u2(*u2);
+            u3_type* u3 = new u3_type;
+            dec_.get_u3(*u3);
+			
+            os << "U1: " << std::endl << *u1 << std::endl
+			<< "U2: " << std::endl << *u2 << std::endl
+			<< "U3: " << std::endl << *u3 << std::endl
+			<< "lambdas: " << std::endl << lambdas << std::endl;
+			
+            delete u1;
+            delete u2;
+            delete u3;
+            return os;
+        }
 
         void cast_members();
         void cast_comp_members();

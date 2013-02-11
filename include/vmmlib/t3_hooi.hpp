@@ -50,11 +50,11 @@ namespace vmml {
          with the dimensions I1xI2I3, which corresponds to a matrizitation alonge mode I1.
          */
         template< typename T_init>
-        static tensor_stats als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, t3_core_type& core_, T_init init, const double& max_f_norm_ = 0.0, const size_t max_iterations = 3, const float tolerance = 1e-04);
+        static tensor_stats als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, t3_core_type& core_, T_init init, const double& max_f_norm_ = 0.0, const size_t max_iterations = 10, const float tolerance = 1e-04);
 
         //core not needed
         template< typename T_init>
-        static tensor_stats als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, T_init init, const double& max_f_norm_ = 0.0, const size_t max_iterations = 3, const float tolerance = 1e-04);
+        static tensor_stats als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, T_init init, const double& max_f_norm_ = 0.0, const size_t max_iterations = 10, const float tolerance = 1e-04);
 
         /* derive core
          implemented according to core = data x_1 U1_pinv x_2 U2_pinv x_3 U3_pinv,

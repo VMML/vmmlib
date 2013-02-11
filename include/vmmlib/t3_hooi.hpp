@@ -193,7 +193,7 @@ namespace vmml {
 
             if (tolerance_ > 0) {
                 f_norm = core_.frobenius_norm();
-                normresidual = sqrt(max_f_norm * max_f_norm - f_norm * f_norm);
+                normresidual = sqrt( fabs(max_f_norm * max_f_norm - f_norm * f_norm) );
                 fit = 1 - (normresidual / max_f_norm);
                 fitchange = fabs(fitold - fit);
 #if TUCKER_LOG

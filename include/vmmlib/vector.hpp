@@ -52,8 +52,8 @@ class vector
 {
 public:
     typedef T                                       value_type;
-	typedef T*                                      pointer;
-	typedef T&                                      reference;
+    typedef T*                                      pointer;
+    typedef T&                                      reference;
     typedef T*                                      iterator;
     typedef const T*                                const_iterator;
     typedef std::reverse_iterator< iterator >       reverse_iterator;
@@ -169,8 +169,10 @@ public:
     vector( const T& x, const T& y, const T& z );
     vector( const T& x, const T& y, const T& z, const T& w );
 
+#ifndef SWIG
     // initializes the first M-1 values from vector_, the last from last_
     vector( const vector< M-1, T >& vector_, T last_ );
+#endif
 
     vector( const T* values );
 
@@ -195,7 +197,9 @@ public:
     vector( const vector< M, U >& source_ );
 
     void set( T a ); // sets all components to a;
+#ifndef SWIG
     void set( const vector< M-1, T >& v, T a );
+#endif
     template< size_t N >
     void set( const vector< N, T >& v );
 
@@ -233,11 +237,11 @@ public:
     // vector<> normalize( const vector<> );
     inline T normalize();
 
-	//sets all matrix values with random values
-	//remember to set srand( seed );
-	//if seed is set to -1, srand( seed ) was set outside set_random
-	//otherwise srand( seed ) will be called with the given seed
-	void set_random( int seed = -1 );
+    //sets all matrix values with random values
+    //remember to set srand( seed );
+    //if seed is set to -1, srand( seed ) was set outside set_random
+    //otherwise srand( seed ) will be called with the given seed
+    void set_random( int seed = -1 );
 
     inline T length() const;
     inline T squared_length() const;
@@ -255,9 +259,9 @@ public:
     // retval = normal of (this), v1, v2
     vector compute_normal( const vector& v1, const vector& v2 ) const;
 
-	template< size_t N >
+    template< size_t N >
     void get_sub_vector( vector< N, T >& sub_v_, size_t offset = 0,
-						 typename enable_if< M >= N >::type* = 0 );
+                         typename enable_if< M >= N >::type* = 0 );
 
     template< size_t N >
     vector< N, T >& get_sub_vector( size_t offset = 0,
@@ -267,20 +271,20 @@ public:
     const vector< N, T >& get_sub_vector( size_t offset = 0,
         typename enable_if< M >= N >::type* = 0 ) const;
 
-	// sphere functions - sphere layout: center xyz, radius w
+    // sphere functions - sphere layout: center xyz, radius w
     template< typename TT >
-	inline vector< 3, T > project_point_onto_sphere(
+    inline vector< 3, T > project_point_onto_sphere(
         const vector< 3, TT >& point,
         typename enable_if< M == 4, TT >::type* = 0 ) const;
 
-	// returns a negative distance if the point lies in the sphere
+    // returns a negative distance if the point lies in the sphere
     template< typename TT >
-	inline T distance_to_sphere( const vector< 3, TT >& point,
+    inline T distance_to_sphere( const vector< 3, TT >& point,
         typename enable_if< M == 4, TT >::type* = 0 ) const;
 
-	// plane functions - plane layout; normal xyz, distance w
+    // plane functions - plane layout; normal xyz, distance w
     template< typename TT >
-	inline T distance_to_plane( const vector< 3, TT >& point,
+    inline T distance_to_plane( const vector< 3, TT >& point,
         typename enable_if< M == 4, TT >::type* = 0 ) const;
 
     template< typename TT >
@@ -315,23 +319,23 @@ public:
     // perturbs each component by randomly + or - the perturbation parameter
     void perturb( T perturbation = 0.0001 );
 
-	void sqrt_elementwise();
-	double norm() const; //l2 norm
+    void sqrt_elementwise();
+    double norm() const; //l2 norm
 
     // computes the reciprocal value for each component, x = 1/x;
     // WARNING: might result in nans if division by 0!
-	void reciprocal();
+    void reciprocal();
     // computes the reciprocal value for each component, x = 1/x;
     // checks every component for 0, sets to max value if zero.
     void reciprocal_safe();
 
-	template< typename TT >
-	void cast_from( const vector< M, TT >& other );
+    template< typename TT >
+    void cast_from( const vector< M, TT >& other );
 
-	size_t nnz() const;
+    size_t nnz() const;
 
     // test each component of the vector for isnan and isinf
-	//  inline bool is_valid() const; -> moved to class validator
+    //  inline bool is_valid() const; -> moved to class validator
 
     friend std::ostream& operator<< ( std::ostream& os, const vector& vector_ )
     {
@@ -361,9 +365,10 @@ public:
 
 
 
-	// storage
-	VMMLIB_ALIGN( T array[ M ] );
+    // storage
+    VMMLIB_ALIGN( T array[ M ] );
 
+#ifndef SWIG
     // Vector3 defaults
     static const vector FORWARD;
     static const vector BACKWARD;
@@ -379,6 +384,7 @@ public:
     static const vector UNIT_X;
     static const vector UNIT_Y;
     static const vector UNIT_Z;
+#endif
 
 }; // class vector
 
@@ -395,6 +401,7 @@ typedef vector< 4, float >  vec4f;
 typedef vector< 4, double > vec4d;
 #endif
 
+#ifndef SWIG
 template< size_t M, typename T >
 const vector< M, T > vector< M, T >::FORWARD( 0, 0, -1 );
 template< size_t M, typename T >
@@ -419,6 +426,7 @@ template< size_t M, typename T >
 const vector< M, T > vector< M, T >::UNIT_Y( 0, 1, 0 );
 template< size_t M, typename T >
 const vector< M, T > vector< M, T >::UNIT_Z( 0, 0, 1 );
+#endif
 
 //
 //  some free functions for convenience
@@ -532,6 +540,7 @@ vector< M, T >::vector( const OSGVEC3& from,
 }
 #endif
 
+#ifndef SWIG
 template< size_t M, typename T >
 // initializes the first M-1 values from vector_, the last from last_
 vector< M, T >::vector( const vector< M-1, T >& vector_, T last_ )
@@ -547,6 +556,7 @@ vector< M, T >::vector( const vector< M-1, T >& vector_, T last_ )
     }
     (*my_it) = last_;
 }
+#endif
 
 
 
@@ -592,7 +602,7 @@ vector< M, T >::set( T _a )
 }
 
 
-
+#ifndef SWIG
 template< size_t M, typename T >
 void
 vector< M, T >::set( const vector< M-1, T >& v, T _a )
@@ -600,6 +610,7 @@ vector< M, T >::set( const vector< M-1, T >& v, T _a )
     memcpy( array, v.array, sizeof( T ) * (M-1) );
     at( M-1 ) = _a;
 }
+#endif
 
 template< size_t M, typename T >
 template< size_t N >
@@ -646,7 +657,7 @@ template< size_t M, typename T >
 inline T&
 vector< M, T >::operator()( size_t index )
 {
-	return at( index );
+    return at( index );
 }
 
 
@@ -655,7 +666,7 @@ template< size_t M, typename T >
 inline const T&
 vector< M, T >::operator()( size_t index ) const
 {
-	return at( index );
+    return at( index );
 }
 
 
@@ -1238,7 +1249,7 @@ vector< M, T >::compute_normal( const vector< M, T >& bb,
 template< size_t M, typename T >
 template< typename TT >
 vector< 3, T > vector< M, T >::rotate( const T theta, vector< M, TT > axis,
-			typename enable_if< M == 3, TT >::type* ) const
+            typename enable_if< M == 3, TT >::type* ) const
 {
     axis.normalize();
 
@@ -1288,14 +1299,14 @@ distance_to_sphere( const vector< 3, TT >& point,
     typename enable_if< M == 4, TT >::type* ) const
 {
     const vector< 3, T >& center_ = get_sub_vector< 3 >( 0 );
-	return ( point - center_ ).length() - w();
+    return ( point - center_ ).length() - w();
 }
 
 template< size_t M, typename T >
 template< size_t N >
 void
 vector< M, T >::get_sub_vector( vector< N, T >& sub_v, size_t offset,
-							   typename enable_if< M >= N >::type* )
+                               typename enable_if< M >= N >::type* )
 {
     assert( offset <= M - N );
     sub_v = reinterpret_cast< vector< N, T >& >( *( begin() + offset ) );
@@ -1715,10 +1726,10 @@ template< size_t M, typename T >
 void
 vector< M, T >::sqrt_elementwise()
 {
-	for( iterator it = begin(), it_end = end(); it != it_end; ++it )
-	{
-		(*it) = sqrt(*it);
-	}
+    for( iterator it = begin(), it_end = end(); it != it_end; ++it )
+    {
+        (*it) = sqrt(*it);
+    }
 }
 
 
@@ -1727,10 +1738,10 @@ template< size_t M, typename T >
 void
 vector< M, T >::reciprocal()
 {
-	for( iterator it = begin(), it_end = end(); it != it_end; ++it )
-	{
-		(*it) = static_cast< T >( 1.0 ) / (*it);
-	}
+    for( iterator it = begin(), it_end = end(); it != it_end; ++it )
+    {
+        (*it) = static_cast< T >( 1.0 ) / (*it);
+    }
 }
 
 
@@ -1739,15 +1750,15 @@ template< size_t M, typename T >
 void
 vector< M, T >::reciprocal_safe()
 {
-	for( iterator it = begin(), it_end = end(); it != it_end; ++it )
-	{
+    for( iterator it = begin(), it_end = end(); it != it_end; ++it )
+    {
         T& v = *it;
 
         if ( v == static_cast< T >( 0 ) )
             v = std::numeric_limits< T >::max();
         else
             v = static_cast< T >( 1.0 ) / v;
-	}
+    }
 }
 
 
@@ -1757,10 +1768,10 @@ template< typename TT >
 void
 vector< M, T >::cast_from( const vector< M, TT >& other )
 {
-	typedef vmml::vector< M, TT > vector_tt_type ;
-	typedef typename vector_tt_type::const_iterator tt_const_iterator;
+    typedef vmml::vector< M, TT > vector_tt_type ;
+    typedef typename vector_tt_type::const_iterator tt_const_iterator;
 
-	iterator it = begin(), it_end = end();
+    iterator it = begin(), it_end = end();
     tt_const_iterator other_it = other.begin();
     for( ; it != it_end; ++it, ++other_it )
     {
@@ -1772,18 +1783,18 @@ template< size_t M, typename T >
 size_t
 vector< M, T >::nnz() const
 {
-	size_t counter = 0;
+    size_t counter = 0;
 
-	const_iterator  it = begin(),
-	it_end = end();
-	for( ; it != it_end; ++it)
-	{
-		if ( *it != 0 ) {
-			++counter;
-		}
-	}
+    const_iterator  it = begin(),
+    it_end = end();
+    for( ; it != it_end; ++it)
+    {
+        if ( *it != 0 ) {
+            ++counter;
+        }
+    }
 
-	return counter;
+    return counter;
 }
 
 
@@ -1791,31 +1802,31 @@ template< size_t M, typename T >
 double
 vector< M, T >::norm( ) const
 {
-	double norm_v = 0.0;
+    double norm_v = 0.0;
 
-	const_iterator it = begin(), it_end = end();
-	for( ; it != it_end; ++it )
-	{
-		norm_v += *it * *it;
-	}
+    const_iterator it = begin(), it_end = end();
+    for( ; it != it_end; ++it )
+    {
+        norm_v += *it * *it;
+    }
 
-	return sqrt(norm_v);
+    return sqrt(norm_v);
 }
 
 template< size_t M, typename T >
 void
 vector< M, T >::set_random( int seed )
 {
-	if ( seed >= 0 )
-		srand( seed );
+    if ( seed >= 0 )
+        srand( seed );
 
-	double fillValue = 0.0f;
-	for( size_t i = 0; i < M; ++i )
-	{
-		fillValue = rand();
-		fillValue /= RAND_MAX;
-		at( i ) = -1.0 + 2.0 * static_cast< double >( fillValue )  ;
-	}
+    double fillValue = 0.0f;
+    for( size_t i = 0; i < M; ++i )
+    {
+        fillValue = rand();
+        fillValue /= RAND_MAX;
+        at( i ) = -1.0 + 2.0 * static_cast< double >( fillValue )  ;
+    }
 }
 
 

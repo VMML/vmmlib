@@ -1184,19 +1184,16 @@ matrix< M, N, T >::operator*=( T scalar )
 template< size_t M, size_t N, typename T >
 vector< M, T >
 matrix< M, N, T >::
-operator*( const vector< N, T >& other ) const
+operator*( const vector< N, T >& vec ) const
 {
     vector< M, T > result;
 
     // this < M, 1 > = < M, P > * < P, 1 >
-    T tmp;
     for( size_t row_index = 0; row_index < M; row_index++)
     {
-        tmp = static_cast< T >( 0.0 );
-        for( size_t p = 0; p < N; p++)
-        {
-            tmp += at( row_index, p ) * other.at( p );
-        }
+        T tmp( 0 );
+        for( size_t p = 0; p < N; ++p )
+            tmp += at( row_index, p ) * vec.at( p );
         result.at( row_index ) = tmp;
     }
     return result;
@@ -2365,17 +2362,17 @@ matrix< M, N, T >::frobenius_norm( ) const
 }
 
 template< size_t M, size_t N, typename T >
-double 
+double
 matrix< M, N, T >::p_norm( double p ) const
 {
 	double norm = 0.0;
-	
-	const_iterator it = begin(), it_end = end(); 
+
+	const_iterator it = begin(), it_end = end();
 	for( ; it != it_end; ++it )
 	{
 		norm += pow(*it, p);
 	}
-	
+
 	return pow(norm,1./p);
 }
 
@@ -2903,4 +2900,3 @@ matrix< M, N, T >::sum_columns( matrix< M, N/2, T>& other ) const
 } // namespace vmml
 
 #endif
-

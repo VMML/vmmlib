@@ -237,11 +237,11 @@ public:
     // vector<> normalize( const vector<> );
     inline T normalize();
 
-    //sets all matrix values with random values
-    //remember to set srand( seed );
-    //if seed is set to -1, srand( seed ) was set outside set_random
-    //otherwise srand( seed ) will be called with the given seed
-    void set_random( int seed = -1 );
+	//sets all vector components to random values
+	//remember to set srand( seed );
+	//if seed is set to -1, srand( seed ) was set outside set_random
+	//otherwise srand( seed ) will be called with the given seed
+	void set_random( int seed = -1 );
 
     inline T length() const;
     inline T squared_length() const;
@@ -1170,12 +1170,12 @@ inline T vector< M, T >::dot( const vector< M, T >& other ) const
 template< size_t M, typename T >
 inline T vector< M, T >::normalize()
 {
-    T len = length();
+    const T len = length();
 
     if ( len == 0 )
         return 0;
 
-    T tmp = 1.0 / len;
+    const T tmp = 1.0 / len;
     (*this) *= tmp;
     return len;
 }

@@ -451,7 +451,73 @@ namespace vmml {
 
     }
 
-
+    VMML_TEMPLATE_STRING
+    double
+    VMML_TEMPLATE_CLASSNAME::rmse_from_files(const std::string& dir_,
+const std::string& filename_a_, const std::string& filename_b_ ) {
+        std::string path_a_raw = "";
+        std::string path_b_raw = "";
+        concat_path( dir_, filename_a_, path_a_raw );
+        concat_path( dir_, filename_b_, path_b_raw );
+		
+        std::ifstream afile;
+        afile.open( path_a_raw.c_str(), std::ios::in);
+		
+        std::ifstream bfile;
+        bfile.open( path_b_raw.c_str(), std::ios::in);
+		
+		double mse_val = 0.0f;
+		double mse_val_avg = 0.0f;
+		double mse_val_i3 = 0.0f;
+		double diff = 0.0f;
+		
+        if (afile.is_open() && bfile.is_open()) {
+            T* a_value;
+            T* b_value;
+			double a_value_f;
+			double b_value_f;
+			
+            size_t value_len = sizeof (T);
+            char* data_a = new char[ value_len ];
+            char* data_b = new char[ value_len ];
+			
+            for (size_t i3 = 0; i3 < I3; ++i3) {
+				mse_val = 0.0f;
+                for (size_t i1 = 0; i1 < I1; ++i1) {
+                    for (size_t i2 = 0; i2 < I2; ++i2) {
+                        afile.read( data_a, value_len);
+                        a_value = (T*)&(data_a[0]);
+                        a_value_f = static_cast<double> (*a_value);
+						
+						bfile.read( data_b, value_len);
+                        b_value = (T*)&(data_b[0]);
+                        b_value_f = static_cast<double> (*b_value);
+						
+						diff = fabs(b_value_f - a_value_f);
+						diff *= diff;
+						mse_val += diff;
+					}
+				}
+				mse_val_avg = mse_val;
+				mse_val_avg /= double(I1);
+				mse_val_avg /= double(I2);
+				mse_val_i3 += mse_val_avg;
+				
+            }
+			
+			
+            afile.close();
+            bfile.close();
+        } else {
+            afile.close();
+            bfile.close();
+            std::cout << "no file open" << std::endl;
+        }
+		
+		
+		mse_val_i3 /= double(I3);
+		return sqrt(mse_val_i3);
+    }
 
 
 #undef VMML_TEMPLATE_STRING

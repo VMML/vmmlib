@@ -38,6 +38,7 @@ namespace vmml {
         static void write_datfile(const std::string& dir_, const std::string& filename_);
         static void write_to_csv(const t3_t& data_, const std::string& dir_, const std::string& filename_);
         static void remove_normals_from_raw(const t3_t& data_, const std::string& dir_, const std::string& filename_);
+        static double rmse_from_files(const std::string& dir_, const std::string& filename_a_, const std::string& filename_b_ );
 
         template< typename TT >
         static void quantize_to(const std::string& dir_,

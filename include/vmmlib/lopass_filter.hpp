@@ -18,11 +18,27 @@ namespace vmml
 template< size_t M, typename T > class lopass_filter
 {
 public:
+    /**
+      Constructor that takes the desired smooth factor as parameter
+     */
     lopass_filter( const float F ) : _smooth_factor(F) {}
     ~lopass_filter() {}
 
+    /**
+      Filters the content of the data structure and returns the smoothed
+      output value
+     */
     T filter();
+
+    /**
+      Adds a value to the data set and returns the filtered value after
+      calling filter() internally
+     */
     T add( const T& value );
+
+    /**
+      Sets the smooth factor to be used during the filter process
+     */
     void set_smooth_factor( const float& f );
 
 private:

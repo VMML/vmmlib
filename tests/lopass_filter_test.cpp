@@ -8,10 +8,7 @@
 
 namespace vmml
 {
-
-
-bool
-lopass_filter_test::run()
+bool lopass_filter_test::run()
 {
     double data[] = { 0, 2, 4, 8, 16 };
     vector< 5, double > v;

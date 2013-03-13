@@ -4,7 +4,7 @@
  * @author Jafet Villafranca
  *
  * lopass_filter is a vector data structure in which it is possible to store
- * data values in order to get an smoothed output value
+ * data values to get an smoothed output value
  *
  */
 

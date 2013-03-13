@@ -1,6 +1,6 @@
-#include "lopass_filter_test.hpp"
+#include "lowpass_filter_test.hpp"
 
-#include <vmmlib/lopass_filter.hpp>
+#include <vmmlib/lowpass_filter.hpp>
 #include <vmmlib/vector.hpp>
 #include <deque>
 #include <sstream>
@@ -8,13 +8,13 @@
 
 namespace vmml
 {
-bool lopass_filter_test::run()
+bool lowpass_filter_test::run()
 {
     double data[] = { 0, 2, 4, 8, 16 };
     vector< 5, double > v;
     v.iter_set(data, data+5);
 
-    lopass_filter< 4, double > filter (.1f);
+    lowpass_filter< 4, double > filter (.1f);
     filter.add(data[0]);
     filter.add(data[1]);
     filter.add(data[2]);

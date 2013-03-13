@@ -3,23 +3,23 @@
  *
  * @author Jafet Villafranca
  *
- * lopass_filter is a vector data structure in which it is possible to store
- * data values to get an smoothed output value
+ * Implements low pass filtering on a templated data type, which needs to
+ * implement multiplication by a scalar float for smoothing.
  *
  */
 
-#ifndef __VMML__LOPASS_FILTER__HPP__
-#define __VMML__LOPASS_FILTER__HPP__
+#ifndef __VMML__LOWPASS_FILTER__HPP__
+#define __VMML__LOWPASS_FILTER__HPP__
 
 #include <deque>
 
 namespace vmml
 {
-template< size_t M, typename T > class lopass_filter
+template< size_t M, typename T > class lowpass_filter
 {
 public:
-    lopass_filter( const float F ) : _smooth_factor(F) {}
-    ~lopass_filter() {}
+    lowpass_filter( const float F ) : _smooth_factor(F) {}
+    ~lowpass_filter() {}
 
     T filter();
     T add( const T& value );
@@ -29,10 +29,10 @@ private:
     std::deque< T > _data;
     float _smooth_factor;
 
-}; // class lopass_filter
+}; // class lowpass_filter
 
 
-template< size_t M, typename T > T lopass_filter< M, T >::filter()
+template< size_t M, typename T > T lowpass_filter< M, T >::filter()
 {
     if( _data.empty( ))
         return T(0);
@@ -50,7 +50,7 @@ template< size_t M, typename T > T lopass_filter< M, T >::filter()
     return filtered;
 }
 
-template< size_t M, typename T > T lopass_filter< M, T >::add( const T& value )
+template< size_t M, typename T > T lowpass_filter< M, T >::add( const T& value )
 {
     _data.push_front( value );
 
@@ -61,7 +61,7 @@ template< size_t M, typename T > T lopass_filter< M, T >::add( const T& value )
 }
 
 template< size_t M, typename T >
-void lopass_filter< M, T>::set_smooth_factor( const float& f )
+void lowpass_filter< M, T>::set_smooth_factor( const float& f )
 {
     _smooth_factor = f;
 }

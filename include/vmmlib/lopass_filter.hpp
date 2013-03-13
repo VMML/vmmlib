@@ -29,9 +29,11 @@ namespace vmml
 
         const T add_value( const T& value );
 
+        void set_smooth_factor( const float& f );
+
     private:
         std::deque< T > _data;
-        const float _smooth_factor;
+        float _smooth_factor;
 
     }; // class lopass_filter
 
@@ -64,6 +66,13 @@ namespace vmml
 
         return filter();
 
+    }
+
+    template< size_t M, typename T >
+    void
+    lopass_filter< M, T>::set_smooth_factor( const float& f )
+    {
+        _smooth_factor = f;
     }
 
 

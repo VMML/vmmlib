@@ -14,13 +14,17 @@ bool
 lopass_filter_test::run()
 {
     double data[] = { 0, 2, 4, 8, 16 };
+    vector< 5, double > v;
+    v.iter_set(data, data+5);
 
-    lopass_filter< 4, double > filter (.5f);
+    lopass_filter< 4, double > filter (.1f);
     filter.add_value(data[0]);
     filter.add_value(data[1]);
     filter.add_value(data[2]);
     filter.add_value(data[3]);
     filter.add_value(data[4]);
+
+    filter.set_smooth_factor(.5f);
 
     float tmp = 9;
     double filtered = filter.filter();
@@ -31,7 +35,7 @@ lopass_filter_test::run()
     if ( ! ok )
     {
         std::stringstream error;
-        error << "Filter " << data << "\n"
+        error << "Filter " << v << "\n"
               << "result should be: " << tmp << ",\n"
               << "result is: " << filtered << std::endl;
         log_error( error.str() );

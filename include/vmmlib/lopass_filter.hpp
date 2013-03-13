@@ -11,7 +11,7 @@
 #ifndef __VMML__LOPASS_FILTER__HPP__
 #define __VMML__LOPASS_FILTER__HPP__
 
-#include <vmmlib/vector.hpp>
+#include <deque>
 
 namespace vmml
 {
@@ -19,18 +19,18 @@ namespace vmml
     class lopass_filter
     {
     public:
-        lopass_filter( vector< M, T > v, float F )
+        lopass_filter( float F )
             : _smooth_factor(F)
-        {
-            _data.set(v);
-        }
+        {}
 
         ~lopass_filter() {}
 
         const T filter();
 
+        const T add_value( const T& value );
+
     private:
-        vector< M, T > _data;
+        std::deque< T > _data;
         const float _smooth_factor;
 
     }; // class lopass_filter
@@ -43,16 +43,26 @@ namespace vmml
         T filtered;
         double weight = 1.0;
 
-        typedef typename vector< M, T >::const_iterator const_v_iterator;
-
-        const_v_iterator it;
-        for( it = _data.end()-1; it != _data.begin()-1; --it )
+        for (size_t i = _data.size(); i --> 0;)
         {
-            filtered = filtered * (1 - weight) + *it * weight;
+            filtered = filtered * (1 - weight) + _data[i] * weight;
             weight *= _smooth_factor;
         }
 
         return filtered;
+
+    }
+
+    template< size_t M, typename T >
+    const T
+    lopass_filter< M, T >::add_value( const T& value )
+    {
+        _data.push_back(value);
+
+        if (_data.size() > M)
+            _data.pop_front();
+
+        return filter();
 
     }
 

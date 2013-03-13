@@ -18,11 +18,30 @@ namespace vmml
 template< size_t M, typename T > class lowpass_filter
 {
 public:
+    /**
+      Constructor
+      @param[in]    F   Smooth factor to use during the filter process
+     */
     lowpass_filter( const float F ) : _smooth_factor(F) {}
     ~lowpass_filter() {}
 
+    /**
+      Filters the content of the data structure
+      @return The filtered output value
+     */
     T filter();
+
+    /**
+      Adds a value to the data set and returns the filtered output
+      @param[in]    value  Value to add
+      @return The filtered output value
+     */
     T add( const T& value );
+
+    /**
+      Sets the smooth factor
+      @param[in]    f   Smooth factor to use during the filter process
+     */
     void set_smooth_factor( const float& f );
 
 private:

@@ -35,11 +35,11 @@ private:
 template< size_t M, typename T > T lowpass_filter< M, T >::filter()
 {
     if( _data.empty( ))
-        return T(0);
+        return T();
 
     typename std::deque< T >::const_iterator i = _data.begin();
     T filtered = *i;
-    double weight = 1.0;
+    double weight = _smooth_factor;
 
     for( ++i ; i != _data.end(); ++i )
     {

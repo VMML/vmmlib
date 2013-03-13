@@ -174,11 +174,10 @@ if(NOT MSVC)
   add_test(vmmlib_test ${EXECUTABLE})
 endif()
 
-include(DoxygenRule) # must be after all targets
-
 install(FILES ${HEADERS} DESTINATION include/vmmlib COMPONENT dev)
 install(FILES ${DOCS} DESTINATION share/vmmlib COMPONENT dev)
 
+include(DoxygenRule) # must be after all targets
 include(CPackConfig)
 include(CTest)
 include(PackageConfig)

@@ -69,6 +69,7 @@ set(HEADERS
   include/vmmlib/lapack_sym_eigs.hpp
   include/vmmlib/lapack_types.hpp
   include/vmmlib/linear_least_squares.hpp
+  include/vmmlib/lopass_filter.hpp
   include/vmmlib/math.hpp
   include/vmmlib/matrix.hpp
   include/vmmlib/matrix_functors.hpp
@@ -115,6 +116,7 @@ set(TESTS
   tests/timer.cpp
   tests/unit_test.cpp
   tests/unit_test_globals.cpp
+  tests/lopass_filter_test.cpp
 #  tests/vector_test.cpp
   tests/vmmlib_unit_tests_main.cpp
 # tests/matrix_compare_perf_test.cpp

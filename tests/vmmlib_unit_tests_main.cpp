@@ -5,6 +5,7 @@
 
 //#include "vector_test.hpp"
 //#include "matrix_test.hpp"
+#include "lopass_filter_test.hpp"
 #include "frustum_test.hpp"
 #include "quaternion_test.hpp"
 #include "qr_decomposition_test.hpp"
@@ -56,6 +57,9 @@ main( int argc, const char* argv[] )
 
 //    vmml::matrix_test matrix_test_;
 //    run_and_log( matrix_test_ );
+
+    vmml::lopass_filter_test lopass_filter_test_;
+    run_and_log( lopass_filter_test_ );
 
     vmml::frustum_test frustum_test_;
     run_and_log( frustum_test_ );

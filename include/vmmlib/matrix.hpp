@@ -208,7 +208,7 @@ public:
 	void set_dct();
 
     void zero();
-    void identity();
+   void identity();
 
 	double frobenius_norm() const;
 	double p_norm( double p ) const;

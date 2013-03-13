@@ -18,11 +18,11 @@ lopass_filter_test::run()
     v.iter_set(data, data+5);
 
     lopass_filter< 4, double > filter (.1f);
-    filter.add_value(data[0]);
-    filter.add_value(data[1]);
-    filter.add_value(data[2]);
-    filter.add_value(data[3]);
-    filter.add_value(data[4]);
+    filter.add(data[0]);
+    filter.add(data[1]);
+    filter.add(data[2]);
+    filter.add(data[3]);
+    filter.add(data[4]);
 
     filter.set_smooth_factor(.5f);
 
@@ -45,4 +45,3 @@ lopass_filter_test::run()
 }
 
 } // namespace vmml
-

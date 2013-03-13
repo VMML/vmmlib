@@ -15,68 +15,57 @@
 
 namespace vmml
 {
-    template< size_t M, typename T >
-    class lopass_filter
+template< size_t M, typename T > class lopass_filter
+{
+public:
+    lopass_filter( const float F ) : _smooth_factor(F) {}
+    ~lopass_filter() {}
+
+    T filter();
+    T add( const T& value );
+    void set_smooth_factor( const float& f );
+
+private:
+    std::deque< T > _data;
+    float _smooth_factor;
+
+}; // class lopass_filter
+
+
+template< size_t M, typename T > T lopass_filter< M, T >::filter()
+{
+    if( _data.empty( ))
+        return T(0);
+
+    typename std::deque< T >::const_iterator i = _data.begin();
+    T filtered = *i;
+    double weight = 1.0;
+
+    for( ++i ; i != _data.end(); ++i )
     {
-    public:
-        lopass_filter( float F )
-            : _smooth_factor(F)
-        {}
-
-        ~lopass_filter() {}
-
-        const T filter();
-
-        const T add_value( const T& value );
-
-        void set_smooth_factor( const float& f );
-
-    private:
-        std::deque< T > _data;
-        float _smooth_factor;
-
-    }; // class lopass_filter
-
-
-    template< size_t M, typename T >
-    const T
-    lopass_filter< M, T >::filter()
-    {
-        T filtered;
-        double weight = 1.0;
-
-        for (size_t i = _data.size(); i --> 0;)
-        {
-            filtered = filtered * (1 - weight) + _data[i] * weight;
-            weight *= _smooth_factor;
-        }
-
-        return filtered;
-
+        filtered = filtered * (1 - weight) + (*i) * weight;
+        weight *= _smooth_factor;
     }
 
-    template< size_t M, typename T >
-    const T
-    lopass_filter< M, T >::add_value( const T& value )
-    {
-        _data.push_back(value);
+    return filtered;
+}
 
-        if (_data.size() > M)
-            _data.pop_front();
+template< size_t M, typename T > T lopass_filter< M, T >::add( const T& value )
+{
+    _data.push_front( value );
 
-        return filter();
+    while( _data.size() > M )
+        _data.pop_back();
 
-    }
+    return filter();
+}
 
-    template< size_t M, typename T >
-    void
-    lopass_filter< M, T>::set_smooth_factor( const float& f )
-    {
-        _smooth_factor = f;
-    }
-
+template< size_t M, typename T >
+void lopass_filter< M, T>::set_smooth_factor( const float& f )
+{
+    _smooth_factor = f;
+}
 
 } // namespace vmml
 
 #endif
-

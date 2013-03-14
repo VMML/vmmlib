@@ -17,6 +17,8 @@ if(OpenMP_name)
 endif()
 
 
+set(VMMLIB_DEPENDS OpenMP)
+
 # Write defines.h and options.cmake
 if(NOT FIND_PACKAGES_INCLUDE)
   set(FIND_PACKAGES_INCLUDE

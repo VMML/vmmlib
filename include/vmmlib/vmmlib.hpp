@@ -8,6 +8,7 @@
 * @author Rafa Ballester
 * @author Philipp Schlegel
 * @author Daniel Pfeifer
+* @author Jafet Villafranca (lowpass filter)
 * @author David H. Eberly ( Wild Magic )
 * @author Andrew Willmott ( VL )
 *
@@ -24,6 +25,7 @@
 
 #include <vmmlib/frustum.hpp>
 #include <vmmlib/frustum_culler.hpp>
+#include <vmmlib/lowpass_filter.hpp>
 #include <vmmlib/matrix.hpp>
 #include <vmmlib/quaternion.hpp>
 #include <vmmlib/vector.hpp>

@@ -144,6 +144,9 @@ namespace vmml {
         size_t nnz() const;
 
         template< typename T_init >
+        tensor_stats decompose(const t3_type& data_, T_init init, const size_t max_iterations_ = 20, const float tolerance = 1e-04);
+        
+        template< typename T_init >
         tensor_stats cp_als(const t3_type& data_, T_init init, const size_t max_iterations_ = 20, const float tolerance = 1e-04);
 
         template< size_t NBLOCKS, typename T_init >
@@ -292,6 +295,13 @@ namespace vmml {
         return err;
     }
 
+    VMML_TEMPLATE_STRING
+    template< typename T_init >
+    tensor_stats
+    VMML_TEMPLATE_CLASSNAME::decompose(const t3_type& data_, T_init init, const size_t max_iterations_, const float tolerance) {
+		return cp_als(data_, init, max_iterations_, tolerance );
+    }
+    
     VMML_TEMPLATE_STRING
     template< typename T_init >
     tensor_stats

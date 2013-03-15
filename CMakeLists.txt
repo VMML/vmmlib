@@ -9,6 +9,9 @@ set(VERSION_PATCH 1)
 set(RELEASE_VERSION OFF) # OFF or ABI version
 set(LAST_RELEASE 1.4.0)
 
+option(VMMLIB_USE_BLAS "Disable to turn blas detection off" ON)
+mark_as_advanced(VMMLIB_USE_BLAS)
+
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMake)
 
 set(MACPORTS_DIR eyescalePorts) # override for now...
@@ -30,9 +33,11 @@ if(APPLE)
   endif(LAPACK_LIBRARIES)
 elseif(NOT CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 #  enable_language(Fortran OPTIONAL) # eile: Why needed?
-  find_package(BLAS)
-  if(BLAS_FOUND)
-    find_package(LAPACK)
+  if (VMMLIB_USE_BLAS)
+    find_package(BLAS)
+    if(BLAS_FOUND)
+      find_package(LAPACK)
+	endif()
   endif()
 endif()
 

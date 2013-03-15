@@ -24,7 +24,7 @@ bool lowpass_filter_test::run()
     filter.set_smooth_factor(.5f);
 
     float tmp = 9;
-    double filtered = filter.filter();
+    const double filtered = filter.get();
 
     bool ok = filtered == tmp;
 

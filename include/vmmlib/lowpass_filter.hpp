@@ -21,7 +21,7 @@ public:
     lowpass_filter( const float F ) : _smooth_factor(F) {}
     ~lowpass_filter() {}
 
-    T filter();
+    T get();
     T add( const T& value );
     void set_smooth_factor( const float& f );
 
@@ -32,7 +32,7 @@ private:
 }; // class lowpass_filter
 
 
-template< size_t M, typename T > T lowpass_filter< M, T >::filter()
+template< size_t M, typename T > T lowpass_filter< M, T >::get()
 {
     if( _data.empty( ))
         return T();
@@ -57,7 +57,7 @@ template< size_t M, typename T > T lowpass_filter< M, T >::add( const T& value )
     while( _data.size() > M )
         _data.pop_back();
 
-    return filter();
+    return get();
 }
 
 template< size_t M, typename T >

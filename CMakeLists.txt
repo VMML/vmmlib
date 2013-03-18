@@ -58,6 +58,7 @@ set(HEADERS
   include/vmmlib/exception.hpp
   include/vmmlib/frustum.hpp
   include/vmmlib/frustum_culler.hpp
+  include/vmmlib/intersection.hpp
   include/vmmlib/jacobi_solver.hpp
   include/vmmlib/lapack.hpp
   include/vmmlib/lapack/detail/clapack.h
@@ -106,6 +107,7 @@ set(HEADERS
 
 set(TESTS
   tests/frustum_test.cpp
+  tests/intersection_test.cpp
   tests/jacobi_test.cpp
 #  tests/matrix_test.cpp
   tests/perf_test.cpp

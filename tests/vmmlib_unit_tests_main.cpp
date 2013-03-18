@@ -7,6 +7,7 @@
 //#include "matrix_test.hpp"
 #include "lowpass_filter_test.hpp"
 #include "frustum_test.hpp"
+#include "intersection_test.hpp"
 #include "quaternion_test.hpp"
 #include "qr_decomposition_test.hpp"
 #include "svd_test.hpp"
@@ -63,6 +64,9 @@ main( int argc, const char* argv[] )
 
     vmml::frustum_test frustum_test_;
     run_and_log( frustum_test_ );
+
+    vmml::intersection_test intersection_test_;
+    run_and_log( intersection_test_ );
 
     vmml::quaternion_test quaternion_test_;
     run_and_log( quaternion_test_ );

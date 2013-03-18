@@ -25,6 +25,7 @@
 
 #include <vmmlib/frustum.hpp>
 #include <vmmlib/frustum_culler.hpp>
+#include <vmmlib/intersection.hpp>
 #include <vmmlib/lowpass_filter.hpp>
 #include <vmmlib/matrix.hpp>
 #include <vmmlib/quaternion.hpp>

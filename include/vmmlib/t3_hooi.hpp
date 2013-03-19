@@ -70,7 +70,6 @@ namespace vmml {
         struct init_hosvd {
 
             inline void operator()(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type & u3_) {
-                t3_hosvd< R1, R2, R3, I1, I2, I3, T >::apply_mode1(data_, u1_);
                 t3_hosvd< R1, R2, R3, I1, I2, I3, T >::apply_mode2(data_, u2_);
                 t3_hosvd< R1, R2, R3, I1, I2, I3, T >::apply_mode3(data_, u3_);
             }
@@ -80,11 +79,9 @@ namespace vmml {
 
             inline void operator()(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type & u3_) {
                 srand(time(NULL));
-                u1_.set_random();
                 u2_.set_random();
                 u3_.set_random();
 
-                u1_ /= u1_.frobenius_norm();
                 u2_ /= u2_.frobenius_norm();
                 u3_ /= u3_.frobenius_norm();
             }

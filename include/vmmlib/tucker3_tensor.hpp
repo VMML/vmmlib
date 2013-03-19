@@ -148,6 +148,9 @@ namespace vmml {
         void reconstruct(t3_type& data_);
         double error(t3_type& original) const;
 
+    	template< typename T_init>
+    	tensor_stats decompose(const t3_type& data_, T_init init, const size_t max_iterations = 10, const float tolerance = 10);
+        
         template< typename T_init>
         tensor_stats tucker_als(const t3_type& data_, T_init init, const size_t max_iterations = 10, const float tolerance = 1e-04);
 
@@ -437,6 +440,14 @@ namespace vmml {
         tucker_als(data_, typename hooi_type::init_random());
     }
 
+    
+	VMML_TEMPLATE_STRING
+	template< typename T_init>
+	tensor_stats
+	VMML_TEMPLATE_CLASSNAME::decompose(const t3_type& data_, T_init init, const size_t max_iterations, const float tolerance)	{
+		return tucker_als(data_, init, max_iterations, tolerance);
+	}
+    
     VMML_TEMPLATE_STRING
     template< typename T_init>
     tensor_stats

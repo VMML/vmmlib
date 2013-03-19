@@ -56,7 +56,7 @@ namespace vmml {
         //higher-order power method (lathauwer et al., 2000b)
 
         template< typename T_init >
-        static tensor_stats als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, lambda_type& lambdas_, T_init init, const size_t max_iterations_ = 20, const float tolerance = 1e-04);
+        static tensor_stats als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, lambda_type& lambdas_, T_init init, const size_t max_iterations_ = 50, const float tolerance = 1e-04);
         static void reconstruct(t3_type& data_, const u1_type& u1_, const u2_type& u2_, const u3_type& u3_, const lambda_type& lambdas_);
 
         //ktensor = kruskal tensor, i.e., lambda, U1, U2, U3

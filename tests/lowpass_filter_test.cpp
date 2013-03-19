@@ -14,14 +14,12 @@ bool lowpass_filter_test::run()
     vector< 5, double > v;
     v.iter_set(data, data+5);
 
-    lowpass_filter< 4, double > filter (.1f);
+    lowpass_filter< 4, double > filter (.5f);
     filter.add(data[0]);
     filter.add(data[1]);
     filter.add(data[2]);
     filter.add(data[3]);
     filter.add(data[4]);
-
-    filter.set_smooth_factor(.5f);
 
     float tmp = 9;
     const double filtered = filter.get();

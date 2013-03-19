@@ -15,7 +15,7 @@ bool intersection_test::run()
     intersection< float > intersection( rayOrigin, rayDir);
 
     float t = 0, tmp = 9.9f;
-    intersection.raySphereIntersect(sphere, t);
+    intersection.test_sphere(sphere, t);
 
     bool ok = t == tmp;
 

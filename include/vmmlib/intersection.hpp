@@ -3,8 +3,9 @@
  *
  * @author Jafet Villafranca
  *
- * Implements ray-sphere intersection using the three-dimensional coordinates
- * of the ray origin and direction, the sphere center and its radius.
+ * Implements ray-object intersection, storing the ray parameters as attributes
+ * and implementing intersection tests against different types of objects
+ * (e.g. sphere)
  *
  */
 
@@ -18,24 +19,20 @@ namespace vmml
 template< typename T > class intersection
 {
 public:
-    typedef vector< 2, T >    vec2;
     typedef vector< 3, T >    vec3;
     typedef vector< 4, T >    vec4;
 
     /**
       Constructors
-     */
-    intersection() {}
-    intersection( const vec3& rayOrigin, const vec3& rayDir );
-    ~intersection() {}
-
-    /**
-      Sets ray parameters
 
       @param[in]    origin      Ray origin
       @param[in]    direction   Ray direction
      */
-    void setRay( const vec3& origin, const vec3& direction );
+    intersection( const vec3& origin, const vec3& direction )
+        : _origin ( origin )
+        , _direction ( vmml::normalize( direction ))
+    {}
+    ~intersection() {}
 
     /**
       Ray Sphere Intersection - Optimized solution
@@ -47,34 +44,18 @@ public:
 
       @return Whether the ray intersects the sphere
      */
-    bool raySphereIntersect( const vec4 &sphere, T &t ) const;
+    bool test_sphere( const vec4 &sphere, T &t ) const;
 
 private:
-    vec3 _origin;
-    vec3 _direction;
+    const vec3 _origin;
+    const vec3 _direction;
 
 }; // class intersection
 
 
 template< typename T >
-intersection< T >::intersection( const vec3& rayOrigin, const vec3& rayDir )
-{
-    setRay( rayOrigin, rayDir );
-}
-
-template< typename T >
-void intersection< T >::setRay( const vec3& origin, const vec3& direction )
-{
-    vec3 direction_unit = direction;
-    direction_unit.normalize();
-
-    _origin = origin;
-    _direction = direction_unit;
-}
-
-template< typename T >
 bool
-intersection< T >::raySphereIntersect( const vec4 &sphere, T &t ) const
+intersection< T >::test_sphere( const vec4 &sphere, T &t ) const
 {
     const vec3 center = vec3(sphere.x(), sphere.y(), sphere.z());
     const T radius = sphere.w();

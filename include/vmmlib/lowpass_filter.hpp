@@ -26,13 +26,19 @@ public:
     ~lowpass_filter() {}
 
     /**
-      Filters the content of the data structure
+      Filter the content of the data structure
       @return The filtered output value
      */
-    T get();
+    const T& get() const { return _value; }
+
+    /** Access the filtered value. */
+    const T* operator->() const { return &_value; }
+
+    /** Access the filtered value. */
+    const T& operator*() const { return _value; }
 
     /**
-      Adds a value to the data set and returns the filtered output
+      Add a value to the data set and return the filtered output
       @param[in]    value  Value to add
       @return The filtered output value
      */
@@ -47,27 +53,9 @@ public:
 private:
     std::deque< T > _data;
     float _smooth_factor;
+    T _value;
+};
 
-}; // class lowpass_filter
-
-
-template< size_t M, typename T > T lowpass_filter< M, T >::get()
-{
-    if( _data.empty( ))
-        return T();
-
-    typename std::deque< T >::const_iterator i = _data.begin();
-    T filtered = *i;
-    double weight = _smooth_factor;
-
-    for( ++i ; i != _data.end(); ++i )
-    {
-        filtered = filtered * (1 - weight) + (*i) * weight;
-        weight *= _smooth_factor;
-    }
-
-    return filtered;
-}
 
 template< size_t M, typename T > T lowpass_filter< M, T >::add( const T& value )
 {
@@ -76,7 +64,18 @@ template< size_t M, typename T > T lowpass_filter< M, T >::add( const T& value )
     while( _data.size() > M )
         _data.pop_back();
 
-    return get();
+    // update
+    typename std::deque< T >::const_iterator i = _data.begin();
+    _value = *i;
+    double weight = _smooth_factor;
+
+    for( ++i ; i != _data.end(); ++i )
+    {
+        _value = _value * (1 - weight) + (*i) * weight;
+        weight *= _smooth_factor;
+    }
+
+    return _value;
 }
 
 template< size_t M, typename T >

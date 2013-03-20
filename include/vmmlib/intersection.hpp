@@ -66,8 +66,8 @@ intersection< T >::test_sphere( const vec4& sphere, T& t ) const
     const T sqDistance = centerVec.squared_length();
     const T sqRadius = radius * radius;
 
-    /** Sphere behind the ray origin& & ray origin outside the sphere */
-    if( vecProjection < 0& & sqDistance > sqRadius )
+    /** Sphere behind the ray origin and ray origin outside the sphere */
+    if( vecProjection < 0 && sqDistance > sqRadius )
         return false;
 
     /** Squared distance from sphere center to the projection */

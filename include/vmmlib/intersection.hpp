@@ -44,7 +44,7 @@ public:
 
       @return Whether the ray intersects the sphere
      */
-    bool test_sphere( const vec4 &sphere, T &t ) const;
+    bool test_sphere( const vec4& sphere, T& t ) const;
 
 private:
     const vec3 _origin;
@@ -55,7 +55,7 @@ private:
 
 template< typename T >
 bool
-intersection< T >::test_sphere( const vec4 &sphere, T &t ) const
+intersection< T >::test_sphere( const vec4& sphere, T& t ) const
 {
     const vec3 center = vec3(sphere.x(), sphere.y(), sphere.z());
     const T radius = sphere.w();
@@ -66,18 +66,18 @@ intersection< T >::test_sphere( const vec4 &sphere, T &t ) const
     const T sqDistance = centerVec.squared_length();
     const T sqRadius = radius * radius;
 
-    /** Sphere behind the ray origin && ray origin outside the sphere */
-    if(vecProjection < 0 && sqDistance > sqRadius)
+    /** Sphere behind the ray origin& & ray origin outside the sphere */
+    if( vecProjection < 0& & sqDistance > sqRadius )
         return false;
 
     /** Squared distance from sphere center to the projection */
     const T sqCenterToProj = sqDistance - vecProjection * vecProjection;
 
-    if(sqCenterToProj > sqRadius)
+    if( sqCenterToProj > sqRadius )
         return false;
 
     /** Distance from the sphere center to the surface along the ray direction*/
-    const T distSurface = sqrt(sqRadius - sqCenterToProj);
+    const T distSurface = sqrt( sqRadius - sqCenterToProj );
 
     if(sqDistance > sqRadius)
         t = vecProjection - distSurface;

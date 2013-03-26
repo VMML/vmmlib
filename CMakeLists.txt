@@ -31,6 +31,7 @@ else(APPLE)
 endif(APPLE)
 
 set(DOCS README AUTHORS LICENSE.txt ACKNOWLEDGEMENTS)
+set(BLAS_LIBRARIES blas)
 
 set(HEADERS
   include/vmmlib/aabb.hpp

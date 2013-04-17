@@ -56,8 +56,8 @@ main( int argc, const char* argv[] )
     vmml::vector_test vector_test_;
     run_and_log( vector_test_ );
 
-//    vmml::matrix_test matrix_test_;
-//    run_and_log( matrix_test_ );
+    vmml::matrix_test matrix_test_;
+    run_and_log( matrix_test_ );
 
     vmml::lowpass_filter_test lowpass_filter_test_;
     run_and_log( lowpass_filter_test_ );

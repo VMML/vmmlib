@@ -12,12 +12,18 @@
 
 #include <vmmlib/vmmlib.hpp>
 
+#define TEST( x ) \
+{ \
+    ok = x; \
+    global_ok &= ok; \
+}
 
 namespace vmml
 {
 
 bool svd_test::run()
 {
+    bool global_ok = true;
     bool ok = true;
 
     matrix< 6, 3, double > A;
@@ -67,16 +73,16 @@ bool svd_test::run()
     };
     VtCorrect = VtCorrectData;
     
-    ok = U == UCorrect;
-    if ( ok ) ok = Wdiag == WdiagCorrect;
-    if ( ok ) ok = Vt == VtCorrect;
+    TEST(U == UCorrect);
+    if ( ok ) TEST(Wdiag == WdiagCorrect);
+    if ( ok ) TEST(Vt == VtCorrect);
     
     log( "singular value decomposition, maximum precision", ok, true );
 
     double tolerance = 1e-8;
-    ok = U.equals( UCorrect, tolerance );
-    if ( ok ) ok = Wdiag.equals( WdiagCorrect, tolerance );
-    if ( ok ) ok = Vt.equals( VtCorrect, tolerance );
+    TEST(U.equals( UCorrect, tolerance ));
+    if ( ok ) TEST(Wdiag.equals( WdiagCorrect, tolerance ));
+    if ( ok ) TEST(Vt.equals( VtCorrect, tolerance ));
     log( "singular value decomposition, tolerance 1e-8", ok );
 
     if ( ! ok )
@@ -97,7 +103,7 @@ bool svd_test::run()
             
     }
     
-	return ok;
+	return global_ok;
     
 }
 

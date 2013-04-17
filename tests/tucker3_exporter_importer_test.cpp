@@ -5,12 +5,19 @@
 
 //@SUS: check hot core quantization, is it correctly implementented
 
+#define TEST( x ) \
+{ \
+    ok = x; \
+    global_ok &= ok; \
+}
+
 namespace vmml
 {
 	
 	bool
 	tucker3_exporter_importer_test::run()
 	{
+        bool global_ok = true;
 		bool ok = false;
 		
 		double precision = 1.0e-5;
@@ -69,7 +76,7 @@ namespace vmml
 		ok = true;
 		for (int i = 0; (i < 16) && ok; ++i )
 		{
-			ok = (abs(export_data_check[i] - export_data[i])) < precision;
+			TEST((abs(export_data_check[i] - export_data[i])) < precision);
 		}
 		
 		log( "export tucker3", ok  );
@@ -83,7 +90,8 @@ namespace vmml
 		core_type core_imported;
 		tuck3i.get_core( core_imported ); tuck3i.get_u1( u1_imported  ); tuck3i.get_u2( u2_imported ); tuck3i.get_u3( u3_imported );
 		
-		if ( u1_imported.equals( u1_check, precision ) && u2_imported.equals( u2_check, precision ) && u3_imported.equals( u3_check, precision ) && core_imported.equals( core_check, precision))
+		TEST( u1_imported.equals( u1_check, precision ) && u2_imported.equals( u2_check, precision ) && u3_imported.equals( u3_check, precision ) && core_imported.equals( core_check, precision));
+		if ( ok )
 		{	
 			log( "import tucker3" , true  );
 		} else
@@ -151,12 +159,12 @@ namespace vmml
 		//check u2 min/max
 		float u1_min_e = *float_ptr; float_ptr++;
 		float u1_max_e = *float_ptr; float_ptr++;
-		ok = ((fabs(float(export_data2_check[0]) - u1_min_e)) < 1.0e-4) && ((fabs(float(export_data2_check[1]) - u1_max_e)) < 1.0e-4 );
+		TEST(((fabs(float(export_data2_check[0]) - u1_min_e)) < 1.0e-4) && ((fabs(float(export_data2_check[1]) - u1_max_e)) < 1.0e-4 ));
 		//std::cout<<"#### U1 min value === " << u1_min_e<<", U1 max value === " << u1_max_e << std::endl;
 		
 		float core_min_e = *float_ptr; float_ptr++;
 		float core_max_e = *float_ptr; float_ptr++;
-		ok = ok ? ((fabs(float(export_data2_check[2]) - core_min_e)) < 1.0e-3) && ((fabs(float(export_data2_check[3]) - core_max_e)) < 1.0e-3 ) : ok;
+		if (ok) TEST(((fabs(float(export_data2_check[2]) - core_min_e)) < 1.0e-3) && ((fabs(float(export_data2_check[3]) - core_max_e)) < 1.0e-3 ));
 		//std::cout<<"#### core min value === " << core_min_e <<", core max value === " << core_max_e << std::endl;
 		//std::cout<<"#### shold be core min value === " << export_data2_check[2] <<", core max value === " << export_data2_check[3] << std::endl;
 		
@@ -169,7 +177,7 @@ namespace vmml
 			value = *value_ptr;
 			//std::cout<<"#### U1 value === " << value << ", should be " << export_data2_check[index] << std::endl;
 			value_ptr++;
-			ok = (fabs(float(export_data2_check[index]) - float(value))) < precision;
+			TEST((fabs(float(export_data2_check[index]) - float(value))) < precision);
 		}
 		//check u2
 		end_index += 4;
@@ -177,7 +185,7 @@ namespace vmml
 			value = *value_ptr;
 			//std::cout<<"#### U2 value === " << value << ", should be " << export_data2_check[index] << std::endl;
 			value_ptr++;
-			ok = (fabs(float(export_data2_check[index]) - float(value))) < precision;
+			TEST((fabs(float(export_data2_check[index]) - float(value))) < precision);
 		}
 		//check u3		
 		end_index += 4;
@@ -185,7 +193,7 @@ namespace vmml
 			value = *value_ptr;
 			//std::cout<<"#### U3 value === " << value << ", should be " << export_data2_check[index] << std::endl;
 			value_ptr++;
-			ok = (fabs(float(export_data2_check[index]) - float(value))) < precision;
+			TEST((fabs(float(export_data2_check[index]) - float(value))) < precision);
 		}
 		
 		//check core values
@@ -194,7 +202,7 @@ namespace vmml
 			value = *value_ptr;
 			//std::cout<<"#### core value === " << value << ", should be " << export_data2_check[index] << std::endl;
 			value_ptr++;
-			ok = (fabs(float(export_data2_check[index]) - float(value))) < precision;
+			TEST((fabs(float(export_data2_check[index]) - float(value))) < precision);
 		}
 		
 		log( "export tucker3 (bytes) ", ok  );
@@ -228,10 +236,10 @@ namespace vmml
 		tuck3qi.get_u1( u1q ); tuck3qi.get_u2( u2q ); tuck3qi.get_u3( u3q );
 		tuck3qi.get_core( coreq );
 		
-		ok = u1q == u1q_check;
-		ok = ok && (u2q == u2q_check);
-		ok = ok && (u3q == u3q_check);
-		ok = ok && (coreq == coreq_check);
+		TEST(u1q == u1q_check && 
+                u2q == u2q_check &&
+                u3q == u3q_check &&
+                coreq == coreq_check);
 		
 		if (ok)
 		{
@@ -264,10 +272,10 @@ namespace vmml
 		tuck3qi_2.get_u1( u1q ); tuck3qi_2.get_u2( u2q ); tuck3qi_2.get_u3( u3q );
 		tuck3qi_2.get_core( coreq );
 		
-		ok = u1q == u1q_check;
-		ok = ok && (u2q == u2q_check);
-		ok = ok && (u3q == u3q_check);
-		ok = ok && (coreq == coreq_check);
+		TEST(u1q == u1q_check &&
+                u2q == u2q_check &&
+                u3q == u3q_check &&
+                coreq == coreq_check);
 
 		if (ok)
 		{
@@ -300,10 +308,10 @@ namespace vmml
 		tuck3qi_3.get_u1( u1q ); tuck3qi_3.get_u2( u2q ); tuck3qi_3.get_u3( u3q );
 		tuck3qi_3.get_core( coreq );
 		
-		ok = u1q == u1q_check;
-		ok = ok && (u2q == u2q_check);
-		ok = ok && (u3q == u3q_check);
-		ok = ok && (coreq == coreq_check);
+		TEST(u1q == u1q_check &&
+                u2q == u2q_check &&
+                u3q == u3q_check &&
+                coreq == coreq_check);
 		
 		if (ok)
 		{
@@ -319,7 +327,7 @@ namespace vmml
 		}	
 	
 		
-		return ok;
+		return global_ok;
 	}
 	
 } //end vmml namespace

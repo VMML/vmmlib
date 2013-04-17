@@ -2,12 +2,19 @@
 
 #include <vmmlib/blas_dgemm.hpp>
 
+#define TEST( x ) \
+{ \
+    ok = x; \
+    global_ok &= ok; \
+}
+
 namespace vmml
 {
 	
 	bool
 	blas_dgemm_test::run()
 	{
+        bool global_ok = true;
 		bool ok = false;
 		
 		matrix< 3, 6, double > A;
@@ -22,14 +29,14 @@ namespace vmml
 		
 		double CData[] = { 91, 217, 343, 217, 559, 901, 343, 901, 1459 };
 		C_check = CData;
-		ok = C == C_check;
+		TEST(C == C_check);
 
 		tensor3< 3, 2, 3, double> t3;
 		double A2Data[] = { 1, 2, 7,8,13,14, 3,4,9,10,15,16,5,6,11,12,17,18 };
 		t3.set( A2Data, A2Data + 18);
 		blas_cov.compute( t3, C );
 		
-		ok = (C == C_check) && ok;
+		if (ok) TEST(C == C_check);
 		
 		log( "symmetric matrix-matrix multiplication (input left matrix) (MxK) x (KxN) = (MxN), while M=N", ok );
 		if ( ! ok )
@@ -41,7 +48,6 @@ namespace vmml
             << "covariance matrix is\n" << C << "\n"
             << std::endl;
 			log_error( ss.str() );
-            
 		}
 		
 		//A*B = D (MxK, KxN, MxN) (input right matrix)
@@ -58,7 +64,7 @@ namespace vmml
 		double FData[] = { 591, 642, 693, 642, 699, 756, 693, 756, 819 };
 		F_check = FData;
 		
-		ok = F == F_check;
+		TEST(F == F_check);
 				
 		log( "symmetric matrix-matrix multiplication (input right matrix) (MxK) x (KxN) = (MxN), while M=N", ok );
 		if ( ! ok )
@@ -70,7 +76,6 @@ namespace vmml
             << "covariance matrix is\n" << F << "\n"
             << std::endl;
 			log_error( ss.str() );
-            
 		}
 
 		//A*B = D (MxK, KxN, MxN)
@@ -87,12 +92,12 @@ namespace vmml
 		double DData[] = { 161, 182, 377, 434, 593, 686 };
 		D_check = DData;
 		
-		ok = D == D_check;
+		TEST(D == D_check);
 		
 		blas_dgemm< 3, 6, 2, double > blas_cov3_t3_2;
 		blas_v_dgemm.compute( t3, B, D );
 
-		ok = (D == D_check) && ok;
+		if (ok) TEST(D == D_check);
 		
 		log( "matrix-matrix multiplication (MxK) x (KxN) = (MxN)", ok );
 		if ( ! ok )
@@ -105,7 +110,7 @@ namespace vmml
             << "matrix C is\n" << D << "\n"
             << std::endl;
 			log_error( ss.str() );
-            
+
 		}
 		
 		//A*B = D (MxK, KxN, MxN) (input B is given as transpose)
@@ -122,7 +127,7 @@ namespace vmml
 		double GData[] = { 91, 217, 217, 559, 343, 901 };
 		G_check = GData;
 		
-		ok = G == G_check;
+		TEST(G == G_check);
 		
 		log( "matrix-matrix multiplication (input B is transpose) (MxK) x (NxK) = (MxN)", ok );
 		if ( ! ok )
@@ -135,7 +140,6 @@ namespace vmml
             << "matrix C is\n" << G << "\n"
             << std::endl;
 			log_error( ss.str() );
-            
 		}
 		
 		//A*B = H (MxK, KxN, MxN) (input A+B are given as transpose)
@@ -158,7 +162,7 @@ namespace vmml
 			25, 55, 85, 115, 145, 175 };
 		H_check = HData;
 		
-		ok = H == H_check;
+		TEST(H == H_check);
 				
 		log( "matrix-matrix multiplication (input A+B are transpose) (MxK) x (NxK) = (MxN)", ok );
 		if ( ! ok )
@@ -171,7 +175,6 @@ namespace vmml
             << "matrix H is\n" << H << "\n"
             << std::endl;
 			log_error( ss.str() );
-            
 		}
 	
 		//vector vector outer product
@@ -191,7 +194,7 @@ namespace vmml
 		H_check = H2Data;
 		
 	
-		ok = (H == H_check) ;
+		TEST(H == H_check);
 		
 		log( "vector vector outer product with dgemm (M)' x (N) = (MxN)", ok );
 		if ( ! ok )
@@ -204,14 +207,12 @@ namespace vmml
             << "matrix H is\n" << H << "\n"
             << std::endl;
 			log_error( ss.str() );
-            
 		}
 		
 
-		return ok;
+		return global_ok;
 	}
 	
 	
 	
 } // namespace vmml
-

@@ -3,12 +3,19 @@
 
 #include <vmmlib/lapack_linear_least_squares.hpp>
 
+#define TEST( x ) \
+{ \
+    ok = x; \
+    global_ok &= ok; \
+}
+
 namespace vmml
 {
 
 bool
 lapack_linear_least_squares_test::run()
 {
+    bool global_ok = true;
     typedef vector< 3, float > vec3f;
 
     {
@@ -35,14 +42,11 @@ lapack_linear_least_squares_test::run()
         try
         {
             llsq.compute( A, B, X );
-            if ( X( 0 ) - -1.0 < 1e-6 && X( 1 ) - 2.0 < 1e-6 )
-                ok = true;
-            else
-                ok = false;
+            TEST ( X( 0 ) - -1.0 < 1e-6 && X( 1 ) - 2.0 < 1e-6 );
         }
         catch(...)
         {
-            ok = false;
+            TEST(false);
             std::cout << llsq.get_params() << std::endl;
         }
 
@@ -56,7 +60,7 @@ lapack_linear_least_squares_test::run()
         
     }
 
-    return true;
+    return global_ok;
 }
 
 } // namespace vmml

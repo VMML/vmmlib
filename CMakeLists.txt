@@ -114,7 +114,7 @@ set(TESTS
   tests/frustum_test.cpp
   tests/intersection_test.cpp
   tests/jacobi_test.cpp
-#  tests/matrix_test.cpp
+  tests/matrix_test.cpp
   tests/perf_test.cpp
   tests/performance_test.cpp
   tests/qr_decomposition_test.cpp
@@ -124,7 +124,7 @@ set(TESTS
   tests/unit_test.cpp
   tests/unit_test_globals.cpp
   tests/lowpass_filter_test.cpp
-#  tests/vector_test.cpp
+  tests/vector_test.cpp
   tests/vmmlib_unit_tests_main.cpp
 # tests/matrix_compare_perf_test.cpp
 # tests/stringtests.cpp

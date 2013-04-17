@@ -3,12 +3,19 @@
 
 #include <sstream>
 
+#define TEST( x ) \
+{ \
+    ok = x; \
+    global_ok &= ok; \
+}
+
 namespace vmml
 {
 	
 	bool
 	t3_hosvd_test::run()
 	{
+        bool global_ok = true;
 		bool ok = false;
 		
 		double precision = 0.001;
@@ -88,9 +95,9 @@ namespace vmml
 		///hosvd
 		t3_hosvd< 3, 2, 2, 3, 2, 2, double >::hosvd( t3_data_2, u1_2, u2_2, u3_2 );
 		
-		ok = u1_2.equals( u1_2_check, precision );
-		ok = ok && (u2_2.equals( u2_2_check, precision ));
-		ok = ok && (u3_2.equals( u3_2_check, precision ));
+		TEST(u1_2.equals( u1_2_check, precision ) &&
+                u2_2.equals( u2_2_check, precision ) &&
+                u3_2.equals( u3_2_check, precision ));
 		
 		if ( ok )
 		{	
@@ -133,7 +140,8 @@ namespace vmml
 		
 		t3_hosvd< 3, 3, 3, 3, 3, 3, double >::hoeigs( t3_data_hosvd, u1_hosvd, u2_hosvd, u3_hosvd );
 		
-		if ( u1_hosvd.equals( u1_hoeigs_check, precision ) && u2_hosvd.equals( u2_hoeigs_check, precision ) && u3_hosvd.equals( u3_hoeigs_check, precision ))
+		TEST(u1_hosvd.equals( u1_hoeigs_check, precision ) && u2_hosvd.equals( u2_hoeigs_check, precision ) && u3_hosvd.equals( u3_hoeigs_check, precision ));
+		if (ok)
 		{	
 			log( "HOEIGS compute factor matrices U1, U2, U3", true  );
 		} else
@@ -152,7 +160,7 @@ namespace vmml
 		}
 		
 
-		return ok;
+		return global_ok;
 	}
 
 } //end vmml namespace

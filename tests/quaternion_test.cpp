@@ -5,6 +5,11 @@
 
 #include <iostream>
 
+#define TEST( x ) \
+{ \
+    ok = x; \
+    global_ok &= ok; \
+}
 
 using namespace std;
 namespace vmml
@@ -15,6 +20,7 @@ typedef quaternion< double > quaterniond;
 
 bool quaternion_test::run()
 {
+    bool global_ok = true;
     quaternion< double > q;
     double QData[] = { 1., 6., 3., 8.  };
     for( size_t index = 0; index < 4; ++index )
@@ -30,10 +36,7 @@ bool quaternion_test::run()
         qq.array[ 1 ] = qqq.array[ 1 ] = 6.0;
         qq.array[ 2 ] = qqq.array[ 2 ] = 3.0;
         qq.array[ 3 ] = qqq.array[ 3 ] = 8.0;
-        if ( qq != qqq )
-            ok = false;
-        if ( ok && ! ( qq == qqq ) )
-            ok = false;
+        TEST(qq == qqq);
         log( "operator==, operator!=", ok );
     }
     
@@ -42,12 +45,11 @@ bool quaternion_test::run()
     {
         bool ok = true;
         quaterniond tquaternion_test = q;
-        if ( tquaternion_test != q )
-            ok = false;
+        TEST(tquaternion_test == q );
         
         tquaternion_test.iter_set< double* >( QData, QData + 4 );
-        if ( ok && tquaternion_test != q )
-            ok = false;
+        if ( ok )
+            TEST(tquaternion_test == q);
             
         
 
@@ -58,40 +60,26 @@ bool quaternion_test::run()
     { 
         bool ok = true;
         quaterniond qq( q );
-        if ( q != qq )
-            ok = false;
+        TEST(q == qq);
 
         quaterniond t( 1., 6., 3., 8 );
-        if ( ok && q != t )
-            ok = false;
+        if ( ok )
+            TEST(q == t);
 
         vector< 3, double > xyz;
         double xyzData[] = { 1., 6., 3. };
         xyz = xyzData;
         
         quaterniond s( xyz, 8 );
-        if ( ok && q != s )
-            ok = false;
+        if ( ok )
+            TEST(q == s);
                
         matrix< 3, 3, double > mat;
         double matData[] = { 1., 0., 0., 0., 0., 1., 0., -1., 0. };
         mat = matData;
         quaterniond u( mat );
         
-        if ( u.w() != ( sqrt( 2. ) / 2. ) )
-        {
-            ok = false;
-        }
-        
-        if ( u.x() != - ( 1 / sqrt( 2. ) ) )
-        {
-            ok = false;
-        }
-        
-        if ( u.y() != 0 || u.z() != 0 )
-        {
-            ok = false;
-        }
+        TEST(u.w() == sqrt( 2. ) / 2. && u.x() == - ( 1 / sqrt( 2. ) ) && (u.y() == 0 && u.z() == 0 ) );
         
         log( "constructors", ok );
 
@@ -102,19 +90,14 @@ bool quaternion_test::run()
         bool ok = true;
         quaterniond qqq;
         qqq.set ( 1., 6., 3., 8. );
-        if ( qqq != q )
-            ok = false;
-            
+        TEST( qqq == q );
         log( "set( x,y,z,w )", ok );
     }
     
     // abs
     {
         bool ok = true;
-        if ( q.abs() != sqrt( 110.0 ) )
-            ok = false;
-        if ( q.squared_abs() != 110 )
-            ok = false;
+        TEST(q.abs() == sqrt( 110.0 ) && q.squared_abs() == 110);
         log( "abs(), squared_abs()", ok );   
     }
 
@@ -123,12 +106,11 @@ bool quaternion_test::run()
     {
         bool ok = true;
         quaterniond conj(  -1., -6., -3., 8. );
-        if ( q.get_conjugate() != conj ) 
-            ok = false;
+        TEST( q.get_conjugate() == conj );
         
         conj.conjugate();
-        if ( q != conj )
-            ok = false;
+        if ( ok )
+            TEST(q == conj);
 
         log( "conjugate()", ok );
     } 
@@ -146,22 +128,20 @@ bool quaternion_test::run()
         double rf = 1./ f;
 
         t *= f;
-        if ( t != t3 )
-            ok = false;
+        TEST(t == t3);
 
         t.set( 1, 2, 3, 4 );
         t /= rf;
-        if ( t != t3 )
-            ok = false;
+        if (ok)
+            TEST(t == t3);
 
         t.set( 1, 2, 3, 4 );
-        if ( ( t * f ) != t3 )
-            ok = false;
+        if (ok)
+            TEST(t * f == t3);
 
         t.set( 1, 2, 3, 4 );
-        if ( ( t / rf ) != t3 )
-            ok = false;
-        
+        if (ok)
+            TEST(t / rf == t3);
             
         log( "quaternion / scalar operations: operator*, /, *=, /=", ok );
     }
@@ -176,34 +156,33 @@ bool quaternion_test::run()
         qpqq.set(  9., 9., 9., 9.   );
         
         // +, +=
-        if ( q + qq != qpqq )
-            ok = false;
+        TEST(q + qq == qpqq );
         
         qq += q;
-        if ( qq != qpqq )
-            ok = false;
+        if (ok)
+            TEST(qq == qpqq);
                
         // -, -=
         qq.set( 8, 3, 6, 1 );
-        if ( qpqq - qq != q )
-            ok = false;
+        if (ok)
+            TEST(qpqq - qq == q);
         
         qpqq -= qq;
-        if ( qpqq != q )
-            ok = false;
+        if (ok)
+            TEST(qpqq == q);
 
         // *, *=
         qq.set( 2, 3, 4, 1 );
         quaterniond q2( 3, 2, 1, 4 );
         quaterniond p = qq * q2;
         quaterniond pCorrect( 6, 24, 12, -12 );
-        if ( p != pCorrect )
-            ok = false;
+        if (ok)
+            TEST(p == pCorrect);
 
         p = qq;
         p *= q2;
-        if ( p != pCorrect )
-            ok = false;
+        if (ok)
+            TEST(p == pCorrect);
 
         log( "quaternion / quaternion operations: operator+, -, *, +=, -=, *=", ok );
 
@@ -221,8 +200,7 @@ bool quaternion_test::run()
         vector< 3, double > v0( 1, 2, 3 );
         vector< 3, double > v1( -6, 5, -4 );
         
-        if ( v != v0.cross( v1 ) )
-            ok = false;
+        TEST( v == v0.cross( v1 ) );
             
         log( "cross product ( vec3 = quat x quat ).", ok );
     }
@@ -242,7 +220,7 @@ bool quaternion_test::run()
         
         quaterniond correct(0.0, 1.0, 1.0, 0.0);
         
-        ok = correct == x;
+        TEST(correct == x);
         
         log( "slerp(a, p, q ).", ok );
     }

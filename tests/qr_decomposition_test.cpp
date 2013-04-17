@@ -5,11 +5,18 @@
 
 #include <sstream>
 
+#define TEST( x ) \
+{ \
+    ok = x; \
+    global_ok &= ok; \
+}
+
 namespace vmml
 {
 bool
 qr_decomposition_test::run()
 {
+    bool global_ok = true;
     bool ok = true;
     
     // tests qr decomposition using modified gram-schmidt
@@ -33,22 +40,22 @@ qr_decomposition_test::run()
         {
             vector< 3, double > q = Q.get_column( index );
             vector< 3, double > qc = Qc.get_column( index );
-            ok = q == qc; 
+            TEST(q == qc);
             if ( ! ok ) 
             {
                 q *= -1.0;
-                ok = q == qc;
+                TEST(q == qc);
             }
         }
         for( size_t index = 0; ok && index < 3; ++index )
         {
             vector< 3, double > r = R.get_row( index );
             vector< 3, double > rc = Rc.get_row( index );
-            ok = r == rc; 
+            TEST(r == rc); 
             if ( ! ok ) 
             {
                 r *= -1.0;
-                ok = r == rc;
+                TEST(r == rc);
             }
         }
         
@@ -62,22 +69,22 @@ qr_decomposition_test::run()
             {
                 vector< 3, double > q = Q.get_column( index );
                 vector< 3, double > qc = Qc.get_column( index );
-                ok = q.equals( qc, tolerance ); 
+                TEST(q.equals( qc, tolerance )); 
                 if ( ! ok ) 
                 {
                     q *= -1.0;
-                    ok = q.equals( qc, tolerance );
+                    TEST(q.equals( qc, tolerance ));
                 }
             }
             for( size_t index = 0; ok && index < 3; ++index )
             {
                 vector< 3, double > r = R.get_row( index );
                 vector< 3, double > rc = Rc.get_row( index );
-                ok = r.equals( rc, tolerance ); 
+                TEST(r.equals( rc, tolerance )); 
                 if ( ! ok ) 
                 {
                     r *= -1.0;
-                    ok = r.equals( rc );
+                    TEST(r.equals( rc ));
                 }
             }
             log( "QR decomposition using modified gram-schmidt, tolerance 1e-9", ok );
@@ -95,7 +102,7 @@ qr_decomposition_test::run()
             }
         }
     }
-    return ok;
+    return global_ok;
 }
 
 

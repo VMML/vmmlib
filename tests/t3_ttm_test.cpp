@@ -2,12 +2,19 @@
 
 #include <vmmlib/t3_ttm.hpp>
 
+#define TEST( x ) \
+{ \
+    ok = x; \
+    global_ok &= ok; \
+}
+
 namespace vmml
 {
 	
 	bool
 	t3_ttm_test::run()
 	{
+        bool global_ok = true;
 		bool ok = false;
 		
 		tensor3< 2, 3, 4, int >  t3;
@@ -34,7 +41,7 @@ namespace vmml
 		t3_ttm::full_tensor3_matrix_multiplication( t3, u1, u2, u3, t3_reco ); 
 		tensor3<6, 7, 5, int> t3_reco2;
 		t3_ttm::full_tensor3_matrix_kronecker_mult( t3, u1, u2, u3, t3_reco2 ); 
-		ok = t3_reco == t3_reco2;
+		TEST(t3_reco == t3_reco2);
 		
 		tensor3<6, 7, 5, int> t3_iii_test;
 		t3_iii_test.fill(1656);
@@ -51,7 +58,7 @@ namespace vmml
 		}
 		
 		
-		return ok;
+		return global_ok;
 	}
 	
 	

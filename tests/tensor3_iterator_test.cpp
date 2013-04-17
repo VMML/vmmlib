@@ -6,12 +6,19 @@
 
 #include <sstream>
 
+#define TEST( x ) \
+{ \
+    ok = x; \
+    global_ok &= ok; \
+}
+
 namespace vmml
 {
 
 	bool
 	tensor3_iterator_test::run()
 	{
+        bool global_ok = true;
 		bool ok = false;
 
 		tensor3< 2, 3, 4, unsigned short >  t3;
@@ -38,13 +45,12 @@ namespace vmml
             }
         }
 
-        ok = t3_iter_order == hand_iter_order;
+        TEST(t3_iter_order == hand_iter_order);
 
 		log( "tensor3 iterator  ", ok  );
 
 
-		ok = true;
-		return ok;
+		return global_ok;
 	}
 
 

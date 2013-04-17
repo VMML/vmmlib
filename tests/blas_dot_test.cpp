@@ -2,12 +2,19 @@
 
 #include <vmmlib/blas_dot.hpp>
 
+#define TEST( x ) \
+{ \
+    ok = x; \
+    global_ok &= ok; \
+}
+
 namespace vmml
 {
 	
 	bool
 	blas_dot_test::run()
 	{
+        bool global_ok = true;
 		bool ok = false;
 		
 		vector< 4, double > A;
@@ -24,7 +31,7 @@ namespace vmml
 		blas_dot< 4, double > blas_dot1;
 		blas_dot1.compute( A, B, dot_prod );
 		
-		ok = dot_prod == dot_prod_check;
+		TEST(dot_prod == dot_prod_check);
 		
 		log( "dot product", ok );
 		if ( ! ok )
@@ -37,11 +44,10 @@ namespace vmml
             << "is\n" << dot_prod << "\n"
             << std::endl;
 			log_error( ss.str() );
-            
 		}
 		
 	
-		return ok;
+		return global_ok;
 	}
 	
 	

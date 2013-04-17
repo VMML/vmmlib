@@ -5,13 +5,18 @@
 
 #include <sstream>
 
+#define TEST( x ) \
+{ \
+    ok = x; \
+    global_ok &= ok; \
+}
+
 namespace vmml
 {
 
 bool matrix_test::run()
 {
-    // TODO eile: test 'ok' handling totally broken
-	//SUS: I think it is fixed now (2012-11-07)
+    bool global_ok = true;
     bool ok = false;
 
     matrix< 2, 3, double > m0;
@@ -30,7 +35,7 @@ bool matrix_test::run()
 
         m0.set( data, data + 6 );
 
-        ok = m0 == m_correct;
+        TEST(m0 == m_correct);
 
         if ( ok )
         {
@@ -57,7 +62,7 @@ bool matrix_test::run()
             matrix< 4, 4, double > m2;
             m2.set( m2_data, m2_data + 16 );
 
-            ok = m2 == m_c2;
+            TEST(m2 == m_c2);
 
             //std::cout << m2 << std::endl;
             //std::cout << m_c2 << std::endl;
@@ -76,10 +81,10 @@ bool matrix_test::run()
 		matrix< 2, 3, double > m0_copy;
 		m0.set( data, data + 6 );
 		m0_copy.set( data, data + 6 );
-		ok = m0 == m0_copy;
+		TEST(m0 == m0_copy);
 		if ( ok )
 		{
-			ok = ! ( m0 != m0_copy );
+			TEST(! ( m0 != m0_copy ));
 		}
 		log( "operator==, operator!=", ok );
 		if ( ! ok )
@@ -99,10 +104,7 @@ bool matrix_test::run()
         m0( 0, 0 ) += 0.00000005;
         bool oper_ok = m0 == m0_copy;
         bool eq_ok = m0.equals( m0_copy, 0.0000001 );
-		if ( ! oper_ok && eq_ok )
-            ok = true;
-        else
-            ok = false;
+		TEST( ! oper_ok && eq_ok );
 		log( "equals( ..., tolerance )", ok );
 		if ( ! ok )
 		{
@@ -116,10 +118,10 @@ bool matrix_test::run()
     {
         ok = true;
 		matrix< 2, 3, double > m0_copy( m0 );
-		ok = m0 == m0_copy;
+		TEST(m0 == m0_copy);
 		if ( ok )
 		{
-			ok = ! ( m0 != m0_copy );
+			TEST(!( m0 != m0_copy ));
 		}
 		log( "copy constructor", ok );
 		if ( ! ok )
@@ -145,8 +147,8 @@ bool matrix_test::run()
 		matrix< 5, 2, double > zero_correct;
         zero_correct = zero_data;
 
-		ok = identity == id_correct;
-        if ( ok ) ok = zero == zero_correct;
+		TEST(identity == id_correct);
+        if ( ok ) TEST(zero == zero_correct);
 
 		log( "static IDENTITY, ZERO members", ok );
 		if ( ! ok )
@@ -174,13 +176,13 @@ bool matrix_test::run()
         double result_data[] = { 3, 5, 7, 9 };
         result = result_data;
 
-        ok = result == m0 + m1;
+        TEST(result == m0 + m1);
 
         if ( ok )
         {
             m0 = m0_data;
             m0 += m1;
-            ok = result == m0;
+            TEST(result == m0);
         }
 		log( "matrix addition: operator+, operator+=", ok );
 	}
@@ -201,13 +203,13 @@ bool matrix_test::run()
         double result_data[] = { 1, 2, 3, 4 };
         result = result_data;
 
-        ok = result == m0 - m1;
+        TEST(result == m0 - m1);
 
         if ( ok )
         {
             m0 = m0_data;
             m0 -= m1;
-            ok = result == m0;
+            TEST(result == m0);
         }
 		log( "matrix subtraction: operator-, operator-=", ok );
 	}
@@ -217,13 +219,13 @@ bool matrix_test::run()
     {
         ok = true;
 		m0 = data;
-		ok = m0[ 1 ][ 1 ] == 5;
+		TEST(m0[ 1 ][ 1 ] == 5);
 		if ( ok )
-			ok = m0[ 1 ][ 1 ] == m0.at( 1, 1 );
+			TEST(m0[ 1 ][ 1 ] == m0.at( 1, 1 ));
 		if ( ok )
 		{
 			m0[ 1 ][ 2 ] = 23;
-			ok = m0.at( 1, 2 ) == 23;
+			TEST(m0.at( 1, 2 ) == 23);
 		}
 
 		log( "operator[]", ok );
@@ -253,12 +255,12 @@ bool matrix_test::run()
 
 		for( size_t column = 0; ok && column < 3; ++column )
 		{
-			ok = M.at( 1, column ) == M_row.at( 0, column );
+			TEST(M.at( 1, column ) == M_row.at( 0, column ));
 		}
 
 		for( size_t row = 0; ok && row < 2; ++row )
 		{
-			ok = M.at( row, 2 ) == M_column.at( row, 0 );
+			TEST(M.at( row, 2 ) == M_column.at( row, 0 ));
 		}
 
 		double Mdata_row[] = { 3, 2, 5, 4, 5, 6 };
@@ -272,7 +274,7 @@ bool matrix_test::run()
 		M.set_row( 0, M_row );
 		for( size_t column = 0; ok && column < 3; ++column )
 		{
-			ok = M == Mr;
+			TEST(M == Mr);
 		}
 
 		double Mdata_column[] = { 1, 5, 3, 4, 2, 6 };
@@ -284,7 +286,7 @@ bool matrix_test::run()
 		M.set_column( 1, M_column );
 		for( size_t row = 0; ok && row < 2; ++row )
 		{
-			ok = M == Mc;
+			TEST(M == Mc);
 		}
 
 		log( "get/set_row(),get/set_column()", ok );
@@ -311,7 +313,7 @@ bool matrix_test::run()
         matrix< 3, 2, double > m0t = transpose( m0 );
         m1.set( data, data + 6, false );
 
-        ok = m1 == m0t;
+        TEST(m1 == m0t);
 		log( "transpose(), transpose_to()", ok );
         if ( !ok )
         {
@@ -339,12 +341,12 @@ bool matrix_test::run()
         matrix< 2, 2, double > correct_result;
         double correct_result_data[] = { 5, 1, 4, 2 };
         correct_result = correct_result_data;
-        ok = result == correct_result;
+        TEST(result == correct_result);
 
         if ( ok )
         {
             result = mul0 * mul1;
-            ok = result == correct_result;
+            TEST(result == correct_result);
         }
 
         if ( ok )
@@ -369,7 +371,7 @@ bool matrix_test::run()
             mul0.set( mul0data, mul0data + 4 );
             mul1.set( mul1data, mul1data + 4 );
             mul0 *= mul1;
-            ok = mul0 == correct_result;
+            TEST(mul0 == correct_result);
         }
 
 		log( "matrix multiplication ( multiply(), operator*, operator*= )", ok );
@@ -413,7 +415,7 @@ bool matrix_test::run()
             1. };
         v_correct_result = vResultData;
 
-		ok = v_result.equals( v_correct_result, 1e-12 );
+		TEST(v_result.equals( v_correct_result, 1e-12 ));
 
         log( "matrix * vector multiplication", ok );
         if ( ! ok )
@@ -461,7 +463,7 @@ bool matrix_test::run()
         };
         v_correct_result = vResultData;
 
- 		ok = v_result.equals( v_correct_result, 1e-12 );
+ 		TEST(v_result.equals( v_correct_result, 1e-12 ));
 
         log( "matrix4x4 * vector3 ( m4x4 * v4( v3.xyz, 1.0 ) ) multiplication", ok );
         if ( ! ok )
@@ -489,7 +491,7 @@ bool matrix_test::run()
 		try
 		{
 			m.at( 3, 2 );
-			ok = false;
+			TEST(false);
 		}
 		catch(...)
 		{}
@@ -499,14 +501,14 @@ bool matrix_test::run()
 		}
 		catch(...)
 		{
-			ok = false;
+			TEST(false);
 		}
 		try
 		{
 			if ( ok )
 			{
 				m[ 3 ][ 2 ];
-				ok = false;
+				TEST(false);
 			}
 		}
 		catch(...)
@@ -528,7 +530,7 @@ bool matrix_test::run()
         double res_data[] = { 5, 6 };
         result = res_data;
 
-        ok = m_sub == result;
+        TEST(m_sub == result);
         log( "get_sub_matrix()", ok );
 	}
 
@@ -547,7 +549,7 @@ bool matrix_test::run()
         double res_data[] = { 1, 7, 8, 4, 9, 0 };
         result = res_data;
 
-        ok = m_src == result;
+        TEST(m_src == result);
         log( "set_sub_matrix()", ok );
 
     }
@@ -580,11 +582,11 @@ bool matrix_test::run()
 
         M.inverse( M_inverse );
 
-        ok = M_inverse == M_inverse_correct;
+        TEST(M_inverse == M_inverse_correct);
 		log( "matrix inversion for 2x2 matrices, maximum precision", ok, true );
         if ( ! ok )
         {
-            ok = M_inverse.equals( M_inverse_correct, 1e-15 );
+            TEST(M_inverse.equals( M_inverse_correct, 1e-15 ));
 			log( "matrix inversion 2x2, tolerance: 1e-15.", ok );
         }
         if ( ! ok )
@@ -617,11 +619,11 @@ bool matrix_test::run()
 
         M.inverse( M_inverse );
 
-        ok = M_inverse == M_inverse_correct;
+        TEST(M_inverse == M_inverse_correct);
 		log( "matrix inversion for 3x3 matrices, maximum precision", ok, true );
         if ( ! ok )
         {
-            ok = M_inverse.equals( M_inverse_correct, 1e-15 );
+            TEST(M_inverse.equals( M_inverse_correct, 1e-15 ));
 			log( "matrix inversion 3x3, tolerance: 1e-15.", ok );
         }
         if ( ! ok )
@@ -654,11 +656,11 @@ bool matrix_test::run()
 
         M.inverse( M_inverse );
 
-        ok = M_inverse == M_inverse_correct;
+        TEST(M_inverse == M_inverse_correct);
 		log( "matrix inversion for 4x4 matrices, maximum precision", ok, true );
         if ( ! ok )
         {
-            ok = M_inverse.equals( M_inverse_correct, 1e-9 );
+            TEST(M_inverse.equals( M_inverse_correct, 1e-9 ));
 			log( "matrix inversion 4x4, tolerance: 1e-15.", ok );
         }
         if ( ! ok )
@@ -686,13 +688,13 @@ bool matrix_test::run()
 
         m4x4.set( mData, mData + 16, true );
 
-        ok = m4x4 == m4x4C;
+        TEST(m4x4 == m4x4C);
 
         m4x4C = transpose( m4x4C );
 
         m4x4.set( mData, mData + 16, false );
 
-        ok = m4x4 == m4x4C;
+        TEST(m4x4 == m4x4C);
 
         log( "set( iterator_t, bool ) ", ok );
 
@@ -718,7 +720,7 @@ bool matrix_test::run()
         correct_result = corr_res_data;
 
         result.direct_sum( upper_left, lower_right );
-        ok = result == correct_result;
+        TEST(result == correct_result);
         log( "direct_sum", ok );
     }
 
@@ -744,7 +746,7 @@ bool matrix_test::run()
         double det33 = m33.det();
         double det22 = m22.det();
 
-        ok = det44 == 5.0 && det33 == -7.0 && det22 == -3.0;
+        TEST(det44 == 5.0 && det33 == -7.0 && det22 == -3.0);
 
         log( "determinant for 2x2, 3x3 and 4x4 matrices", ok );
     }
@@ -774,7 +776,7 @@ bool matrix_test::run()
             273, 250, 217, 196,
             231, 198, 153, 126 };
         correct_result = corr_res_data;
-		ok = m1 == correct_result;
+		TEST(m1 == correct_result);
 		log( "convolution", ok );
 	}
 
@@ -826,7 +828,7 @@ bool matrix_test::run()
 		data_2 = test_data;
 		float_t norm_check = 22.0907220343745223090082;
 		float_t norm = data_2.frobenius_norm();
-		ok = norm == norm_check;
+		TEST(norm == norm_check);
 		if ( ok )
 		{
 			log( "matrix frobenius norm", ok  );
@@ -874,7 +876,7 @@ bool matrix_test::run()
 
 		left.khatri_rao_product( right, khatri_rao );
 
-		ok = khatri_rao == khatri_rao_check;
+		TEST(khatri_rao == khatri_rao_check);
 		if ( ok )
 		{
 			log( "khatri-rao matrix product ", ok  );
@@ -924,7 +926,7 @@ bool matrix_test::run()
 
 		left.kronecker_product( right, kronecker );
 
-		ok = kronecker == kronecker_check;
+		TEST(kronecker == kronecker_check);
 		if ( ok )
 		{
 			log( "kronecker matrix product ", ok  );
@@ -950,7 +952,8 @@ bool matrix_test::run()
 		matrix_type_b_check.fill(2);
 		matrix_type_b.cast_from( matrix_type_a );
 
-		if ( matrix_type_b_check == matrix_type_b )
+        TEST(matrix_type_b_check == matrix_type_b );
+		if ( ok )
 		{
 			log( "type cast ", true  );
 		} else
@@ -973,7 +976,8 @@ bool matrix_test::run()
 		int m_min = m_get_min_max.get_min();
 		int m_max = m_get_min_max.get_max();
 
-		if ( (m_min == 0) && (m_max == 8) )	{
+		TEST((m_min == 0) && (m_max == 8) );
+		if (ok)	{
 			log( "get min/max" , true  );
 		} else
 		{
@@ -1019,7 +1023,8 @@ bool matrix_test::run()
 		m_quant_sign.dequantize( m_dequant_sign, min_value, max_value );
 
 
-		if ( ( m_quant_check == m_quant ) && ( m_quant_sign_check == m_quant_sign ) && m_raw.equals(m_dequant_sign, 0.01) && m_raw.equals(m_dequant, 0.1) )	{
+		TEST(( m_quant_check == m_quant ) && ( m_quant_sign_check == m_quant_sign ) && m_raw.equals(m_dequant_sign, 0.01) && m_raw.equals(m_dequant, 0.1));
+		if ( ok )	{
 			log( "quantize/dequantize" , true  );
 		} else
 		{
@@ -1050,7 +1055,7 @@ bool matrix_test::run()
 		m_nnz2.at( 0,2 ) = 0.00000035; m_nnz2.at( 0,1 ) = -0.00000035;
 		size_t number_nonzeros2 = m_nnz2.nnz( 0.00001 );
 
-		ok = ( number_nonzeros == 19 ) && (number_nonzeros2 == 13);
+		TEST(( number_nonzeros == 19 ) && (number_nonzeros2 == 13));
 		log( "get number of nonzeros" , ok  );
 
 	}
@@ -1066,7 +1071,7 @@ bool matrix_test::run()
 		m_thresh.threshold( 0.00001 );
 		size_t number_nonzeros = m_thresh.nnz();
 
-		ok = number_nonzeros == number_nonzeros_check ;
+		TEST(number_nonzeros == number_nonzeros_check);
 		log( "thresholding" , ok  );
 
 	}
@@ -1081,7 +1086,7 @@ bool matrix_test::run()
 		mmp_check.fill( 6 );
 		mmp.multiply_piecewise( mmp_other );
 
-		ok = mmp == mmp_check;
+		TEST(mmp == mmp_check);
 		log( "multiply piecewise" , ok  );
 
 	}
@@ -1096,7 +1101,7 @@ bool matrix_test::run()
 
 		m_cs.columnwise_sum( summed_cols );
 
-		ok = summed_cols == summed_cols_check;
+		TEST(summed_cols == summed_cols_check);
 		log( "summed columns" , ok  );
 
 	}
@@ -1109,7 +1114,7 @@ bool matrix_test::run()
 		double sum = m.sum_elements();
 		double sum_check = 36;
 
-		ok = sum == sum_check;
+		TEST(sum == sum_check);
 		log( "sum elements" , ok  );
 
 	}
@@ -1128,7 +1133,7 @@ bool matrix_test::run()
 		float cov_data[] = { 630, 1130, 1130, 2030};
         m_cov_check = cov_data;
 
-		ok = m_cov == m_cov_check;
+		TEST(m_cov == m_cov_check);
 		log( "symmetric covariance matrix" , ok  );
 
 	}
@@ -1147,7 +1152,7 @@ bool matrix_test::run()
 			0.270598053932, -0.653281509876, 0.653281509876, -0.270598053932, -0.270598053932, 0.653281509876};
 		m_dct_check = dct_data;
 
-		ok = m_dct == m_dct_check;
+		TEST(m_dct == m_dct_check);
 		log( "set dct coefficients (discrete cosine transform)" , ok  );
 
 	}
@@ -1187,17 +1192,16 @@ bool matrix_test::run()
 
 		m1.sum_columns( m3 );
 
-		ok = ( m2 == m2_check ) && (m3 == m3_check) ;
+		TEST(( m2 == m2_check ) && (m3 == m3_check));
 
 		log( "sum rows/columns" , ok  );
 
 	}
 
-    return true;
+    return global_ok;
 }
 
 
 
 
 } // namespace vmml
-

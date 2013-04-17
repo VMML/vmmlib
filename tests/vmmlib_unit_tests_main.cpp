@@ -3,8 +3,8 @@
 
 #include "unit_test_globals.hpp"
 
-//#include "vector_test.hpp"
-//#include "matrix_test.hpp"
+#include "vector_test.hpp"
+#include "matrix_test.hpp"
 #include "lowpass_filter_test.hpp"
 #include "frustum_test.hpp"
 #include "intersection_test.hpp"
@@ -53,8 +53,8 @@ int
 main( int argc, const char* argv[] )
 {
 
-//    vmml::vector_test vector_test_;
-//    run_and_log( vector_test_ );
+    vmml::vector_test vector_test_;
+    run_and_log( vector_test_ );
 
 //    vmml::matrix_test matrix_test_;
 //    run_and_log( matrix_test_ );

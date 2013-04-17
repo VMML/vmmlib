@@ -4,11 +4,18 @@
 #include <vmmlib/t3_converter.hpp>
 #include <sstream>
 
+#define TEST( x ) \
+{ \
+    ok = x; \
+    global_ok &= ok; \
+}
+
 namespace vmml
 {
 	
 	bool t3_virtual_padder_test::run()
 	{
+        bool global_ok = true;
         bool ok = false;
 		
         // define Tensor
@@ -51,21 +58,21 @@ namespace vmml
 		
 		t3_p.get_data_block( block, 4, 4, 4 );
 		//std::cout << "empty data block\n" << block << std::endl;
-		ok = ( block == block_check );
+		TEST( block == block_check );
 		
 		block_check.at( 0,0,0 ) = 34; block_check.at( 0,0,1 ) = 46;
 		block_check.at( 0,1,0 ) = 35; block_check.at( 0,1,1 ) = 47;
 
 		t3_p.get_data_block( block, 2, 2, 2 );
 		//std::cout << "half full data block\n" << block << std::endl;
-		ok = ok && ( block == block_check );
+		if (ok) TEST( block == block_check );
 
 		T data[] = { 0, 1, 4, 5, 12, 13, 16, 17 };
 		block_check.set(data, data + 8);
 		
 		t3_p.get_data_block( block, 0, 0, 0 );
 		//std::cout << "full data block\n" << block << std::endl;
-		ok = ok && ( block == block_check );
+		if (ok) TEST( block == block_check );
 
 
  				
@@ -93,7 +100,7 @@ namespace vmml
 		
 		
 		
-		return ok;
+		return global_ok;
 	}
 	
 	

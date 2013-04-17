@@ -5,12 +5,19 @@
 #include <vmmlib/tensor_mmapper.hpp>
 #include <sstream>
 
+#define TEST( x ) \
+{ \
+    ok = x; \
+    global_ok &= ok; \
+}
+
 namespace vmml
 {
 
     bool
     tensor3_test::run()
     {
+        bool global_ok = true;
         bool ok = false;
 
 
@@ -18,7 +25,8 @@ namespace vmml
         tensor3< 2, 3, 4, int >  t3_tmp;
 
         //test size
-        if (t3.size() == 24)
+        TEST(t3.size() == 24);
+        if (ok)
         {
             log( "size()", true  );
         } else
@@ -57,16 +65,13 @@ namespace vmml
             {
                 for( size_t i2 = 0; i2 < 3 && ok; ++i2, ++check_value )
                 {
-                    if( t3.at(i1, i2, i3) != check_value)
+                    TEST( t3.at(i1, i2, i3) == check_value);
+                    if (!ok)
                     {
                         std::stringstream error;
                         error << "T3 set from input, values from 1... 24: " << std::endl << t3 << std::endl;
                         log_error( error.str() );
-                        ok = false;
-                    } else {
-                        ok = true;
                     }
-
                 }
             }
         }
@@ -76,7 +81,7 @@ namespace vmml
         }
 
 
-        //test fil()
+        //test fill()
         t3.fill( 4.0 );
         ok = false;
         check_value = 4;
@@ -86,7 +91,8 @@ namespace vmml
             {
                 for( size_t i2 = 0; i2 < 3 && ok; ++i2 )
                 {
-                    if( t3.at(i1, i2, i3) != check_value )
+                    TEST(t3.at(i1, i2, i3) == check_value );
+                    if (!ok)
                     {
                         std::stringstream error;
                         error << "T3 with all values to 4: " << std::endl << t3 << std::endl;
@@ -114,7 +120,8 @@ namespace vmml
         t3_3.fill( 5 );
 
         //test equals operator
-        if ( !(t3==t3_2) && (t3_2==t3_3) && t3 != t3_2 && !(t3_2!=t3_3))
+        TEST(!(t3==t3_2) && (t3_2==t3_3) && t3 != t3_2 && !(t3_2!=t3_3));
+        if (ok)
         {
             log( "operator== and operator!= ", true  );
         } else
@@ -130,7 +137,8 @@ namespace vmml
         //test sum with other t3
         t3_result = t3 + t3_2;
         t3_3.fill( 7 );
-        if ( t3_result == t3_3)
+        TEST(t3_result == t3_3);
+        if (ok)
         {
             log( "operator+ and operator += with other tensor3", true  );
         } else
@@ -146,7 +154,8 @@ namespace vmml
         //test subtraction
         t3_result = t3_2 - t3;
         t3_3.fill( 3 );
-        if ( t3_result == t3_3)
+        TEST(t3_result == t3_3);
+        if (ok)
         {
             log( "operator- and operator -= with other tensor3 ", true  );
         } else
@@ -163,7 +172,8 @@ namespace vmml
         //test sum with scalar (shift)
         t3_result = t3 + 4;
         t3_3.fill( 6 );
-        if ( t3_result == t3_3)
+        TEST( t3_result == t3_3);
+        if (ok)
         {
             log( "operator+ and operator += with scalar", true  );
         } else
@@ -179,7 +189,8 @@ namespace vmml
         //test subtraction with scalar (negative shift)
         t3_result = t3 - 2;
         t3_3.zero();
-        if ( t3_result == t3_3 )
+        TEST(t3_result == t3_3 );
+        if (ok)
         {
             log( "operator- and operator -= with scalar", true  );
         } else
@@ -204,7 +215,8 @@ namespace vmml
         t3_sw.fill( 1 );
         t3_sw.apply_spherical_weights( t3_result_sw );
         double precision = 1.0e-5;
-        if ( t3_result_sw.equals( t3_result_sw_check, precision ) )
+        TEST(t3_result_sw.equals( t3_result_sw_check, precision ));
+        if ( ok )
         {
             log( "apply spherical weights", true  );
         } else
@@ -232,14 +244,12 @@ namespace vmml
             {
                 for( size_t i2 = 0; i2 < 3 && ok; ++i2, ++check_value )
                 {
-                    if( t3.at(i1, i2, i3) != check_value)
+                    TEST(t3.at(i1, i2, i3) == check_value);
+                    if (!ok)
                     {
                         std::stringstream error;
                         error << "T3 with all values from 0 to 23:: " << std::endl << t3 << std::endl;
                         log_error( error.str() );
-                        ok = false;
-                    } else {
-                        ok = true;
                     }
 
                 }
@@ -261,16 +271,13 @@ namespace vmml
             {
                 for( size_t i2 = 0; i2 < 3 && ok; ++i2 )
                 {
-                    if( t3.at(i1, i2, i3) != check_value )
+                    TEST( t3.at(i1, i2, i3) == check_value );
+                    if (!ok)
                     {
                         std::stringstream error;
                         error << "T3 with all values to 0: " << std::endl << t3 << std::endl;
                         log_error( error.str() );
-                        ok = false;
-                    } else {
-                        ok = true;
                     }
-
                 }
             }
         }
@@ -309,7 +316,8 @@ namespace vmml
         test_I3_data.set( 6, 12, 18, 24);
 
 
-        if (I2_data == test_I2_data && I1_data == test_I1_data && I3_data == test_I3_data)
+        TEST(I2_data == test_I2_data && I1_data == test_I1_data && I3_data == test_I3_data);
+        if (ok)
         {
             log( "get_n_vector/get_row/get_column/get_tube()", true  );
         } else
@@ -340,7 +348,8 @@ namespace vmml
         vmml::vector< 4, int > I3_data_2 ;
         t3.get_tube( i1, i2, I3_data_2 );
 
-        if (I2_data_2 == test_I2_data && I1_data_2 == test_I1_data && I3_data_2 == test_I3_data)
+        TEST(I2_data_2 == test_I2_data && I1_data_2 == test_I1_data && I3_data_2 == test_I3_data);
+        if (ok)
         {
             log( "set_n_vector/set_row/set_column/set_tube()", true  );
         } else
@@ -368,7 +377,8 @@ namespace vmml
         t3.set_frontal_slice_fwd( 2, test_mat_frontal_2);
         t3.get_frontal_slice_fwd( 2, mat_frontal_2);
 
-        if (mat_frontal == test_mat_frontal && mat_frontal_2 == test_mat_frontal_2)
+        TEST(mat_frontal == test_mat_frontal && mat_frontal_2 == test_mat_frontal_2);
+        if (ok)
         {
             log( "get/set_frontal_slice_fwd() (I2xI1)", true  );
         } else
@@ -392,7 +402,8 @@ namespace vmml
         t3.get_frontal_slice_bwd( 2, mat_frontal_2_bwd);
 
 
-        if (mat_frontal_bwd == test_mat_frontal_bwd && mat_frontal_2_bwd == test_mat_frontal_2_bwd)
+        TEST(mat_frontal_bwd == test_mat_frontal_bwd && mat_frontal_2_bwd == test_mat_frontal_2_bwd);
+        if (ok)
         {
             log( "get/set_frontal_slice_bwd() (I1xI2)", true  );
         } else
@@ -421,7 +432,8 @@ namespace vmml
         t3.set_lateral_slice_bwd( 0, test_mat_lateral_2 );
         t3.get_lateral_slice_bwd( 0, mat_lateral_2 );
 
-        if (mat_lateral == test_mat_lateral && mat_lateral_2 == test_mat_lateral_2)
+        TEST(mat_lateral == test_mat_lateral && mat_lateral_2 == test_mat_lateral_2);
+        if (ok)
         {
             log( "get/set_lateral_slice_bwd() (I1xI3)", true  );
         } else
@@ -444,7 +456,8 @@ namespace vmml
         t3.set_lateral_slice_fwd( 0, test_mat_lateral_2_fwd );
         t3.get_lateral_slice_fwd( 0, mat_lateral_2_fwd );
 
-        if (mat_lateral_fwd == test_mat_lateral_fwd && mat_lateral_2_fwd == test_mat_lateral_2_fwd)
+        TEST(mat_lateral_fwd == test_mat_lateral_fwd && mat_lateral_2_fwd == test_mat_lateral_2_fwd);
+        if (ok)
         {
             log( "get/set_lateral_slice_fwd() (I3xI1)", true  );
         } else
@@ -473,7 +486,8 @@ namespace vmml
         t3.set_horizontal_slice_fwd( 1, test_mat_horizontal_2 );
         t3.get_horizontal_slice_fwd( 1, mat_horizontal_2 );
 
-        if (mat_horizontal == test_mat_horizontal &&  mat_horizontal_2 == test_mat_horizontal_2 )
+        TEST(mat_horizontal == test_mat_horizontal &&  mat_horizontal_2 == test_mat_horizontal_2 );
+        if (ok)
         {
             log( "get/set_horizontal_slice_fwd() (I2xI3)", true  );
         } else
@@ -495,7 +509,8 @@ namespace vmml
         t3.set_horizontal_slice_bwd( 1, test_mat_horizontal_2_bwd );
         t3.get_horizontal_slice_bwd( 1, mat_horizontal_2_bwd );
 
-        if (mat_horizontal_bwd == test_mat_horizontal_bwd &&  mat_horizontal_2_bwd == test_mat_horizontal_2_bwd )
+        TEST(mat_horizontal_bwd == test_mat_horizontal_bwd &&  mat_horizontal_2_bwd == test_mat_horizontal_2_bwd );
+        if (ok)
         {
             log( "get/set_horizontal_slice_bwd() (I3xI2)", true  );
         } else
@@ -577,7 +592,8 @@ namespace vmml
         t3_cp_reco.reconstruct_CP( lambda,  v1, v2, v3, temp);
 
         precision = 1.0e-4;
-        if ( t3_cp_reco.equals( t3_cp_reco_check, precision) )
+        TEST( t3_cp_reco.equals( t3_cp_reco_check, precision) );
+        if (ok)
         {
             log( "tensor3 CP reconstruction", true  );
         } else
@@ -595,7 +611,8 @@ namespace vmml
         double innerp = t3_cp_input.tensor_inner_product( lambda, u1_cp, u2_cp, u3_cp);
 
         double innerp_check = 11.5230085;
-        if ( (innerp - innerp_check) < precision )
+        TEST( (innerp - innerp_check) < precision );
+        if (ok)
         {
             log( "tensor3 inner product t3 and cp of t3", true  );
         } else
@@ -631,7 +648,8 @@ namespace vmml
         int data7[] = { 0, 3, 6, 9, 12, 15, 18, 21, 1, 4, 7, 10, 13, 16, 19, 22, 2, 5, 8, 11, 14, 17, 20, 23 };
         m_frontal_test.set(data7, data7 + 24);
 
-        if ( m_horizontal_test == m_horizontal && m_lateral_test == m_lateral && m_frontal_test == m_frontal )
+        TEST(m_horizontal_test == m_horizontal && m_lateral_test == m_lateral && m_frontal_test == m_frontal );
+        if (ok)
         {
             log( "backward unfolding along all modes", true  );
         } else
@@ -656,7 +674,7 @@ namespace vmml
         t3.fill_increasing_values();
         double f_norm = t3.frobenius_norm();
 
-        ok = f_norm == f_norm_check;
+        TEST(f_norm == f_norm_check);
 
         //compute frobenius norm of the difference of a tensor3 and another tensor3
         f_norm_check = 10;
@@ -667,7 +685,7 @@ namespace vmml
 
         f_norm = t3.frobenius_norm( t3_tmp );
 
-        ok = (f_norm == f_norm_check ) && ok;
+        if (ok) TEST(f_norm == f_norm_check);
 
         if ( ok )
         {
@@ -688,17 +706,17 @@ namespace vmml
         t3_tmp.at(1,1,1) = 0;
 
         double rmse = t3.rmse( t3_tmp );
-        ok = rmse == rmse_check;
+        TEST(rmse == rmse_check);
 
         //psnr
         double psnr_check = 48.43872076218154;
         double psnr = t3.compute_psnr( t3_tmp, t3.get_max() );
-        ok = ok && (psnr == psnr_check );
+        if (ok) TEST(psnr == psnr_check );
 
         //avg. frob. norm difference
         double afn_check = 13.42261772780059;
         double afn = t3.avg_frobenius_norm();
-        ok = ok && ( afn == afn_check );
+        if (ok) TEST( afn == afn_check );
 
 
         if ( ok )
@@ -726,7 +744,8 @@ namespace vmml
         t3_diag.diag( diag_values );
 
 
-        if ( t3_diag == t3_diag_check )
+        TEST( t3_diag == t3_diag_check );
+        if ( ok )
         {
             log( "fill diagonal values", true  );
         } else
@@ -747,7 +766,8 @@ namespace vmml
             t3_type_b_check.fill(2);
             t3_type_b.cast_from( t3_type_a );
 
-            if (t3_type_b_check == t3_type_b )
+            TEST(t3_type_b_check == t3_type_b);
+            if (ok)
             {
                 log( "type cast ", true  );
             } else
@@ -773,7 +793,8 @@ namespace vmml
             t3_type_b_check.at(0,2,0) = 3;
             t3_type_b.float_t_to_uint_t( t3_type_a );
 
-            if (t3_type_b_check == t3_type_b )
+            TEST(t3_type_b_check == t3_type_b );
+            if (ok)
             {
                 log( "from float_t to uint_t ", true  );
             } else
@@ -797,7 +818,7 @@ namespace vmml
         ok = true;
         for (int i = 0; i < 24 && ok; ++i )
         {
-            ok = (abs(export_data_check[i]) - abs(export_data[i])) < precision;
+            TEST((abs(export_data_check[i]) - abs(export_data[i])) < precision);
         }
 
         log( "export tensor3", ok  );
@@ -809,7 +830,8 @@ namespace vmml
         t3_export_import.zero();
         t3_export_import.import_from( in_data );
 
-        if ( t3_export_import.equals( t3_import_check, precision ) )    {
+        TEST( t3_export_import.equals( t3_import_check, precision ) );
+        if (ok)    {
             log( "import tensor3" , true  );
         } else
         {
@@ -830,7 +852,8 @@ namespace vmml
         int t3_min = t3_get_min_max.get_min();
         int t3_max = t3_get_min_max.get_max();
 
-        if ( (t3_min == 0) && (t3_max == 29) )  {
+        TEST( (t3_min == 0) && (t3_max == 29) );
+        if (ok)  {
             log( "get min/max" , true  );
         } else
         {
@@ -874,7 +897,9 @@ namespace vmml
             t3_quant.dequantize( t3_dequant, min_value, max_value );
             t3_quant_sign.dequantize( t3_dequant_sign, min_value, max_value );
 
-            ok = ( t3_quant_check == t3_quant ) && ( t3_quant_sign_check == t3_quant_sign ) && t3_dequant.equals(t3_dequant_sign, 0.01);
+            TEST(( t3_quant_check == t3_quant ) &&
+                    ( t3_quant_sign_check == t3_quant_sign ) &&
+                    t3_dequant.equals(t3_dequant_sign, 0.01));
 #if 0
             std::cout << " quantization: is " << ok << std::endl
             << "original: " << t3_raw << std::endl
@@ -911,7 +936,7 @@ namespace vmml
             tensor3< 2, 4, 3, float >  t3_dequant_log_check;
             t3_dequant_log_check.set(deq_log_check, deq_log_check +24 );
 
-            ok = ok && t3_dequant_log_check.equals( t3_dequant_log, 0.001 );
+            if (ok) TEST(t3_dequant_log_check.equals( t3_dequant_log, 0.001 ));
 
 #if 0
             std::cout << " quantization: is " << ok << std::endl
@@ -922,7 +947,7 @@ namespace vmml
             << "deq. from log-scale: " << std::endl << t3_dequant_log << std::endl
             << "deq. from linear: " << std::endl << t3_dequant2 << std::endl;
 #endif
-
+            
             //linear quantization with separate sign encoding
             tensor3< 2, 4, 3, float >  t3_raw3;
             signs.zero(); t3_quant.zero();
@@ -941,7 +966,7 @@ namespace vmml
             tensor3< 2, 4, 3, float >  t3_raw3_check;
             t3_raw3_check.set( t3_raw3_data, t3_raw3_data +24 );
 
-            ok = ok && t3_raw3.equals( t3_raw3_check, 0.001 );
+            if(ok) TEST(t3_raw3.equals( t3_raw3_check, 0.001 ));
 
             if ( ok )   {
                 log( "quantize/dequantize" , ok  );
@@ -974,7 +999,7 @@ namespace vmml
             t3_nnz2.at( 0,2,3) = 0.00000035; t3_nnz2.at( 0,1,3) = -0.00000035;
             size_t number_nonzeros2 = t3_nnz2.nnz( 0.00001 );
 
-            ok = ( number_nonzeros == 118 ) && (number_nonzeros2 == 61);
+            TEST( (number_nonzeros == 118 && number_nonzeros2 == 61) );
             log( "get number of nonzeros" , ok  );
 
         }
@@ -998,7 +1023,7 @@ namespace vmml
             t3_thresh_char.threshold( 4 );
             size_t number_nonzeros_char = t3_thresh_char.nnz();
 
-            ok = (number_nonzeros == 115 ) && (number_nonzeros_char == 119);
+            TEST(number_nonzeros == 115 && number_nonzeros_char == 119);
             log( "thresholding" , ok  );
         }
 
@@ -1014,7 +1039,7 @@ namespace vmml
 
             tensor3< 2, 3, 2, int > t3_sub;
             t3_bigger.get_sub_tensor3( t3_sub, 2, 2, 1 );
-            ok = t3_sub == t3_sub_check;
+            TEST(t3_sub == t3_sub_check);
 
             t3_sub.fill_increasing_values();
             t3_bigger.set_sub_tensor3( t3_sub, 0, 1, 1 );
@@ -1026,7 +1051,7 @@ namespace vmml
             t3_bigger_check.at(0, 1, 2 ) = 6; t3_bigger_check.at(0, 2, 2 ) = 7; t3_bigger_check.at(0, 3, 2 ) = 8;
             t3_bigger_check.at(1, 1, 2 ) = 9; t3_bigger_check.at(1, 2, 2 ) = 10; t3_bigger_check.at(1, 3, 2 ) = 11;
 
-            ok = ok && ( t3_bigger == t3_bigger_check);
+            if (ok) TEST( t3_bigger == t3_bigger_check);
             if ( ok )   {
                 log( "get/set sub tensor3" , ok  );
             } else
@@ -1099,7 +1124,7 @@ namespace vmml
             tensor3< 4, 3, 4, int >::iterator
             it      = t3x.begin();
 
-            ok = *it == 23;
+            TEST(*it == 23);
             if ( ! ok )
             {
                 std::cout << "*it should be " << 23 << " but is " << *it << std::endl;
@@ -1108,7 +1133,7 @@ namespace vmml
             for( size_t index = 0; index < 1; ++it, ++index ) {}
 
             if ( ok )
-                ok = *it == 12;
+                TEST(*it == 12);
 
             if ( ! ok )
             {
@@ -1118,7 +1143,7 @@ namespace vmml
             for( size_t index = 0; index < 3; ++it, ++index ) {}
 
             if ( ok )
-                ok = *it == 11;
+                TEST(*it == 11);
 
             if ( ! ok )
             {
@@ -1128,7 +1153,7 @@ namespace vmml
             for( size_t index = 0; index < 8 + 12 + 5; ++it, ++index ) {}
 
             if ( ok )
-                ok = *it == 13;
+                TEST(*it == 13);
 
             if ( ! ok )
             {
@@ -1189,7 +1214,7 @@ namespace vmml
 
             t3_converter<8,8,2,unsigned char>::read_from_raw( uct_t3, dir, out_filename );
 
-            ok = uct_t3 == uct_t3_check;
+            TEST(uct_t3 == uct_t3_check);
 
             remove("in.raw");
             remove("out.raw");
@@ -1221,7 +1246,7 @@ namespace vmml
             tensor3< 2, 2, 2, unsigned int > t3_sub;
             t3_1.average_8to1( t3_sub );
 
-            ok = ( t3_sub == t3_sub_check ) ;
+            TEST( t3_sub == t3_sub_check ) ;
 
             log( "subsample tensor3 (average 8 voxels to 1 voxel)" , ok  );
 
@@ -1237,8 +1262,8 @@ namespace vmml
             t3_4.fill_rand_sym( 6 );
 
 
-            ok = t3_1.at( 0, 1, 0) == t3_1.at( 1, 0, 0 );
-            ok = ok && (t3_1.at( 1, 2, 1 ) == t3_1.at( 2, 1, 1));
+            TEST(t3_1.at( 0, 1, 0) == t3_1.at( 1, 0, 0 ));
+            if (ok) TEST (t3_1.at( 1, 2, 1 ) == t3_1.at( 2, 1, 1));
 
             unsigned char val_102 =  t3_4.at( 1, 0, 2 );
             unsigned char val_012 =  t3_4.at( 0, 1, 2 );
@@ -1247,8 +1272,9 @@ namespace vmml
             unsigned char val_120 =  t3_4.at( 1, 2, 0 );
             unsigned char val_210 =  t3_4.at( 2, 1, 0 );
 
-            ok = ok && val_102 == val_012 && val_102 == val_021 && val_102 == val_201;
-            ok = ok && val_102 == val_120 && val_102 == val_210;
+            if (ok) TEST(val_102 == val_012 && val_102 == val_021 &&
+                    val_102 == val_201 && val_102 == val_120 &&
+                    val_102 == val_210);
 
             log( "fill tensor3 with symmetric random values" , ok  );
 
@@ -1263,9 +1289,9 @@ namespace vmml
             double var = t3_1.variance();
             double sigma = t3_1.stdev();
 
-            ok = (mean_val - 76.0556 <= 0.01 );
-            ok = ok && ((4469.232026 - var) <= 0.01);
-            ok = ok && ((66.85231504 - sigma) <= 0.01);
+            TEST((mean_val - 76.0556 <= 0.01 ) &&
+                    (4469.232026 - var) <= 0.01 &&
+                    (66.85231504 - sigma) <= 0.01);
 
             log( "mean, variance and standard deviation" , ok  );
 
@@ -1320,7 +1346,7 @@ namespace vmml
             //std::cout << "t333\n" << t333 << std::endl;
 
 
-            ok = t3_check == t3_1;
+            TEST(t3_check == t3_1);
             log( "load tensor3 from memory mapped file" , ok  );
 
             remove("mmap_testdata.raw");
@@ -1341,7 +1367,7 @@ namespace vmml
             tensor3< 4,4,4, float > t3_out;
             t3_converter<4,4,4,float>::read_from_raw( t3_out, dir, out_filename );
 
-            ok = t3_out.equals( t3_in, 0.001);
+            TEST(t3_out.equals( t3_in, 0.001));
             log( "t3 converter: convert raw" , ok  );
 
 
@@ -1349,9 +1375,8 @@ namespace vmml
             remove("out.raw");
 
         }
-
-        ok = true;
-        return ok;
+        
+        return global_ok;
     }
 
 

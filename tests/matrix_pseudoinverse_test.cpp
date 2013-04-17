@@ -4,12 +4,19 @@
 #include <sstream>
 #include <stdint.h>
 
+#define TEST( x ) \
+{ \
+    ok = x; \
+    global_ok &= ok; \
+}
+
 namespace vmml
 {
 	
 	bool
 	matrix_pseudoinverse_test::run()
 	{
+        bool global_ok = true;
 		bool ok = false;
 		
 		//test 1 (orthogonal)
@@ -36,7 +43,7 @@ namespace vmml
 		compute_pinv( input, pseudoinverse_transposed );
 		pinv_t_type1 pseudoinverse = transpose( pseudoinverse_transposed );
 		
-		ok = pseudoinverse_control.equals( pseudoinverse, 1e-4 );
+		TEST(pseudoinverse_control.equals( pseudoinverse, 1e-4 ));
 		
 		//test 2 (non-symmetric transpose)
 		typedef matrix< 4, 4, float > pinv_type2;
@@ -59,7 +66,7 @@ namespace vmml
 		compute_pinv2( input2, pseudoinverse_transposed2 );
 		pinv_type2 pseudoinverse2 = transpose( pseudoinverse_transposed2 );
 		
-		ok = ok && (pseudoinverse_control2.equals( pseudoinverse2, 1e-4 ));
+		if (ok) TEST(pseudoinverse_control2.equals( pseudoinverse2, 1e-4 ));
 		
 		//FIXME: check if multiply = Identity matrix
 		
@@ -75,7 +82,6 @@ namespace vmml
 			<< "input 2 is: " << std::endl << input2 << std::endl
 			<< "inverse matrix 2 should be: " << std::endl << pseudoinverse_control2 << std::endl
 			<< "inverse matrix 2 is: " << std::endl << pseudoinverse2 << std::endl;
-			
 			log_error( error.str() );
 		}
 		
@@ -100,7 +106,7 @@ namespace vmml
 		};
 		pseudoinverse3_control.set( data6, data6 + 24);
 		
-		ok = (pseudoinverse3_control.equals( pseudoinverse_transposed3, 1e-6 ));
+		TEST(pseudoinverse3_control.equals( pseudoinverse_transposed3, 1e-6 ));
 		
 		if (ok) {
 			log( "matrix compute pseudo inverse (COLS > ROWS) ", ok  );
@@ -111,14 +117,12 @@ namespace vmml
 			<< "input 3 is: " << std::endl << input3 << std::endl
 			<< "pinv matrix 3 transposed should be: " << std::endl << pseudoinverse3_control << std::endl
 			<< "pinv matrix 3 transposed is: " << std::endl << pseudoinverse_transposed3 << std::endl;
-			
 			log_error( error.str() );
 		}
 		
 		
 		
-		ok = true;
-		return ok;
+		return global_ok;
 	}
 
 	

@@ -3,12 +3,19 @@
 
 #include <vmmlib/lapack_gaussian_elimination.hpp>
 
+#define TEST( x ) \
+{ \
+    ok = x; \
+    global_ok &= ok; \
+}
+
 namespace vmml
 {
 
 bool
 lapack_gaussian_elimination_test::run()
 {
+    bool global_ok = true;
     typedef vector< 3, float > vec3f;
 
     {
@@ -43,17 +50,14 @@ lapack_gaussian_elimination_test::run()
             
             //std::cout << " X " << X << std::endl;
             
-            if ( fabs( X( 0 ) - 2.0f ) < epsilon
+            TEST( fabs( X( 0 ) - 2.0f ) < epsilon
                 && fabs( X( 1 ) - 3.0f ) < epsilon
                 &&  fabs( X( 2 ) - -1.0f ) < epsilon
-                )
-                ok = true;
-            else
-                ok = false;
+                );
         }
         catch(...)
         {
-            ok = false;
+            TEST(false);
             std::cout << ge.get_params() << std::endl;
         }
 
@@ -67,7 +71,7 @@ lapack_gaussian_elimination_test::run()
         
     }
 
-    return true;
+    return global_ok;
 }
 
 } // namespace vmml

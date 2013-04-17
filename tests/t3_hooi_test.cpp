@@ -3,12 +3,19 @@
 
 #include <sstream>
 
+#define TEST( x ) \
+{ \
+    ok = x; \
+    global_ok &= ok; \
+}
+
 namespace vmml
 {
 	
 	bool
 	t3_hooi_test::run()
 	{
+        bool global_ok = true;
 		bool ok = false;
 		
 		double precision = 0.001;
@@ -44,12 +51,11 @@ namespace vmml
 		typedef t3_hooi< 2, 2, 1, 3, 2, 2, double > hooi_type;
 		hooi_type::als( t3_data, u1, u2, u3, core, hooi_type::init_hosvd() );
 		
-		ok = u1.equals( u1_check, precision );
-		ok = ok && ( u2.equals( u2_check, precision ) );
-		ok = ok && ( u3.equals( u3_check, precision ) );
-		ok = ok && ( u3.equals( u3_check, precision ) );
-		ok = ok && ( core.equals( core_check, precision ) );
-		
+		TEST(u1.equals( u1_check, precision ) &&
+                u2.equals( u2_check, precision ) &&
+                u3.equals( u3_check, precision ) &&
+                u3.equals( u3_check, precision ) &&
+                core.equals( core_check, precision  ));
 		if ( ok )
 		{	
 			log( "HOOI rank-(2,2,1) approximation" , ok  );
@@ -76,7 +82,8 @@ namespace vmml
 		core.zero();
 		t3_hooi< 2, 2, 1, 3, 2, 2, double >::derive_core( t3_data, u1_check, u2_check, u3_check, core );
 		
-		if ( core.equals( core_check, precision ))
+		TEST(core.equals( core_check, precision));
+		if (ok)
 		{	
 			log( "derive core tensor", true  );
 		} else
@@ -95,7 +102,8 @@ namespace vmml
 		core.zero();
 		t3_hooi< 2, 2, 1, 3, 2, 2, double >::derive_core_orthogonal_bases( t3_data, u1_check, u2_check, u3_check, core );
 		
-		if ( core.equals( core_check, precision ))
+		TEST(core.equals( core_check, precision ));
+		if (ok)
 		{	
 			log( "derive core tensor (orthogonal bases)", true  );
 		} else
@@ -109,8 +117,7 @@ namespace vmml
 			log_error( error.str() );
 		}
 		
-		return ok;
+		return global_ok;
 	}
 	
 } //end vmml namespace
-

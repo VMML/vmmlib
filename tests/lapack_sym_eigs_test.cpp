@@ -2,6 +2,11 @@
 #include <vmmlib/matrix.hpp>
 #include <vmmlib/lapack_sym_eigs.hpp>
 
+#define TEST( x ) \
+{ \
+    ok = x; \
+    global_ok &= ok; \
+}
 
 namespace vmml
 {
@@ -9,6 +14,7 @@ namespace vmml
 	bool
 	lapack_sym_eigs_test::run()
 	{
+        bool global_ok = true;
 		bool ok = true;
 		
 		matrix< 4, 4, double > A;
@@ -38,8 +44,8 @@ namespace vmml
 		eigvectors_check.set( data_eigvectors, data_eigvectors + 16);
 				
 		double precision = 1.0e-10;
-		ok = eigvalues.equals( eigvalues_check, precision );
-		ok = ok && eigvectors.equals( eigvectors_check, precision );
+		TEST(eigvalues.equals( eigvalues_check, precision ));
+		if (ok) TEST(eigvectors.equals( eigvectors_check, precision ));
 		
 		if ( ok ) {
 			log( "symmetric eigenvalue decomposition using lapack", ok );
@@ -51,7 +57,6 @@ namespace vmml
 			<< "are: " << std::endl << eigvalues << std::endl	
 			<< "eigenvectors should be: " << std::endl << eigvectors_check << std::endl
 			<< "are: " << std::endl << eigvectors << std::endl;
-			
 			log_error( error.str() );
 		}
 		//end compute all eigenvalues
@@ -81,9 +86,9 @@ namespace vmml
 		double eigvalue;
 		eigs.compute_1st( A, eigvector, eigvalue);
 				
-		ok = eigxvalues.equals( eigxvalues_check, precision );
-		ok = ok && eigxvectors.equals( eigxvectors_check, precision );
-		ok = ok && (eigvector.equals( eigvector_check, precision ));
+		TEST(eigxvalues.equals( eigxvalues_check, precision ));
+		if (ok) TEST(eigxvectors.equals( eigxvectors_check, precision ));
+		if (ok) TEST(eigvector.equals( eigvector_check, precision ));
 		//ok = ok && (fabs(eigvalue - first_eigvalue) < precision);
 		
 		if ( ok ) {
@@ -100,12 +105,11 @@ namespace vmml
 			<< "first eigenvalue should be: " << first_eigvalue << ", is: " << eigvalue  << std::endl
 			<< "first eigenvector should be:\n" << eigvector_check << "\n is:\n" << eigvector
 			<< std::endl;
-			
 			log_error( error.str() );
 		}
 		//end compute x largest eigenvalues
 		
-		return true;
+		return global_ok;
 	}
 	
 	

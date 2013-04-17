@@ -5,10 +5,17 @@
 #include <vmmlib/tensor_mmapper.hpp>
 #include <sstream>
 
+#define TEST( x ) \
+{ \
+    ok = x; \
+    global_ok &= ok; \
+}
+
 namespace vmml
 {
 	bool tensor4_test::run()
 	{
+        bool global_ok = true;
 		bool ok = false;
         // indicates if failing the test produces only a warning
         bool fail_test = false;
@@ -22,7 +29,8 @@ namespace vmml
 		tensor4< a, b, c, d, T >  t4;
 
         // Test size
-        if ( t4.size() == a*b*c*d )
+        TEST( t4.size() == a*b*c*d );
+        if (ok)
 		{
 			log( "tensor4 method size()", true  );
 		} else
@@ -42,11 +50,8 @@ namespace vmml
         T* arrayptr = t4.get_array_ptr();
         for(size_t index = 0; index < t4.size(); ++index)
         {
-            if( arrayptr[ index ] != 3)
-            {
-                ok = false;
-                break;
-            }
+            TEST( arrayptr[ index ] == 3);
+            if (!ok) break;
         }
         if ( ok )
 		{
@@ -68,11 +73,8 @@ namespace vmml
         t4 = 6;
         for(size_t index = 0; index < t4.size(); ++index)
         {
-            if( arrayptr[ index ] != 6)
-            {
-                ok = false;
-                break;
-            }
+            TEST( arrayptr[ index ] == 6);
+            if (!ok) break;
         }
         if ( ok )
 		{
@@ -93,11 +95,8 @@ namespace vmml
         ok = true;
         for( size_t index = 0; index < t4.size(); ++index )
         {
-            if( arrayptr[ index ] != index )
-            {
-                ok = false;
-                break;
-            }
+            TEST( arrayptr[ index ] == index );
+            if (!ok) break;
         }
 
         if ( ok )
@@ -120,10 +119,11 @@ namespace vmml
         // test const versions as well
         const T c1 = t4(1,0,0,0);
         const T clast = t4.at(a-1,b-1,c-1,d-1);
-        if( t4(0,0,0,0) == 0 &&
+        TEST( t4(0,0,0,0) == 0 &&
             t4.at(2, 1, 2, 2) == 2*a*b*c + 2*a*b + 1*a + 2 &&
-            c1 == 1 && clast == t4.size() - 1 )
-		{
+            c1 == 1 && clast == t4.size() - 1 );
+		if (ok)
+        {
 			log( "tensor4 indexing", true  );
 		}
         else
@@ -147,7 +147,8 @@ namespace vmml
         tensor4<a, b, c, d, T> t4mod;
         t4mod.fill_increasing_values();
         t4mod(0,0,1,0) = 1;
-        if ( t4 == t4cp && ! (t4 != t4cp) && t4mod != t4 && !(t4mod == t4))
+        TEST( t4 == t4cp && ! (t4 != t4cp) && t4mod != t4 && !(t4mod == t4));
+        if (ok)
 		{
 			log( "tensor4 equality operators", true  );
 		} else
@@ -167,7 +168,8 @@ namespace vmml
         // Test copy ctors
         tensor4< a, b, c, d, T > t4tempcp(t4);
 
-        if ( t4tempcp == t4 )
+        TEST( t4tempcp == t4 );
+        if (ok)
 		{
 			log( "tensor4 copy constructor", true  );
 		} else
@@ -195,10 +197,7 @@ namespace vmml
         ok = true;
         for(size_t index = 0; index < t4long.size() && ok; index++)
         {
-            if((long)t4ptr[ index ] != t4longptr[ index ])
-            {
-                ok = false;
-            }
+            TEST((long)t4ptr[ index ] == t4longptr[ index ]);
         }
 
         if ( ok )
@@ -239,10 +238,7 @@ namespace vmml
                             target = 0;
                         }
 
-                        if(t4resized(i1, i2, i3, i4) != target)
-                        {
-                            ok = false;
-                        }
+                        TEST(t4resized(i1, i2, i3, i4) == target);
                     }
                 }
             }
@@ -271,7 +267,8 @@ namespace vmml
         t4assigned = t4;
         t4assigned = t4assigned; // also check self assignment
 
-        if ( ( (&t4assigned) != (&t4) ) && t4assigned == t4 )
+        TEST(( (&t4assigned) != (&t4) ) && t4assigned == t4 );
+        if (ok)
 		{
 			log( "tensor4 assignment operator=", true  );
 		} else
@@ -312,7 +309,8 @@ namespace vmml
             }
         }
 
-        if ( !fail && max - min > std::numeric_limits< T >::max()/4) // assert at least a certain bandwith of values
+        TEST( !fail && max - min > std::numeric_limits< T >::max()/4); // assert at least a certain bandwith of values
+        if (ok)
 		{
 			log( "tensor4 random fill", true  );
 		} else
@@ -359,7 +357,8 @@ namespace vmml
             fail = true;
         }
 
-        if ( !fail && max - min > std::numeric_limits< T >::max()/2) // assert at least a certain bandwith of values
+        TEST( !fail && max - min > std::numeric_limits< T >::max()/2); // assert at least a certain bandwith of values
+        if (ok)
 		{
 			log( "tensor4 random fill signed", true  );
 		} else
@@ -386,7 +385,8 @@ namespace vmml
         t4same.fill_random();
         vmml::tensor4<a, b, c, d, T> t4control(t4same); // tested before so we can use the constructor
         t4.cast_from(t4same);
-        if(t4 == t4control)
+        TEST(t4 == t4control);
+        if (ok)
         {
             log( "tensor4 cast_from same size", true  );
         }else
@@ -416,10 +416,7 @@ namespace vmml
                 ++val;
             }
 
-            if(dat[index] != val)
-            {
-                ok = false;
-            }
+            TEST(dat[index] == val);
 
             ++val;
         }
@@ -456,7 +453,8 @@ namespace vmml
         vmml::tensor4<a, b, c, d, unsigned short> control;
         control.fill_increasing_values();
 
-        if( control == t4unsigned)
+        TEST( control == t4unsigned);
+        if(ok)
         {
             log( "tensor4 float_t_to_uint_t", true  );
         }else
@@ -485,15 +483,13 @@ namespace vmml
         for(size_t index = 0; index < t4calc.size(); ++index)
         {
             correctptr[ index ] = index+1;
-            if(calcptr[ index ] != index+1)
-            {
-                ok = false;
-            }
+            TEST(calcptr[ index ] == index+1);
         }
 
         t4 += 1;
 
-        if(ok && (t4 == t4calc))
+        if (ok) TEST(t4 == t4calc);
+        if(ok)
         {
             log( "tensor4 scalar addition operators +/+=", true  );
         }else
@@ -522,16 +518,13 @@ namespace vmml
         for(size_t index = 0; index < t4calc.size(); ++index)
         {
             correctptr[ index ] = index-1;
-            if(calcptr[ index ] != index-1)
-            {
-                ok = false;
-            }
+            TEST(calcptr[ index ] == index-1);
         }
 
         t4 -= 1;
 
-        if(ok && (t4 == t4calc))
-        {
+        if(ok) TEST(t4 == t4calc);
+        if (ok) {
             log( "tensor4 scalar substraction operators -/-=", true  );
         }else
         {
@@ -559,15 +552,13 @@ namespace vmml
         for(size_t index = 0; index < t4calc.size(); ++index)
         {
             correctptr[ index ] = index*2;
-            if(calcptr[ index ] != index*2)
-            {
-                ok = false;
-            }
+            TEST(calcptr[ index ] == index*2);
         }
 
         t4 *= 2;
 
-        if(ok && (t4 == t4calc))
+        if(ok) TEST(t4 == t4calc);
+        if (ok)
         {
             log( "tensor4 scalar multiplication operators */*=", true  );
         }else
@@ -595,15 +586,13 @@ namespace vmml
         for(size_t index = 0; index < t4calc.size(); ++index)
         {
             correctptr[ index ] = index/2;
-            if(calcptr[ index ] != index/2)
-            {
-                ok = false;
-            }
+            TEST(calcptr[ index ] == index/2);
         }
 
         t4 /= 2;
 
-        if(ok && (t4 == t4calc))
+        if(ok) TEST(t4 == t4calc);
+        if (ok)
         {
             log( "tensor4 scalar division operators / and /=", true  );
         }else
@@ -636,15 +625,13 @@ namespace vmml
         for(size_t index = 0; index < t4calc.size(); ++index)
         {
             correctptr[ index ] = index*2;
-            if(calcptr[ index ] != index*2)
-            {
-                ok = false;
-            }
+            TEST(calcptr[ index ] == index*2);
         }
 
         t4 += t4offset;
 
-        if(ok && (t4 == t4calc))
+        if(ok) TEST(t4 == t4calc);
+        if (ok)
         {
             log( "tensor4 tensor addition operators + and +=", true  );
         }else
@@ -674,15 +661,13 @@ namespace vmml
         for(size_t index = 0; index < t4calc.size(); ++index)
         {
             correctptr[ index ] = 0;
-            if(calcptr[ index ] != 0)
-            {
-                ok = false;
-            }
+            TEST(calcptr[ index ] == 0);
         }
 
         t4 -= t4offset;
 
-        if(ok && (t4 == t4calc))
+        if(ok) TEST(t4 == t4calc);
+        if (ok)
         {
             log( "tensor4 tensor substraction operators - and -=", true  );
         }else
@@ -719,10 +704,7 @@ namespace vmml
         for(size_t index = 0; index < t4.size(); ++index)
         {
             crrptr[index] = ((index+1) % 3 == 0? index : index+value);
-            if( addedptr[index] !=  crrptr[index])
-            {
-                ok = false;
-            }
+            TEST( addedptr[index] ==  crrptr[index]);
 
             if ((index +1) % 3 != 0)
             {
@@ -733,7 +715,8 @@ namespace vmml
         t4smaller.zero();
         t4orig += t4smaller;
 
-        if(ok && t4orig == t4origcrr)
+        if(ok) TEST(t4orig == t4origcrr);
+        if (ok)
         {
             log( "tensor4 tensor different size addition +=", true  );
         }else
@@ -760,15 +743,13 @@ namespace vmml
         for( T index = 0; index < t4calc.size(); ++index )
         {
             correctptr[index] = -ssize_t( index );
-            if( ssize_t( calcptr[index] ) != -ssize_t( index ))
-            {
-                ok = false;
-            }
+            TEST( ssize_t( calcptr[index] ) == -ssize_t( index ));
         }
 
         t4 = t4.negate();
 
-        if(ok && (t4 == t4calc))
+        if(ok) TEST(t4 == t4calc);
+        if (ok)
         {
             log( "tensor4 tensor negation", true  );
         }else
@@ -805,10 +786,7 @@ namespace vmml
         for(size_t index = 0; index < t3.size(); ++index)
         {
             t3correctptr[ index ] = index;
-            if(t3ptr[index] != index || t3lastptr[index] != index + offset)
-            {
-                ok = false;
-            }
+            TEST(t3ptr[index] == index && t3lastptr[index] == index + offset);
         }
         if(ok)
         {
@@ -858,7 +836,7 @@ namespace vmml
             tensor4< a,b,c,d,T > t4_check;
             t4_check.fill_increasing_values();
 
-            ok = t4_check == t4;
+            TEST(t4_check == t4);
             if(ok)
             {
                 log( "tensor4 load from memory mapped file", true  );
@@ -892,10 +870,7 @@ namespace vmml
         {
             t3correctptr[index] = ((d-1)*(a*b*c))/2+index;
 
-            if(t3ptr[index] != t3correctptr[index])
-            {
-                ok = false;
-            }
+            TEST(t3ptr[index] == t3correctptr[index]);
         }
 
         if (ok)
@@ -917,7 +892,7 @@ namespace vmml
 
         }
 
-        return ok;
+        return global_ok;
 	}
 
 

@@ -3,6 +3,12 @@
 #include "vmmlib/t3_ihooi.hpp"
 #include <sstream>
 
+#define TEST( x ) \
+{ \
+    ok = x; \
+    global_ok &= ok; \
+}
+
 namespace vmml {
 
     bool
@@ -11,6 +17,7 @@ namespace vmml {
     }
 
     bool t3_ihopm_test::cp() {
+        bool global_ok = true;
         // Test for incremental CP
         double precision = 0.001;
 
@@ -72,10 +79,11 @@ namespace vmml {
 
         u3_check.set(data_u3_check, data_u3_check + 24);
 
-        bool ok = u1.equals(u1_check, precision);
-        ok = u2.equals(u2_check, precision) && ok;
-        ok = u3.equals(u3_check, precision) && ok;
-        ok = lambda.equals(lambda_check, precision) && ok;
+        bool ok;
+        TEST(u1.equals(u1_check, precision) &&
+                u2.equals(u2_check, precision) &&
+                u3.equals(u3_check, precision) &&
+                lambda.equals(lambda_check, precision));
 
         if (ok) {
             log("incremental rank-R approximation", ok);
@@ -94,10 +102,11 @@ namespace vmml {
 
             log_error(error.str());
         }
-        return ok;
+        return global_ok;
     }
 
     bool t3_ihopm_test::cp_tucker() {
+        bool global_ok = true;
         // Test for incremental CP-Tucker
         double precision = 0.001;
 
@@ -173,10 +182,11 @@ namespace vmml {
 
         u3_check.set(data_u3_check, data_u3_check + I * R);
 
-        bool ok = t3_core.equals(t3_core_check, precision);
-        ok = u1.equals(u1_check, precision);
-        ok = u2.equals(u2_check, precision) && ok;
-        ok = u3.equals(u3_check, precision) && ok;
+        bool ok;
+        TEST(t3_core.equals(t3_core_check, precision) &&
+                u1.equals(u1_check, precision) &&
+                u2.equals(u2_check, precision) &&
+                u3.equals(u3_check, precision));
 
         if (ok) {
             log("incremental CP-Tucker approximation", ok);
@@ -195,6 +205,6 @@ namespace vmml {
 
             log_error(error.str());
         }
-        return ok;
+        return global_ok;
     }
 } //end vmml namespace

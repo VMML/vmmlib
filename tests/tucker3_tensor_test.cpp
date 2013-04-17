@@ -3,12 +3,19 @@
 #include <vmmlib/tucker3_tensor.hpp>
 #include <sstream>
 
+#define TEST( x ) \
+{ \
+    ok = x; \
+    global_ok &= ok; \
+}
+
 namespace vmml
 {
 	
 	bool
 	tucker3_tensor_test::run()
 	{
+        bool global_ok = true;
 		bool ok = false;
 		double precision = 0.001;
 		
@@ -62,10 +69,10 @@ namespace vmml
 		tuck3_hooi.get_u3( u3_hooi );
 		tuck3_hooi.get_core( core_hooi );
 		
-		ok = u1_hooi.equals( u1_hooi_check, precision );
-		ok = ok && u2_hooi.equals( u2_hooi_check, precision );
-		ok = ok && u3_hooi.equals( u3_hooi_check, precision );
-		ok = ok && core_hooi.equals( core_hooi_check, precision);
+		TEST(u1_hooi.equals( u1_hooi_check, precision ) &&
+                u2_hooi.equals( u2_hooi_check, precision) &&
+                u3_hooi.equals( u3_hooi_check, precision) &&
+                core_hooi.equals( core_hooi_check, precision));
 		
 		if ( ok )
 		{	
@@ -92,7 +99,7 @@ namespace vmml
 		
 		size_t number_nonzeros = tuck3_hooi.nnz( );
 		size_t number_nonzeros2 = tuck3_hooi.nnz( 0.1 );		
-		ok = ( number_nonzeros == 16 ) && (number_nonzeros2 == 12);
+		TEST(( number_nonzeros == 16 ) && (number_nonzeros2 == 12));
 		log( "get number of nonzeros" , ok  );
 		
 		//tucker3 reconstruction
@@ -134,7 +141,7 @@ namespace vmml
 		t3r_type t3_reco_thresh2_check;
 		t3_reco_thresh2_check.fill(1188);
 		
-		ok = ( t3_reco_check == t3_reco ) && ( t3_reco_thresh1 == t3_reco_thresh1_check ) && ( t3_reco_thresh2 == t3_reco_thresh2_check);
+		TEST(( t3_reco_check == t3_reco ) && ( t3_reco_thresh1 == t3_reco_thresh1_check ) && ( t3_reco_thresh2 == t3_reco_thresh2_check));
 		log( "tucker3 reconstruction (incl. core thresholding)", ok );
 		
 		
@@ -164,7 +171,8 @@ namespace vmml
 		
 		tuck3_red.get_u1( u1_red2 ); tuck3_red.get_u2( u2_red2 ); tuck3_red.get_u3( u3_red2 ); tuck3_red.get_core( core_red2 );
 		
-		if (  u1_red2 == u1_red && u2_red2 == u2_red && u3_red2 == u3_red && core_red2 == core_red)
+		TEST(u1_red2 == u1_red && u2_red2 == u2_red && u3_red2 == u3_red && core_red2 == core_red);
+		if (ok)
 		{	
 			log( "tucker3 reduce ranks", true  );
 		} else
@@ -197,7 +205,8 @@ namespace vmml
 		
 		t3s_type t3_sub_check;
 		t3_sub_check.fill(1656);
-		if ( t3_sub_check == t3_sub )
+		TEST(t3_sub_check == t3_sub);
+		if (ok)
 		{	
 			log( "factor matrices subsampling", true  );
 		} else
@@ -217,7 +226,8 @@ namespace vmml
 		tuck3_sub_avg.reconstruct( t3_sub_avg );
 		
 		t3_sub_check.fill(1656);
-		if ( t3_sub_check == t3_sub_avg )
+		TEST(t3_sub_check == t3_sub_avg);
+		if (ok)
 		{	
 			log( "factor matrices subsampling on average", true  );
 		} else
@@ -242,7 +252,8 @@ namespace vmml
 		
 		t3_roi_type t3_roi_test;
 		t3_roi_test.fill(1656);
-		if ( t3_roi_test == t3_roi)
+		TEST(t3_roi_test == t3_roi);
+        if (ok)
 		{	
 			log( "factor matrices region of interest selection", true  );
 		} else
@@ -255,7 +266,7 @@ namespace vmml
 		}
 		
 		
-		return ok;
+		return global_ok;
 	}
 	
 	

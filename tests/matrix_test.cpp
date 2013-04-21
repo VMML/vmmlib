@@ -166,7 +166,7 @@ bool matrix_test::run()
     {
         ok = true;
 
-        matrix< 2, 2, double > m0, m1;
+        matrix< 2, 2, double > m1;
         double m0_data[] = { 1, 2, 3, 4 };
         double m1_data[] = { 2, 3, 4, 5 };
         m0 = m0_data;
@@ -193,7 +193,7 @@ bool matrix_test::run()
     {
         ok = true;
 
-        matrix< 2, 2, double > m0, m1;
+        matrix< 2, 2, double > m1;
         double m0_data[] = { 3, 5, 7, 9 };
         double m1_data[] = { 2, 3, 4, 5 };
         m0 = m0_data;
@@ -363,15 +363,15 @@ bool matrix_test::run()
         if ( ok )
         {
             #if 1
-            matrix< 2, 2, double > mul0, mul1;
-            matrix< 2, 2, double > correct_result;
+            matrix< 2, 2, double > mul2, mul3;
+            matrix< 2, 2, double > correct_result1;
             double res_data[] = { 3, 1, 4, 1 };
-            correct_result = res_data;
+            correct_result1 = res_data;
             #endif
-            mul0.set( mul0data, mul0data + 4 );
-            mul1.set( mul1data, mul1data + 4 );
-            mul0 *= mul1;
-            TEST(mul0 == correct_result);
+            mul2.set( mul0data, mul0data + 4 );
+            mul3.set( mul1data, mul1data + 4 );
+            mul2 *= mul3;
+            TEST(mul2 == correct_result1);
         }
 
 		log( "matrix multiplication ( multiply(), operator*, operator*= )", ok );
@@ -798,10 +798,6 @@ bool matrix_test::run()
 
         }
         #endif
-
-        std::string data;
-        //m.getString( data );
-        //std::cout << data << std::endl;
     }
 
     #ifndef VMMLIB_NO_CONVERSION_OPERATORS

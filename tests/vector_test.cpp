@@ -5,6 +5,12 @@
 #include <sstream>
 #include <cmath>
 
+#define TEST( x ) \
+{ \
+    ok = x; \
+    global_ok &= ok; \
+}
+
 namespace vmml
 {
 
@@ -12,6 +18,7 @@ namespace vmml
 bool
 vector_test::run()
 {
+    bool global_ok = true;
     bool ok = true;
     
     vector< 4, double > v;
@@ -25,7 +32,7 @@ vector_test::run()
 		size_t tmp = 1;
 		for( size_t index = 0; ok && index < 4; ++index, ++tmp )
 		{
-            ok = v.at( index ) == tmp;
+            TEST(v.at( index ) == tmp);
 		}
         
         tmp = 4;
@@ -33,7 +40,7 @@ vector_test::run()
         v.iter_set( dataf, dataf + 4 );
 		for( size_t index = 0; ok && index < 4; ++index, --tmp )
 		{
-            ok = v.at( index ) == tmp;
+            TEST(v.at( index ) == tmp);
 		}
 
 		log( "set( input_iterator begin_, input_iterator end_ )", ok  );
@@ -60,28 +67,28 @@ vector_test::run()
         v_result = v + v_other;
 		for( size_t index = 0; ok && index < 4; ++index )
 		{
-            ok = v_result.at( index ) == 5;
+            TEST(v_result.at( index ) == 5);
 		}
 
         v_result = v;
         v_result += v_other;
 		for( size_t index = 0; ok && index < 4; ++index )
 		{
-            ok = v_result.at( index ) == 5;
+            TEST(v_result.at( index ) == 5);
 		}
 
         v = data;
         v_result = v + 2.;
 		for( size_t index = 0; ok && index < 4; ++index )
 		{
-            ok = v_result.at( index ) == index + 3;
+            TEST(v_result.at( index ) == index + 3);
 		}
         
         v_result = v;
         v_result += 2;
 		for( size_t index = 0; ok && index < 4; ++index )
 		{
-            ok = v_result.at( index ) == index + 3;
+            TEST(v_result.at( index ) == index + 3);
 		}
 
 		log( "operator+, operator+=", ok  );
@@ -113,28 +120,28 @@ vector_test::run()
         v_result = v - v_other;
 		for( size_t index = 0; ok && index < 4; ++index )
 		{
-            ok = v_result.at( index ) == 0;
+            TEST(v_result.at( index ) == 0);
 		}
 
         v_result = v;
         v_result -= v_other;
 		for( size_t index = 0; ok && index < 4; ++index )
 		{
-            ok = v_result.at( index ) == 0;
+            TEST(v_result.at( index ) == 0);
 		}
 
 
         v_result = v - 1.0;
 		for( size_t index = 0; ok && index < 4; ++index )
 		{
-            ok = v_result.at( index ) == index;
+            TEST(v_result.at( index ) == index);
 		}
 
         v_result = v;
         v_result -= 1.0;
 		for( size_t index = 0; ok && index < 4; ++index )
 		{
-            ok = v_result.at( index ) == index;
+            TEST(v_result.at( index ) == index);
 		}
 
 		log( "operator-, operator-=", ok  );
@@ -166,27 +173,27 @@ vector_test::run()
         v_result = v * v_other;
 		for( size_t index = 0; ok && index < 4; ++index )
 		{
-            ok = v_result.at( index ) == 24;
+            TEST(v_result.at( index ) == 24);
 		}
 
         v_result = v;
         v_result *= v_other;
 		for( size_t index = 0; ok && index < 4; ++index )
 		{
-            ok = v_result.at( index ) == 24;
+            TEST(v_result.at( index ) == 24);
 		}
 
         v_result = v * 2.0;
 		for( size_t index = 0; ok && index < 4; ++index )
 		{
-            ok = v_result.at( index ) == v.at( index ) * 2.0;
+            TEST(v_result.at( index ) == v.at( index ) * 2.0);
 		}
 
         v_result = v;
         v_result *= 2.0;
 		for( size_t index = 0; ok && index < 4; ++index )
 		{
-            ok = v_result.at( index ) == v.at( index ) * 2.0;
+            TEST(v_result.at( index ) == v.at( index ) * 2.0);
 		}
 
 		log( "operator*, operator*=", ok  );
@@ -218,28 +225,28 @@ vector_test::run()
         v_result = v / v_other;
 		for( size_t index = 0; ok && index < 4; ++index )
 		{
-            ok = ( v_result.at( index ) - 0.5 ) < 1e-12;
+            TEST(( v_result.at( index ) - 0.5 ) < 1e-12);
 		}
 
         v_result = v;
         v_result /= v_other;
 		for( size_t index = 0; ok && index < 4; ++index )
 		{
-            ok = ( v_result.at( index ) - 0.5 ) < 1e-12;
+            TEST(( v_result.at( index ) - 0.5 ) < 1e-12);
 		}
 
 
         v_result = v / 1.5;
 		for( size_t index = 0; ok && index < 4; ++index )
 		{
-            ok = ( v_result.at( index ) - ( v.at( index ) / 1.5 ) ) < 1e-12;
+            TEST(( v_result.at( index ) - ( v.at( index ) / 1.5 ) ) < 1e-12);
 		}
 
         v_result = v;
         v_result /= 1.5;
 		for( size_t index = 0; ok && index < 4; ++index )
 		{
-            ok = ( v_result.at( index ) - ( v.at( index ) / 1.5 ) ) < 1e-12;
+            TEST(( v_result.at( index ) - ( v.at( index ) / 1.5 ) ) < 1e-12);
 		}
 
 		log( "operator/, operator/=", ok  );
@@ -263,11 +270,10 @@ vector_test::run()
         vec = data;
         
         double normSquared = vec.squared_length();
-        ok = normSquared == 1 * 1 + 2 * 2 + 3 * 3 + 4 * 4;
+        TEST(normSquared == 1 * 1 + 2 * 2 + 3 * 3 + 4 * 4);
 
         double norm = vec.length();
-        if ( ok ) 
-            ok = sqrt( normSquared ) == norm;
+        if ( ok ) TEST(sqrt( normSquared ) == norm);
 
 		log( "length(), squared_length()", ok  );
 
@@ -285,7 +291,7 @@ vector_test::run()
 		log( "normalize(), maximum precision", ok, true  );
         if ( ! ok )
         {
-            ok = vec.length() - 1.0 < 1e-15;
+            TEST(vec.length() - 1.0 < 1e-15);
             log( "normalize(), tolerance 1e-15", ok  );
         }
 
@@ -308,34 +314,29 @@ vector_test::run()
         v2C = vData;
         vector< 2, double > v2( 1, 2 );
         
-        if ( ok && v2 != v2C )
-            ok = false;
+        if ( ok ) TEST(v2 == v2C );
 
         vector< 3, double > v3C;
         v3C = vData;
         vector< 3, double > v3( 1, 2, 3 );
 
-        if ( ok && v3 != v3C )
-            ok = false;
+        if ( ok ) TEST(v3 == v3C );
             
         vector< 4, double > v4C;
         v4C = vData;
         
-        if ( ok && v4 != v4C ) 
-            ok = false;
+        if ( ok ) TEST(v4 == v4C);
           
         double vData2[] = { 23, 23, 23, 23 };
         v4C = vData2;
         
         vector< 4, double > v4_( 23 );
-        if ( ok && v4_ != v4C )
-            ok = false;
+        if ( ok ) TEST(v4_ == v4C);
        
         v3 = vData;
         v4C = vData;
         vector< 4, double > v4from3_1( v3, vData[ 3 ] );
-        if ( ok && v4from3_1 != v4C )
-            ok = false;
+        if ( ok ) TEST(v4from3_1 == v4C);
             
         double hvData[] = { 1., 2., 3., 0.25 };
         double xvData[] = { 4.0, 8.0, 12.0 };
@@ -348,17 +349,12 @@ vector_test::run()
         vector< 4, double > htest( nonh );
 
         // to-homogenous-coordinates ctor
-        if ( ok && htest != vector< 4, double >( 4, 8., 12., 1. ) )
-        {
-            ok = false;
-        }
+        if ( ok ) TEST((htest == vector< 4, double >( 4, 8., 12., 1. ) ));
+
         vector< 3, double > nhtest( homogenous );
         
         // from homogenous-coordiates ctor
-        if ( ok && nhtest != nonh )
-        {
-            ok = false;
-        }
+        if ( ok ) TEST(nhtest == nonh );
 
         log( "constructors ", ok );
     
@@ -374,25 +370,22 @@ vector_test::run()
         vector< 4, double > vecCorrect;
         double vCData[] = { 2, 3, 4, 5 };
         vecCorrect = vCData;
-        if ( vec != vecCorrect )
-            ok = false;
+        TEST(vec == vecCorrect);
             
         vec.set( 2 );
         
         double vCData2[] = { 2, 2, 2, 2 };
         vecCorrect = vCData2;
-        if ( vec != vecCorrect )
-            ok = false;
+        TEST( vec == vecCorrect );
         
-        vector< 3, double > v( 2, 3, 4 );
+        vector< 3, double > v1( 2, 3, 4 );
         // uncommenting the following line will throw a compiler error because the number 
         // of arguments to set is != M
-        //v.set( 2, 3, 4, 5 );
+        //v1.set( 2, 3, 4, 5 );
         
         vecCorrect = vCData;
         vec.set( v, 5 );
-        if ( vec != vecCorrect )
-            ok = false;
+        TEST( vec == vecCorrect );
         
         log( "set() functions", ok );
     }
@@ -402,10 +395,7 @@ vector_test::run()
 	ok = true;
    {
         vector< 4, double > vd( 1, 2, 3, 4 );
-        if ( vd.x() == 1 && vd.y() == 2 && vd.z() == 3 && vd.w() == 4 )
-        {}
-        else
-            ok = false;
+        TEST( vd.x() == 1 && vd.y() == 2 && vd.z() == 3 && vd.w() == 4 );
             
         log( "component accessors ( x(), y(), z(), w() )", ok );
     
@@ -417,8 +407,7 @@ vector_test::run()
     {
         vector< 3, float > v0( 1, 2, 3 );
         vector< 3, float > v1( -6, 5, -4 );
-        if ( v0.dot( v1 ) != -8 )
-            ok = false;
+        TEST( v0.dot( v1 ) == -8 );
         log( "dot product, dot()", ok );
     }
 
@@ -429,8 +418,7 @@ vector_test::run()
         vector< 3, float > v0( 1, 2, 3 );
         vector< 3, float > v1( -6, 5, -4 );
         vector< 3, float > vcorrect( -23, -14, 17 );
-        if ( v0.cross( v1 ) != vcorrect )
-            ok = false;
+        TEST(v0.cross( v1 ) == vcorrect);
         log( "cross product, cross()", ok );
     
     }
@@ -460,16 +448,14 @@ vector_test::run()
         size_t index = vf.find_min_index();
         float f = vf.find_min();
         
-        if ( index != 2 || f != -99.0f )
-            ok = false;
+        TEST( index == 2 && f == -99.0f );
         
         if ( ok )
         {
             index = vf.find_max_index();
             f = vf.find_max();
             
-            if ( index != 1 || f != 3.0f )
-                ok = false;
+            TEST( index == 1 && f == 3.0f );
         }
         
         size_t ui;
@@ -477,20 +463,14 @@ vector_test::run()
         {
             index = vui.find_min_index();
             ui = vui.find_min();
-            if ( index != 0 || ui != 0 )
-            {
-                ok = false;
-            }
+            TEST( index == 0 && ui == 0 );
         }
 
         if ( ok )
         {
             index = vui.find_max_index();
             ui = vui.find_max();
-            if ( index != 1 || ui != 5 )
-            {
-                ok = false;
-            }
+            TEST( index == 1 && ui == 5 );
         }
 
         log( "find_min/max(), find_min_index/max_index()", ok );
@@ -499,14 +479,11 @@ vector_test::run()
 
 	ok = true;
     {
-        vector< 4, float > v( -1.0f, 3.0f, -99.0f, -0.9f );
+        vector< 4, float > v1( -1.0f, 3.0f, -99.0f, -0.9f );
         float f = 4.0f;
-        vector< 4, float > v_scaled = f * v;
+        vector< 4, float > v_scaled = f * v1;
 
-        if ( v_scaled != vector< 4, float >( -4.0f, 12.0f, -396.0f, -3.6f ) )
-        {
-            ok = false;
-        }
+        TEST(v_scaled == (vector< 4, float >( -4.0f, 12.0f, -396.0f, -3.6f ) ));
         
         log( "operator*( float, vector )", ok );
 
@@ -520,15 +497,13 @@ vector_test::run()
         vector< 3, float >::const_iterator fit = vf.begin();
         for( ; ok && it != it_end; ++it, ++fit )
         {
-            if ( *it != *fit )
-                ok = false;
+            TEST(*it == *fit);
         }
         vd = 0.0;
         vd = vf;
         for( ; ok && it != it_end; ++it, ++fit )
         {
-            if ( *it != *fit )
-                ok = false;
+            TEST(*it == *fit);
         }
         
         // to-homogenous-coords and from-homogenous-coords assignment ops
@@ -543,20 +518,19 @@ vector_test::run()
    {
         vector< 4, float > vf( 3.0, 2.0, 1.0, 1.0 );
         vector< 3, float >& v3 = vf.get_sub_vector< 3 >();
-        ok = v3.x() == vf.x() && v3.y() == vf.y();
+        TEST(v3.x() == vf.x() && v3.y() == vf.y());
         v3.normalize();
 
-        if ( ok ) 
-            ok = v3.x() == vf.x() && v3.y() == vf.y();
+        if ( ok ) TEST(v3.x() == vf.x() && v3.y() == vf.y());
         log( "get_sub_vector< N >()", ok );
         
     }
     
     #ifndef VMMLIB_NO_CONVERSION_OPERATORS
     {
-        vector< 4, double > v;
-        double* array               = v;
-        //const double* const_array   = v;
+        vector< 4, double > v1;
+        double* array               = v1;
+        //const double* const_array   = v1;
 
         array[ 1 ]          = 2.0;
         //const_array[ 2 ]    = 3.0;
@@ -569,7 +543,7 @@ vector_test::run()
         vector< 4, float > vsq( 9.0, 4.0, 1.0, 2.0 );
         vector< 4, float > vsq_check( 3.0, 2.0, 1.0, 1.414213538169861 );
 		vsq.sqrt_elementwise();
-        ok = vsq == vsq_check;
+        TEST(vsq == vsq_check);
 		
 		log( "elementwise sqrt ", ok );
     }
@@ -578,7 +552,7 @@ vector_test::run()
         vector< 4, float > vr( 9.0, 4.0, 1.0, 2.0 );
         vector< 4, float > vr_check( 0.1111111119389534, 0.25, 1, 0.5 );
 		vr.reciprocal();
-        ok = vr == vr_check;
+        TEST(vr == vr_check);
 				
 		log( "reciprocal ", ok );
     }
@@ -588,13 +562,13 @@ vector_test::run()
 		double v_norm_check = 10.09950493836208;
 		double v_norm = vr.norm();
 			
-        ok = ((v_norm - v_norm_check) < 0.0001);
+        TEST((v_norm - v_norm_check) < 0.0001);
 		
 		log( "l2 norm ", ok );
     }
 	
 	
-    return ok;
+    return global_ok;
 }
 
 } // namespace vmml

@@ -513,27 +513,27 @@ void matrix< M, N, T>::convolve(const matrix< U, V, T >& kernel)
 {
 	matrix< M, N, T> temp;  // do not override original values instantly as old values are needed for calculation
 
-	for(int y_ = 0; y_ < N; ++y_)
+	for(size_t y_ = 0; y_ < N; ++y_)
     {
-		for(int x_ = 0; x_ < M; ++x_)
+		for(size_t x_ = 0; x_ < M; ++x_)
         {
 			double sum = 0.0;
 
-			for(int j = 0; j < V; ++j)
+			for(size_t j = 0; j < V; ++j)
             {
 				int srcy = y_ - V/2 + j;
 
 				// Extending border values
-				if(srcy < 0)	srcy = 0;
-				if(srcy >= N)	srcy = N-1;
+				if(srcy < 0)       srcy = 0;
+				if(srcy >= int(N)) srcy = N-1;
 
-				for(int i = 0; i < U; ++i)
+				for(size_t i = 0; i < U; ++i)
                 {
 					int srcx = x_ - U/2 + i;
 
 					// Extending border values
-					if(srcx < 0)	srcx = 0;
-					if(srcx >= M)	srcx = M-1;
+					if(srcx < 0)       srcx = 0;
+					if(srcx >= int(M)) srcx = M-1;
 
 					sum += kernel.at(j,i) * at(srcy,srcx);
 				}
@@ -1850,17 +1850,17 @@ matrix< M, N, T >::
 get_minor( matrix< O, P, T >& minor_, size_t row_to_cut, size_t col_to_cut,
 typename enable_if< O == M-1 && P == N-1 && M == N && M >= 2 >::type* ) const
 {
-	ssize_t row_offset = 0;
-	ssize_t col_offset = 0;
-	for( ssize_t row_index = 0; row_index < M; ++row_index )
+	size_t row_offset = 0;
+	size_t col_offset = 0;
+	for( size_t row_index = 0; row_index < M; ++row_index )
 	{
-		if ( row_index == ssize_t( row_to_cut ))
+		if ( row_index == row_to_cut )
 			row_offset = -1;
 		else
 		{
-			for( ssize_t col_index = 0; col_index < M; ++col_index )
+			for( size_t col_index = 0; col_index < M; ++col_index )
 			{
-				if ( col_index == ssize_t( col_to_cut ))
+				if ( col_index == col_to_cut )
 					col_offset = -1;
 				else
 					minor_.at( row_index + row_offset, col_index + col_offset )

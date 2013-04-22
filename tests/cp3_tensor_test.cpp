@@ -6,12 +6,19 @@
 
 #include <sstream>
 
+#define TEST( x ) \
+{ \
+    ok = x; \
+    global_ok &= ok; \
+}
+
 namespace vmml
 {
 
 	bool
 	cp3_tensor_test::run()
 	{
+        bool global_ok = true;
 		bool ok = false;
 
 		typedef tensor3< 4, 4, 4, float > t3_type;
@@ -74,11 +81,11 @@ namespace vmml
 		};
 		t3_cp_reco_check.set(data_out_cp, data_out_cp + 64);
 
-		ok = t3_cp_reco.equals( t3_cp_reco_check, 0.0001 );
+		TEST(t3_cp_reco.equals( t3_cp_reco_check, 0.0001 ));
 
 		log( "cp3 tensor reconstruction ", ok  );
 
-		return ok;
+		return global_ok;
 	}
 
 

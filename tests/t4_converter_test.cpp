@@ -4,11 +4,18 @@
 #include <vmmlib/t4_converter.hpp>
 #include <sstream>
 
+#define TEST( x ) \
+{ \
+    ok = x; \
+    global_ok &= ok; \
+}
+
 namespace vmml
 {
 
 	bool t4_converter_test::run()
 	{
+        bool global_ok = true;
         bool ok = false;
         // indicates if failing the test produces only a warning
         bool fail_test = false;
@@ -43,7 +50,8 @@ namespace vmml
 
 
         // Test writing and reading raw
-        if ( t4 == t4r )
+        TEST( t4 == t4r );
+        if ( ok )
 		{
             log( "tensor4 IO write/read .raw file", true);
 
@@ -62,7 +70,7 @@ namespace vmml
 
 
 
-		return ok;
+		return global_ok;
 	}
 
 

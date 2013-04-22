@@ -2,12 +2,19 @@
 #include "vmmlib/t3_hopm.hpp"
 #include <sstream>
 
+#define TEST( x ) \
+{ \
+    ok = x; \
+    global_ok &= ok; \
+}
+
 namespace vmml
 {
 	
 	bool
 	t3_hopm_test::run()
 	{
+        bool global_ok = true;
 		bool ok = false;
 		
 		double precision = 0.001;
@@ -63,10 +70,10 @@ namespace vmml
 		typedef t3_hopm< 4, 4, 4, 4, double > hopm_type;
 		hopm_type::als( t3_cp_input, u1, u2, u3, lambda, hopm_type::init_hosvd(), 20, -1 );
 				
-		ok = u1.equals( u1_check, precision );
-		ok = u2.equals( u2_check, precision ) && ok;
-		ok = u3.equals( u3_check, precision ) && ok;
-		ok = lambda.equals( lambda_check, precision ) && ok;
+		TEST(u1.equals( u1_check, precision ) &&
+                u2.equals( u2_check, precision ) &&
+                u3.equals( u3_check, precision ) &&
+                lambda.equals( lambda_check, precision ));
 		
 		if( ok )
 		{	
@@ -130,10 +137,10 @@ namespace vmml
 		hopm2_type::als( t3_cp_input, u1_2, u2_2, u3_2, lambda_2, hopm2_type::init_hosvd(), 20, -1 );
 		
 		precision = 0.0001;
-		ok = u1_2.equals( u1_check2, precision );
-		ok = u2_2.equals( u2_check2, precision ) && ok;
-		ok = u3_2.equals( u3_check2, precision ) && ok;
-		ok = lambda_2.equals( lambda_check2, precision ) && ok;
+		TEST(u1_2.equals( u1_check2, precision ) &&
+                u2_2.equals( u2_check2, precision ) &&
+                u3_2.equals( u3_check2, precision ) &&
+                lambda_2.equals( lambda_check2, precision ));
 		
 		if( ok)
 		{	
@@ -222,7 +229,7 @@ namespace vmml
 		double nrm = hopm2_type::norm_ktensor( u1_2, u2_2, u3_2, lambda_2 );
 		
 		precision = 0.00000001;
-		ok = (check_norm - nrm < precision );
+		TEST((check_norm - nrm < precision ));
 		
 		if( ok)
 		{	
@@ -244,10 +251,10 @@ namespace vmml
 #if 0 //test hosvd with SVD
 		t3_hopm< 6, 4, 4, 4, double >::als( t3_cp_input, u1_3, u2_3, u3_3, lambda_3, init_hosvd_e, 50 );
 		
-		ok = u1_3.equals( u1_check3, precision );
-		ok = u2_3.equals( u2_check3, precision ) && ok;
-		ok = u3_3.equals( u3_check3, precision ) && ok;
-		ok = lambda_3.equals( lambda_check3, precision ) && ok;
+		TEST(u1_3.equals( u1_check3, precision ) &&
+                ok = u2_3.equals( u2_check3, precision ) &&
+                u3_3.equals( u3_check3, precision ) &&
+                lambda_3.equals( lambda_check3, precision ));
 		if( ok)
 		{	
 			log( "HOPM/CP-ALS: rank-R approximation (R > I) - init with DCT", ok  );
@@ -310,10 +317,10 @@ namespace vmml
 		typedef t3_hopm< D, 4, 4, 4, double > hopm4_type;
 		hopm4_type::als( t3_cp_input, u1_4, u2_4, u3_4, lambda_4, hopm4_type::init_dct(), 100 );
 		
-		ok = u1_4.equals( u1_check4, precision );
-		ok = u2_4.equals( u2_check4, precision ) && ok;
-		ok = u3_4.equals( u3_check4, precision ) && ok;
-		ok = lambda_4.equals( lambda_check4, precision ) && ok;
+		TEST(u1_4.equals( u1_check4, precision ) &&
+                u2_4.equals( u2_check4, precision ) &&
+                u3_4.equals( u3_check4, precision ) && 
+                lambda_4.equals( lambda_check4, precision ));
 		if( ok)
 		{	
 			log( "HOPM/CP-ALS with init DCT: rank-R approximation (R > I)", ok  );
@@ -339,7 +346,7 @@ namespace vmml
 		
 		
 		
-		return ok;
+		return global_ok;
 	}
 	
 } //end vmml namespace

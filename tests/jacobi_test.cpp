@@ -1,16 +1,22 @@
 #include "jacobi_test.hpp"
 
+#define TEST( x ) \
+{ \
+    ok = x; \
+    global_ok &= ok; \
+}
+
 namespace vmml
 {
 
 bool
 jacobi_test::run()
 {
-    bool ok = true;
+    bool global_ok = true;
     
 
 
-    return ok;
+    return global_ok;
 }
 
 } // namespace vmml

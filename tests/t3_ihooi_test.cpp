@@ -2,10 +2,17 @@
 #include "vmmlib/t3_ihooi.hpp"
 #include <sstream>
 
+#define TEST( x ) \
+{ \
+    ok = x; \
+    global_ok &= ok; \
+}
+
 namespace vmml {
 
     bool
     t3_ihooi_test::run() {
+        bool global_ok = true;
         bool ok = false;
 
         double precision = 0.001;
@@ -87,10 +94,10 @@ namespace vmml {
 
         u3_check.set(data_u3_check, data_u3_check + I * R);
 
-        ok = t3_core.equals(t3_core_check, precision) && ok;
-        ok = u1.equals(u1_check, precision);
-        ok = u2.equals(u2_check, precision) && ok;
-        ok = u3.equals(u3_check, precision) && ok;
+        TEST(t3_core.equals(t3_core_check, precision) && 
+                u1.equals(u1_check, precision) &&
+                u2.equals(u2_check, precision) &&
+                u3.equals(u3_check, precision));
 
         if (ok) {
             log("incremental Tucker approximation", ok);
@@ -110,7 +117,7 @@ namespace vmml {
             log_error(error.str());
         }
 
-        return ok;
+        return global_ok;
     }
 
 } //end vmml namespace

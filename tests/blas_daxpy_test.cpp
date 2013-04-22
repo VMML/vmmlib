@@ -2,12 +2,19 @@
 
 #include <vmmlib/blas_daxpy.hpp>
 
+#define TEST( x ) \
+{ \
+    ok = x; \
+    global_ok &= ok; \
+}
+
 namespace vmml
 {
 	
 	bool
 	blas_daxpy_test::run()
 	{
+        bool global_ok = true;
 		bool ok = false;
 		
 		double a  = 0.8147;
@@ -24,7 +31,7 @@ namespace vmml
 		blas_daxpy< 2, double > blas_daxpy1;
 		blas_daxpy1.compute( a, B, C );
 		
-		ok = C.equals( C_check, 0.0001 );
+		TEST(C.equals( C_check, 0.0001 ));
 		
 		log( "compute single daxpy", ok );
 		if ( ! ok )
@@ -37,7 +44,6 @@ namespace vmml
             << "is\n" << C << "\n"
             << std::endl;
 			log_error( ss.str() );
-            
 		}
 		
 		
@@ -60,14 +66,14 @@ namespace vmml
 		blas_daxpy< 2, float > blas_daxpy2;
 		blas_daxpy2.compute_mmm( left_m, right_m, res_m );
 		
-		ok = res_m.equals( res_m_check, 0.0001 );
+		TEST(res_m.equals( res_m_check, 0.0001 ));
 		
 		blas_daxpy2.compute_mmm( left_m, res2_m );
 		
 		float r2Data[] = {  2.10871, 1.46959, 1.46959, 1.58155 };
 		res2_m_check = r2Data;
 		
-		ok = ok && (res2_m_check.equals( res2_m, 0.0001));
+		if (ok) TEST(res2_m_check.equals( res2_m, 0.0001));
 		
 		
 		log( "compute matrix-matrix multiplication (A*B and A*A^T) by multiple daxpy's", ok );
@@ -81,12 +87,9 @@ namespace vmml
             << "is\n" << res2_m << "\n"
             << std::endl;
 			log_error( ss.str() );
-            
 		}
-		
-		
-	
-		return ok;
+        
+		return global_ok;
 	}
 	
 	

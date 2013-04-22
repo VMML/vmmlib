@@ -2,12 +2,19 @@
 #include <vmmlib/qtucker3_tensor.hpp>
 #include <sstream>
 
+#define TEST( x ) \
+{ \
+    ok = x; \
+    global_ok &= ok; \
+}
+
 namespace vmml
 {
 	
 	bool
 	qtucker3_tensor_test::run()
 	{
+        bool global_ok = true;
 		bool ok = false;
 		double precision = 0.001;
 		
@@ -61,11 +68,10 @@ namespace vmml
 		tuck3_hooi.get_u3( u3_hooi );
 		tuck3_hooi.get_core( core_hooi );
 		
-		ok = u1_hooi.equals( u1_hooi_check, precision );
-		ok = ok && u2_hooi.equals( u2_hooi_check, precision );
-		ok = ok && u3_hooi.equals( u3_hooi_check, precision );
-		ok = ok && core_hooi.equals( core_hooi_check, precision);
-		
+		TEST(u1_hooi.equals( u1_hooi_check, precision ) && 
+                u2_hooi.equals( u2_hooi_check, precision ) &&
+                u3_hooi.equals( u3_hooi_check, precision ) &&
+                core_hooi.equals( core_hooi_check, precision));
 		if ( ok )
 		{	
 			log( "Tucker ALS: rank-(2,2,1) approximation (same test as T3_HOOI)" , true  );
@@ -91,7 +97,7 @@ namespace vmml
 		
 		size_t number_nonzeros = tuck3_hooi.nnz( );
 		size_t number_nonzeros2 = tuck3_hooi.nnz( 0.1 );		
-		ok = ( number_nonzeros == 16 ) && (number_nonzeros2 == 12);
+		TEST(( number_nonzeros == 16 ) && (number_nonzeros2 == 12));
 		log( "get number of nonzeros" , ok  );
 		
 		//quantization
@@ -123,7 +129,8 @@ namespace vmml
 		double rmse2 = t3_data_hooi_3_reco.rmse( t3_data_hooi_3 );
 		
 		
-		if ( (rmse == rmse_check) && (rmse != 0) && (rmse2 == rmse_check))
+		TEST((rmse == rmse_check) && (rmse != 0) && (rmse2 == rmse_check));
+		if (ok)
 		{	
 			log( "quantized Tucker ALS ank-(2,2,1) approximation" , true  );
 		} else
@@ -163,12 +170,12 @@ namespace vmml
 		t3_reco_check.fill(1656);
 		
 	
-		ok = t3_reco_check == t3_reco ;
+		TEST(t3_reco_check == t3_reco);
 		log( "tucker3 reconstruction", ok );
 		
 		
 		
-		return ok;
+		return global_ok;
 	}
 	
 	

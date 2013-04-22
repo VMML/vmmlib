@@ -3,13 +3,19 @@
 #include <vmmlib/lapack_svd.hpp>
 #include <vmmlib/matrix_functors.hpp>
 
+#define TEST( x ) \
+{ \
+    ok = x; \
+    global_ok &= ok; \
+}
+
 namespace vmml
 {
 
 bool
 lapack_svd_test::run()
 {
-    bool ok;
+    bool global_ok = true;
     
     matrix< 6, 3, double > A;
     matrix< 6, 6, double > U;
@@ -96,12 +102,12 @@ lapack_svd_test::run()
     matrix_equals_allow_inverted_columns< matrix< 3, 3, double > > v_compare;
     
     #if 1    
-    ok = u_compare( U, UCorrect );
+    bool ok;
+    
+    TEST(u_compare( U, UCorrect ));
 
-	if ( ok )
-        ok = sigma == sigmaCorrect;
-    if ( ok )
-        ok = v_compare( Vt, VtCorrect );
+	if ( ok ) TEST(sigma == sigmaCorrect);
+    if ( ok ) TEST(v_compare( Vt, VtCorrect ));
     
     #else
     
@@ -114,11 +120,9 @@ lapack_svd_test::run()
 
     double tolerance = 1e-8;
     #if 1
-    ok = u_compare( U, UCorrect, tolerance );
-    if ( ok )
-        ok = sigma.equals( sigmaCorrect, tolerance );
-    if ( ok )
-        ok = v_compare( Vt, VtCorrect, tolerance );
+    TEST(u_compare( U, UCorrect, tolerance ));
+    if ( ok ) TEST(sigma.equals( sigmaCorrect, tolerance ));
+    if ( ok ) TEST(v_compare( Vt, VtCorrect, tolerance ));
     
     #else
     ok = U.equals( UCorrect, tolerance );
@@ -146,11 +150,9 @@ lapack_svd_test::run()
             << "Vt diff " << VtCorrect + Vt << "\n"
             << std::endl;
         log_error( ss.str() );
-            
     }
     
-	return ok;
-    return true;
+	return global_ok;
 }
 
 

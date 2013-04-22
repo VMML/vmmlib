@@ -6,12 +6,19 @@
 #include <vmmlib/t3_cublas_hosvd.hpp>
 #include <vmmlib/t3_cublas_hooi.hpp>
 
+#define TEST( x ) \
+{ \
+    ok = x; \
+    global_ok &= ok; \
+}
+
 namespace vmml
 {
 	
 	bool
 	cutensor_tests::run()
 	{
+        bool global_ok = true;
 		bool ok = false;
 		
 		tensor3< 2, 3, 4, float >  t3;
@@ -39,7 +46,8 @@ namespace vmml
 		
 		tensor3<6, 7, 5, float> t3_iii_test;
 		t3_iii_test.fill(1656);
-		if ( t3_iii_test == t3_reco && t3_iii_test == t3_iii )
+		TEST ( t3_iii_test == t3_reco && t3_iii_test == t3_iii );
+		if ( ok )
 		{	
 			log( "tensor3 CUBLAS matrix multiplication along all three modes", true  );
 		} else
@@ -98,7 +106,8 @@ namespace vmml
 		typedef t3_cublas_hosvd< 3, 3, 3, 3, 3, 3 > hosvd_t;
 		hosvd_t::apply_all( t3_data_hoeigs, u1_hoeigs, u2_hoeigs, u3_hoeigs );
 		
-		if ( u1_hoeigs.equals( u1_hoeigs_check, precision ) && u2_hoeigs.equals( u2_hoeigs_check, precision ) && u3_hoeigs.equals( u3_hoeigs_check, precision ))
+		TEST( u1_hoeigs.equals( u1_hoeigs_check, precision ) && u2_hoeigs.equals( u2_hoeigs_check, precision ) && u3_hoeigs.equals( u3_hoeigs_check, precision ));
+		if (ok)
 		{	
 			log( "CUBLAS HOEIGS compute factor matrices U1, U2, U3", true  );
 		} else
@@ -149,11 +158,11 @@ namespace vmml
 		typedef t3_cublas_hooi< 2, 2, 1, 3, 2, 2 > hooi_cublas_t;
 		hooi_cublas_t::als( t3_data, u1_hooi, u2_hooi, u3_hooi, core_hooi, hooi_cublas_t::init_hosvd() );
 		
-		ok = u1_hooi.equals( u1_check, precision );
-		ok = ok && ( u2_hooi.equals( u2_check, precision ) );
-		ok = ok && ( u3_hooi.equals( u3_check, precision ) );
-		ok = ok && ( u3_hooi.equals( u3_check, precision ) );
-		ok = ok && ( core_hooi.equals( core_check, precision ) );
+		TEST(u1_hooi.equals( u1_check, precision ) &&
+                u2_hooi.equals( u2_check, precision ) &&
+                u3_hooi.equals( u3_check, precision ) &&
+                u3_hooi.equals( u3_check, precision ) &&
+                core_hooi.equals( core_check, precision ) );
 		
 		if ( ok )
 		{	
@@ -176,7 +185,7 @@ namespace vmml
 			log_error( error.str() );
 		}
 				
-		return ok;
+		return global_ok;
 	}
 	
 	

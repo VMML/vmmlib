@@ -4,12 +4,19 @@
 
 #include <vmmlib/cublas_dgemm.cu>
 
+#define TEST( x ) \
+{ \
+    ok = x; \
+    global_ok &= ok; \
+}
+
 namespace vmml
 {
 	
 	bool
 	cublas_dgemm_test::run()
 	{
+        bool global_ok = true;
 		bool ok = false;
 
 		//cublas compute
@@ -30,7 +37,7 @@ namespace vmml
 		float DData[] = { 161, 182, 377, 434, 593, 686 };
 		D_check = DData;
 		
-		ok = D == D_check;
+		TEST(D == D_check);
 		
 		log( "matrix-matrix multiplication (MxK) x (KxN) = (MxN)", ok );
 		if ( ! ok )
@@ -43,7 +50,6 @@ namespace vmml
             << "matrix C is\n" << D << "\n"
             << std::endl;
 			log_error( ss.str() );
-            
 		}
 		
 		//covariance computation
@@ -57,7 +63,7 @@ namespace vmml
 		float CData[] = { 91, 217, 343, 217, 559, 901, 343, 901, 1459 };
 		C_check = CData;
 		
-		ok = C == C_check;
+		TEST(C == C_check);
 		
 		log( "symmetric matrix-matrix multiplication (input left matrix) (MxK) x (KxN) = (MxN), while M=N", ok );
 		if ( ! ok )
@@ -69,11 +75,10 @@ namespace vmml
             << "covariance matrix is\n" << C << "\n"
             << std::endl;
 			log_error( ss.str() );
-            
 		}
 		
 		
-		return ok;
+		return global_ok;
 	}
 	
 	

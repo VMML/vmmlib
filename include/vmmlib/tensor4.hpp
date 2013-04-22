@@ -204,9 +204,9 @@ namespace vmml
 						{
 							if (i2 == (I2 - 1) )
 							{
-								os << t4.at( i1, i2, i3, i4 ) ;
+								os << int(t4.at( i1, i2, i3, i4 )) ;
 							} else {
-								os << t4.at( i1, i2, i3, i4 ) << ", " ;
+								os << int(t4.at( i1, i2, i3, i4 )) << ", " ;
 							}
 							
 						}

@@ -378,10 +378,10 @@ vector_test::run()
         vecCorrect = vCData2;
         TEST( vec == vecCorrect );
         
-        vector< 3, double > v( 2, 3, 4 );
+        vector< 3, double > v1( 2, 3, 4 );
         // uncommenting the following line will throw a compiler error because the number 
         // of arguments to set is != M
-        //v.set( 2, 3, 4, 5 );
+        //v1.set( 2, 3, 4, 5 );
         
         vecCorrect = vCData;
         vec.set( v, 5 );
@@ -479,9 +479,9 @@ vector_test::run()
 
 	ok = true;
     {
-        vector< 4, float > v( -1.0f, 3.0f, -99.0f, -0.9f );
+        vector< 4, float > v1( -1.0f, 3.0f, -99.0f, -0.9f );
         float f = 4.0f;
-        vector< 4, float > v_scaled = f * v;
+        vector< 4, float > v_scaled = f * v1;
 
         TEST(v_scaled == (vector< 4, float >( -4.0f, 12.0f, -396.0f, -3.6f ) ));
         
@@ -528,9 +528,9 @@ vector_test::run()
     
     #ifndef VMMLIB_NO_CONVERSION_OPERATORS
     {
-        vector< 4, double > v;
-        double* array               = v;
-        //const double* const_array   = v;
+        vector< 4, double > v1;
+        double* array               = v1;
+        //const double* const_array   = v1;
 
         array[ 1 ]          = 2.0;
         //const_array[ 2 ]    = 3.0;

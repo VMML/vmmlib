@@ -1077,7 +1077,7 @@ namespace vmml {
 
 		T* t_ptr = (T*)&(data_[0]);
 		for ( size_t slice = i3_start; slice <= i3_end; ++slice ) {
-            for ( size_t row = i2_start; row <= i1_end; ++row ) {
+            for ( size_t row = i1_start; row <= i1_end; ++row ) {
                 for ( size_t col = i2_start; col <= i2_end; ++col ) {
 					//std::cout << "at("<< row << "," << col << "," << slice << ") of (" <<I1 << "," << I2 << "," << I3 << ")" << std::endl;
                     *t_ptr = at( row, col, slice );

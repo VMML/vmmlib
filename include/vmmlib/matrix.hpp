@@ -988,14 +988,15 @@ equals( const matrix< M, N, T >& other_matrix, compare_t& cmp ) const
     return is_ok;
 }
 
+#pragma GCC diagnostic ignored "-Warray-bounds" // gcc 4.4.7 bug WAR
 template< size_t M, size_t N, typename T >
 const matrix< M, N, T >&
 matrix< M, N, T >::operator=( const matrix& source_ )
 {
-    memcpy( array, source_.array, M * N * sizeof( T ) );
+    memcpy( array, source_.array, M * N * sizeof( T ));
     return *this;
 }
-
+#pragma GCC diagnostic warning "-Warray-bounds"
 
 
 template< size_t M, size_t N, typename T >

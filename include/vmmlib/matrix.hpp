@@ -60,11 +60,8 @@ public:
     // note: this ctor does not initialize anything because of performance reasons.
     matrix();
 
-    template< typename U >
-    matrix( const matrix< M, N, U >& source_ );
-
-    template< size_t P, size_t Q >
-    matrix( const matrix< P, Q, T >& source_ );
+    template< size_t P, size_t Q, typename U >
+    matrix( const matrix< P, Q, U >& source_ );
 
     #ifndef VMMLIB_NO_CONVERSION_OPERATORS
     // auto conversion operator
@@ -174,12 +171,12 @@ public:
 	void	symmetric_covariance( matrix< M, M, T >& cov_m_ ) const;
 
 
-    const matrix& operator=( const matrix& source_ );
+    const matrix& operator=( const matrix< M, N, T >& source_ );
 
     // these assignment operators return nothing to avoid silent loss of
     // precision
-    template< typename U >
-    void operator=( const matrix< M, N, U >& source_ );
+    template< size_t P, size_t Q, typename U >
+    void operator=( const matrix< P, Q, U >& source_ );
     void operator=( const T old_fashioned_matrix[ M ][ N ] );
 
     // WARNING: data_array[] must be at least of size M * N - otherwise CRASH!
@@ -491,16 +488,17 @@ typedef matrix< 4, 4, double >  mat4d;
 */
 
 template< size_t M, size_t N, typename T >
-bool equals( const matrix< M, N, T >& m0, const matrix< M, N, T >& m1, T tolerance )
+bool equals( const matrix< M, N, T >& m0, const matrix< M, N, T >& m1,
+             const T tolerance )
 {
     return m0.equals( m1, tolerance );
 }
 
 
 template< size_t M, size_t N, typename T >
-inline void
-multiply( const matrix< M, N, T >& left, const matrix< M, N, T >& right,
-    matrix< M, N, T >& result )
+inline void multiply( const matrix< M, N, T >& left,
+                      const matrix< M, N, T >& right,
+                      matrix< M, N, T >& result )
 {
     result.multiply( left, right );
 }
@@ -821,41 +819,21 @@ matrix< M, N, T >::matrix()
     // no initialization for performance reasons.
 }
 
-
-
 template< size_t M, size_t N, typename T >
-template< typename U >
-matrix< M, N, T >::
-matrix( const matrix< M, N, U >& source_ )
+template< size_t P, size_t Q, typename U >
+matrix< M, N, T >::matrix( const matrix< P, Q, U >& source_ )
 {
     (*this) = source_;
 }
 
-template< size_t M, size_t N, typename T >
-template< size_t P, size_t Q >
-matrix< M, N, T >::
-matrix( const matrix< P, Q, T >& source_ )
-{
-   const size_t minL =  P < M ? P : M;
-   const size_t minC =  Q < N ? Q : N;
-
-   (*this) = ZERO;
-
-   for ( size_t i = 0 ; i < minL ; i++ )
-       for ( size_t j = 0 ; j < minC ; j++ )
-       {
-           at( i,j ) = source_( i, j );
-       }
-}
 
 template< size_t M, size_t N, typename T >
-inline T&
-matrix< M, N, T >::at( size_t row_index, size_t col_index )
+inline T& matrix< M, N, T >::at( size_t row_index, size_t col_index )
 {
-    #ifdef VMMLIB_SAFE_ACCESSORS
+#ifdef VMMLIB_SAFE_ACCESSORS
     if ( row_index >= M || col_index >= N )
         VMMLIB_ERROR( "at( row, col ) - index out of bounds", VMMLIB_HERE );
-    #endif
+#endif
     return array[ col_index * M + row_index ];
 }
 
@@ -865,10 +843,10 @@ template< size_t M, size_t N, typename T >
 const inline T&
 matrix< M, N, T >::at( size_t row_index, size_t col_index ) const
 {
-    #ifdef VMMLIB_SAFE_ACCESSORS
+#ifdef VMMLIB_SAFE_ACCESSORS
     if ( row_index >= M || col_index >= N )
         VMMLIB_ERROR( "at( row, col ) - index out of bounds", VMMLIB_HERE );
-    #endif
+#endif
     return array[ col_index * M + row_index ];
 }
 
@@ -888,23 +866,6 @@ matrix< M, N, T >::operator()( size_t row_index, size_t col_index ) const
 {
     return at( row_index, col_index );
 }
-
-
-#if 0
-template< size_t M, size_t N, typename T >
-matrix< M, N, T >::matrix()
-{
-}
-
-
-
-template< size_t M, size_t N, typename T >
-matrix< M, N, T >::matrix( const matrix< M, N >& original )
-{
-
-}
-#endif
-
 
 #ifndef VMMLIB_NO_CONVERSION_OPERATORS
 
@@ -973,9 +934,8 @@ equals( const matrix< M, N, T >& other, T tolerance ) const
 
 template< size_t M, size_t N, typename T >
 template< typename compare_t >
-bool
-matrix< M, N, T >::
-equals( const matrix< M, N, T >& other_matrix, compare_t& cmp ) const
+bool matrix< M, N, T >::equals( const matrix< M, N, T >& other_matrix,
+                                compare_t& cmp ) const
 {
     bool is_ok = true;
     for( size_t row = 0; is_ok && row < M; ++row )
@@ -988,35 +948,35 @@ equals( const matrix< M, N, T >& other_matrix, compare_t& cmp ) const
     return is_ok;
 }
 
+#pragma GCC diagnostic ignored "-Warray-bounds" // gcc 4.4.7 bug WAR
 template< size_t M, size_t N, typename T >
 const matrix< M, N, T >&
-matrix< M, N, T >::operator=( const matrix& source_ )
+matrix< M, N, T >::operator=( const matrix< M, N, T >& source_ )
 {
-    memcpy( array, source_.array, M * N * sizeof( T ) );
+    memcpy( array, source_.array, M * N * sizeof( T ));
     return *this;
 }
-
+#pragma GCC diagnostic warning "-Warray-bounds"
 
 
 template< size_t M, size_t N, typename T >
-template< typename U >
-void
-matrix< M, N, T >::operator=( const matrix< M, N, U >& source_ )
+template< size_t P, size_t Q, typename U >
+void matrix< M, N, T >::operator=( const matrix< P, Q, U >& source_ )
 {
-    const U* it = source_.begin();
-    const U* it_end = source_.end();
+    const size_t minL =  P < M ? P : M;
+    const size_t minC =  Q < N ? Q : N;
 
-    iterator my_it = begin();
-    for( ; it != it_end; ++it, ++my_it )
-    {
-        *my_it = static_cast< T >( *it );
-    }
+    if( minL < M || minC < N )
+        (*this) = ZERO;
+
+    for ( size_t i = 0 ; i < minL ; i++ )
+        for ( size_t j = 0 ; j < minC ; j++ )
+            at( i,j ) = static_cast< T >( source_( i, j ));
 }
 
 
 template< size_t M, size_t N, typename T >
-void
-matrix< M, N, T >::operator=( const T old_fashioned_matrix[ M ][ N ] )
+void matrix< M, N, T >::operator=( const T old_fashioned_matrix[ M ][ N ] )
 {
     for( size_t row = 0; row < M; row++)
     {
@@ -1580,9 +1540,8 @@ matrix< M, N, T >::z()
 
 template< size_t M, size_t N, typename T >
 template< typename input_iterator_t >
-void
-matrix< M, N, T >::
-set( input_iterator_t begin_, input_iterator_t end_, bool row_major_layout )
+void matrix< M, N, T >::set( input_iterator_t begin_,
+                             input_iterator_t end_, bool row_major_layout )
 {
     input_iterator_t it( begin_ );
     if( row_major_layout )
@@ -1625,9 +1584,9 @@ operator=( T value_ )
 
 template< size_t M, size_t N, typename T >
 inline matrix< M, N, T >
-matrix< M, N, T >::
-operator+( const matrix< M, N, T >& other ) const
+matrix< M, N, T >::operator+( const matrix< M, N, T >& other ) const
 {
+    return *this;
 	matrix< M, N, T > result( *this );
 	result += other;
 	return result;
@@ -1636,10 +1595,9 @@ operator+( const matrix< M, N, T >& other ) const
 
 
 template< size_t M, size_t N, typename T >
-void
-matrix< M, N, T >::
-operator+=( const matrix< M, N, T >& other )
+void matrix< M, N, T >::operator+=( const matrix< M, N, T >& other )
 {
+    return;
     iterator it = begin(), it_end = end();
     const_iterator other_it = other.begin();
     for( ; it != it_end; ++it, ++other_it )
@@ -1650,9 +1608,9 @@ operator+=( const matrix< M, N, T >& other )
 
 
 template< size_t M, size_t N, typename T >
-void
-matrix< M, N, T >::operator+=( T scalar )
+void matrix< M, N, T >::operator+=( T scalar )
 {
+    return;
 	iterator it = begin(), it_end = end();
 	for( ; it != it_end; ++it )
 	{

@@ -33,7 +33,7 @@ The BSD license allows the usage both in open source and commercial closed sourc
 * fixed bug in CP3 tensor decomposition 
 * updated incremental methods (added ihooi; updated ihopm)
 
-###BLAS WRAPPERS
+###BLAS Wrapper
 * added BLAS DAXPY wrapper
 
 

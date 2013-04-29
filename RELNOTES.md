@@ -22,12 +22,11 @@ The BSD license allows the usage both in open source and commercial closed sourc
 ### Matrix
 * added matrix validators
 
-##Tensor Approximation Classes
+###Tensor Approximation Classes
 * memory mapping classes for tensor data structures (tensor_mmapper.hpp) 
 * created t3_converter: used to import/export tensors; converting/reading/writing files; quantization
 * moved tensor3 reading/writing/quantization/tensor times matrix multiplications to t3_converter.hpp
 * added tensor times matrix multiplications (ttm) and tensor times vector multiplication (ttv): multiply tensors along various modes
-* 
 * use OpenMP for some parallel computeations (tensor3, ttm)
 * added tensor4 data structure (including t4_converter for converting/reading/writing files)
 * added tensor_stats TODO RAFA

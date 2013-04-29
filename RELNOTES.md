@@ -36,6 +36,10 @@ The BSD license allows the usage both in open source and commercial closed sourc
 ###BLAS Wrapper
 * added BLAS DAXPY wrapper
 
+###Filering
+* TODO STEFAN: intersection_test, lowpass_filter_tests
+* TODO STEFAN: changes in frustum_culler
+
 ###Unit Tests
 *Consistent testing with ... TODO RAFA
 

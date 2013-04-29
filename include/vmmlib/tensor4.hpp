@@ -1,9 +1,9 @@
 /*
  * VMMLib - Tensor Classes
  *
+ * @author David Klaper
  * @author Susanne Suter
  * @author Jonas Boesch
- * @author David Klaper
  *
  * a tensor is a generalization of a multidimensional array
  * a tensor4 is a tensor data structure with four modes I1, I2, I3 and I4
@@ -91,9 +91,9 @@ namespace vmml
 		//sets all tensor values with random values
 		//if seed is negative, srand( seed ) should have been set outside fill_random
 		//if seed is 0 or greater srand( seed ) will be called with the given seed
-		void fill_random( int seed = -1 );  //TODO: DK done
-		void fill_random_signed( int seed = -1 ); //TODO: DK done
-		void fill_increasing_values( ); //TODO: DK done
+		void fill_random( int seed = -1 );  
+		void fill_random_signed( int seed = -1 ); 
+		void fill_increasing_values( ); 
 		
 		const tensor4& operator=( const tensor4& source_ );
 		
@@ -103,7 +103,7 @@ namespace vmml
 		template< typename input_iterator_t >
 		void set( input_iterator_t begin_, input_iterator_t end_,
 				 bool row_major_layout = true );
-		void zero(); //TODO: DK done
+		void zero(); 
 		
 		T get_min() const;
 		T get_max() const;

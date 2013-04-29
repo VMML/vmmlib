@@ -1,5 +1,6 @@
 # Release Notes
 2013/04/29
+
 vmmlib - a templatized C++ vector and matrix math library
 
 Its basic functionality includes a vector and a matrix class, with additional functionality for the often-used 3d and 4d vectors and 3x3 and 4x4 matrices.

@@ -948,7 +948,9 @@ bool matrix< M, N, T >::equals( const matrix< M, N, T >& other_matrix,
     return is_ok;
 }
 
-#pragma GCC diagnostic ignored "-Warray-bounds" // gcc 4.4.7 bug WAR
+#if (( __GNUC__ > 4 ) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 3)) )
+#  pragma GCC diagnostic ignored "-Warray-bounds" // gcc 4.4.7 bug WAR
+#endif
 template< size_t M, size_t N, typename T >
 const matrix< M, N, T >&
 matrix< M, N, T >::operator=( const matrix< M, N, T >& source_ )
@@ -956,8 +958,9 @@ matrix< M, N, T >::operator=( const matrix< M, N, T >& source_ )
     memcpy( array, source_.array, M * N * sizeof( T ));
     return *this;
 }
-#pragma GCC diagnostic warning "-Warray-bounds"
-
+#if (( __GNUC__ > 4 ) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 3)) )
+#  pragma GCC diagnostic warning "-Warray-bounds"
+#endif
 
 template< size_t M, size_t N, typename T >
 template< size_t P, size_t Q, typename U >

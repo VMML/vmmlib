@@ -151,7 +151,6 @@ if(LAPACK_FOUND)
     tests/t3_hosvd_test.cpp
     tests/t3_ihooi_test.cpp
     tests/t3_ihopm_test.cpp
-    tests/t3_virtual_padder_test.cpp
     tests/t3_ttm_test.cpp
     tests/t4_converter_test.cpp
     tests/t4_converter_test.cpp

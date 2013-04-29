@@ -1,5 +1,6 @@
 # Release Notes
 2013/04/29
+
 vmmlib - a templatized C++ vector and matrix math library
 
 Its basic functionality includes a vector and a matrix class, with additional functionality for the often-used 3d and 4d vectors and 3x3 and 4x4 matrices.
@@ -11,7 +12,6 @@ The BSD license allows the usage both in open source and commercial closed sourc
 # Features
 
 # New in this release
-
 
 ###CMake
 * use now only CMake to create a Makefile
@@ -27,7 +27,7 @@ The BSD license allows the usage both in open source and commercial closed sourc
 * created t3_converter: used to import/export tensors; converting/reading/writing files; quantization
 * moved tensor3 reading/writing/quantization/tensor times matrix multiplications to t3_converter.hpp
 * added tensor times matrix multiplications (ttm) and tensor times vector multiplication (ttv): multiply tensors along various modes
-* use OpenMP for some parallel computeations (tensor3, ttm)
+* use OpenMP for some parallel computations (tensor3, ttm)
 * added tensor4 data structure (including t4_converter for converting/reading/writing files)
 * added tensor_stats TODO RAFA
 * fixed bug in CP3 tensor decomposition 
@@ -36,7 +36,8 @@ The BSD license allows the usage both in open source and commercial closed sourc
 ###BLAS Wrapper
 * added BLAS DAXPY wrapper
 
-
+###Unit Tests
+*Consistent testing with ... TODO RAFA
 
 ## New Features
 

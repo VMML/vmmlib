@@ -12,7 +12,6 @@ The BSD license allows the usage both in open source and commercial closed sourc
 
 # New in this release
 
-
 ###CMake
 * use now only CMake to create a Makefile
 
@@ -36,7 +35,8 @@ The BSD license allows the usage both in open source and commercial closed sourc
 ###BLAS Wrapper
 * added BLAS DAXPY wrapper
 
-
+###Unit Tests
+*Consistent testing with ... TODO RAFA
 
 ## New Features
 

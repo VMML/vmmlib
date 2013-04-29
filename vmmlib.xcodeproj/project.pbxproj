@@ -49,6 +49,8 @@
 		CF2DD25E126C8EAE0036DE05 /* tensor3_iterator_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CF2DD25D126C8EAE0036DE05 /* tensor3_iterator_test.cpp */; };
 		CF2DD265126C91670036DE05 /* cp3_tensor_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CF2DD264126C91670036DE05 /* cp3_tensor_test.cpp */; };
 		CF42E5EA125F738600C0A38E /* matrix_pseudoinverse_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CF42E5E9125F738600C0A38E /* matrix_pseudoinverse_test.cpp */; };
+		CF59614E172ED45600CC06C4 /* lowpass_filter_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CF59614B172ED45600CC06C4 /* lowpass_filter_test.cpp */; };
+		CF59614F172ED45600CC06C4 /* intersection_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CF59614D172ED45600CC06C4 /* intersection_test.cpp */; };
 		CF75FFF51432383D00CFD46E /* blas_dot_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CF75FFF41432383D00CFD46E /* blas_dot_test.cpp */; };
 		CF7FA8D5114EB617003076E4 /* tucker3_tensor_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CF7FA8D4114EB617003076E4 /* tucker3_tensor_test.cpp */; };
 		CF906ACE14F56FEC0043CF23 /* t3_ttm_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CF906ACD14F56FEC0043CF23 /* t3_ttm_test.cpp */; };
@@ -148,6 +150,12 @@
 		CF42E5E7125F736E00C0A38E /* matrix_pseudoinverse_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = matrix_pseudoinverse_test.hpp; path = tests/matrix_pseudoinverse_test.hpp; sourceTree = "<group>"; };
 		CF42E5E9125F738600C0A38E /* matrix_pseudoinverse_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = matrix_pseudoinverse_test.cpp; path = tests/matrix_pseudoinverse_test.cpp; sourceTree = "<group>"; };
 		CF42E65B125F7F2100C0A38E /* matrix_pseudoinverse.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = matrix_pseudoinverse.hpp; path = include/vmmlib/matrix_pseudoinverse.hpp; sourceTree = "<group>"; };
+		CF596146172ED43300CC06C4 /* lowpass_filter.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = lowpass_filter.hpp; path = include/vmmlib/lowpass_filter.hpp; sourceTree = "<group>"; };
+		CF596147172ED43300CC06C4 /* intersection.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = intersection.hpp; path = include/vmmlib/intersection.hpp; sourceTree = "<group>"; };
+		CF59614A172ED45600CC06C4 /* lowpass_filter_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = lowpass_filter_test.hpp; path = tests/lowpass_filter_test.hpp; sourceTree = "<group>"; };
+		CF59614B172ED45600CC06C4 /* lowpass_filter_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lowpass_filter_test.cpp; path = tests/lowpass_filter_test.cpp; sourceTree = "<group>"; };
+		CF59614C172ED45600CC06C4 /* intersection_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = intersection_test.hpp; path = tests/intersection_test.hpp; sourceTree = "<group>"; };
+		CF59614D172ED45600CC06C4 /* intersection_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = intersection_test.cpp; path = tests/intersection_test.cpp; sourceTree = "<group>"; };
 		CF75FFD11432315C00CFD46E /* blas_dot.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = blas_dot.hpp; path = include/vmmlib/blas_dot.hpp; sourceTree = "<group>"; };
 		CF75FFF31432383D00CFD46E /* blas_dot_test.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = blas_dot_test.hpp; path = tests/blas_dot_test.hpp; sourceTree = "<group>"; };
 		CF75FFF41432383D00CFD46E /* blas_dot_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = blas_dot_test.cpp; path = tests/blas_dot_test.cpp; sourceTree = "<group>"; };
@@ -273,6 +281,8 @@
 				9868345B0E24F8F300618F55 /* vector.hpp */,
 				98D402D30E38D6A000B24DF1 /* quaternion.hpp */,
 				CF42E65B125F7F2100C0A38E /* matrix_pseudoinverse.hpp */,
+				CF596146172ED43300CC06C4 /* lowpass_filter.hpp */,
+				CF596147172ED43300CC06C4 /* intersection.hpp */,
 				98596E640FB48941006CA0F8 /* advanced */,
 				98596E630FB48923006CA0F8 /* misc */,
 				98596E740FB489AC006CA0F8 /* frustum */,
@@ -427,6 +437,10 @@
 				CFF95532131CECD100071FB3 /* lapack_sym_eigs_test.cpp */,
 				CF42E5E7125F736E00C0A38E /* matrix_pseudoinverse_test.hpp */,
 				CF42E5E9125F738600C0A38E /* matrix_pseudoinverse_test.cpp */,
+				CF59614A172ED45600CC06C4 /* lowpass_filter_test.hpp */,
+				CF59614B172ED45600CC06C4 /* lowpass_filter_test.cpp */,
+				CF59614C172ED45600CC06C4 /* intersection_test.hpp */,
+				CF59614D172ED45600CC06C4 /* intersection_test.cpp */,
 				98476418110DDB940024A1F8 /* tensor3_test.hpp */,
 				98476417110DDB940024A1F8 /* tensor3_test.cpp */,
 				CF2DD25C126C8EAE0036DE05 /* tensor3_iterator_test.hpp */,
@@ -637,6 +651,8 @@
 				98D23D8E15B964590012DABB /* unit_test_globals.cpp in Sources */,
 				CFF98F5615BF0DC600F599FE /* t4_converter_test.cpp in Sources */,
 				CFE117B416416A030085B653 /* t3_ihooi_test.cpp in Sources */,
+				CF59614E172ED45600CC06C4 /* lowpass_filter_test.cpp in Sources */,
+				CF59614F172ED45600CC06C4 /* intersection_test.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

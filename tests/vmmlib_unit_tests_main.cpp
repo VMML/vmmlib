@@ -35,10 +35,6 @@
 #  include "tensor4_test.hpp"
 #  include "t4_converter_test.hpp"
 #endif
-#ifdef VMMLIB_USE_CUDA
-#  include "cublas_dgemm_test.hpp"
-#  include "cutensor_tests.hpp"
-#endif
 
 void
 run_and_log( vmml::unit_test& test )
@@ -143,13 +139,6 @@ main( int argc, const char* argv[] )
     run_and_log( t4ct );
 
 
-#endif
-#ifdef VMMLIB_USE_CUDA
-    vmml::cublas_dgemm_test cublas_mm;
-    run_and_log( cublas_mm );
-
-    vmml::cutensor_tests cut3;
-    run_and_log( cut3 );
 #endif
 
     std::cout << vmml::unit_test_globals::get_instance() << std::endl;

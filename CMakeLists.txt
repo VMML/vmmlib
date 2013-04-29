@@ -56,9 +56,6 @@ set(HEADERS
   include/vmmlib/blas_includes.hpp
   include/vmmlib/blas_types.hpp
   include/vmmlib/cp3_tensor.hpp
-  include/vmmlib/cublas_dgemm.cu
-  include/vmmlib/cublas_includes.hpp
-  include/vmmlib/cublas_types.hpp
   include/vmmlib/enable_if.hpp
   include/vmmlib/exception.hpp
   include/vmmlib/frustum.hpp
@@ -86,9 +83,6 @@ set(HEADERS
   include/vmmlib/quaternion.hpp
   include/vmmlib/svd.hpp
   include/vmmlib/t3_converter.hpp
-  include/vmmlib/t3_cublas_hooi.hpp
-  include/vmmlib/t3_cublas_hosvd.hpp
-  include/vmmlib/t3_cublas_ttm.hpp
   include/vmmlib/t3_hooi.hpp
   include/vmmlib/t3_hopm.hpp
   include/vmmlib/t3_hosvd.hpp

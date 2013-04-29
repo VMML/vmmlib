@@ -37,7 +37,7 @@ The BSD license allows the usage both in open source and commercial closed sourc
 * added BLAS DAXPY wrapper
 
 ###Filering
-* TODO STEFAN: intersection_test, lowpass_filter_tests
+* added intersection, lowpass_filter class
 * TODO STEFAN: changes in frustum_culler
 
 ###Unit Tests

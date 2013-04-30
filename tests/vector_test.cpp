@@ -383,10 +383,6 @@ vector_test::run()
         // of arguments to set is != M
         //v1.set( 2, 3, 4, 5 );
         
-        vecCorrect = vCData;
-        vec.set( v, 5 );
-        TEST( vec == vecCorrect );
-        
         log( "set() functions", ok );
     }
 

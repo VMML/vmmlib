@@ -1589,7 +1589,6 @@ template< size_t M, size_t N, typename T >
 inline matrix< M, N, T >
 matrix< M, N, T >::operator+( const matrix< M, N, T >& other ) const
 {
-    return *this;
 	matrix< M, N, T > result( *this );
 	result += other;
 	return result;
@@ -1600,7 +1599,6 @@ matrix< M, N, T >::operator+( const matrix< M, N, T >& other ) const
 template< size_t M, size_t N, typename T >
 void matrix< M, N, T >::operator+=( const matrix< M, N, T >& other )
 {
-    return;
     iterator it = begin(), it_end = end();
     const_iterator other_it = other.begin();
     for( ; it != it_end; ++it, ++other_it )
@@ -1613,7 +1611,6 @@ void matrix< M, N, T >::operator+=( const matrix< M, N, T >& other )
 template< size_t M, size_t N, typename T >
 void matrix< M, N, T >::operator+=( T scalar )
 {
-    return;
 	iterator it = begin(), it_end = end();
 	for( ; it != it_end; ++it )
 	{

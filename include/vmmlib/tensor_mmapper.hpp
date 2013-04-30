@@ -242,7 +242,6 @@ namespace vmml
 			}
 		}
 
-
 		off_t offset = 0;
 
 		_data = (void*)mmap( 0, _file_size, PROT_WRITE, MAP_FILE | MAP_SHARED, _fd, offset );

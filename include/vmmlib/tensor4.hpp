@@ -1,9 +1,9 @@
 /*
  * VMMLib - Tensor Classes
  *
+ * @author David Klaper
  * @author Susanne Suter
  * @author Jonas Boesch
- * @author David Klaper
  *
  * a tensor is a generalization of a multidimensional array
  * a tensor4 is a tensor data structure with four modes I1, I2, I3 and I4
@@ -13,15 +13,7 @@
 #define __VMML__TENSOR4__HPP__
 
 #include <fstream>   // file I/O
-//#include <vmmlib/tensor4_iterator.hpp>
 #include <vmmlib/enable_if.hpp>
-//#include <vmmlib/blas_dot.hpp>
-//#include <sys/mman.h>
-//#include <fcntl.h>
-//#include <omp.h>
-//#include <limits>
-//#undef min
-//#undef max
 #include "tensor3.hpp"
 
 
@@ -45,10 +37,10 @@ namespace vmml
 		//TODO: unfolding along all modes
 		//TODO: accessors to tensor3 (along all modes)
         
-        // Average all values along 1 axis
+                // Average all values along 1 axis
 		tensor3_t& average_I4(tensor3_t& t3) const;
         
-		inline void get_tensor3( const size_t i4_, tensor3_t& t3_data_ ) const; //TODO: DK done
+		inline void get_tensor3( const size_t i4_, tensor3_t& t3_data_ ) const;
 		
 		inline tensor3_t& get_tensor3( size_t i4_ );
 		inline const tensor3_t& get_tensor3( size_t i4_ ) const;
@@ -63,16 +55,16 @@ namespace vmml
 		
 		static size_t get_array_size_in_bytes();
 		
-	    // WARNING: dangerous. Use before destruction if you want to prevent
+	        // WARNING: dangerous. Use before destruction if you want to prevent
 		// a delete call for the assigned T* _array in the destructor.
 		void clear_array_pointer();
 		
 		// accessors
-		inline T& operator()( size_t i1, size_t i2, size_t i3, size_t i4 ); //TODO: DK done
-		inline const T& operator()( size_t i1, size_t i2, size_t i3, size_t i4 ) const;  //TODO: DK done
+		inline T& operator()( size_t i1, size_t i2, size_t i3, size_t i4 ); 
+		inline const T& operator()( size_t i1, size_t i2, size_t i3, size_t i4 ) const;  
 		
-		inline T& at( size_t i1, size_t i2, size_t i3, size_t i4 );  //TODO: DK done
-		inline const T& at( size_t i1, size_t i2, size_t i3, size_t i4 ) const;  //TODO: DK done
+		inline T& at( size_t i1, size_t i2, size_t i3, size_t i4 ); 
+		inline const T& at( size_t i1, size_t i2, size_t i3, size_t i4 ) const;  
 		
 		
 		// ctors
@@ -80,30 +72,30 @@ namespace vmml
 		
 		explicit tensor4(void* memory) ;
 		
-		tensor4( const tensor4& source );  //TODO: DK done
+		tensor4( const tensor4& source );  
 		
 		template< typename U >
-		tensor4( const tensor4< I1, I2, I3, I4, U >& source_ );  //TODO: DK done
+		tensor4( const tensor4< I1, I2, I3, I4, U >& source_ );  
 		
 		template< size_t J1, size_t J2, size_t J3, size_t J4 >
-		tensor4( const tensor4< J1, J2, J3, J4, T >& source_ );  //TODO: DK done
+		tensor4( const tensor4< J1, J2, J3, J4, T >& source_ );  
 		
 		~tensor4();
 		
-		size_t size() const; // return I1 * I2 * I3 * I4;    //TODO: DK done
+		size_t size() const; // return I1 * I2 * I3 * I4;    
 		
 		// sets all elements to fill_value
-		void operator=( T fill_value ); //@SUS: todo  //TODO: DK done
-		void fill( T fill_value ); //special case of set method (all values are set to the same value!)  //TODO: DK done
+		void operator=( T fill_value );
+		void fill( T fill_value ); //special case of set method (all values are set to the same value!)  
 		
 		//sets all tensor values with random values
 		//if seed is negative, srand( seed ) should have been set outside fill_random
 		//if seed is 0 or greater srand( seed ) will be called with the given seed
-		void fill_random( int seed = -1 );  //TODO: DK done
-		void fill_random_signed( int seed = -1 ); //TODO: DK done
-		void fill_increasing_values( ); //TODO: DK done
+		void fill_random( int seed = -1 );  
+		void fill_random_signed( int seed = -1 ); 
+		void fill_increasing_values( ); 
 		
-		const tensor4& operator=( const tensor4& source_ ); //TODO: DK done
+		const tensor4& operator=( const tensor4& source_ );
 		
 		
 		// note: this function copies elements until either the matrix is full or
@@ -111,7 +103,7 @@ namespace vmml
 		template< typename input_iterator_t >
 		void set( input_iterator_t begin_, input_iterator_t end_,
 				 bool row_major_layout = true );
-		void zero(); //TODO: DK done
+		void zero(); 
 		
 		T get_min() const;
 		T get_max() const;
@@ -136,18 +128,18 @@ namespace vmml
 		double stdev() const;
 		
 		template< typename TT >
-		void cast_from( const tensor4< I1, I2, I3, I4, TT >& other ); //TODO: DK (2) done
+		void cast_from( const tensor4< I1, I2, I3, I4, TT >& other ); 
 		
 		template< size_t J1, size_t J2, size_t  J3, size_t J4, typename TT >
-		void cast_from( const tensor4< J1, J2, J3, J4, TT >& other, const long& slice_idx_start_ = 0 ); //TODO: DK (2) done
+		void cast_from( const tensor4< J1, J2, J3, J4, TT >& other, const long& slice_idx_start_ = 0 ); 
 		
 		
 		template< typename TT >
-		void float_t_to_uint_t( const tensor4< I1, I2, I3, I4, TT >& other ); //TODO: DK (2) done
+		void float_t_to_uint_t( const tensor4< I1, I2, I3, I4, TT >& other ); 
 		
-	    //check if corresponding tensor values are equal or not
-		bool operator==( const tensor4& other ) const; //TODO: DK done
-		bool operator!=( const tensor4& other ) const; //TODO: DK done
+	        //check if corresponding tensor values are equal or not
+		bool operator==( const tensor4& other ) const; 
+		bool operator!=( const tensor4& other ) const; 
 		
 		// due to limited precision, two 'idential' tensor4 might seem different.
 		// this function allows to specify a tolerance when comparing matrices.
@@ -158,18 +150,18 @@ namespace vmml
 		bool equals( const tensor4& other, compare_t& cmp ) const;
 		
 		
-		inline tensor4 operator+( T scalar ) const; //TODO: DK (2) done
-		inline tensor4 operator-( T scalar ) const; //TODO: DK (2) done
+		inline tensor4 operator+( T scalar ) const; 
+		inline tensor4 operator-( T scalar ) const; 
 		
-		void operator+=( T scalar ); //TODO: DK (2) done
-		void operator-=( T scalar ); //TODO: DK (2) done
+		void operator+=( T scalar ); 
+		void operator-=( T scalar ); 
 		
-		inline tensor4 operator+( const tensor4& other ) const; //TODO: DK (2) done
-		inline tensor4 operator-( const tensor4& other ) const; //TODO: DK (2) done
+		inline tensor4 operator+( const tensor4& other ) const; 
+		inline tensor4 operator-( const tensor4& other ) const; 
 		
 		template< size_t J1, size_t J2, size_t J3, size_t J4 >
 		typename enable_if< J1 < I1 && J2 < I2 && J3 < I3 && J4 < I4 >::type*
-		operator+=( const tensor4< J1, J2, J3, J4, T>& other ); //TODO: DK (2) done
+		operator+=( const tensor4< J1, J2, J3, J4, T>& other ); 
 		
 		void operator+=( const tensor4& other );
 		void operator-=( const tensor4& other );
@@ -177,17 +169,17 @@ namespace vmml
 		//
 		// tensor4-scalar operations / scaling
 		//
-		tensor4 operator*( T scalar ); //TODO: DK (2) done
-		void operator*=( T scalar ); //TODO: DK (2) done
+		tensor4 operator*( T scalar ); 
+		void operator*=( T scalar ); 
 		
-		tensor4 operator/( T scalar ); //TODO: DK (2) done
-		void operator/=( T scalar ); //TODO: DK (2) done
+		tensor4 operator/( T scalar ); 
+		void operator/=( T scalar );
 		
 		
-		inline tensor4< I1, I2, I3, I4, T > operator-() const; //TODO: DK (2) done
-		tensor4< I1, I2, I3, I4, T > negate() const; //TODO: DK (2) done
+		inline tensor4< I1, I2, I3, I4, T > operator-() const; 
+		tensor4< I1, I2, I3, I4, T > negate() const; 
 		
-		friend std::ostream& operator << ( std::ostream& os, const tensor4< I1, I2, I3, I4, T >& t4 ) //TODO: DK (tensor3) done
+		friend std::ostream& operator << ( std::ostream& os, const tensor4< I1, I2, I3, I4, T >& t4 ) 
 		{
 			//FIXME: to this directly with tensors
 			//sth like:

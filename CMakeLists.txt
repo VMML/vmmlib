@@ -41,7 +41,7 @@ elseif(NOT CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   endif()
 endif()
 
-set(DOCS README AUTHORS LICENSE.txt ACKNOWLEDGEMENTS)
+set(DOCS README.md AUTHORS LICENSE.txt ACKNOWLEDGEMENTS)
 set(BLAS_LIBRARIES blas)
 
 update_file(${CMAKE_CURRENT_SOURCE_DIR}/include/vmmlib/version.in.hpp
@@ -56,9 +56,6 @@ set(HEADERS
   include/vmmlib/blas_includes.hpp
   include/vmmlib/blas_types.hpp
   include/vmmlib/cp3_tensor.hpp
-  include/vmmlib/cublas_dgemm.cu
-  include/vmmlib/cublas_includes.hpp
-  include/vmmlib/cublas_types.hpp
   include/vmmlib/enable_if.hpp
   include/vmmlib/exception.hpp
   include/vmmlib/frustum.hpp
@@ -86,9 +83,6 @@ set(HEADERS
   include/vmmlib/quaternion.hpp
   include/vmmlib/svd.hpp
   include/vmmlib/t3_converter.hpp
-  include/vmmlib/t3_cublas_hooi.hpp
-  include/vmmlib/t3_cublas_hosvd.hpp
-  include/vmmlib/t3_cublas_ttm.hpp
   include/vmmlib/t3_hooi.hpp
   include/vmmlib/t3_hopm.hpp
   include/vmmlib/t3_hosvd.hpp
@@ -151,7 +145,6 @@ if(LAPACK_FOUND)
     tests/t3_hosvd_test.cpp
     tests/t3_ihooi_test.cpp
     tests/t3_ihopm_test.cpp
-    tests/t3_virtual_padder_test.cpp
     tests/t3_ttm_test.cpp
     tests/t4_converter_test.cpp
     tests/t4_converter_test.cpp

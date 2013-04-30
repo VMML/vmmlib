@@ -13,7 +13,9 @@ endif()
 if(OpenMP_name)
   list(APPEND FIND_PACKAGES_DEFINES VMMLIB_USE_OPENMP)
   link_directories(${${OpenMP_name}_LIBRARY_DIRS})
-  include_directories(${${OpenMP_name}_INCLUDE_DIRS})
+  if(NOT "${${OpenMP_name}_INCLUDE_DIRS}" MATCHES "-NOTFOUND")
+    include_directories(${${OpenMP_name}_INCLUDE_DIRS})
+  endif()
 endif()
 
 

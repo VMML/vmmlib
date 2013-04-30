@@ -41,7 +41,7 @@ elseif(NOT CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   endif()
 endif()
 
-set(DOCS README AUTHORS LICENSE.txt ACKNOWLEDGEMENTS)
+set(DOCS README.md AUTHORS LICENSE.txt ACKNOWLEDGEMENTS)
 set(BLAS_LIBRARIES blas)
 
 update_file(${CMAKE_CURRENT_SOURCE_DIR}/include/vmmlib/version.in.hpp

@@ -4,6 +4,7 @@
  * @author Susanne Suter
  * @author Jonas Boesch
  * @author David Klaper
+ * @author Claudio Mura
  *
  * class to read/write and convert tensor4 files (from raw, to csv...)
  *
@@ -15,6 +16,8 @@
 #include <sys/mman.h>
 #ifndef _MSC_VER
 #  include <unistd.h>
+#else
+#  include <windows.h>
 #endif
 
 namespace vmml
@@ -24,7 +27,6 @@ namespace vmml
 	// a corresponding converter as C with the method write_to_raw(tensor& t, string dir, string filename)
 	class tensor_mmapper
 	{
-
 	public:
 		//tensor_mapper( const std::string& dir_, const std::string& filename, size_t tensor_count = 1 );
 
@@ -40,7 +42,11 @@ namespace vmml
 	    void*    t3_allocate_rd_mmap( const std::string& dir_, const std::string& filename_ );
 		void*    t3_allocate_wr_mmap( const std::string& dir_, const std::string& filename_, const C& tx_converter );
 
+#ifdef _WIN32
+        HANDLE _fd, _fd_mmapped;
+#else
 		int _fd;            // one mmap for all tensors
+#endif
 		size_t _file_size;  // sizeof tensors * tensor_count
 		size_t _tensor_size;
 		void* _data;        // ptr to mmapped memory
@@ -116,16 +122,41 @@ namespace vmml
 	VMML_TEMPLATE_CLASSNAME::
 	t3_allocate_rd_mmap(  const std::string& dir_, const std::string& filename_ )
 	{
-		//void * mmap(void *addr, size_t len, int prot, int flags, int fd, off_t offset);
-
-		std::string path = concat_path( dir_, filename_ );
-
+        		//void * mmap(void *addr, size_t len, int prot, int flags, int fd, off_t offset);
+        		std::string path = concat_path( dir_, filename_ );  
+#ifdef _WIN32
+        _fd = CreateFile( path, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL );
+        if( _fd == INVALID_HANDLE_VALUE )
+        {
+            CloseHandle( _fd );
+            // FIXME shouldn't we return here?
+        }
+        
+        off_t offset = 0;
+        
+        _fd_mmapped = ( void* )CreateFileMapping( _fd, 0, PAGE_READONLY, 0, 0, NULL ); // FIXME check. The fifth should be either 0 or _file_size
+        if (_fd_mmapped == NULL )
+        {
+            std::cout << "CreateFileMapping failed" << std::endl;
+			return 0;
+		}
+        
+        _data = MapViewOfFile( _fd_mmapped, FILE_MAP_READ, 0, 0, 0 );
+        if( _data == NULL )
+		{
+			std::cout << "MapViewOfFile failed" << std::endl;
+			return 0;
+		}
+        
+        return _data;
+#else
 		_fd = open( path.c_str(), O_RDONLY, 0 );
 		if ( _fd == -1 )
 		{
 			{
 				close(_fd);
 				std::cout << "no file open for memory mapping" << std::endl;
+                // FIXME shouldn't we return here?
 			}
 		}
 
@@ -141,6 +172,7 @@ namespace vmml
 		}
 
 		return _data;
+#endif        
 	}
 
 	VMML_TEMPLATE_STRING
@@ -151,7 +183,46 @@ namespace vmml
 		//void * mmap(void *addr, size_t len, int prot, int flags, int fd, off_t offset);
 
 		std::string path = concat_path( dir_, filename_ );
+#ifdef _WIN32
+        _fd = CreateFile( path, GENERIC_WRITE, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL );
+        if( _fd == INVALID_HANDLE_VALUE )
+        {
+            // Call GetLastError for more information
+            if ( ! _tensor )
+			{
+				_tensor = new T();
+			}
+			_tensor->zero();
+			tx_converter_.write_to_raw( *_tensor, dir_, filename_ );
 
+			_fd = CreateFile( path, GENERIC_WRITE, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL );
+			if( _fd == INVALID_HANDLE_VALUE )
+			{
+				CloseHandle( _fd );
+				std::cout << "no file open for memory mapping" << std::endl;
+                // FIXME shouldn't we return here?
+			}
+        }
+        
+        off_t offset = 0;
+        
+        _fd_mmapped = ( void* )CreateFileMapping( _fd, 0, PAGE_READWRITE, 0, 0, NULL ); // FIXME check. The fifth should be either 0 or _file_size
+        if (_fd_mmapped == NULL )
+        {
+            std::cout << "CreateFileMapping failed" << std::endl;
+			return 0;
+		}
+        
+        _data = MapViewOfFile( _fd_mmapped, FILE_MAP_WRITE, 0, 0, 0 );
+        if( _data == NULL )
+		{
+			std::cout << "MapViewOfFile failed" << std::endl;
+			return 0;
+		}
+        
+        return _data;
+        
+#else
 		_fd = open( path.c_str(), O_RDWR, 0 );
 		if ( _fd == -1 )
 		{
@@ -167,6 +238,7 @@ namespace vmml
 			{
 				close(_fd);
 				std::cout << "no file open for memory mapping" << std::endl;
+                // FIXME shouldn't we return here?
 			}
 		}
 
@@ -182,6 +254,7 @@ namespace vmml
 		}
 
 		return _data;
+#endif
 	}
 
 	VMML_TEMPLATE_STRING
@@ -190,10 +263,18 @@ namespace vmml
 	{
 		std::string path = "";
 		int dir_length = dir_.size() -1;
+#ifdef _WIN32
+			int last_separator = dir_.find_last_of( "\\");
+#else
 		int last_separator = dir_.find_last_of( "/");
+#endif
 		path = dir_;
 		if (last_separator < dir_length ) {
-			path.append( "/" );
+#ifdef _WIN32
+			path.append( "\\" );
+#else
+            path.append( "/" );
+#endif
 		}
 		path.append( filename_ );
 
@@ -212,6 +293,6 @@ namespace vmml
 #undef VMML_TEMPLATE_CLASSNAME
 
 
-}//end vmml namespace
+} //end vmml namespace
 
 #endif

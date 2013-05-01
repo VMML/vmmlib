@@ -206,7 +206,7 @@ namespace vmml
 					}
 					if ( i3 < (I3 -1 ))
 					{
-						os << " xxx " << std::endl;
+						os << " *** " << std::endl;
 					}
 				}
 				if ( i4 + 1 < I4 )
@@ -545,9 +545,16 @@ namespace vmml
 		void 
 		VMML_TEMPLATE_CLASSNAME::fill_increasing_values()
 		{
-			for(size_t index = 0; index < SIZE; ++index)
-			{
-				_array[ index ] = index;
+			double fillValue = 0.0f;
+			for (size_t i4 = 0; i4 < I4; ++i4) {
+				for (size_t i3 = 0; i3 < I3; ++i3) {
+					for (size_t i1 = 0; i1 < I1; ++i1) {
+						for (size_t i2 = 0; i2 < I2; ++i2) {
+							at(i1, i2, i3, i4) = static_cast<T> (fillValue);
+							fillValue++;
+						}
+					}
+				}
 			}
 		}
 		

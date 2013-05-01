@@ -182,7 +182,7 @@ bool matrix_test::run()
         {
             m1 = m1_data;
             m1 += m2;
-            TEST(result == m0);
+            TEST(result == m1);
         }
 		log( "matrix addition: operator+, operator+=", ok );
 	}

@@ -433,8 +433,8 @@ namespace vmml
             log_error( error.str(),  fail_test);
         }
 		t4.fill_increasing_values();
-        vmml::tensor4<4, 2, 4, 1, ushort> t4diff;
-        vmml::tensor4<3, 2, 4, 4, T>    t4cast;
+        vmml::tensor4<a, b, c, d, ushort> t4diff;
+        vmml::tensor4<a, b, c, d, T>    t4cast;
         t4diff.fill_increasing_values();
         t4cast.cast_from(t4diff);
         T val = 0;

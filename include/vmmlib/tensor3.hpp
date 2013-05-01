@@ -301,9 +301,6 @@ namespace vmml {
         template< typename TT >
         void float_t_to_uint_t(const tensor3< I1, I2, I3, TT >& other);
 
-        void export_to(std::vector< T >& data_) const;
-        void import_from(const std::vector< T >& data_);
-
         //note: these have been moved to t3_converter
         //void write_to_raw( const std::string& dir_, const std::string& filename_ ) const;
         //	void read_from_raw( const std::string& dir_, const std::string& filename_ ) ;
@@ -1594,33 +1591,6 @@ namespace vmml {
             //std::cout << "Warning: use a different type as target (uint8 or uint16). No converstion done.\n" << std::endl;
             this->cast_from(other);
             return;
-        }
-    }
-
-    VMML_TEMPLATE_STRING
-    void
-    VMML_TEMPLATE_CLASSNAME::export_to(std::vector< T >& data_) const {
-        data_.clear();
-        const_iterator it = begin(),
-                it_end = end();
-        for (; it != it_end; ++it) {
-            data_.push_back(*it);
-        }
-    }
-
-    VMML_TEMPLATE_STRING
-    void
-    VMML_TEMPLATE_CLASSNAME::import_from(const std::vector< T >& data_) {
-        size_t i = 0; //iterator over data_
-        size_t input_size = data_.size();
-
-        iterator it = begin(),
-                it_end = end();
-        for (; it != it_end; ++it, ++i) {
-            if (i >= input_size)
-                *it = static_cast<T> (0);
-            else
-                *it = data_.at(i);
         }
     }
 

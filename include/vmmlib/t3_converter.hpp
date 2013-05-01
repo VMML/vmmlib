@@ -18,6 +18,8 @@ namespace vmml {
     {
     public:
         typedef tensor3< I1, I2, I3, T > t3_t;
+        typedef typename vmml::tensor3_iterator< tensor3< I1, I2, I3, T > > iterator;
+        typedef typename vmml::tensor3_const_iterator< tensor3< I1, I2, I3, T > > const_iterator;
 
         template< typename T_convert >
         static void convert_raw(const std::string& dir_, const std::string& in_filename_, const std::string& out_filename_);
@@ -31,8 +33,8 @@ namespace vmml {
                 const size_t radius_offset_,
                 int seed_ = 0);
 
-        static void export_to(std::vector< T >& data_);
-        static void import_from(const std::vector< T >& data_);
+        static void export_to(const t3_t& input_, std::vector< T >& output_);
+        static void import_from(const std::vector< T >& input_, t3_t& output_);
         static void write_to_raw(const t3_t& data_, const std::string& dir_, const std::string& filename_); // OK
         static void read_from_raw(t3_t& data_, const std::string& dir_, const std::string& filename_); // OK
         static void write_datfile(const std::string& dir_, const std::string& filename_);
@@ -252,6 +254,33 @@ namespace vmml {
         }
     }
 
+    VMML_TEMPLATE_STRING
+    void
+    VMML_TEMPLATE_CLASSNAME::export_to(const t3_t& input_, std::vector< T >& output_) {
+        output_.clear();
+        const_iterator it = input_.begin(),
+        it_end = input_.end();
+        for (; it != it_end; ++it) {
+            output_.push_back(*it);
+        }
+    }
+    
+    VMML_TEMPLATE_STRING
+    void
+    VMML_TEMPLATE_CLASSNAME::import_from(const std::vector< T >& input_, t3_t& output_) {
+        size_t i = 0; //iterator over data_
+        size_t input_size = input_.size();
+
+        iterator it = output_.begin(),
+        it_end = output_.end();
+        for (; it != it_end; ++it, ++i) {
+            if (i >= input_size)
+                *it = static_cast<T> (0);
+            else
+                *it = input_.at(i);
+        }
+    }
+    
     VMML_TEMPLATE_STRING
     void
     VMML_TEMPLATE_CLASSNAME::remove_normals_from_raw(const t3_t& data_, const std::string& dir_, const std::string& filename_) {

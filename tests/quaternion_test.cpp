@@ -222,7 +222,7 @@ bool quaternion_test::run()
         
         TEST(correct == x);
         
-        log( "slerp(a, p, q ).", ok );
+        log( "FIXME: todo slerp(a, p, q ).", ok );
     }
     
 

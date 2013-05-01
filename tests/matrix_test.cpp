@@ -166,22 +166,22 @@ bool matrix_test::run()
     {
         ok = true;
 
-        matrix< 2, 2, double > m0, m1;
-        double m0_data[] = { 1, 2, 3, 4 };
-        double m1_data[] = { 2, 3, 4, 5 };
-        m0 = m0_data;
+        matrix< 2, 2, double > m1, m2;
+        double m1_data[] = { 1, 2, 3, 4 };
+        double m2_data[] = { 2, 3, 4, 5 };
         m1 = m1_data;
+        m2 = m2_data;
 
         matrix< 2, 2, double > result;
         double result_data[] = { 3, 5, 7, 9 };
         result = result_data;
 
-        TEST(result == m0 + m1);
+        TEST(result == m1 + m2);
 
         if ( ok )
         {
-            m0 = m0_data;
-            m0 += m1;
+            m1 = m1_data;
+            m1 += m2;
             TEST(result == m0);
         }
 		log( "matrix addition: operator+, operator+=", ok );
@@ -193,23 +193,23 @@ bool matrix_test::run()
     {
         ok = true;
 
-        matrix< 2, 2, double > m0, m1;
-        double m0_data[] = { 3, 5, 7, 9 };
-        double m1_data[] = { 2, 3, 4, 5 };
-        m0 = m0_data;
+        matrix< 2, 2, double > m1, m2;
+        double m1_data[] = { 3, 5, 7, 9 };
+        double m2_data[] = { 2, 3, 4, 5 };
         m1 = m1_data;
+        m2 = m2_data;
 
         matrix< 2, 2, double > result;
         double result_data[] = { 1, 2, 3, 4 };
         result = result_data;
 
-        TEST(result == m0 - m1);
+        TEST(result == m1 - m2);
 
         if ( ok )
         {
-            m0 = m0_data;
-            m0 -= m1;
-            TEST(result == m0);
+            m1 = m1_data;
+            m1 -= m2;
+            TEST(result == m1);
         }
 		log( "matrix subtraction: operator-, operator-=", ok );
 	}
@@ -484,7 +484,7 @@ bool matrix_test::run()
 
 
 #ifdef VMMLIB_SAFE_ACCESSORS
-	
+
 	ok = true;
 	{
 		matrix< 3, 2 > m;

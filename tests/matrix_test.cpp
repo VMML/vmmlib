@@ -166,7 +166,7 @@ bool matrix_test::run()
     {
         ok = true;
 
-        matrix< 2, 2, double > m1;
+        matrix< 2, 2, double > m0, m1;
         double m0_data[] = { 1, 2, 3, 4 };
         double m1_data[] = { 2, 3, 4, 5 };
         m0 = m0_data;
@@ -193,7 +193,7 @@ bool matrix_test::run()
     {
         ok = true;
 
-        matrix< 2, 2, double > m1;
+        matrix< 2, 2, double > m0, m1;
         double m0_data[] = { 3, 5, 7, 9 };
         double m1_data[] = { 2, 3, 4, 5 };
         m0 = m0_data;

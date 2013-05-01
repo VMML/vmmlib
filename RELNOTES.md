@@ -55,10 +55,11 @@ The BSD license allows the usage both in open source and commercial closed sourc
 
 ## Bug Fixes
 
-## Known Bugs
+## Known Issues
 
 * SVD LAPACK wrapper: TODO RAFA
 * Memory Mapping for windows
+* Test for slerp
 
 ## Planned Future Extensions
 

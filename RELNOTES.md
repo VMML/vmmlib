@@ -60,7 +60,7 @@ vmmlib 1.6 includes several fixes over the last release, such as:
 
 ## Known Issues
 
-* memory Mapping for windows to be tested
+* memory mapping for windows to be tested
 * test for slerp and matrix validators are not yet implemented
 * tests that depend on rand() are deactivated: they may break with different stdlib versions
 * tests that depend on LAPACK and BLAS are not fully supported for Windows

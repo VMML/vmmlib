@@ -61,9 +61,9 @@ vmmlib 1.6 includes several fixes over the last release, such as:
 ## Known Issues
 
 * SVD LAPACK wrapper: TODO RAFA
-* Memory Mapping for windows
+* Memory Mapping for windows to be tested
 * Test for slerp is not yet implemented
-* Tests that depend on rand() may break with different stdlib versions
+* Tests that depend on rand() are deactivated: they may break with different stdlib versions
 * Test class for matrix validators are needed
 
 ## Planned Future Extensions

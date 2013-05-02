@@ -1,5 +1,5 @@
 # Release Notes
-2013/04/29
+2013/05/02
 
 vmmlib - a templatized C++ vector and matrix math library
 
@@ -21,7 +21,7 @@ The BSD license allows the usage both in open source and commercial closed sourc
 * added matrix validators
 
 ###Tensor Approximation Classes
-* memory mapping classes for tensor data structures (tensor_mmapper.hpp) 
+* memory mapping classes for large tensor data structures (tensor_mmapper.hpp) 
 * created t3_converter: used to import/export tensors; converting/reading/writing files; quantization
 * moved tensor3 reading/writing/quantization/tensor times matrix multiplications to t3_converter.hpp
 * added tensor times matrix multiplications (ttm) and tensor times vector multiplication (ttv): multiply tensors along various modes
@@ -35,7 +35,7 @@ The BSD license allows the usage both in open source and commercial closed sourc
 
 ###Filtering
 * added intersection, lowpass_filter class
-* TODO STEFAN: changes in frustum_culler
+* updates in frustum_culler
 
 ###Unit Tests
 * Boolean global results of every test are now consistent with every subtest
@@ -82,7 +82,7 @@ vmmlib 1.6 includes several fixes over the last release, such as:
 
 ## Support
 
-* questions, comments and requests can be issued at https://github.com/VMML/vmmlib/issues
+* comments and requests can be issued at https://github.com/VMML/vmmlib/issues
 * contributions can be merged into vmmlib via a pull request
 
 # Errata

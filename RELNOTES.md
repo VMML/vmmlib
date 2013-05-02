@@ -27,7 +27,7 @@ The BSD license allows the usage both in open source and commercial closed sourc
 * added tensor times matrix multiplications (ttm) and tensor times vector multiplication (ttv): multiply tensors along various modes
 * use OpenMP for some parallel computations (tensor3, ttm)
 * added tensor4 data structure (including t4_converter for converting/reading/writing files)
-* added tensor_stats TODO RAFA
+* added class for handling statistics on tensor algorithms: tensor_stats
 * updated incremental methods (added ihooi; updated ihopm)
 
 ###BLAS Wrapper
@@ -40,15 +40,13 @@ The BSD license allows the usage both in open source and commercial closed sourc
 ###Unit Tests
 * Boolean global results of every test are now consistent with every subtest
 
-## New Features
-
-## Enhancements
-
-## Optimizations
-
-## Tools
-
 ## Documentation
+
+The following have been added:
+
+* Tensor Approximation tutorial: www.ifi.uzh.ch/vmml/links/TutorTensorAprox.html
+* Tensor Approximation slides: http://files.ifi.uzh.ch/vmml/ta_tutorial/vmmlib_ta_classes.pdf
+* "toy" example project http://files.ifi.uzh.ch/vmml/ta_tutorial/vmmlib_play.zip
 
 ## Bug Fixes
 
@@ -66,6 +64,7 @@ vmmlib 1.6 includes several fixes over the last release, such as:
 * Memory Mapping for windows
 * Test for slerp is not yet implemented
 * Tests that depend on rand() may break with different stdlib versions
+* Test class for matrix validators are needed
 
 ## Planned Future Extensions
 
@@ -82,5 +81,8 @@ vmmlib 1.6 includes several fixes over the last release, such as:
 ## Documentation
 
 ## Support
+
+* questions, comments and requests can be issued at https://github.com/VMML/vmmlib/issues
+* contributions can be merged into vmmlib via a pull request
 
 # Errata

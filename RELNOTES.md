@@ -75,12 +75,12 @@ vmmlib 1.6 includes several fixes over the last release, such as:
 
 ## Platform Support
 
-## Documentation
-
-## Support
-
 * Linux
 * Mac OS X
 * only supports WIN64 operating systems
+
+## Documentation
+
+## Support
 
 # Errata

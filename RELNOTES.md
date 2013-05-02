@@ -38,7 +38,7 @@ The BSD license allows the usage both in open source and commercial closed sourc
 * updates in frustum_culler
 
 ###Unit Tests
-* Boolean global results of every test are now consistent with every subtest
+* boolean global results of every test are now consistent with every subtest
 
 ## Documentation
 
@@ -60,11 +60,10 @@ vmmlib 1.6 includes several fixes over the last release, such as:
 
 ## Known Issues
 
-* SVD LAPACK wrapper: TODO RAFA
-* Memory Mapping for windows to be tested
-* Test for slerp is not yet implemented
-* Tests that depend on rand() are deactivated: they may break with different stdlib versions
-* Test class for matrix validators are needed
+* memory Mapping for windows to be tested
+* test for slerp and matrix validators are not yet implemented
+* tests that depend on rand() are deactivated: they may break with different stdlib versions
+* tests that depend on LAPACK and BLAS are not fully supported for Windows
 
 ## Planned Future Extensions
 
@@ -76,13 +75,13 @@ vmmlib 1.6 includes several fixes over the last release, such as:
 
 * Linux
 * Mac OS X
-* only supports WIN64 operating systems
+* WIN64 operating systems
 
 ## Documentation
 
 ## Support
 
-* comments and requests can be issued at https://github.com/VMML/vmmlib/issues
+* comments and requests can be issued at http://github.com/VMML/vmmlib/issues
 * contributions can be merged into vmmlib via a pull request
 
 # Errata

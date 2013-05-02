@@ -1175,66 +1175,66 @@ namespace vmml
             }
         }
 
-
-        {
-            unsigned int data_uct[] = {
-                0, 27, 51, 8, 26, 59, 64, 53,
-                20, 66, 15, 54, 96, 219, 28, 4,
-                39, 17, 17, 187, 226, 199, 33, 14,
-                70, 39, 136, 58, 159, 6, 209, 23,
-                5, 165, 86, 83, 15, 54, 230, 64,
-                33, 70, 126, 155, 13, 148, 50, 31,
-                7, 59, 181, 72, 236, 13, 13, 63,
-                27, 2, 5, 4, 1, 10, 66, 40,
-                40, 38, 23, 20, 42, 41, 36, 74,
-                7, 74, 0, 27, 186, 146, 42, 61,
-                36, 60, 32, 220, 39, 106, 254, 63,
-                50, 182, 129, 114, 82, 67, 187, 9,
-                20, 134, 241, 206, 76, 70, 70, 62,
-                39, 102, 9, 27, 189, 251, 179, 0,
-                75, 34, 226, 185, 75, 163, 55, 2,
-                56, 39, 11, 59, 67, 73, 25, 49
-            };
-
-            tensor3< 8,8, 2, unsigned char > uct_t3_check;
-            uct_t3_check.set( data_uct, data_uct + 128);
-
-            tensor3< 8,8, 2, unsigned char > uct_t3;
-            uct_t3.fill_random(8);
-
-            //std::cout << "t3 is: " << std::endl << uct_t3 << std::endl << "remove uct cylinder, now t3 is" << std::endl;
-
-            std::string dir = ".";
-            std::string in_filename = "in.raw";
-            std::string out_filename = "out.raw";
-            t3_converter<8,8,2,unsigned char>::write_to_raw( uct_t3, dir, in_filename );
-
-            double sigma = uct_t3.stdev();
-
-            t3_converter<8,8,8, unsigned char>::remove_uct_cylinder( dir, in_filename, out_filename, sigma, 0, 0, 2 ); //remove_uct_cylinder
-
-            t3_converter<8,8,2,unsigned char>::read_from_raw( uct_t3, dir, out_filename );
-
-            TEST(uct_t3 == uct_t3_check);
-
-            remove("in.raw");
-            remove("out.raw");
-
-            if ( ok )   {
-                log( "t3_converter: remove uct ring" , ok  );
-            } else
-            {
-                std::stringstream error;
-                error
-                << "remove uct ring " << std::endl
-                << "t3 is: " << std::endl << uct_t3 << std::endl
-                << "t3 should be: " << std::endl << uct_t3_check
-                << std::endl;
-
-                log_error( error.str() );
-            }
-
-        }
+// FIXME rand() depends on stdlib version
+//        {
+//            unsigned int data_uct[] = {
+//                0, 27, 51, 8, 26, 59, 64, 53,
+//                20, 66, 15, 54, 96, 219, 28, 4,
+//                39, 17, 17, 187, 226, 199, 33, 14,
+//                70, 39, 136, 58, 159, 6, 209, 23,
+//                5, 165, 86, 83, 15, 54, 230, 64,
+//                33, 70, 126, 155, 13, 148, 50, 31,
+//                7, 59, 181, 72, 236, 13, 13, 63,
+//                27, 2, 5, 4, 1, 10, 66, 40,
+//                40, 38, 23, 20, 42, 41, 36, 74,
+//                7, 74, 0, 27, 186, 146, 42, 61,
+//                36, 60, 32, 220, 39, 106, 254, 63,
+//                50, 182, 129, 114, 82, 67, 187, 9,
+//                20, 134, 241, 206, 76, 70, 70, 62,
+//                39, 102, 9, 27, 189, 251, 179, 0,
+//                75, 34, 226, 185, 75, 163, 55, 2,
+//                56, 39, 11, 59, 67, 73, 25, 49
+//            };
+//
+//            tensor3< 8,8, 2, unsigned char > uct_t3_check;
+//            uct_t3_check.set( data_uct, data_uct + 128);
+//
+//            tensor3< 8,8, 2, unsigned char > uct_t3;
+//            uct_t3.fill_random(8);
+//
+//            //std::cout << "t3 is: " << std::endl << uct_t3 << std::endl << "remove uct cylinder, now t3 is" << std::endl;
+//
+//            std::string dir = ".";
+//            std::string in_filename = "in.raw";
+//            std::string out_filename = "out.raw";
+//            t3_converter<8,8,2,unsigned char>::write_to_raw( uct_t3, dir, in_filename );
+//
+//            double sigma = uct_t3.stdev();
+//
+//            t3_converter<8,8,8, unsigned char>::remove_uct_cylinder( dir, in_filename, out_filename, sigma, 0, 0, 2 ); //remove_uct_cylinder
+//
+//            t3_converter<8,8,2,unsigned char>::read_from_raw( uct_t3, dir, out_filename );
+//
+//            TEST(uct_t3 == uct_t3_check);
+//
+//            remove("in.raw");
+//            remove("out.raw");
+//
+//            if ( ok )   {
+//                log( "t3_converter: remove uct ring" , ok  );
+//            } else
+//            {
+//                std::stringstream error;
+//                error
+//                << "remove uct ring " << std::endl
+//                << "t3 is: " << std::endl << uct_t3 << std::endl
+//                << "t3 should be: " << std::endl << uct_t3_check
+//                << std::endl;
+//
+//                log_error( error.str() );
+//            }
+//
+//        }
 
         {
             //average 8voxels to 1voxel
@@ -1279,79 +1279,81 @@ namespace vmml
 
             log( "fill tensor3 with symmetric random values" , ok  );
 
+  
         }
+// FIXME rand() depends on stdlib version
+//        {
+//            //mean, variance and stdev
+//            tensor3< 3, 3, 2, unsigned char > t3_1;
+//            t3_1.fill_random( 3 );
+//
+//            double mean_val = t3_1.mean();
+//            double var = t3_1.variance();
+//            double sigma = t3_1.stdev();
+//
+//            TEST((mean_val - 76.0556 <= 0.01 ) &&
+//                    (4469.232026 - var) <= 0.01 &&
+//                    (66.85231504 - sigma) <= 0.01);
+//
+//            log( "mean, variance and standard deviation" , ok  );
+//
+//        }
 
-        {
-            //mean, variance and stdev
-            tensor3< 3, 3, 2, unsigned char > t3_1;
-            t3_1.fill_random( 3 );
-
-            double mean_val = t3_1.mean();
-            double var = t3_1.variance();
-            double sigma = t3_1.stdev();
-
-            TEST((mean_val - 76.0556 <= 0.01 ) &&
-                    (4469.232026 - var) <= 0.01 &&
-                    (66.85231504 - sigma) <= 0.01);
-
-            log( "mean, variance and standard deviation" , ok  );
-
-        }
-
-        {
-            //load mmap for tensor3
-
-            //create test data
-            std::string dir = ".";
-            std::string filename = "mmap_testdata.raw";
-            tensor3< 4,4,4, unsigned char > t3_testdata;
-            t3_converter< 4,4,4, unsigned char > t3_conv;
-            t3_testdata.fill_random( 3 );
-            t3_converter<4,4,4,unsigned char>::write_to_raw( t3_testdata, dir, filename );
-
-            typedef tensor3< 4,4,4, unsigned char > t3_t;
-            typedef tensor_mmapper< t3_t, t3_converter<4, 4, 4, unsigned char > > t3map_t;
-
-            t3map_t t3_mmap( dir, filename, false, t3_conv );
-            t3_t t3_1;
-            t3_mmap.get_tensor( t3_1 );
-
-            unsigned int data_mmp_t3[] = {
-                0, 152, 9, 125,
-                100, 167, 205, 26,
-                68, 35, 38, 40,
-                95, 9, 142, 150,
-                3, 64, 137, 63,
-                5, 15, 148, 26,
-                38, 195, 70, 186,
-                51, 201, 245, 73,
-                200, 228, 188, 243,
-                36, 68, 241, 55,
-                53, 248, 42, 228,
-                251, 24, 66, 166,
-                208, 181, 117, 182,
-                78, 210, 176, 130,
-                76, 19, 185, 139,
-                110, 127, 46, 244
-            };
-            tensor3< 4,4,4, unsigned char > t3_check;
-            t3_check.set( data_mmp_t3, data_mmp_t3 + 64);
-
-            //double fnorm = t3_1.frobenius_norm();
-            //std::cout << "frobnorm of mmapped file " << fnorm << std::endl;
-
-            //tensor3< 4,4,4, unsigned char > t33(t3_1);
-            //std::cout << "t33\n" << t33 << std::endl;
-
-            //tensor3< 4,4,4, unsigned short > t333(t3_1);
-            //std::cout << "t333\n" << t333 << std::endl;
-
-
-            TEST(t3_check == t3_1);
-            log( "load tensor3 from memory mapped file" , ok  );
-
-            remove("mmap_testdata.raw");
-        }
+// FIXME rand() depends on stdlib version
+//        {
+//            //load mmap for tensor3
+//
+//            //create test data
+//            std::string dir = ".";
+//            std::string filename = "mmap_testdata.raw";
+//            tensor3< 4,4,4, unsigned char > t3_testdata;
+//            t3_converter< 4,4,4, unsigned char > t3_conv;
+//            t3_testdata.fill_random( 3 );
+//            t3_converter<4,4,4,unsigned char>::write_to_raw( t3_testdata, dir, filename );
+//
+//            typedef tensor3< 4,4,4, unsigned char > t3_t;
+//            typedef tensor_mmapper< t3_t, t3_converter<4, 4, 4, unsigned char > > t3map_t;
+//
+//            t3map_t t3_mmap( dir, filename, false, t3_conv );
+//            t3_t t3_1;
+//            t3_mmap.get_tensor( t3_1 );
+//
+//            unsigned int data_mmp_t3[] = {
+//                0, 152, 9, 125,
+//                100, 167, 205, 26,
+//                68, 35, 38, 40,
+//                95, 9, 142, 150,
+//                3, 64, 137, 63,
+//                5, 15, 148, 26,
+//                38, 195, 70, 186,
+//                51, 201, 245, 73,
+//                200, 228, 188, 243,
+//                36, 68, 241, 55,
+//                53, 248, 42, 228,
+//                251, 24, 66, 166,
+//                208, 181, 117, 182,
+//                78, 210, 176, 130,
+//                76, 19, 185, 139,
+//                110, 127, 46, 244
+//            };
+//            tensor3< 4,4,4, unsigned char > t3_check;
+//            t3_check.set( data_mmp_t3, data_mmp_t3 + 64);
+//
+//            //double fnorm = t3_1.frobenius_norm();
+//            //std::cout << "frobnorm of mmapped file " << fnorm << std::endl;
+//
+//            //tensor3< 4,4,4, unsigned char > t33(t3_1);
+//            //std::cout << "t33\n" << t33 << std::endl;
+//
+//            //tensor3< 4,4,4, unsigned short > t333(t3_1);
+//            //std::cout << "t333\n" << t333 << std::endl;
+//
+//
+//            TEST(t3_check == t3_1);
+//            log( "load tensor3 from memory mapped file" , ok  );
+//
+//            remove("mmap_testdata.raw");
+//        }
 
         {
 

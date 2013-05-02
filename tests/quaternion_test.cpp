@@ -204,26 +204,27 @@ bool quaternion_test::run()
             
         log( "cross product ( vec3 = quat x quat ).", ok );
     }
-    
-    {
-        // FIXME: find correct values -> actually test if you get the 
-        // correct values
-        bool ok = true;
-        
-        quaterniond qq(1., 2., 3., 4.);
-        quaterniond pp(1., 2., 3., 4.);
-        double a = 0.;
-        
-        quaterniond x(1., 2., 3., 4.);
-        
-        quaterniond::slerp(a, qq, pp);
-        
-        quaterniond correct(0.0, 1.0, 1.0, 0.0);
-        
-        TEST(correct == x);
-        
-        log( "FIXME: todo slerp(a, p, q ).", ok );
-    }
+  
+    // TODO
+//    {
+//        // FIXME: find correct values -> actually test if you get the 
+//        // correct values
+//        bool ok = true;
+//        
+//        quaterniond qq(1., 2., 3., 4.);
+//        quaterniond pp(1., 2., 3., 4.);
+//        double a = 0.;
+//        
+//        quaterniond x(1., 2., 3., 4.);
+//        
+//        quaterniond::slerp(a, qq, pp);
+//        
+//        quaterniond correct(0.0, 1.0, 1.0, 0.0);
+//        
+//        TEST(correct == x);
+//        
+//        log( "FIXME: todo slerp(a, p, q ).", ok );
+//    }
     
 
 #if 0

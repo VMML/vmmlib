@@ -115,6 +115,7 @@ a.gf {
 .box {
 	width: 320px;
 	background: url(src/bg_box.png) repeat-y top left;	
+	text-align: justify;
 }
 
 .box p {
@@ -185,3 +186,15 @@ a {
 	color: #00bff3;
 	border-bottom: 1px solid #555;	
 	}	
+
+#download {
+	margin-top: 5px;
+	position:relative;
+	left:34%;
+}
+
+#download-text {
+	margin-top: 5px;
+	position:relative;
+	text-align:center;
+}

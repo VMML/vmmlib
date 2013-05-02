@@ -93,7 +93,7 @@ namespace vmml {
             bool svd_ok = svd.compute(in_data, U, sigmas, Vt); // TODO it always gives bad error code; fix this
 
             if (!svd_ok) {
-                //VMMLIB_ERROR("matrix compute_pseudoinverse - problem with lapack svd.", VMMLIB_HERE);
+                VMMLIB_ERROR("matrix compute_pseudoinverse - problem with lapack svd.", VMMLIB_HERE);
             }
 
             /*std::cout << "U: " << std::endl << U << std::endl
@@ -156,11 +156,10 @@ namespace vmml {
             matrix_mn_type& in_data = _work->input;
             in_data.cast_from(input);
 
-            bool svd_ok = svd.compute(in_data, U, sigmas, Vt);  // TODO it always gives bad error code; fix this
+            bool svd_ok = svd.compute(in_data, U, sigmas, Vt);  // FIXME it always gives bad error code
 
             if (!svd_ok) {
-                //                    std::cerr << "BROKEN?" << std::endl; FIXME !!
-                //                VMMLIB_ERROR("matrix compute_pseudoinverse - problem with lapack svd.", VMMLIB_HERE);
+//                VMMLIB_ERROR("matrix compute_pseudoinverse - problem with lapack svd.", VMMLIB_HERE);
             }
 
             /*std::cout << "U: " << std::endl << U << std::endl
@@ -172,10 +171,10 @@ namespace vmml {
             typename vector< T::COLS, Tinternal >::const_iterator it = sigmas.begin(), it_end = sigmas.end();
             size_t num_sigmas = 0;
             for (; it != it_end; ++it) {
-                //                if (*it >= tolerance)
+                                if (*it >= tolerance)
                 ++num_sigmas;
-                //                else
-                //                    return;
+                                else
+                                    return;
             }
 
             //compute inverse with all the significant inverse singular values

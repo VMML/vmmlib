@@ -9,8 +9,6 @@ More advanced features include solvers, frustum computations and frustum culling
 Vmmlib is implemented using C++ templates, making it versatile. Being a header library, it is very easy to integrate into other (your) libraries and programs. There is no need to build and install a library, just include the headers and you’re set.
 The BSD license allows the usage both in open source and commercial closed source software.
 
-# Features
-
 # New in this release
 
 ###CMake
@@ -30,18 +28,17 @@ The BSD license allows the usage both in open source and commercial closed sourc
 * use OpenMP for some parallel computations (tensor3, ttm)
 * added tensor4 data structure (including t4_converter for converting/reading/writing files)
 * added tensor_stats TODO RAFA
-* fixed bug in CP3 tensor decomposition 
 * updated incremental methods (added ihooi; updated ihopm)
 
 ###BLAS Wrapper
 * added BLAS DAXPY wrapper
 
-###Filering
+###Filtering
 * added intersection, lowpass_filter class
 * TODO STEFAN: changes in frustum_culler
 
 ###Unit Tests
-*Consistent testing with ... TODO RAFA
+* Boolean global results of every test are now consistent with every subtest
 
 ## New Features
 
@@ -55,15 +52,24 @@ The BSD license allows the usage both in open source and commercial closed sourc
 
 ## Bug Fixes
 
+vmmlib 1.6 includes several fixes over the last release, such as:
+
+* various test fixes
+* precision bug of CP3 tensor reconstruction error measurement
+* tensor4 "<<" operator
+* computation of residual norm in HOOI
+* corrected formula for quaternion slerp
+
 ## Known Issues
 
 * SVD LAPACK wrapper: TODO RAFA
 * Memory Mapping for windows
-* Test for slerp
+* Test for slerp is not yet implemented
+* Tests that depend on rand() may break with different stdlib versions
 
 ## Planned Future Extensions
 
-* tensor 4 decomposition and reconstruction
+* decomposition and reconstruction algorithms for 4D tensors
 
 # About
 

@@ -489,7 +489,7 @@ typedef matrix< 4, 4, double >  mat4d;
 
 template< size_t M, size_t N, typename T >
 bool equals( const matrix< M, N, T >& m0, const matrix< M, N, T >& m1,
-             const T tolerance )
+             const T tolerance = std::numeric_limits< T >::epsilon())
 {
     return m0.equals( m1, tolerance );
 }

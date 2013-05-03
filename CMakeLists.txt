@@ -94,7 +94,6 @@ set(HEADERS
   include/vmmlib/tucker3_exporter.hpp
   include/vmmlib/tucker3_importer.hpp
   include/vmmlib/tucker3_tensor.hpp
-  include/vmmlib/util.hpp
   include/vmmlib/validator.hpp
   include/vmmlib/vector.hpp
   include/vmmlib/vector_traits.hpp
@@ -120,7 +119,6 @@ set(TESTS
   tests/unit_test_globals.cpp
   tests/lowpass_filter_test.cpp
   tests/vector_test.cpp
-  tests/util_test.cpp
   tests/vmmlib_unit_tests_main.cpp
 # tests/matrix_compare_perf_test.cpp
 # tests/stringtests.cpp

@@ -4,10 +4,10 @@ cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 project(vmmlib)
 
 set(VERSION_MAJOR 1)
-set(VERSION_MINOR 5)
-set(VERSION_PATCH 1)
-set(RELEASE_VERSION OFF) # OFF or ABI version
-set(LAST_RELEASE 1.4.0)
+set(VERSION_MINOR 6)
+set(VERSION_PATCH 0)
+set(RELEASE_VERSION 2) # OFF or ABI version
+set(LAST_RELEASE 1.6.0)
 
 option(VMMLIB_USE_BLAS "Disable to turn blas detection off" ON)
 mark_as_advanced(VMMLIB_USE_BLAS)
@@ -94,6 +94,7 @@ set(HEADERS
   include/vmmlib/tucker3_exporter.hpp
   include/vmmlib/tucker3_importer.hpp
   include/vmmlib/tucker3_tensor.hpp
+  include/vmmlib/util.hpp
   include/vmmlib/validator.hpp
   include/vmmlib/vector.hpp
   include/vmmlib/vector_traits.hpp
@@ -119,6 +120,7 @@ set(TESTS
   tests/unit_test_globals.cpp
   tests/lowpass_filter_test.cpp
   tests/vector_test.cpp
+  tests/util_test.cpp
   tests/vmmlib_unit_tests_main.cpp
 # tests/matrix_compare_perf_test.cpp
 # tests/stringtests.cpp

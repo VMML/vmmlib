@@ -10,6 +10,7 @@
 #include "quaternion_test.hpp"
 #include "qr_decomposition_test.hpp"
 #include "svd_test.hpp"
+#include "util_test.hpp"
 
 #ifdef VMMLIB_USE_LAPACK
 #  include "lapack_linear_least_squares_test.hpp"
@@ -70,6 +71,9 @@ main( int argc, const char* argv[] )
 
 	vmml::svd_test svd_test_;
 	run_and_log( svd_test_ );
+    
+    vmml::util_test util_test_;
+    run_and_log( util_test_ );
 
 #ifdef VMMLIB_USE_LAPACK
     vmml::lapack_svd_test lapack_svd_test_;

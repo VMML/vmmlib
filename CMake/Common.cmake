@@ -14,7 +14,6 @@ include(${CMAKE_CURRENT_LIST_DIR}/System.cmake)
 
 enable_testing()
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-list(APPEND CMAKE_PREFIX_PATH ${SystemDrive}:/cygwin/bin)
 
 if(NOT CMAKE_BUILD_TYPE)
   if(RELEASE_VERSION)
@@ -23,6 +22,8 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug CACHE STRING "Build type" FORCE)
   endif()
 endif(NOT CMAKE_BUILD_TYPE)
+set(CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO} -DNDEBUG")
+set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -DNDEBUG")
 
 set(VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH})
 string(TOUPPER ${CMAKE_PROJECT_NAME} UPPER_PROJECT_NAME)
@@ -57,24 +58,19 @@ file(MAKE_DIRECTORY ${OUTPUT_INCLUDE_DIR})
 include_directories(BEFORE ${CMAKE_SOURCE_DIR} ${OUTPUT_INCLUDE_DIR})
 
 if(MSVC)
-  set(CMAKE_MODULE_INSTALL_PATH ${CMAKE_PROJECT_NAME})
+  set(CMAKE_MODULE_INSTALL_PATH ${CMAKE_PROJECT_NAME}/CMake)
 else()
   set(CMAKE_MODULE_INSTALL_PATH share/${CMAKE_PROJECT_NAME}/CMake)
 endif()
 
 # Boost settings
-if(MSVC)
-  option(Boost_USE_STATIC_LIBS "Use boost static libs" ON)
-endif()
 if(BOOST_ROOT)
   set(Boost_NO_SYSTEM_PATHS TRUE)
 endif()
+set(Boost_NO_BOOST_CMAKE ON CACHE BOOL "Enable fix for FindBoost.cmake" )
 add_definitions(-DBOOST_ALL_NO_LIB) # Don't use 'pragma lib' on Windows
-
-# Compiler settings
-if(CMAKE_CXX_COMPILER_ID STREQUAL "XL")
-  set(CMAKE_COMPILER_IS_XLCXX ON)
-endif()
+add_definitions(-DBoost_NO_BOOST_CMAKE) # Fix for CMake problem in FindBoost
+add_definitions(-DBOOST_TEST_DYN_LINK) # generates main() for unit tests
 
 include(TestBigEndian)
 test_big_endian(BIGENDIAN)
@@ -82,33 +78,7 @@ if(BIGENDIAN)
   add_definitions(-D${UPPER_PROJECT_NAME}_BIGENDIAN)
 endif()
 
-if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-  set(CMAKE_COMPILER_IS_CLANG ON)
-elseif(CMAKE_COMPILER_IS_GNUCXX)
-  set(CMAKE_COMPILER_IS_GNUCXX_PURE ON)
-endif()
-
-if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_CLANG)
-  include(${CMAKE_CURRENT_LIST_DIR}/CompilerVersion.cmake)
-  COMPILER_DUMPVERSION(GCC_COMPILER_VERSION)
-  if(GCC_COMPILER_VERSION VERSION_LESS 4.1)
-    message(ERROR "GCC 4.1 or later required, found ${GCC_COMPILER_VERSION}")
-  endif()
-  set(COMMON_GCC_FLAGS "-Wall -Wextra -Winvalid-pch -Winit-self -Wno-unknown-pragmas -Wno-unused-parameter")
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${COMMON_GCC_FLAGS} ")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMMON_GCC_FLAGS} -Wnon-virtual-dtor -Wsign-promo")
-  if(GCC_COMPILER_VERSION VERSION_GREATER 4.1) # < 4.2 doesn't know -isystem
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wshadow")
-  endif()
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-strict-aliasing")
-  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wuninitialized")
-  if(NOT WIN32 AND NOT XCODE_VERSION AND NOT RELEASE_VERSION)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
-  endif()
-  if(CMAKE_COMPILER_IS_CLANG)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Qunused-arguments")
-  endif()
-endif()
+include(Compiler) # compiler-specific default options and warnings
 
 if(MSVC)
   add_definitions(
@@ -151,7 +121,7 @@ endif()
 set(LIBRARY_DIR lib${LIB_SUFFIX})
 
 if(APPLE)
-  list(APPEND CMAKE_PREFIX_PATH "/opt/local/") # Macports
+  list(APPEND CMAKE_PREFIX_PATH /opt/local/ /opt/local/lib) # Macports
   if(NOT CMAKE_OSX_ARCHITECTURES OR CMAKE_OSX_ARCHITECTURES STREQUAL "")
     if(_CMAKE_OSX_MACHINE MATCHES "ppc")
       set(CMAKE_OSX_ARCHITECTURES "ppc;ppc64" CACHE
@@ -183,33 +153,31 @@ macro(add_library _target)
 
   # ignore IMPORTED add_library from finders (e.g. Qt)
   cmake_parse_arguments(_arg "IMPORTED" "" "" ${ARGN})
-  if(_arg_IMPORTED)
-    return()
-  endif()
-
-  # add defines TARGET_DSO_NAME and TARGET_SHARED for dlopen() usage
-  get_target_property(THIS_DEFINITIONS ${_target} COMPILE_DEFINITIONS)
-  if(NOT THIS_DEFINITIONS)
-    set(THIS_DEFINITIONS) # clear THIS_DEFINITIONS-NOTFOUND
-  endif()
-  string(TOUPPER ${_target} _TARGET)
-
-  if(MSVC OR XCODE_VERSION)
-    set(_libraryname ${CMAKE_SHARED_LIBRARY_PREFIX}${_target}${CMAKE_SHARED_LIBRARY_SUFFIX})
-  else()
-    if(APPLE)
-      set(_libraryname ${CMAKE_SHARED_LIBRARY_PREFIX}${_target}.${VERSION_ABI}${CMAKE_SHARED_LIBRARY_SUFFIX})
-    else()
-      set(_libraryname ${CMAKE_SHARED_LIBRARY_PREFIX}${_target}${CMAKE_SHARED_LIBRARY_SUFFIX}.${VERSION_ABI})
+  if(NOT _arg_IMPORTED)
+    # add defines TARGET_DSO_NAME and TARGET_SHARED for dlopen() usage
+    get_target_property(THIS_DEFINITIONS ${_target} COMPILE_DEFINITIONS)
+    if(NOT THIS_DEFINITIONS)
+      set(THIS_DEFINITIONS) # clear THIS_DEFINITIONS-NOTFOUND
     endif()
+    string(TOUPPER ${_target} _TARGET)
+
+    if(MSVC OR XCODE_VERSION)
+      set(_libraryname ${CMAKE_SHARED_LIBRARY_PREFIX}${_target}${CMAKE_SHARED_LIBRARY_SUFFIX})
+    else()
+      if(APPLE)
+        set(_libraryname ${CMAKE_SHARED_LIBRARY_PREFIX}${_target}.${VERSION_ABI}${CMAKE_SHARED_LIBRARY_SUFFIX})
+      else()
+        set(_libraryname ${CMAKE_SHARED_LIBRARY_PREFIX}${_target}${CMAKE_SHARED_LIBRARY_SUFFIX}.${VERSION_ABI})
+      endif()
+    endif()
+
+    list(APPEND THIS_DEFINITIONS
+      ${_TARGET}_SHARED ${_TARGET}_DSO_NAME=\"${_libraryname}\")
+
+    set_target_properties(${_target} PROPERTIES
+      COMPILE_DEFINITIONS "${THIS_DEFINITIONS}")
+
+    set_property(GLOBAL APPEND PROPERTY ALL_DEP_TARGETS ${_target})
+    set_property(GLOBAL APPEND PROPERTY ALL_LIB_TARGETS ${_target})
   endif()
-
-  list(APPEND THIS_DEFINITIONS
-    ${_TARGET}_SHARED ${_TARGET}_DSO_NAME=\"${_libraryname}\")
-
-  set_target_properties(${_target} PROPERTIES
-    COMPILE_DEFINITIONS "${THIS_DEFINITIONS}")
-
-  set_property(GLOBAL APPEND PROPERTY ALL_DEP_TARGETS ${_target})
-  set_property(GLOBAL APPEND PROPERTY ALL_LIB_TARGETS ${_target})
 endmacro()

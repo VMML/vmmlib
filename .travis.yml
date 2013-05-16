@@ -6,7 +6,7 @@ language: cpp
 script:
  - git clone --depth 10 https://github.com/Eyescale/Buildyard.git
  - cd Buildyard
- - git clone --depth 10  config.
+ - git clone --depth 10 https://github.com/VMML/config.git config.vmml
  - env TRAVIS=1 make -j8 vmmlib-test ARGS=-V
 before_install:
  - sudo apt-get update -qq

@@ -5,9 +5,9 @@ project(vmmlib)
 
 set(VERSION_MAJOR 1)
 set(VERSION_MINOR 6)
-set(VERSION_PATCH 0)
+set(VERSION_PATCH 1)
 set(RELEASE_VERSION 2) # OFF or ABI version
-set(LAST_RELEASE 1.6.0)
+set(LAST_RELEASE 1.6.1)
 
 option(VMMLIB_USE_BLAS "Disable to turn blas detection off" ON)
 mark_as_advanced(VMMLIB_USE_BLAS)

@@ -103,6 +103,10 @@ set(HEADERS
   include/vmmlib/vmmlib_config.hpp
   include/vmmlib/tensor4.hpp
   include/vmmlib/t4_converter.hpp
+  include/vmmlib/t4_hooi.hpp
+  include/vmmlib/t4_hosvd.hpp
+  include/vmmlib/t4_ttm.hpp
+  include/vmmlib/tensor4_iterator.hpp
 )
 
 set(TESTS
@@ -148,6 +152,7 @@ if(LAPACK_FOUND)
     tests/t3_ihooi_test.cpp
     tests/t3_ihopm_test.cpp
     tests/t3_ttm_test.cpp
+    tests/t4_hooi_test.cpp
     tests/t4_converter_test.cpp
     tests/t4_converter_test.cpp
     tests/tensor3_iterator_test.cpp

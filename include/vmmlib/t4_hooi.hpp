@@ -80,7 +80,8 @@ namespace vmml {
 
         //intialize basis matrices
         init(data_, u1_, u2_, u3_, u4_);
-
+                std::cerr << u1_ << std::endl << u2_ << std::endl << u3_ << std::endl << u4_ << std::endl;
+        return result;
         core_.zero();
         T max_f_norm = 0.0;
         T f_norm, fit, fitchange, fitold, normresidual;

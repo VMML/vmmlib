@@ -565,8 +565,8 @@ namespace vmml
         VMML_TEMPLATE_CLASSNAME::set(input_iterator_t begin_, input_iterator_t end_, bool row_major_layout) {
             input_iterator_t it(begin_);
             if (row_major_layout) {
-                for (size_t i3 = 0; i3 < I3; ++i3) {
-                    for (size_t i4 = 0; i4 < I4; ++i4) {
+                for (size_t i4 = 0; i4 < I4; ++i4) {
+                    for (size_t i3 = 0; i3 < I3; ++i3) {
                         for (size_t i1 = 0; i1 < I1; ++i1) {
                             for (size_t i2 = 0; i2 < I2; ++i2, ++it) {
                                 if (it == end_)

@@ -40,6 +40,11 @@ namespace vmml
 
                 // Average all values along 1 axis
         tensor3_t& average_I4(tensor3_t& t3) const;
+        
+        typedef matrix< I1, I2*I3*I4, T > mode1_unfolding_type;
+        typedef matrix< I2, I1*I3*I4, T > mode2_unfolding_type;
+        typedef matrix< I3, I1*I2*I4, T > mode3_unfolding_type;
+        typedef matrix< I4, I1*I2*I3, T > mode4_unfolding_type;
 
         inline void get_tensor3( const size_t i4_, tensor3_t& t3_data_ ) const;
 
@@ -228,6 +233,11 @@ namespace vmml
         T*          get_array_ptr();
         const T*    get_array_ptr() const;
 
+        void mode1_unfolding_fwd(mode1_unfolding_type& unfolding) const;
+        void mode2_unfolding_fwd(mode2_unfolding_type& unfolding) const;
+        void mode3_unfolding_fwd(mode3_unfolding_type& unfolding) const;
+        void mode4_unfolding_fwd(mode4_unfolding_type& unfolding) const;
+        
         // computes the array index for direct access
         inline size_t compute_index( size_t i1, size_t i2, size_t i3, size_t i4 ) const;
 
@@ -355,7 +365,42 @@ namespace vmml
 
         }
 
-
+        VMML_TEMPLATE_STRING
+        template< typename input_iterator_t >
+        void
+        VMML_TEMPLATE_CLASSNAME::set(input_iterator_t begin_, input_iterator_t end_, bool row_major_layout) {
+            input_iterator_t it(begin_);
+            if (row_major_layout) {
+                for (size_t i4 = 0; i4 < I4; ++i4) {
+                    for (size_t i3 = 0; i3 < I3; ++i3) {
+                        for (size_t i1 = 0; i1 < I1; ++i1) {
+                            for (size_t i2 = 0; i2 < I2; ++i2, ++it) {
+                                if (it == end_)
+                                    return;
+                                at(i1, i2, i3, i4) = static_cast<T> (*it);
+                            }
+                        }
+                    }
+                }
+            } else {
+                VMMLIB_ERROR( "Tensor4: set() not implemented for non-row major", VMMLIB_HERE );
+                // TODO
+//                std::copy(it, it + (I1 * I2 * I3), begin());
+            }
+        }
+        
+        VMML_TEMPLATE_STRING
+        bool
+        VMML_TEMPLATE_CLASSNAME::equals(const tensor4< I1, I2, I3, I4, T >& other, T tolerance) const {
+            bool is_ok = true;
+            if (T3S != other.T3S) {
+                return false;
+            }
+            for (size_t i4 = 0; is_ok && i4 < I4; ++i4) {
+                is_ok = _get_tensor3(i4).equals(other._get_tensor3(i4), tolerance);
+            }
+            return is_ok;
+        }
 
         VMML_TEMPLATE_STRING
         size_t
@@ -894,6 +939,47 @@ namespace vmml
             _array = 0;
         }
 
+        VMML_TEMPLATE_STRING
+		void
+		VMML_TEMPLATE_CLASSNAME::mode1_unfolding_fwd(mode1_unfolding_type& unfolding) const {
+            
+        }
+        
+        VMML_TEMPLATE_STRING
+		void
+		VMML_TEMPLATE_CLASSNAME::mode2_unfolding_fwd(mode2_unfolding_type& unfolding) const {
+            
+        }
+        
+        VMML_TEMPLATE_STRING
+		void
+		VMML_TEMPLATE_CLASSNAME::mode3_unfolding_fwd(mode3_unfolding_type& unfolding) const {
+            
+        }
+        
+        VMML_TEMPLATE_STRING
+		void
+		VMML_TEMPLATE_CLASSNAME::mode4_unfolding_fwd(mode4_unfolding_type& unfolding) const {
+            
+        }
+        
+		VMML_TEMPLATE_STRING
+        double
+        VMML_TEMPLATE_CLASSNAME::frobenius_norm() const {
+            double f_norm = 0.0;
+            for (long i3 = 0; i3 < long(I3); ++i3) {
+                for (long i4 = 0; i4 < long(I4); ++i4) {
+                    for (long i1 = 0; i1 < long(I1); ++i1) {
+                        long i2 = 0;
+                        for (i2 = 0; i2 < long(I2); ++i2) {
+                            f_norm += at(i1, i2, i3, i4) * at(i1, i2, i3, i4);
+                        }
+                    }
+                }
+            }
+            return sqrt(f_norm);
+        }
+        
 #undef VMML_TEMPLATE_STRING
 #undef VMML_TEMPLATE_CLASSNAME
 

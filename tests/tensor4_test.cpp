@@ -230,7 +230,7 @@ namespace vmml
 
         ok = true;
         // resize constructor
-        tensor4< a+2, b+2, c+2, d-2, T > t4resized(t4);
+        tensor4< a+2, b+2, c+2, d-1, T > t4resized(t4);
         T target = 0;
         for(size_t i4 = 0; i4 < t4resized.T3S; ++i4)
         {

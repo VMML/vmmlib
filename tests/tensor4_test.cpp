@@ -1,3 +1,4 @@
+
 #include "tensor4_test.hpp"
 
 #include <vmmlib/tensor4.hpp>
@@ -13,36 +14,36 @@
 
 namespace vmml
 {
-	bool tensor4_test::run()
-	{
+    bool tensor4_test::run()
+    {
         bool global_ok = true;
-		bool ok = false;
+        bool ok = false;
         // indicates if failing the test produces only a warning
         bool fail_test = false;
 
         // define Tensor
-		const size_t a = 3;
+        const size_t a = 3;
         const size_t b = 2;
         const size_t c = 4;
         const size_t d = 2;
         typedef long T;
-		tensor4< a, b, c, d, T >  t4;
+        tensor4< a, b, c, d, T >  t4;
 
         // Test size
         TEST( t4.size() == a*b*c*d );
         if (ok)
-		{
-			log( "tensor4 method size()", true  );
-		} else
-		{
-			std::stringstream error;
-			error
-			<< "tensor4 method size(). size should be: "
-			<< a*b*c*d
-			<< std::endl
+        {
+            log( "tensor4 method size()", true  );
+        } else
+        {
+            std::stringstream error;
+            error
+            << "tensor4 method size(). size should be: "
+            << a*b*c*d
+            << std::endl
             << "size is: " << t4.size() << std::endl;
-			log_error( error.str(),  fail_test);
-		}
+            log_error( error.str(),  fail_test);
+        }
 
        // Test filling methods
         t4.fill(3);
@@ -54,19 +55,19 @@ namespace vmml
             if (!ok) break;
         }
         if ( ok )
-		{
-			log( "tensor4 method fill( value )", true  );
+        {
+            log( "tensor4 method fill( value )", true  );
 
-		} else
-		{
-			std::stringstream error;
-			error
-			<< "tensor4 method fill( 3 ). t4 is: "
-			<< std::endl
-			<< t4
-			<< std::endl;
-			log_error( error.str(),  fail_test);
-		}
+        } else
+        {
+            std::stringstream error;
+            error
+            << "tensor4 method fill( 3 ). t4 is: "
+            << std::endl
+            << t4
+            << std::endl;
+            log_error( error.str(),  fail_test);
+        }
 
 
         ok = true;
@@ -77,77 +78,77 @@ namespace vmml
             if (!ok) break;
         }
         if ( ok )
-		{
-			log( "tensor4 operator=( value )", true  );
-		} else
-		{
-			std::stringstream error;
-			error
-			<< "tensor4 operator=( 6 ). t4 is: "
-			<< std::endl
-			<< t4
-			<< std::endl;
-			log_error( error.str(),  fail_test);
-		}
+        {
+            log( "tensor4 operator=( value )", true  );
+        } else
+        {
+            std::stringstream error;
+            error
+            << "tensor4 operator=( 6 ). t4 is: "
+            << std::endl
+            << t4
+            << std::endl;
+            log_error( error.str(),  fail_test);
+        }
 
 
         t4.fill_increasing_values();
         ok = true;
-		
+
         double check_value = 0;
         for ( size_t i4 = 0; i4 < d; ++i4 )
         {
-			for ( size_t i3 = 0; i3 < c; ++i3 )
-			{
-				for( size_t i1 = 0; i1 < a; ++i1 )
-				{
-					for( size_t i2 = 0; i2 < b && ok; ++i2 )
-					{
-						TEST(t4.at(i1, i2, i3, i4) == check_value);
-						if (!ok)
-						{
-							std::stringstream error;
-							error << "T4 with all values from 0 to 47:: " << std::endl << t4 << std::endl;
-							log_error( error.str() );
-						}
-						++check_value;
-					}
-				}
-			}
-		}
+            for ( size_t i3 = 0; i3 < c; ++i3 )
+            {
+                for( size_t i1 = 0; i1 < a; ++i1 )
+                {
+                    for( size_t i2 = 0; i2 < b && ok; ++i2 )
+                    {
+                        TEST(t4.at(i1, i2, i3, i4) == check_value);
+                        if (!ok)
+                        {
+                            std::stringstream error;
+                            error << "T4 with all values from 0 to 47:: " << std::endl << t4 << std::endl;
+                            log_error( error.str() );
+                        }
+                        ++check_value;
+                    }
+                }
+            }
+        }
 
         if ( ok )
-		{
-			log( "tensor4 method fill_increasing()", true  );
-		} 
-		
+        {
+            log( "tensor4 method fill_increasing()", true  );
+        }
+
         ok = false;
 
         // Test indexing ( at and () )
-		
+
         // test const versions as well
         const T c1 = t4(1,0,0,0);
         const T clast = t4.at(a-1,b-1,c-1,d-1);
         TEST( t4(0,0,0,0) == 0 &&
-            t4.at(2, 1, 2, 1) == 1*a*b*c + 2*a*b + 1*a + 2 &&
-            c1 == 2 && clast == t4.size() - 1 );
-		if (ok)
+              t4.at(2, 1, 2, 1) == 1*a*b*c + 2*a*b + 1*a + 2 &&
+              c1 == 2 && clast == T( t4.size( )) - 1 );
+        if (ok)
         {
-			log( "tensor4 indexing", true  );
-		}
+            log( "tensor4 indexing", true  );
+        }
         else
-		{
-			std::stringstream error;
-			error
-			<< "tensor4 indexing. t4 values should be: "
-			<< std::endl
-			<< 0 << "\t" << 1*a*b*c+2*a*b+1*a+2 << "\t" << 2 << "\t" << t4.size() - 1
-			<< std::endl
+        {
+            std::stringstream error;
+            error
+            << "tensor4 indexing. t4 values should be: "
+            << std::endl
+            << 0 << "\t" << 1*a*b*c+2*a*b+1*a+2 << "\t" << 2 << "\t" << t4.size() - 1
+            << std::endl
             << "t4 values are: " << std::endl
             << t4(0,0,0,0) << "\t" << t4.at(2, 1, 2, 1) << "\t" << c1 << "\t" << clast << std::endl;
 
-			log_error( error.str(),  fail_test);
-		}
+            log_error( error.str(),  fail_test);
+        }
 
        // Test equality
         tensor4<a, b, c, d, T> t4cp;
@@ -158,20 +159,20 @@ namespace vmml
         t4mod(0,0,1,0) = 1;
         TEST( t4 == t4cp && ! (t4 != t4cp) && t4mod != t4 && !(t4mod == t4));
         if (ok)
-		{
-			log( "tensor4 equality operators", true  );
-		} else
-		{
-			std::stringstream error;
-			error
-			<< "tensor4 equality operators. Results should be: "
-			<< std::endl
-			<< true << true << true << true
-			<< std::endl
+        {
+            log( "tensor4 equality operators", true  );
+        } else
+        {
+            std::stringstream error;
+            error
+            << "tensor4 equality operators. Results should be: "
+            << std::endl
+            << true << true << true << true
+            << std::endl
             << "Results are:" << std::endl
             << (t4 == t4cp) << (! (t4 != t4cp)) << (t4mod != t4) << (! (t4mod == t4)) << std::endl;
-			log_error( error.str(),  fail_test);
-		}
+            log_error( error.str(),  fail_test);
+        }
 
 
        // Test copy ctors
@@ -179,22 +180,22 @@ namespace vmml
 
         TEST( t4tempcp == t4 );
         if (ok)
-		{
-			log( "tensor4 copy constructor", true  );
-		} else
-		{
-			std::stringstream error;
-			error
-			<< "tensor4 copy constructor. t4 is: "
-			<< std::endl
-			<< t4
-			<< std::endl
+        {
+            log( "tensor4 copy constructor", true  );
+        } else
+        {
+            std::stringstream error;
+            error
+            << "tensor4 copy constructor. t4 is: "
+            << std::endl
+            << t4
+            << std::endl
             << "tensor4 copy constructor. t4 copy is: "
             << std::endl
-			<< t4tempcp
-			<< std::endl;
-			log_error( error.str(),  fail_test);
-		}
+            << t4tempcp
+            << std::endl;
+            log_error( error.str(),  fail_test);
+        }
 
 
        // cast constructor
@@ -210,22 +211,22 @@ namespace vmml
         }
 
         if ( ok )
-		{
-			log( "tensor4 type converter constructor", true  );
-		} else
-		{
-			std::stringstream error;
-			error
-			<< "tensor4 type converter constructor. t4 is: "
-			<< std::endl
-			<< t4
-			<< std::endl
+        {
+            log( "tensor4 type converter constructor", true  );
+        } else
+        {
+            std::stringstream error;
+            error
+            << "tensor4 type converter constructor. t4 is: "
+            << std::endl
+            << t4
+            << std::endl
             << "tensor4 type converter constructor. t4 in long is: "
-			<< std::endl
-			<< t4long
-			<< std::endl;
-			log_error( error.str(),  fail_test);
-		}
+            << std::endl
+            << t4long
+            << std::endl;
+            log_error( error.str(),  fail_test);
+        }
 
         ok = true;
         // resize constructor
@@ -253,23 +254,23 @@ namespace vmml
             }
         }
 
-		if ( ok )
-		{
-			log( "tensor4 resize constructor", true  );
-		} else
-		{
-			std::stringstream error;
-			error
-			<< "tensor4 resize constructor. t4 is: "
-			<< std::endl
-			<< t4
-			<< std::endl
+        if ( ok )
+        {
+            log( "tensor4 resize constructor", true  );
+        } else
+        {
+            std::stringstream error;
+            error
+            << "tensor4 resize constructor. t4 is: "
+            << std::endl
+            << t4
+            << std::endl
             << "tensor4 resize constructor. t4 resized is: "
-			<< std::endl
-			<< t4resized
-			<< std::endl;
-			log_error( error.str(),  fail_test);
-		}
+            << std::endl
+            << t4resized
+            << std::endl;
+            log_error( error.str(),  fail_test);
+        }
         ok = false;
 
        tensor4< a, b, c, d, T > t4assigned;
@@ -278,25 +279,25 @@ namespace vmml
 
         TEST(( (&t4assigned) != (&t4) ) && t4assigned == t4 );
         if (ok)
-		{
-			log( "tensor4 assignment operator=", true  );
-		} else
-		{
-			std::stringstream error;
-			error
-			<< "tensor4 assignment operator=. t4 is: "
-			<< std::endl
-			<< t4 << " at " << &t4
-			<< std::endl
+        {
+            log( "tensor4 assignment operator=", true  );
+        } else
+        {
+            std::stringstream error;
+            error
+            << "tensor4 assignment operator=. t4 is: "
+            << std::endl
+            << t4 << " at " << &t4
+            << std::endl
             << "tensor4 assignment operator=. assigned t4 is: "
-			<< std::endl
-			<< t4assigned << " at " << &t4assigned
-			<< std::endl;
-			log_error( error.str(),  fail_test);
-		}
+            << std::endl
+            << t4assigned << " at " << &t4assigned
+            << std::endl;
+            log_error( error.str(),  fail_test);
+        }
 
 
-		// fill random plausability tests
+        // fill random plausability tests
         t4.fill_random();
         t4ptr = t4.get_array_ptr();
         bool fail = true;
@@ -320,16 +321,16 @@ namespace vmml
 
         TEST( !fail && max - min > std::numeric_limits< T >::max()/4); // assert at least a certain bandwith of values
         if (ok)
-		{
-			log( "tensor4 random fill", true  );
-		} else
-		{
-			std::stringstream error;
-			error
-			<< "tensor4 random fill. t4 is: "
-			<< std::endl
-			<< t4
-			<< std::endl;
+        {
+            log( "tensor4 random fill", true  );
+        } else
+        {
+            std::stringstream error;
+            error
+            << "tensor4 random fill. t4 is: "
+            << std::endl
+            << t4
+            << std::endl;
 
             if(fail) // if all values are the same, fail the test
             {
@@ -338,48 +339,48 @@ namespace vmml
             {
                 log_error( error.str(),  !fail_test);
             }
-		}
+        }
 
 // FIXME rand() depends on stdlib version
-// 		ok = true;
-//		tensor4< a, b, c, d, int >  t4_2;
-//		t4_2.fill_random_signed(0);
-//		int t4_test_data[] = {
-//			-552808893, -183281951, -1044816132, -928209062, -250957408, 1058982018, 
-//			-33698213, -1007308382, 569808514, 929088271, -1005379225, 832964957,
-//			196129103, -673590035, -45572427, 506060336, 715872987, -826667018,
-//			426616161, 876625390, -310087809, -442380740, 296997003, -504719669,
-//			-263079636, 1072593514, 89378518, -1046035170, -1053809277, 735507396,
-//			756924037, 1023807655, -70843372, -651214229, -958621169, 766593553,
-//			-764045132, 1043227471, 645667133, -679881061, 492627637, -514943, 
-//			 -64720816, -868030333, 1011446114, 1018082584, -105720057, -235718411
-//			 };
-//		
+//      ok = true;
+//      tensor4< a, b, c, d, int >  t4_2;
+//      t4_2.fill_random_signed(0);
+//      int t4_test_data[] = {
+//          -552808893, -183281951, -1044816132, -928209062, -250957408, 1058982018,
+//          -33698213, -1007308382, 569808514, 929088271, -1005379225, 832964957,
+//          196129103, -673590035, -45572427, 506060336, 715872987, -826667018,
+//          426616161, 876625390, -310087809, -442380740, 296997003, -504719669,
+//          -263079636, 1072593514, 89378518, -1046035170, -1053809277, 735507396,
+//          756924037, 1023807655, -70843372, -651214229, -958621169, 766593553,
+//          -764045132, 1043227471, 645667133, -679881061, 492627637, -514943,
+//           -64720816, -868030333, 1011446114, 1018082584, -105720057, -235718411
+//           };
+//
 //        size_t ind = 0;
-//		
+//
 //        for ( size_t i4 = 0; i4 < d; ++i4 )
 //        {
-//			for ( size_t i3 = 0; i3 < c; ++i3 )
-//			{
-//				for( size_t i1 = 0; i1 < a; ++i1 )
-//				{
-//					for( size_t i2 = 0; i2 < b && ok; ++i2 )
-//					{
-//						TEST(t4_2.at(i1, i2, i3, i4) == t4_test_data[ind]);
-//						if (!ok)
-//						{
-//							std::stringstream error;
-//							error << "tensor4 random fill signed:: " << std::endl << t4_2 << std::endl;
-//							log_error( error.str() );
-//						}
-//						++ind;
-//					}
-//				}
-//			}
-//		}
-//		
-// 		
-//	
+//          for ( size_t i3 = 0; i3 < c; ++i3 )
+//          {
+//              for( size_t i1 = 0; i1 < a; ++i1 )
+//              {
+//                  for( size_t i2 = 0; i2 < b && ok; ++i2 )
+//                  {
+//                      TEST(t4_2.at(i1, i2, i3, i4) == t4_test_data[ind]);
+//                      if (!ok)
+//                      {
+//                          std::stringstream error;
+//                          error << "tensor4 random fill signed:: " << std::endl << t4_2 << std::endl;
+//                          log_error( error.str() );
+//                      }
+//                      ++ind;
+//                  }
+//              }
+//          }
+//      }
+//
+//
+//
 //
 //        if(min == 0 || max == 0 ) // at least one positive and one negative number
 //        {
@@ -388,17 +389,17 @@ namespace vmml
 //
 //        TEST( !fail && max - min > std::numeric_limits< T >::max()/2); // assert at least a certain bandwith of values
 //        if (ok)
-//		{
-//			log( "tensor4 random fill signed", true  );
-//		} else
-//		{
-//			std::stringstream error;
-//			error
-//			<< "tensor4 random fill signed. t4 is: "
-//			<< std::endl
-//			<< 
-//			t4_2
-//			<< std::endl;
+//      {
+//          log( "tensor4 random fill signed", true  );
+//      } else
+//      {
+//          std::stringstream error;
+//          error
+//          << "tensor4 random fill signed. t4 is: "
+//          << std::endl
+//          <<
+//          t4_2
+//          << std::endl;
 //
 //            if(fail) // if all values are the same or no negative/positive numbers, fail the test
 //            {
@@ -407,8 +408,8 @@ namespace vmml
 //            {
 //                log_error( error.str(),  !fail_test);
 //            }
-//		}
-		
+//      }
+
 
       // Test casts
         ok = false;
@@ -423,50 +424,50 @@ namespace vmml
         }else
         {
             std::stringstream error;
-			error
-			<< "tensor4 cast_from same size. t4 is: "
-			<< std::endl
-			<< t4
-			<< std::endl
+            error
+            << "tensor4 cast_from same size. t4 is: "
+            << std::endl
+            << t4
+            << std::endl
             << "t4 should be: " << std::endl
             << t4control << std::endl;
 
             log_error( error.str(),  fail_test);
         }
-		t4.fill_increasing_values();
+        t4.fill_increasing_values();
         vmml::tensor4<a, b, c, d, ushort> t4diff;
         vmml::tensor4<a, b, c, d, T>    t4cast;
         t4diff.fill_increasing_values();
         t4cast.cast_from(t4diff);
         T val = 0;
         ok = true;
-		
-		
+
+
         for ( size_t i4 = 0; i4 < d; ++i4 )
         {
-			for ( size_t i3 = 0; i3 < c; ++i3 )
-			{
-				for( size_t i1 = 0; i1 < a; ++i1 )
-				{
-					for( size_t i2 = 0; i2 < b && ok; ++i2 )
-					{
-						//std::cout << "val is = " << t4cast.at(i1, i2, i3, i4) << "val should be = " << val << std::endl;
-						TEST(t4cast.at(i1, i2, i3, i4) == val);
-						if (!ok)
-						{
-							std::stringstream error;
-							error << "tensor4 cast_from different size test" << std::endl;
-							//error << "tensor4 cast_from different size: " << std::endl << t4 << std::endl;
-							log_error( error.str() );
-						}
-						++val;
-					}
-				}
-			}
-		}
-		
-		
-  
+            for ( size_t i3 = 0; i3 < c; ++i3 )
+            {
+                for( size_t i1 = 0; i1 < a; ++i1 )
+                {
+                    for( size_t i2 = 0; i2 < b && ok; ++i2 )
+                    {
+                        //std::cout << "val is = " << t4cast.at(i1, i2, i3, i4) << "val should be = " << val << std::endl;
+                        TEST(t4cast.at(i1, i2, i3, i4) == val);
+                        if (!ok)
+                        {
+                            std::stringstream error;
+                            error << "tensor4 cast_from different size test" << std::endl;
+                            //error << "tensor4 cast_from different size: " << std::endl << t4 << std::endl;
+                            log_error( error.str() );
+                        }
+                        ++val;
+                    }
+                }
+            }
+        }
+
+
+
         if(ok)
         {
             log( "tensor4 cast_from different size", true  );
@@ -494,11 +495,11 @@ namespace vmml
         }else
         {
             std::stringstream error;
-			error
-			<< "tensor4 float_t_to_uint_t. t4 is: "
-			<< std::endl
-			<< t4unsigned
-			<< std::endl
+            error
+            << "tensor4 float_t_to_uint_t. t4 is: "
+            << std::endl
+            << t4unsigned
+            << std::endl
             << "t4 should be: " << std::endl
             << control << std::endl;
 
@@ -516,8 +517,8 @@ namespace vmml
         T* correctptr = t4correct.get_array_ptr();
         for(size_t index = 0; index < t4calc.size(); ++index)
         {
-            correctptr[ index ] = index+1;
-            TEST(calcptr[ index ] == index+1);
+            correctptr[ index ] = T( index+1 );
+            TEST(calcptr[ index ] == T( index+1 ));
         }
 
         t4 += 1;
@@ -529,15 +530,15 @@ namespace vmml
         }else
         {
             std::stringstream error;
-			error
-			<< "tensor4 scalar addition operators +/+=. t4 += is: "
-			<< std::endl
-			<< t4
-			<< std::endl
+            error
+            << "tensor4 scalar addition operators +/+=. t4 += is: "
+            << std::endl
+            << t4
+            << std::endl
             << "t4 copy + is: "
-			<< std::endl
-			<< t4calc
-			<< std::endl
+            << std::endl
+            << t4calc
+            << std::endl
             << "both should be: " << std::endl
             << t4correct << std::endl;
 
@@ -551,8 +552,8 @@ namespace vmml
 
         for(size_t index = 0; index < t4calc.size(); ++index)
         {
-            correctptr[ index ] = index-1;
-            TEST(calcptr[ index ] == index-1);
+            correctptr[ index ] = T( index-1 );
+            TEST(calcptr[ index ] == T(index-1));
         }
 
         t4 -= 1;
@@ -563,15 +564,15 @@ namespace vmml
         }else
         {
             std::stringstream error;
-			error
-			<< "tensor4 scalar substraction operators -/-=. t4 -= is: "
-			<< std::endl
-			<< t4
-			<< std::endl
+            error
+            << "tensor4 scalar substraction operators -/-=. t4 -= is: "
+            << std::endl
+            << t4
+            << std::endl
             << "t4 copy - is: "
-			<< std::endl
-			<< t4calc
-			<< std::endl
+            << std::endl
+            << t4calc
+            << std::endl
             << "both should be: " << std::endl
             << t4correct << std::endl;
 
@@ -586,7 +587,7 @@ namespace vmml
         for(size_t index = 0; index < t4calc.size(); ++index)
         {
             correctptr[ index ] = index*2;
-            TEST(calcptr[ index ] == index*2);
+            TEST(calcptr[ index ] == T( index*2 ));
         }
 
         t4 *= 2;
@@ -598,15 +599,15 @@ namespace vmml
         }else
         {
             std::stringstream error;
-			error
-			<< "tensor4 scalar multiplication operators */*=. t4 *= is: "
-			<< std::endl
-			<< t4
-			<< std::endl
+            error
+            << "tensor4 scalar multiplication operators */*=. t4 *= is: "
+            << std::endl
+            << t4
+            << std::endl
             << "t4 copy * is: "
-			<< std::endl
-			<< t4calc
-			<< std::endl
+            << std::endl
+            << t4calc
+            << std::endl
             << "both should be: " << std::endl
             << t4correct << std::endl;
 
@@ -632,15 +633,15 @@ namespace vmml
         }else
         {
             std::stringstream error;
-			error
-			<< "tensor4 scalar division operators / and /=. t4 /= is: "
-			<< std::endl
-			<< t4
-			<< std::endl
+            error
+            << "tensor4 scalar division operators / and /=. t4 /= is: "
+            << std::endl
+            << t4
+            << std::endl
             << "t4 copy / is: "
-			<< std::endl
-			<< t4calc
-			<< std::endl
+            << std::endl
+            << t4calc
+            << std::endl
             << "both should be: " << std::endl
             << t4correct << std::endl;
 
@@ -659,7 +660,7 @@ namespace vmml
         for(size_t index = 0; index < t4calc.size(); ++index)
         {
             correctptr[ index ] = index*2;
-            TEST(calcptr[ index ] == index*2);
+            TEST(calcptr[ index ] == T( index*2 ));
         }
 
         t4 += t4offset;
@@ -671,15 +672,15 @@ namespace vmml
         }else
         {
             std::stringstream error;
-			error
-			<< "tensor4 tensor addition operators + and +=. t4 += is: "
-			<< std::endl
-			<< t4
-			<< std::endl
+            error
+            << "tensor4 tensor addition operators + and +=. t4 += is: "
+            << std::endl
+            << t4
+            << std::endl
             << "t4 copy + is: "
-			<< std::endl
-			<< t4calc
-			<< std::endl
+            << std::endl
+            << t4calc
+            << std::endl
             << "both should be: " << std::endl
             << t4correct << std::endl;
 
@@ -707,15 +708,15 @@ namespace vmml
         }else
         {
             std::stringstream error;
-			error
-			<< "tensor4 tensor substraction operators - and -=. t4 -= is: "
-			<< std::endl
-			<< t4
-			<< std::endl
+            error
+            << "tensor4 tensor substraction operators - and -=. t4 -= is: "
+            << std::endl
+            << t4
+            << std::endl
             << "t4 copy - is: "
-			<< std::endl
-			<< t4calc
-			<< std::endl
+            << std::endl
+            << t4calc
+            << std::endl
             << "both should be: " << std::endl
             << t4correct << std::endl;
 
@@ -756,11 +757,11 @@ namespace vmml
 //        }else
 //        {
 //            std::stringstream error;
-//			error
-//			<< "tensor4 tensor different size addition +=. t4 += is: "
-//			<< std::endl
-//			<< t4orig
-//			<< std::endl
+//          error
+//          << "tensor4 tensor different size addition +=. t4 += is: "
+//          << std::endl
+//          << t4orig
+//          << std::endl
 //            << "t4 should be: " << std::endl
 //            << t4origcrr
 //            << std::endl;
@@ -775,7 +776,7 @@ namespace vmml
         t4calc = -(t4);
 
         ok = true;
-        for( T index = 0; index < t4calc.size(); ++index )
+        for( size_t index = 0; index < t4calc.size(); ++index )
         {
             correctptr[index] = -ssize_t( index );
             TEST( ssize_t( calcptr[index] ) == -ssize_t( index ));
@@ -790,15 +791,15 @@ namespace vmml
         }else
         {
             std::stringstream error;
-			error
-			<< "tensor4 tensor negation. t4.negate() is: "
-			<< std::endl
-			<< t4
-			<< std::endl
+            error
+            << "tensor4 tensor negation. t4.negate() is: "
+            << std::endl
+            << t4
+            << std::endl
             << "-(t4) is: "
-			<< std::endl
-			<< t4calc
-			<< std::endl
+            << std::endl
+            << t4calc
+            << std::endl
             << "both should be: " << std::endl
             << t4correct << std::endl;
 
@@ -821,32 +822,35 @@ namespace vmml
         for(size_t index = 0; index < t3.size(); ++index)
         {
             t3correctptr[ index ] = index;
-            TEST(t3ptr[index] == index && t3lastptr[index] == index + offset);
+            TEST( t3ptr[index] == T( index ) &&
+                  t3lastptr[index] == T( index + offset ));
         }
+
         if(ok)
         {
             log( "tensor4 get_tensor3()", true  );
-        }else
+        }
+        else
         {
             std::stringstream error;
-			error
-			<< "tensor4 get_tensor3(0). t3 is: "
-			<< std::endl
-			<< t3
-			<< std::endl
+            error
+            << "tensor4 get_tensor3(0). t3 is: "
+            << std::endl
+            << t3
+            << std::endl
             << "t3 should be:"
-			<< std::endl
-			<<  t3correct << std::endl;
+            << std::endl
+            <<  t3correct << std::endl;
 
             t3correct += offset;
             error
-			<< "tensor4 get_tensor3(n). t3 is: "
-			<< std::endl
-			<< t3last
-			<< std::endl
+            << "tensor4 get_tensor3(n). t3 is: "
+            << std::endl
+            << t3last
+            << std::endl
             << "t3 should be:"
-			<< std::endl
-			<<  t3correct << std::endl;
+            << std::endl
+            <<  t3correct << std::endl;
 
 
             log_error( error.str(),  fail_test);
@@ -928,10 +932,9 @@ namespace vmml
         }
 
         return global_ok;
-	}
+    }
 
 
 
 
 } // namespace vmml
-

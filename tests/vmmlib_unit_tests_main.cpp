@@ -36,6 +36,7 @@
 #  include "tensor4_test.hpp"
 #  include "t4_hooi_test.hpp"
 #  include "t4_converter_test.hpp"
+#  include "t4_ttm_test.hpp"
 #endif
 
 void
@@ -142,6 +143,9 @@ main( int argc, const char* argv[] )
     
     vmml::t4_hooi_test t4hooi;
     run_and_log( t4hooi );
+    
+    vmml::t4_ttm_test t4ttm;
+    run_and_log( t4ttm );
 
 	vmml::t4_converter_test t4ct;
     run_and_log( t4ct );

@@ -114,7 +114,6 @@ void frustum_culler< T >::setup( const matrix< 4, 4, T >& proj_modelview )
     _normalize_plane( _top_plane );
     _normalize_plane( _near_plane );
     _normalize_plane( _far_plane );
-
 }
 
 template < class T >

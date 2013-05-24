@@ -18,9 +18,7 @@
 
 namespace vmml
 {
-
-template< typename T >
-class frustum
+template< typename T > class frustum
 {
 public:
     VMMLIB_ALIGN( T array[6] );
@@ -30,12 +28,10 @@ public:
     frustum( const T left, const T right, const T bottom, const T top,
              const T near_plane, const T far_plane );
 
-    template< typename U >
-    frustum( const frustum< U >& source_ );
+    template< typename U > frustum( const frustum< U >& source_ );
 
     //the pointer 'values' must be a valid 6 component c array of the resp. type
-    template< typename U >
-    frustum( const U* values );
+    template< typename U > frustum( const U* values );
 
     ~frustum();
 
@@ -410,4 +406,3 @@ template< typename T > inline T frustum< T >::get_height() const
 } //namespace vmml
 
 #endif
-

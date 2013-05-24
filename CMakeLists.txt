@@ -106,7 +106,6 @@ set(HEADERS
   include/vmmlib/t4_hooi.hpp
   include/vmmlib/t4_hosvd.hpp
   include/vmmlib/t4_ttm.hpp
-  include/vmmlib/tensor4_iterator.hpp
   include/vmmlib/tucker4_tensor.hpp
 )
 

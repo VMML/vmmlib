@@ -117,7 +117,7 @@ namespace vmml
 		infile.open( path_raw.c_str(), std::ios::in );
 		if( infile.is_open() ) {
 
-			size_t max_file_len = std::numeric_limits<std::streamsize>::max() - sizeof(T);
+			size_t max_file_len = (std::numeric_limits<std::streamsize>::max)() - sizeof(T);
 			size_t len_data = data_.size();
 			size_t len_read = 0;
 			T* dataptr = data_.get_array_ptr();

@@ -106,7 +106,7 @@ set(HEADERS
   include/vmmlib/t4_hooi.hpp
   include/vmmlib/t4_hosvd.hpp
   include/vmmlib/t4_ttm.hpp
-  include/vmmlib/tensor4_iterator.hpp
+  include/vmmlib/tucker4_tensor.hpp
 )
 
 set(TESTS
@@ -152,14 +152,15 @@ if(LAPACK_FOUND)
     tests/t3_ihooi_test.cpp
     tests/t3_ihopm_test.cpp
     tests/t3_ttm_test.cpp
-    tests/t4_hooi_test.cpp
-    tests/t4_converter_test.cpp
-    tests/t4_converter_test.cpp
     tests/tensor3_iterator_test.cpp
     tests/tensor3_test.cpp
-    tests/tensor4_test.cpp
     tests/tucker3_exporter_importer_test.cpp
     tests/tucker3_tensor_test.cpp
+    tests/t4_hooi_test.cpp
+    tests/t4_converter_test.cpp
+    tests/tensor4_test.cpp
+    tests/t4_ttm_test.cpp
+
 )
 endif()
 if(BLAS_FOUND)

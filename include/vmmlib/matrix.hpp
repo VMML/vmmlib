@@ -280,7 +280,7 @@ public:
     // subject to precision errors.
     template< size_t O, size_t P, typename TT >
     bool inverse( matrix< O, P, TT >& inverse_,
-        T tolerance = std::numeric_limits<T>::epsilon(),
+                  T tolerance = std::numeric_limits<T>::epsilon(),
         typename enable_if< M == N && O == P && O == M && M >= 2 && M <= 4, TT >::type* = 0 ) const;
 
     template< size_t O, size_t P >
@@ -648,35 +648,28 @@ inline T compute_determinant( const matrix< 4, 4, T >& m )
 
 
 template< typename T >
-bool compute_inverse( const matrix< 2, 2, T >& m_,
-    matrix< 2, 2, T >& inverse_,
-    T tolerance_ = std::numeric_limits<T>::epsilon())
+bool compute_inverse( const matrix< 2, 2, T >& m_, matrix< 2, 2, T >& inverse_,
+                      T tolerance_ = std::numeric_limits<T>::epsilon())
 {
-    T det_ = compute_determinant( m_ );
-    if ( fabs( det_ ) < tolerance_ )
-    {
+    const T det_ = compute_determinant( m_ );
+    if( fabs( det_ ) < tolerance_ )
         return false;
-    }
-    T detinv = static_cast< T >( 1.0 ) / det_;
 
-    // set inverse_ to the adjugate of M
-    m_.get_adjugate( inverse_ );
+    const T detinv = static_cast< T >( 1.0 ) / det_;
 
+    m_.get_adjugate( inverse_ ); // set inverse_ to the adjugate of M
     inverse_ *= detinv;
-
     return true;
 }
 
 
 
 template< typename T >
-bool compute_inverse( const matrix< 3, 3, T >& m_,
-    matrix< 3, 3, T >& inverse_,
-    T tolerance_ = std::numeric_limits<T>::epsilon() )
+bool compute_inverse( const matrix< 3, 3, T >& m_, matrix< 3, 3, T >& inverse_,
+                      T tolerance_ = std::numeric_limits<T>::epsilon() )
 {
     // Invert a 3x3 using cofactors.  This is about 8 times faster than
     // the Numerical Recipes code which uses Gaussian elimination.
-
     inverse_.at( 0, 0 ) = m_.at( 1, 1 ) * m_.at( 2, 2 ) - m_.at( 1, 2 ) * m_.at( 2, 1 );
     inverse_.at( 0, 1 ) = m_.at( 0, 2 ) * m_.at( 2, 1 ) - m_.at( 0, 1 ) * m_.at( 2, 2 );
     inverse_.at( 0, 2 ) = m_.at( 0, 1 ) * m_.at( 1, 2 ) - m_.at( 0, 2 ) * m_.at( 1, 1 );
@@ -1145,19 +1138,17 @@ matrix< M, N, T >::operator*=( T scalar )
 
 
 template< size_t M, size_t N, typename T >
-vector< M, T >
-matrix< M, N, T >::
-operator*( const vector< N, T >& vec ) const
+vector< M, T > matrix< M, N, T >::operator*( const vector< N, T >& vec ) const
 {
     vector< M, T > result;
 
     // this < M, 1 > = < M, P > * < P, 1 >
-    for( size_t row_index = 0; row_index < M; row_index++)
+    for( size_t i = 0; i < M; ++i )
     {
         T tmp( 0 );
-        for( size_t p = 0; p < N; ++p )
-            tmp += at( row_index, p ) * vec.at( p );
-        result.at( row_index ) = tmp;
+        for( size_t j = 0; j < N; ++j )
+            tmp += at( i, j ) * vec.at( j );
+        result.at( i ) = tmp;
     }
     return result;
 }
@@ -1167,10 +1158,8 @@ operator*( const vector< N, T >& vec ) const
 // transform vector by matrix ( vec = matrix * vec )
 // assume homogenous coords( for vec3 = mat4 * vec3 ), e.g. vec[3] = 1.0
 template< size_t M, size_t N, typename T >
-template< size_t O >
-vector< O, T >
-matrix< M, N, T >::
-operator*( const vector< O, T >& vector_ ) const
+template< size_t O > vector< O, T >
+matrix< M, N, T >::operator*( const vector< O, T >& vector_ ) const
 {
     vector< O, T > result;
     T tmp;
@@ -1219,15 +1208,12 @@ matrix< M, N, T >::negate() const
 
 template< size_t M, size_t N, typename T >
 void
-matrix< M, N, T >::tensor(
-	const vector< M, T >& u,
-	const vector< N, T >& v
-	)
+matrix< M, N, T >::tensor( const vector< M, T >& u, const vector< N, T >& v )
 {
 	for ( size_t col_index = 0; col_index < N; ++col_index )
 		for ( size_t row_index = 0; row_index < M; ++row_index )
-            at( row_index, col_index ) = u.array[ col_index ] * v.array[ row_index ];
-
+            at( row_index, col_index ) = u.array[ col_index ] *
+                                         v.array[ row_index ];
 }
 
 
@@ -1240,7 +1226,8 @@ matrix< M, N, T >::tensor( const vector< uM, T >& u, const vector< vM, T >& v )
     for ( size_t col_index = 0; col_index < 3; ++col_index )
     {
         for ( size_t row_index = 0; row_index < 3; ++row_index )
-            at( row_index, col_index ) = u.array[ col_index ] * v.array[ row_index ];
+            at( row_index, col_index ) = u.array[ col_index ] *
+                                         v.array[ row_index ];
 
         at( 3, col_index ) = u.array[ col_index ];
     }
@@ -1294,9 +1281,7 @@ symmetric_covariance( matrix< M, M, T >& cov_m_ ) const
 
 
 template< size_t M, size_t N, typename T >
-vector< M, T >
-matrix< M, N, T >::
-get_column( size_t index ) const
+vector< M, T > matrix< M, N, T >::get_column( size_t index ) const
 {
 	vector< M, T > column;
 	get_column( index, column );
@@ -1306,16 +1291,12 @@ get_column( size_t index ) const
 
 
 template< size_t M, size_t N, typename T >
-void
-matrix< M, N, T >::
-get_column( size_t index, vector< M, T >& column ) const
+void matrix< M, N, T >::get_column( size_t index, vector< M, T >& column ) const
 {
-    #ifdef VMMLIB_SAFE_ACCESSORS
-
+#ifdef VMMLIB_SAFE_ACCESSORS
     if ( index >= N )
         VMMLIB_ERROR( "get_column() - index out of bounds.", VMMLIB_HERE );
-
-    #endif
+#endif
 
     memcpy( &column.array[0], &array[ M * index ], M * sizeof( T ) );
 }
@@ -1323,9 +1304,7 @@ get_column( size_t index, vector< M, T >& column ) const
 
 
 template< size_t M, size_t N, typename T >
-void
-matrix< M, N, T >::
-set_column( size_t index, const vector< M, T >& column )
+void matrix< M, N, T >::set_column( size_t index, const vector< M, T >& column )
 {
     #ifdef VMMLIB_SAFE_ACCESSORS
 
@@ -1337,62 +1316,45 @@ set_column( size_t index, const vector< M, T >& column )
     memcpy( array + M * index, column.array, M * sizeof( T ) );
 }
 
-
-
 template< size_t M, size_t N, typename T >
-void
-matrix< M, N, T >::
-get_column( size_t index, matrix< M, 1, T >& column ) const
+void matrix< M, N, T >::get_column( size_t index, matrix< M, 1, T >& column )
+    const
 {
-    #ifdef VMMLIB_SAFE_ACCESSORS
-
+#ifdef VMMLIB_SAFE_ACCESSORS
     if ( index >= N )
         VMMLIB_ERROR( "get_column() - index out of bounds.", VMMLIB_HERE );
-
-    #endif
+#endif
 
     memcpy( column.array, array + M * index, M * sizeof( T ) );
 }
 
-
 template< size_t M, size_t N, typename T >
-void
-matrix< M, N, T >::
-set_column( size_t index, const matrix< M, 1, T >& column )
+void matrix< M, N, T >::set_column( size_t index,
+                                    const matrix< M, 1, T >& column )
 {
-    #ifdef VMMLIB_SAFE_ACCESSORS
-
+#ifdef VMMLIB_SAFE_ACCESSORS
     if ( index >= N )
         VMMLIB_ERROR( "set_column() - index out of bounds.", VMMLIB_HERE );
-
-    #endif
+#endif
 
     memcpy( &array[ M * index ], column.array, M * sizeof( T ) );
 }
 
-
-
 template< size_t M, size_t N, typename T >
-vector< N, T >
-matrix< M, N, T >::
-get_row( size_t index ) const
+vector< N, T > matrix< M, N, T >::get_row( size_t index ) const
 {
 	vector< N, T > row;
 	get_row( index, row );
 	return row;
 }
 
-
-
 template< size_t M, size_t N, typename T >
-void
-matrix< M, N, T >::
-get_row( size_t row_index, vector< N, T >& row ) const
+void matrix< M, N, T >::get_row( size_t row_index, vector< N, T >& row ) const
 {
-    #ifdef VMMLIB_SAFE_ACCESSORS
+#ifdef VMMLIB_SAFE_ACCESSORS
     if ( row_index >= M )
         VMMLIB_ERROR( "get_row() - index out of bounds.", VMMLIB_HERE );
-    #endif
+#endif
 
     for( size_t col_index = 0; col_index < N; ++col_index )
     {
@@ -1400,17 +1362,13 @@ get_row( size_t row_index, vector< N, T >& row ) const
     }
 }
 
-
-
 template< size_t M, size_t N, typename T >
-void
-matrix< M, N, T >::
-set_row( size_t row_index, const vector< N, T >& row )
+void matrix< M, N, T >::set_row( size_t row_index, const vector< N, T >& row )
 {
-    #ifdef VMMLIB_SAFE_ACCESSORS
+#ifdef VMMLIB_SAFE_ACCESSORS
     if ( row_index >= M )
         VMMLIB_ERROR( "set_row() - index out of bounds.", VMMLIB_HERE );
-    #endif
+#endif
 
     for( size_t col_index = 0; col_index < N; ++col_index )
     {
@@ -1418,17 +1376,14 @@ set_row( size_t row_index, const vector< N, T >& row )
     }
 }
 
-
-
 template< size_t M, size_t N, typename T >
-void
-matrix< M, N, T >::
-get_row( size_t row_index, matrix< 1, N, T >& row ) const
+void matrix< M, N, T >::get_row( size_t row_index, matrix< 1, N, T >& row )
+    const
 {
-    #ifdef VMMLIB_SAFE_ACCESSORS
+#ifdef VMMLIB_SAFE_ACCESSORS
     if ( row_index >= M )
         VMMLIB_ERROR( "get_row() - index out of bounds.", VMMLIB_HERE );
-    #endif
+#endif
 
     for( size_t col_index = 0; col_index < N; ++col_index )
     {
@@ -1436,17 +1391,14 @@ get_row( size_t row_index, matrix< 1, N, T >& row ) const
     }
 }
 
-
-
 template< size_t M, size_t N, typename T >
-void
-matrix< M, N, T >::
-set_row( size_t row_index,  const matrix< 1, N, T >& row )
+void matrix< M, N, T >::set_row( size_t row_index,
+                                 const matrix< 1, N, T >& row )
 {
-    #ifdef VMMLIB_SAFE_ACCESSORS
+#ifdef VMMLIB_SAFE_ACCESSORS
     if ( row_index >= M )
         VMMLIB_ERROR( "set_row() - index out of bounds.", VMMLIB_HERE );
-    #endif
+#endif
 
     for( size_t col_index = 0; col_index < N; ++col_index )
     {
@@ -1454,33 +1406,6 @@ set_row( size_t row_index,  const matrix< 1, N, T >& row )
     }
 }
 
-
-
-/*
-template< size_t M, size_t N, typename T >
-matrix< 1, N, T >&
-matrix< M, N, T >::
-operator[]( size_t row_index )
-{
-    if ( row_index >= M ) throw "FIXME.";
-    assert( row_index < M );
-    return _rows[ row_index ];
-}
-
-
-
-template< size_t M, size_t N, typename T >
-const matrix< 1, N, T >&
-matrix< M, N, T >::
-operator[]( size_t row_index ) const
-{
-    if ( row_index >= M ) throw "FIXME.";
-    assert( row_index < M );
-    return _rows[ row_index ];
-}
-
-
-*/
 template< size_t M, size_t N, typename T >
 size_t
 matrix< M, N, T >::
@@ -1755,9 +1680,10 @@ matrix< M, N, T >::det() const
 
 template< size_t M, size_t N, typename T >
 template< size_t O, size_t P, typename TT >
-inline bool
-matrix< M, N, T >::inverse( matrix< O, P, TT >& inverse_, T tolerance,
-    typename enable_if< M == N && O == P && O == M && M >= 2 && M <= 4, TT >::type* ) const
+inline bool matrix< M, N, T >::inverse( matrix< O, P, TT >& inverse_,
+                                        T tolerance, typename
+    enable_if< M == N && O == P && O == M && M >= 2 && M <= 4, TT >::type* )
+    const
 {
     return compute_inverse( *this, inverse_, tolerance );
 }

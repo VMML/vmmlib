@@ -518,7 +518,6 @@ vector< M, T >::vector( const T& _x, const T& _y, const T& _z, const T& _w )
     array[ 1 ] = _y;
     array[ 2 ] = _z;
     array[ 3 ] = _w;
-
 }
 
 
@@ -1160,9 +1159,8 @@ inline T vector< M, T >::dot( const vector< M, T >& other ) const
 {
     T tmp = 0.0;
     for( size_t index = 0; index < M; ++index )
-    {
         tmp += at( index ) * other.at( index );
-    }
+
     return tmp;
 }
 

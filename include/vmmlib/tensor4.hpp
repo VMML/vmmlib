@@ -40,7 +40,7 @@ namespace vmml
 
                 // Average all values along 1 axis
         tensor3_t& average_I4(tensor3_t& t3) const;
-        
+
         typedef matrix< I1, I2*I3*I4, T > mode1_unfolding_type;
         typedef matrix< I2, I3*I4*I1, T > mode2_unfolding_type;
         typedef matrix< I3, I4*I1*I2, T > mode3_unfolding_type;
@@ -186,7 +186,8 @@ namespace vmml
         inline tensor4< I1, I2, I3, I4, T > operator-() const;
         tensor4< I1, I2, I3, I4, T > negate() const;
 
-        friend std::ostream& operator << ( std::ostream& os, const tensor4< I1, I2, I3, I4, T >& t4 )
+        friend std::ostream& operator << ( std::ostream& os,
+                                           const tensor4< I1,I2,I3,I4,T >& t4 )
         {
             //FIXME: to this directly with tensors
             //sth like:
@@ -201,7 +202,7 @@ namespace vmml
 
                         for(size_t i2 = 0; i2 < I2; ++i2)
                         {
-                            if (i2 == (I2 - 1) )
+                            if( i2+1 == I2 )
                             {
                                 os << T(t4.at( i1, i2, i3, i4 )) ;
                             } else {
@@ -211,10 +212,8 @@ namespace vmml
                         }
                         os << ")" << std::endl;
                     }
-                    if ( i3 < (I3 -1 ))
-                    {
+                    if ( i3+1 < I3 )
                         os << " *** " << std::endl;
-                    }
                 }
                 if ( i4 + 1 < I4 )
                 {
@@ -238,7 +237,7 @@ namespace vmml
         void mode2_unfolding_fwd(mode2_unfolding_type& unfolding) const;
         void mode3_unfolding_fwd(mode3_unfolding_type& unfolding) const;
         void mode4_unfolding_fwd(mode4_unfolding_type& unfolding) const;
-        
+
         // computes the array index for direct access
         inline size_t compute_index( size_t i1, size_t i2, size_t i3, size_t i4 ) const;
 
@@ -389,7 +388,7 @@ namespace vmml
 //                std::copy(it, it + (I1 * I2 * I3), begin());
             }
         }
-        
+
         VMML_TEMPLATE_STRING
         bool
         VMML_TEMPLATE_CLASSNAME::equals(const tensor4< I1, I2, I3, I4, T >& other, T tolerance) const {
@@ -496,8 +495,8 @@ namespace vmml
             return _get_tensor3( i4_ );
         }
 
-        
-        
+
+
         VMML_TEMPLATE_STRING
         inline void
         VMML_TEMPLATE_CLASSNAME::
@@ -509,8 +508,8 @@ namespace vmml
 #endif
             memcpy(_array + I1*I2*I3*i4_, t3_data_.get_array_ptr(), I1*I2*I3*sizeof(T));
         }
-                
-        
+
+
 
         //fill
         VMML_TEMPLATE_STRING
@@ -973,7 +972,7 @@ namespace vmml
 //            }
 //            delete slice;
 //        }
-//        
+//
 //        VMML_TEMPLATE_STRING
 //		void
 //		VMML_TEMPLATE_CLASSNAME::mode2_unfolding_fwd(mode2_unfolding_type& unfolding) const {
@@ -991,7 +990,7 @@ namespace vmml
 //            }
 //            delete slice;
 //        }
-//        
+//
 //        VMML_TEMPLATE_STRING
 //		void
 //		VMML_TEMPLATE_CLASSNAME::mode3_unfolding_fwd(mode3_unfolding_type& unfolding) const {
@@ -1009,7 +1008,7 @@ namespace vmml
 //            }
 //            delete slice;
 //        }
-//        
+//
 //        VMML_TEMPLATE_STRING
 //		void
 //		VMML_TEMPLATE_CLASSNAME::mode4_unfolding_fwd(mode4_unfolding_type& unfolding) const {
@@ -1023,7 +1022,7 @@ namespace vmml
 //                }
 //            }
 //        }
-        
+
         VMML_TEMPLATE_STRING
 		void
 		VMML_TEMPLATE_CLASSNAME::mode1_unfolding_fwd(mode1_unfolding_type& unfolding) const {
@@ -1041,7 +1040,7 @@ namespace vmml
             }
             delete slice;
         }
-        
+
         VMML_TEMPLATE_STRING
 		void
 		VMML_TEMPLATE_CLASSNAME::mode2_unfolding_fwd(mode2_unfolding_type& unfolding) const {
@@ -1059,7 +1058,7 @@ namespace vmml
             }
             delete slice;
         }
-        
+
         VMML_TEMPLATE_STRING
 		void
 		VMML_TEMPLATE_CLASSNAME::mode3_unfolding_fwd(mode3_unfolding_type& unfolding) const {
@@ -1077,7 +1076,7 @@ namespace vmml
             }
             delete slice;
         }
-        
+
         VMML_TEMPLATE_STRING
 		void
 		VMML_TEMPLATE_CLASSNAME::mode4_unfolding_fwd(mode4_unfolding_type& unfolding) const {
@@ -1091,7 +1090,7 @@ namespace vmml
                 }
             }
         }
-        
+
 		VMML_TEMPLATE_STRING
         double
         VMML_TEMPLATE_CLASSNAME::frobenius_norm() const {
@@ -1108,7 +1107,7 @@ namespace vmml
             }
             return sqrt(f_norm);
         }
-        
+
 		VMML_TEMPLATE_STRING
         double
         VMML_TEMPLATE_CLASSNAME::frobenius_norm( const tensor4< I1, I2, I3, I4, T >& other ) const {
@@ -1125,8 +1124,8 @@ namespace vmml
                 }
             }
             return sqrt(f_norm);
-        }        
-        
+        }
+
 #undef VMML_TEMPLATE_STRING
 #undef VMML_TEMPLATE_CLASSNAME
 

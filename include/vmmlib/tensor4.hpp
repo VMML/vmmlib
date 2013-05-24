@@ -42,14 +42,15 @@ namespace vmml
         tensor3_t& average_I4(tensor3_t& t3) const;
         
         typedef matrix< I1, I2*I3*I4, T > mode1_unfolding_type;
-        typedef matrix< I2, I1*I3*I4, T > mode2_unfolding_type;
-        typedef matrix< I3, I1*I2*I4, T > mode3_unfolding_type;
+        typedef matrix< I2, I3*I4*I1, T > mode2_unfolding_type;
+        typedef matrix< I3, I4*I1*I2, T > mode3_unfolding_type;
         typedef matrix< I4, I1*I2*I3, T > mode4_unfolding_type;
 
         inline void get_tensor3( const size_t i4_, tensor3_t& t3_data_ ) const;
 
         inline tensor3_t& get_tensor3( size_t i4_ );
         inline const tensor3_t& get_tensor3( size_t i4_ ) const;
+        inline void set_tensor3( size_t i4_, const tensor3_t& t3_data_ );
 
         static const size_t ROWS           = I1;
         static const size_t COLS           = I2;
@@ -202,9 +203,9 @@ namespace vmml
                         {
                             if (i2 == (I2 - 1) )
                             {
-                                os << int(t4.at( i1, i2, i3, i4 )) ;
+                                os << T(t4.at( i1, i2, i3, i4 )) ;
                             } else {
-                                os << int(t4.at( i1, i2, i3, i4 )) << ", " ;
+                                os << T(t4.at( i1, i2, i3, i4 )) << ", " ;
                             }
 
                         }
@@ -454,6 +455,7 @@ namespace vmml
         }
 
 
+
         VMML_TEMPLATE_STRING
         inline void
         VMML_TEMPLATE_CLASSNAME::
@@ -494,6 +496,21 @@ namespace vmml
             return _get_tensor3( i4_ );
         }
 
+        
+        
+        VMML_TEMPLATE_STRING
+        inline void
+        VMML_TEMPLATE_CLASSNAME::
+        set_tensor3( size_t i4_, const tensor3_t& t3_data_ )
+        {
+#ifdef VMMLIB_SAFE_ACCESSORS
+            if ( i4_ >= I4 )
+                VMMLIB_ERROR( "set_tensor3() - index out of bounds.", VMMLIB_HERE );
+#endif
+            memcpy(_array + I1*I2*I3*i4_, t3_data_.get_array_ptr(), I1*I2*I3*sizeof(T));
+        }
+                
+        
 
         //fill
         VMML_TEMPLATE_STRING
@@ -939,28 +956,140 @@ namespace vmml
             _array = 0;
         }
 
+//        VMML_TEMPLATE_STRING
+//		void
+//		VMML_TEMPLATE_CLASSNAME::mode1_unfolding_fwd(mode1_unfolding_type& unfolding) const {
+//            typedef matrix< I1, I2, T > slice_type;
+//            slice_type* slice = new slice_type();
+//            for (size_t l = 0; l < I4; ++l) {
+//                tensor3_t t3;
+//                get_tensor3(l,t3);
+//                for (size_t k = 0; k < I3; ++k) {
+//                    t3.get_frontal_slice_fwd(k, *slice);
+//                    for (size_t j = 0; j < I2; ++j) {
+//                        unfolding.set_column(l*I2*I3 + k*I2 + j, slice->get_column(j));
+//                    }
+//                }
+//            }
+//            delete slice;
+//        }
+//        
+//        VMML_TEMPLATE_STRING
+//		void
+//		VMML_TEMPLATE_CLASSNAME::mode2_unfolding_fwd(mode2_unfolding_type& unfolding) const {
+//            typedef matrix< I2, I3, T > slice_type;
+//            slice_type* slice = new slice_type();
+//            for (size_t i = 0; i < I1; ++i) {
+//                for (size_t l = 0; l < I4; ++l) {
+//                    tensor3_t t3;
+//                    get_tensor3(l,t3);
+//                    t3.get_horizontal_slice_fwd(i, *slice);
+//                    for (size_t k = 0; k < I3; ++k) {
+//                        unfolding.set_column(i*I3*I4 + l*I3 + k, slice->get_column(k));
+//                    }
+//                }
+//            }
+//            delete slice;
+//        }
+//        
+//        VMML_TEMPLATE_STRING
+//		void
+//		VMML_TEMPLATE_CLASSNAME::mode3_unfolding_fwd(mode3_unfolding_type& unfolding) const {
+//            typedef matrix< I2, I3, T > slice_type;
+//            slice_type* slice = new slice_type();
+//            for (size_t j = 1; j < I2; ++j) {
+//                for (size_t i = 0; i < I1; ++i) {
+//                    for (size_t l = 0; l < I4; ++l) {
+//                        tensor3_t t3;
+//                        get_tensor3(l,t3);
+//                        t3.get_horizontal_slice_fwd(i, *slice);
+//                        unfolding.set_column(j*I4*I1 + i*I4 + l, slice->get_column(j));
+//                    }
+//                }
+//            }
+//            delete slice;
+//        }
+//        
+//        VMML_TEMPLATE_STRING
+//		void
+//		VMML_TEMPLATE_CLASSNAME::mode4_unfolding_fwd(mode4_unfolding_type& unfolding) const {
+//            for (size_t k = 1; k < I3; ++k) {
+//                for (size_t j = 0; j < I2; ++j) {
+//                    for (size_t i = 0; i < I1; ++i) {
+//                        for (size_t l = 0; l < I4; ++l) {
+//                            unfolding.at(l,k*I1*I2 + j*I1 + i) = at(i,j,k,l);
+//                        }
+//                    }
+//                }
+//            }
+//        }
+        
         VMML_TEMPLATE_STRING
 		void
 		VMML_TEMPLATE_CLASSNAME::mode1_unfolding_fwd(mode1_unfolding_type& unfolding) const {
-            
+            typedef matrix< I1, I2, T > slice_type;
+            slice_type* slice = new slice_type();
+            for (size_t l = 0; l < I4; ++l) {
+                tensor3_t t3;
+                get_tensor3(l,t3);
+                for (size_t k = 0; k < I3; ++k) {
+                    t3.get_frontal_slice_fwd(k, *slice);
+                    for (size_t j = 0; j < I2; ++j) {
+                        unfolding.set_column(l*I2*I3 + k*I2 + j, slice->get_column(j));
+                    }
+                }
+            }
+            delete slice;
         }
         
         VMML_TEMPLATE_STRING
 		void
 		VMML_TEMPLATE_CLASSNAME::mode2_unfolding_fwd(mode2_unfolding_type& unfolding) const {
-            
+            typedef matrix< I2, I3, T > slice_type;
+            slice_type* slice = new slice_type();
+            for (size_t i = 0; i < I1; ++i) {
+                for (size_t l = 0; l < I4; ++l) {
+                    tensor3_t t3;
+                    get_tensor3(l,t3);
+                    t3.get_horizontal_slice_fwd(i, *slice);
+                    for (size_t k = 0; k < I3; ++k) {
+                        unfolding.set_column(i*I3*I4 + l*I3 + k, slice->get_column(k));
+                    }
+                }
+            }
+            delete slice;
         }
         
         VMML_TEMPLATE_STRING
 		void
 		VMML_TEMPLATE_CLASSNAME::mode3_unfolding_fwd(mode3_unfolding_type& unfolding) const {
-            
+            typedef matrix< I2, I3, T > slice_type;
+            slice_type* slice = new slice_type();
+            for (size_t j = 0; j < I2; ++j) {
+                for (size_t i = 0; i < I1; ++i) {
+                    for (size_t l = 0; l < I4; ++l) {
+                        tensor3_t t3;
+                        get_tensor3(l,t3);
+                        t3.get_horizontal_slice_fwd(i, *slice);
+                        unfolding.set_column(j*I4*I1 + i*I4 + l, slice->get_row(j));
+                    }
+                }
+            }
+            delete slice;
         }
         
         VMML_TEMPLATE_STRING
 		void
 		VMML_TEMPLATE_CLASSNAME::mode4_unfolding_fwd(mode4_unfolding_type& unfolding) const {
-            
+            for (size_t k = 0; k < I3; ++k) {
+                for (size_t j = 0; j < I2; ++j) {
+                    for (size_t i = 0; i < I1; ++i) {
+                        for (size_t l = 0; l < I4; ++l) {
+                            unfolding.at(l,k*I1*I2 + j*I1 + i) = at(i,j,k,l);
+                        }
+                    }
+                }
+            }
         }
         
 		VMML_TEMPLATE_STRING
@@ -979,6 +1108,24 @@ namespace vmml
             }
             return sqrt(f_norm);
         }
+        
+		VMML_TEMPLATE_STRING
+        double
+        VMML_TEMPLATE_CLASSNAME::frobenius_norm( const tensor4< I1, I2, I3, I4, T >& other ) const {
+            double f_norm = 0.0;
+            for (long i3 = 0; i3 < long(I3); ++i3) {
+                for (long i4 = 0; i4 < long(I4); ++i4) {
+                    for (long i1 = 0; i1 < long(I1); ++i1) {
+                        long i2 = 0;
+                        for (i2 = 0; i2 < long(I2); ++i2) {
+                            double abs_diff = fabs(at(i1, i2, i3, i4) - other.at(i1, i2, i3, i4));
+                            f_norm += abs_diff*abs_diff;
+                        }
+                    }
+                }
+            }
+            return sqrt(f_norm);
+        }        
         
 #undef VMML_TEMPLATE_STRING
 #undef VMML_TEMPLATE_CLASSNAME

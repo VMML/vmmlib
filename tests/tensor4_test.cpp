@@ -2,6 +2,7 @@
 #include "tensor4_test.hpp"
 
 #include <vmmlib/tensor4.hpp>
+#include <vmmlib/tucker4_tensor.hpp>
 #include <vmmlib/t4_converter.hpp>
 #include <vmmlib/tensor_mmapper.hpp>
 #include <sstream>
@@ -319,7 +320,7 @@ namespace vmml
             }
         }
 
-        TEST( !fail && max - min > std::numeric_limits< T >::max()/4); // assert at least a certain bandwith of values
+        TEST( !fail && max - min > (std::numeric_limits< T >::max)()/4); // assert at least a certain bandwith of values
         if (ok)
         {
             log( "tensor4 random fill", true  );
@@ -929,6 +930,41 @@ namespace vmml
 
             log_error( error.str(),  fail_test);
 
+        }
+        
+        {
+            tensor4< 2, 2, 2, 2, double > t4_data;
+            double data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
+            t4_data.set( data, data + 16 );
+            tucker4_tensor< 1, 1, 1, 1, 2, 2, 2, 2, double > tuck4_dec;
+            typedef t4_hooi< 1, 1, 1, 1, 2, 2, 2, 2, double > hooi_type;
+            tuck4_dec.tucker_als(t4_data, hooi_type::init_hosvd());
+            tensor4< 2, 2, 2, 2, double > reco, reco_check;
+            tuck4_dec.reconstruct( reco );
+            
+            double data_reco_check[] = { 2.5882, 2.8606, 3.1682, 3.5017, 3.9482, 4.3637, 4.8330, 5.3417, 7.7110, 8.5226, 9.4390, 10.4326, 11.7627, 13.0008, 14.3988, 15.9144 };
+            reco_check.set( data_reco_check, data_reco_check + 16 );
+            double precision = 1.0e-2;
+            TEST( reco.equals(reco_check, precision) );
+            if (ok)
+            {
+                log( "tensor4 Tucker reconstruction", true  );
+            }else
+            {
+                std::stringstream error;
+                error
+                << "tensor4 Tucker reconstruction"
+                << std::endl
+                << "reco is:"
+                << std::endl
+                << reco
+                << std::endl
+                << "reco should be:"
+                << std::endl
+                << reco_check << std::endl;
+
+                log_error( error.str(),  fail_test);
+            }
         }
 
         return global_ok;

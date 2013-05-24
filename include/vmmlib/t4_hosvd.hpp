@@ -118,7 +118,7 @@ VMML_TEMPLATE_CLASSNAME::eigs_mode2( const t4_type& data_, u2_type& u2_ )
 	//unfolding / matricization
 	u2_unfolded_type* unfolding = new u2_unfolded_type;
 	data_.mode2_unfolding_fwd( *unfolding );
-	
+    
 	//covariance matrix of unfolded data
 	u2_cov_type* cov  = new u2_cov_type;
 	blas_dgemm< I2, I1*I3*I4, I2, T>* blas_cov = new blas_dgemm< I2, I1*I3*I4, I2, T>;
@@ -139,7 +139,7 @@ VMML_TEMPLATE_CLASSNAME::eigs_mode3( const t4_type& data_, u3_type& u3_)
 	//unfolding / matricization
 	u3_unfolded_type* unfolding = new u3_unfolded_type;
 	data_.mode3_unfolding_fwd( *unfolding );
-	
+
 	//covariance matrix of unfolded data
 	u3_cov_type* cov  = new u3_cov_type;
 	blas_dgemm< I3, I1*I2*I4, I3, T>* blas_cov = new blas_dgemm< I3, I1*I2*I4, I3, T>;
@@ -160,7 +160,7 @@ VMML_TEMPLATE_CLASSNAME::eigs_mode4( const t4_type& data_, u4_type& u4_)
 	//unfolding / matricization
 	u4_unfolded_type* unfolding = new u4_unfolded_type;
 	data_.mode4_unfolding_fwd( *unfolding );
-	
+
 	//covariance matrix of unfolded data
 	u4_cov_type* cov  = new u4_cov_type;
 	blas_dgemm< I4, I1*I2*I3, I4, T>* blas_cov = new blas_dgemm< I4, I1*I2*I3, I4, T>;
@@ -193,7 +193,7 @@ VMML_TEMPLATE_CLASSNAME::get_eigs_u_red( const matrix< N, N, T >& data_, matrix<
 	lapack_sym_eigs< N, T >  eigs;
 	cov_matrix_type* data = new cov_matrix_type;
 	data->cast_from( data_ );
-	if( eigs.compute_x( *data, *eigxvectors, *eigxvalues) ) {
+	if( !eigs.compute_x( *data, *eigxvectors, *eigxvalues) ) {
 		
 		/*if( _is_quantify_coeff ){
 			coeff_type* evec_quant = new coeff_type; 
@@ -203,10 +203,9 @@ VMML_TEMPLATE_CLASSNAME::get_eigs_u_red( const matrix< N, N, T >& data_, matrix<
 			evec_quant->dequantize( u_, min_value, max_value );
 			delete evec_quant;
 		} else */
-		u_ = *eigxvectors;
-	} else {
-		u_.zero();
+		std::cerr << "Warning: lapack eigenvector computation returned error code" << std::endl;
 	}
+    u_ = *eigxvectors;
 	
 	delete eigxvalues;
 	delete eigxvectors;

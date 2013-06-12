@@ -1470,7 +1470,8 @@ template< size_t M, typename T >
 const vector< M, T >&
 vector< M, T >::operator=( const vector< M, T >& other )
 {
-    memcpy( array, other.array, M * sizeof( T ) );
+    if( this != &other )
+        memcpy( array, other.array, M * sizeof( T ) );
     return *this;
 }
 

@@ -1362,11 +1362,7 @@ vector< M, T >::project_point_onto_plane( const vector< 3, TT >& point,
 template< size_t M, typename T >
 bool vector< M, T >::operator==( const vector< M, T >& other ) const
 {
-    for( size_t i = 0; i < M; ++i )
-        if( at( i ) != other.at( i ))
-            return false;
-
-    return true;
+    return memcmp( array, other.array, sizeof( array )) == 0;
 }
 
 

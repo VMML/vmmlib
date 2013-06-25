@@ -836,7 +836,7 @@ quaternion< T > quaternion< T >::rotate( T theta, vector< 3, T >& axis,
 {
     quaternion< T > p = a;
     T alpha = theta / 2;
-    quaternion< T > q = cos( alpha ) + ( sin( alpha ) * axis.normalize() );
+    quaternion< T > q = std::cos( alpha ) + ( std::sin( alpha ) * axis.normalize() );
     return q * p * q.invert();
 }
 
@@ -847,7 +847,7 @@ quaternion< T > quaternion< T >::rotate_x( T theta, const vector< 3, T >& a )
 {
     quaternion< T > p = a;
     T alpha = theta / 2;
-    quaternion< T > q = cos( alpha ) + ( sin( alpha ) *  QUATERI );
+    quaternion< T > q = std::cos( alpha ) + ( std::sin( alpha ) *  QUATERI );
     return q * p * q.invert();
 }
 
@@ -858,7 +858,7 @@ quaternion< T > quaternion< T >::rotate_y( T theta, const vector< 3, T >& a )
 {
     quaternion< T > p = a;
     T alpha = theta / 2;
-    quaternion< T > q = cos( alpha ) + ( sin( alpha ) *  QUATERJ );
+    quaternion< T > q = std::cos( alpha ) + ( std::sin( alpha ) *  QUATERJ );
     return q * p * q.invert();
 }
 
@@ -869,7 +869,7 @@ quaternion< T > quaternion< T >::rotate_z( T theta, const vector< 3, T >& a )
 {
     quaternion< T > p = a;
     T alpha = theta / 2;
-    quaternion< T > q = cos( alpha ) + ( sin( alpha ) *  QUATERK );
+    quaternion< T > q = std::cos( alpha ) + ( std::sin( alpha ) *  QUATERK );
     return q * p * q.invert();
 }
 
@@ -936,8 +936,8 @@ slerp( T a, const quaternion< T >& p, const quaternion< T >& q, const T epsilon 
         // standard slerp
         T sine = sqrt( 1. - ( cosine * cosine ) );
         T angle = atan2( sine, cosine );
-        T coeff1 = sin( ( 1.0 - a ) * angle) / sine;
-        T coeff2 = sin( a * angle ) / sine;
+        T coeff1 = std::sin( ( 1.0 - a ) * angle) / sine;
+        T coeff2 = std::sin( a * angle ) / sine;
 
         qx *= coeff2;
         px *= coeff1;

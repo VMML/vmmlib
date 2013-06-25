@@ -28,8 +28,8 @@ class matrix
 {
 public:
     typedef T                                       value_type;
-	typedef T*                                      pointer;
-	typedef T&                                      reference;
+    typedef T*                                      pointer;
+    typedef T&                                      reference;
     typedef T*                                      iterator;
     typedef const T*                                const_iterator;
     typedef std::reverse_iterator< iterator >       reverse_iterator;
@@ -82,16 +82,16 @@ public:
 
     void multiply_piecewise( const matrix& other );
 
-	// (this) matrix = left matrix_mxp * right matrix_pxn
+    // (this) matrix = left matrix_mxp * right matrix_pxn
     template< size_t P >
     void multiply(
         const matrix< M, P, T >& left,
         const matrix< P, N, T >& right
         );
 
-	// convolution operation (extending borders) of (this) matrix and the given kernel
-	template< size_t U, size_t V >
-	void convolve(const matrix< U, V, T >& kernel);
+    // convolution operation (extending borders) of (this) matrix and the given kernel
+    template< size_t U, size_t V >
+    void convolve(const matrix< U, V, T >& kernel);
 
     // returned matrix_mxp = (this) matrix * other matrix_nxp;
     // note: using multiply(...) it avoids a copy of the resulting matrix
@@ -103,36 +103,36 @@ public:
     typename enable_if< M == N && O == P && M == O, TT >::type*
     operator*=( const matrix< O, P, TT >& right );
 
-	inline matrix operator+( const matrix& other ) const;
-	inline matrix operator-( const matrix& other ) const;
+    inline matrix operator+( const matrix& other ) const;
+    inline matrix operator-( const matrix& other ) const;
 
-	void operator+=( const matrix& other );
-	void operator-=( const matrix& other );
+    void operator+=( const matrix& other );
+    void operator-=( const matrix& other );
 
-	void operator+=( T scalar );
-	void operator-=( T scalar );
+    void operator+=( T scalar );
+    void operator-=( T scalar );
 
-	template< size_t O, size_t P, size_t Q, size_t R >
+    template< size_t O, size_t P, size_t Q, size_t R >
     typename enable_if< M == O + Q && N == P + R >::type*
     direct_sum( const matrix< O, P, T >& m0, const matrix< Q, R, T >& m1 );
 
-	//
-	// matrix-scalar operations / scaling
-	//
+    //
+    // matrix-scalar operations / scaling
+    //
     matrix operator*( T scalar );
     void operator*=( T scalar );
 
     matrix operator/( T scalar );
     void operator/=( T scalar );
 
-	//
-	// matrix-vector operations
     //
-	// transform column vector by matrix ( vec = matrix * vec )
+    // matrix-vector operations
+    //
+    // transform column vector by matrix ( vec = matrix * vec )
     vector< M, T > operator*( const vector< N, T >& other ) const;
 
-	// transform column vector by matrix ( vec = matrix * vec )
-	// assume homogenous coords, e.g. vec3 = mat4x4 * vec3, with w = 1.0
+    // transform column vector by matrix ( vec = matrix * vec )
+    // assume homogenous coords, e.g. vec3 = mat4x4 * vec3, with w = 1.0
     template< size_t O >
     vector< O, T > operator*( const vector< O, T >& vector_ ) const;
 
@@ -140,35 +140,35 @@ public:
     matrix< M, N, T > negate() const;
 
     // compute tensor product: (this) = vector (X) vector
-	void tensor( const vector< M, T >& u, const vector< N, T >& v );
+    void tensor( const vector< M, T >& u, const vector< N, T >& v );
     // tensor, for api compatibility with old vmmlib version.
     // WARNING: for M = N = 4 only.
     template< size_t uM, size_t vM >
     typename enable_if< uM == 3 && vM == 3 && M == N && M == 4 >::type*
     tensor( const vector< uM, T >& u, const vector< vM, T >& v );
 
-	// row_offset and col_offset define the starting indices for the sub_matrix
-	// the sub_matrix is extracted according to the size of the target matrix, i.e. ( OXP )
-	template< size_t O, size_t P >
-	matrix< O, P, T >
+    // row_offset and col_offset define the starting indices for the sub_matrix
+    // the sub_matrix is extracted according to the size of the target matrix, i.e. ( OXP )
+    template< size_t O, size_t P >
+    matrix< O, P, T >
     get_sub_matrix( size_t row_offset, size_t col_offset,
         typename enable_if< O <= M && P <= N >::type* = 0 ) const;
 
-	template< size_t O, size_t P >
-	typename enable_if< O <= M && P <= N >::type*
+    template< size_t O, size_t P >
+    typename enable_if< O <= M && P <= N >::type*
     get_sub_matrix( matrix< O, P, T >& result,
         size_t row_offset = 0, size_t col_offset = 0 ) const;
 
-	template< size_t O, size_t P >
-	typename enable_if< O <= M && P <= N >::type*
+    template< size_t O, size_t P >
+    typename enable_if< O <= M && P <= N >::type*
     set_sub_matrix( const matrix< O, P, T >& sub_matrix,
-		size_t row_offset = 0, size_t col_offset = 0 );
+        size_t row_offset = 0, size_t col_offset = 0 );
 
     // copies a transposed version of *this into transposedMatrix
     void transpose_to( matrix< N, M, T >& transpose_ ) const;
 
-	//symmetric covariance matrix of a right matrix multiplication: MxN x NxM = MxM
-	void	symmetric_covariance( matrix< M, M, T >& cov_m_ ) const;
+    //symmetric covariance matrix of a right matrix multiplication: MxN x NxM = MxM
+    void	symmetric_covariance( matrix< M, M, T >& cov_m_ ) const;
 
 
     const matrix& operator=( const matrix< M, N, T >& source_ );
@@ -185,7 +185,7 @@ public:
     void operator=( const T* data_array );
     void operator=( const std::vector< T >& data );
 
-	// sets all elements to fill_value
+    // sets all elements to fill_value
     void operator=( T fill_value );
     void fill( T fill_value );
 
@@ -195,63 +195,63 @@ public:
     void set( input_iterator_t begin_, input_iterator_t end_,
         bool row_major_layout = true );
 
-	//sets all matrix values with random values
-	//remember to set srand( seed );
-	//if seed is set to -1, srand( seed ) was set outside set_random
-	//otherwise srand( seed ) will be called with the given seed
-	void set_random( int seed = -1 );
+    //sets all matrix values with random values
+    //remember to set srand( seed );
+    //if seed is set to -1, srand( seed ) was set outside set_random
+    //otherwise srand( seed ) will be called with the given seed
+    void set_random( int seed = -1 );
 
-	//sets all matrix values with discrete cosine transform coefficients (receive orthonormal coefficients)
-	void set_dct();
+    //sets all matrix values with discrete cosine transform coefficients (receive orthonormal coefficients)
+    void set_dct();
 
     void zero();
     void identity();
 
-	double frobenius_norm() const;
-	double p_norm( double p ) const;
+    double frobenius_norm() const;
+    double p_norm( double p ) const;
 
-	template< typename TT >
-	void cast_from( const matrix< M, N, TT >& other );
+    template< typename TT >
+    void cast_from( const matrix< M, N, TT >& other );
 
-	void read_csv_file( const std::string& dir_, const std::string& filename_ );
-	void write_csv_file( const std::string& dir_, const std::string& filename_ ) const;
-	void write_to_raw( const std::string& dir_, const std::string& filename_ ) const;
-	void read_from_raw( const std::string& dir_, const std::string& filename_ ) ;
+    void read_csv_file( const std::string& dir_, const std::string& filename_ );
+    void write_csv_file( const std::string& dir_, const std::string& filename_ ) const;
+    void write_to_raw( const std::string& dir_, const std::string& filename_ ) const;
+    void read_from_raw( const std::string& dir_, const std::string& filename_ ) ;
 
-	template< typename TT >
-		void quantize_to( matrix< M, N, TT >& quantized_, const T& min_value, const T& max_value ) const;
-	template< typename TT >
-		void quantize( matrix< M, N, TT >& quantized_, T& min_value, T& max_value ) const;
-	template< typename TT >
-		void dequantize( matrix< M, N, TT >& quantized_, const TT& min_value, const TT& max_value ) const;
+    template< typename TT >
+        void quantize_to( matrix< M, N, TT >& quantized_, const T& min_value, const T& max_value ) const;
+    template< typename TT >
+        void quantize( matrix< M, N, TT >& quantized_, T& min_value, T& max_value ) const;
+    template< typename TT >
+        void dequantize( matrix< M, N, TT >& quantized_, const TT& min_value, const TT& max_value ) const;
 
-	void columnwise_sum( vector< N, T>& summed_columns_ ) const;
-	double sum_elements() const;
+    void columnwise_sum( vector< N, T>& summed_columns_ ) const;
+    double sum_elements() const;
 
-	void sum_rows( matrix< M/2, N, T>& other ) const;
-	void sum_columns( matrix< M, N/2, T>& other ) const;
+    void sum_rows( matrix< M/2, N, T>& other ) const;
+    void sum_columns( matrix< M, N/2, T>& other ) const;
 
-	template< size_t R >
+    template< size_t R >
     typename enable_if< R == M && R == N >::type*
-	diag( const vector< R, T >& diag_values_ );
+    diag( const vector< R, T >& diag_values_ );
 
 
-	//Khatri-Rao Product: columns must be of same size
+    //Khatri-Rao Product: columns must be of same size
     template< size_t O >
     void khatri_rao_product( const matrix< O, N, T >& right_, matrix< M*O, N, T >& prod_ ) const;
-	//Kronecker Product: MxN x_kronecker OxP = M*OxN*P
+    //Kronecker Product: MxN x_kronecker OxP = M*OxN*P
     template< size_t O, size_t P >
     void kronecker_product( const matrix< O, P, T >& right_,  matrix< M*O, N*P, T >& result_) const;
 
-	T get_min() const;
-	T get_max() const;
-	T get_abs_min() const;
-	T get_abs_max() const;
+    T get_min() const;
+    T get_max() const;
+    T get_abs_min() const;
+    T get_abs_max() const;
 
-	//returns number of non-zeros
-	size_t nnz() const;
-	size_t nnz( const T& threshold_ ) const;
-	void threshold( const T& threshold_value_ );
+    //returns number of non-zeros
+    size_t nnz() const;
+    size_t nnz( const T& threshold_ ) const;
+    void threshold( const T& threshold_value_ );
 
     vector< M, T >  get_column( size_t column_index ) const;
     void get_column( size_t column_index, vector< M, T>& column ) const;
@@ -368,9 +368,9 @@ public:
     void get_translation( vector< 3, TT >& translation_,
         typename enable_if< M == N && M == 4, TT >::type* = 0 ) const;
 
-	// hack for static-member-init
-	template< typename init_functor_t >
-	static const matrix get_initialized_matrix();
+    // hack for static-member-init
+    template< typename init_functor_t >
+    static const matrix get_initialized_matrix();
 
     inline T& x();
     inline T& y();
@@ -378,51 +378,51 @@ public:
 
 
     // tests every component for isnan && isinf
-	//   inline bool is_valid() const;  -> moved to class validator
+    //   inline bool is_valid() const;  -> moved to class validator
 
-	// legacy/compatibility accessor
-	struct row_accessor
-	{
-		row_accessor( T* array_ ) : array( array_ ) {}
-		T&
-		operator[]( size_t col_index )
-		{
-			#ifdef VMMLIB_SAFE_ACCESSORS
-			if ( col_index >= N )
+    // legacy/compatibility accessor
+    struct row_accessor
+    {
+        row_accessor( T* array_ ) : array( array_ ) {}
+        T&
+        operator[]( size_t col_index )
+        {
+            #ifdef VMMLIB_SAFE_ACCESSORS
+            if ( col_index >= N )
                 VMMLIB_ERROR( "column index out of bounds", VMMLIB_HERE );
-			#endif
-			return array[ col_index * M ];
-		}
+            #endif
+            return array[ col_index * M ];
+        }
 
-		const T&
-		operator[]( size_t col_index ) const
-		{
-			#ifdef VMMLIB_SAFE_ACCESSORS
-			if ( col_index >= N )
+        const T&
+        operator[]( size_t col_index ) const
+        {
+            #ifdef VMMLIB_SAFE_ACCESSORS
+            if ( col_index >= N )
                 VMMLIB_ERROR( "column index out of bounds", VMMLIB_HERE );
-			#endif
-			return array[ col_index * M ];
-		}
+            #endif
+            return array[ col_index * M ];
+        }
 
-		T* array;
-		private: row_accessor() {} // disallow std ctor
-	};
-	// this is a hack to allow array-style access to matrix elements
-	// usage: matrix< 2, 2, float > m; m[ 1 ][ 0 ] = 37.0f;
-	inline row_accessor operator[]( size_t row_index )
-	{
-		#ifdef VMMLIB_SAFE_ACCESSORS
-		if ( row_index > M )
+        T* array;
+        private: row_accessor() {} // disallow std ctor
+    };
+    // this is a hack to allow array-style access to matrix elements
+    // usage: matrix< 2, 2, float > m; m[ 1 ][ 0 ] = 37.0f;
+    inline row_accessor operator[]( size_t row_index )
+    {
+        #ifdef VMMLIB_SAFE_ACCESSORS
+        if ( row_index > M )
             VMMLIB_ERROR( "row index out of bounds", VMMLIB_HERE );
-		#endif
-		return row_accessor( array + row_index );
-	}
+        #endif
+        return row_accessor( array + row_index );
+    }
 
-	// this is a hack to remove a warning about implicit conversions
-	inline row_accessor operator[]( int row_index )
-	{
-		return ( *this )[ size_t ( row_index ) ];
-	}
+    // this is a hack to remove a warning about implicit conversions
+    inline row_accessor operator[]( int row_index )
+    {
+        return ( *this )[ size_t ( row_index ) ];
+    }
 
     friend std::ostream& operator << ( std::ostream& os,
         const matrix< M, N, T >& matrix )
@@ -452,10 +452,10 @@ public:
             for( size_t col_index = 0; col_index < N; ++col_index )
             {
                 if( sizeof(T) ==sizeof(unsigned char)) {
-					os << int(matrix.at( row_index, col_index ));
-				} else {
-					os << matrix.at( row_index, col_index );
-				}
+                    os << int(matrix.at( row_index, col_index ));
+                } else {
+                    os << matrix.at( row_index, col_index );
+                }
                 if (col_index + 1 < N )
                     os << ", ";
             }
@@ -509,38 +509,38 @@ template< size_t M, size_t N, typename T >
 template< size_t U, size_t V >
 void matrix< M, N, T>::convolve(const matrix< U, V, T >& kernel)
 {
-	matrix< M, N, T> temp;  // do not override original values instantly as old values are needed for calculation
+    matrix< M, N, T> temp;  // do not override original values instantly as old values are needed for calculation
 
-	for(size_t y_ = 0; y_ < N; ++y_)
+    for(size_t y_ = 0; y_ < N; ++y_)
     {
-		for(size_t x_ = 0; x_ < M; ++x_)
+        for(size_t x_ = 0; x_ < M; ++x_)
         {
-			double sum = 0.0;
+            double sum = 0.0;
 
-			for(size_t j = 0; j < V; ++j)
+            for(size_t j = 0; j < V; ++j)
             {
-				int srcy = y_ - V/2 + j;
+                int srcy = y_ - V/2 + j;
 
-				// Extending border values
-				if(srcy < 0)       srcy = 0;
-				if(srcy >= int(N)) srcy = N-1;
+                // Extending border values
+                if(srcy < 0)       srcy = 0;
+                if(srcy >= int(N)) srcy = N-1;
 
-				for(size_t i = 0; i < U; ++i)
+                for(size_t i = 0; i < U; ++i)
                 {
-					int srcx = x_ - U/2 + i;
+                    int srcx = x_ - U/2 + i;
 
-					// Extending border values
-					if(srcx < 0)       srcx = 0;
-					if(srcx >= int(M)) srcx = M-1;
+                    // Extending border values
+                    if(srcx < 0)       srcx = 0;
+                    if(srcx >= int(M)) srcx = M-1;
 
-					sum += kernel.at(j,i) * at(srcy,srcx);
-				}
-			}
-			temp.at(y_,x_) = sum;
-		}
-	}
+                    sum += kernel.at(j,i) * at(srcy,srcx);
+                }
+            }
+            temp.at(y_,x_) = sum;
+        }
+    }
 
-	*this = temp;
+    *this = temp;
 }
 
 
@@ -1012,14 +1012,14 @@ template< size_t M, size_t N, typename T >
 void
 matrix< M, N, T >::multiply_piecewise( const matrix& other )
 {
-	for( size_t row_index = 0; row_index < M; row_index++)
-	{
-		for( size_t col_index = 0; col_index < N; col_index++ )
-		{
-			T& value = at( row_index, col_index );
-			value *= other.at( row_index, col_index );
-		}
-	}
+    for( size_t row_index = 0; row_index < M; row_index++)
+    {
+        for( size_t col_index = 0; col_index < N; col_index++ )
+        {
+            T& value = at( row_index, col_index );
+            value *= other.at( row_index, col_index );
+        }
+    }
 }
 
 
@@ -1073,16 +1073,16 @@ template< size_t M, size_t N, typename T >
 matrix< M, N, T >
 matrix< M, N, T >::operator/( T scalar )
 {
-	matrix< M, N, T > result;
+    matrix< M, N, T > result;
 
-	for( size_t row_index = 0; row_index < M; ++row_index )
-	{
-		for( size_t col_index = 0; col_index < N; ++col_index )
-		{
-			result.at( row_index, col_index ) = at( row_index, col_index ) / scalar;
-		}
-	}
-	return result;
+    for( size_t row_index = 0; row_index < M; ++row_index )
+    {
+        for( size_t col_index = 0; col_index < N; ++col_index )
+        {
+            result.at( row_index, col_index ) = at( row_index, col_index ) / scalar;
+        }
+    }
+    return result;
 }
 
 
@@ -1091,13 +1091,13 @@ template< size_t M, size_t N, typename T >
 void
 matrix< M, N, T >::operator/=( T scalar )
 {
-	for( size_t row_index = 0; row_index < M; ++row_index )
-	{
-		for( size_t col_index = 0; col_index < N; ++col_index )
-		{
-			at( row_index, col_index ) /= scalar;
-		}
-	}
+    for( size_t row_index = 0; row_index < M; ++row_index )
+    {
+        for( size_t col_index = 0; col_index < N; ++col_index )
+        {
+            at( row_index, col_index ) /= scalar;
+        }
+    }
 }
 
 
@@ -1210,8 +1210,8 @@ template< size_t M, size_t N, typename T >
 void
 matrix< M, N, T >::tensor( const vector< M, T >& u, const vector< N, T >& v )
 {
-	for ( size_t col_index = 0; col_index < N; ++col_index )
-		for ( size_t row_index = 0; row_index < M; ++row_index )
+    for ( size_t col_index = 0; col_index < N; ++col_index )
+        for ( size_t row_index = 0; row_index < M; ++row_index )
             at( row_index, col_index ) = u.array[ col_index ] *
                                          v.array[ row_index ];
 }
@@ -1261,21 +1261,21 @@ void
 matrix< M, N, T >::
 symmetric_covariance( matrix< M, M, T >& cov_m_ ) const
 {
-	T tmp = 0;
-	for( size_t row = 0; row < M; ++row )
-	{
-		for( size_t col = row; col < M; ++col )
-		{
-			for ( size_t k = 0; k < N; ++k )
-			{
-				tmp += (at( row, k ) * at( col, k ));
-			}
+    T tmp = 0;
+    for( size_t row = 0; row < M; ++row )
+    {
+        for( size_t col = row; col < M; ++col )
+        {
+            for ( size_t k = 0; k < N; ++k )
+            {
+                tmp += (at( row, k ) * at( col, k ));
+            }
 
-			cov_m_.at( row, col ) = tmp;
-			cov_m_.at( col, row ) = tmp;
-			tmp = 0;
-		}
-	}
+            cov_m_.at( row, col ) = tmp;
+            cov_m_.at( col, row ) = tmp;
+            tmp = 0;
+        }
+    }
 }
 
 
@@ -1283,9 +1283,9 @@ symmetric_covariance( matrix< M, M, T >& cov_m_ ) const
 template< size_t M, size_t N, typename T >
 vector< M, T > matrix< M, N, T >::get_column( size_t index ) const
 {
-	vector< M, T > column;
-	get_column( index, column );
-	return column;
+    vector< M, T > column;
+    get_column( index, column );
+    return column;
 }
 
 
@@ -1343,9 +1343,9 @@ void matrix< M, N, T >::set_column( size_t index,
 template< size_t M, size_t N, typename T >
 vector< N, T > matrix< M, N, T >::get_row( size_t index ) const
 {
-	vector< N, T > row;
-	get_row( index, row );
-	return row;
+    vector< N, T > row;
+    get_row( index, row );
+    return row;
 }
 
 template< size_t M, size_t N, typename T >
@@ -1435,8 +1435,8 @@ fill( T fillValue )
     {
         for( size_t col_index = 0; col_index < N; ++col_index )
         {
-			at( row_index, col_index ) = fillValue;
-		}
+            at( row_index, col_index ) = fillValue;
+        }
     }
 }
 
@@ -1514,9 +1514,9 @@ template< size_t M, size_t N, typename T >
 inline matrix< M, N, T >
 matrix< M, N, T >::operator+( const matrix< M, N, T >& other ) const
 {
-	matrix< M, N, T > result( *this );
-	result += other;
-	return result;
+    matrix< M, N, T > result( *this );
+    result += other;
+    return result;
 }
 
 
@@ -1536,11 +1536,11 @@ void matrix< M, N, T >::operator+=( const matrix< M, N, T >& other )
 template< size_t M, size_t N, typename T >
 void matrix< M, N, T >::operator+=( T scalar )
 {
-	iterator it = begin(), it_end = end();
-	for( ; it != it_end; ++it )
-	{
-		*it += scalar;
-	}
+    iterator it = begin(), it_end = end();
+    for( ; it != it_end; ++it )
+    {
+        *it += scalar;
+    }
 }
 
 template< size_t M, size_t N, typename T >
@@ -1548,9 +1548,9 @@ inline matrix< M, N, T >
 matrix< M, N, T >::
 operator-( const matrix< M, N, T >& other ) const
 {
-	matrix< M, N, T > result( *this );
-	result -= other;
-	return result;
+    matrix< M, N, T > result( *this );
+    result -= other;
+    return result;
 }
 
 
@@ -1572,11 +1572,11 @@ template< size_t M, size_t N, typename T >
 void
 matrix< M, N, T >::operator-=( T scalar )
 {
-	iterator it = begin(), it_end = end();
-	for( ; it != it_end; ++it )
-	{
-		*it -= scalar;
-	}
+    iterator it = begin(), it_end = end();
+    for( ; it != it_end; ++it )
+    {
+        *it -= scalar;
+    }
 }
 
 
@@ -1617,9 +1617,9 @@ matrix< M, N, T >::
 get_sub_matrix( size_t row_offset, size_t col_offset,
 typename enable_if< O <= M && P <= N >::type* ) const
 {
-	matrix< O, P, T > result;
-	get_sub_matrix( result, row_offset, col_offset );
-	return result;
+    matrix< O, P, T > result;
+    get_sub_matrix( result, row_offset, col_offset );
+    return result;
 }
 
 
@@ -1629,21 +1629,21 @@ template< size_t O, size_t P >
 typename enable_if< O <= M && P <= N >::type*
 matrix< M, N, T >::
 get_sub_matrix( matrix< O, P, T >& result,
-	size_t row_offset, size_t col_offset ) const
+    size_t row_offset, size_t col_offset ) const
 {
     #ifdef VMMLIB_SAFE_ACCESSORS
     if ( O + row_offset > M || P + col_offset > N )
         VMMLIB_ERROR( "index out of bounds.", VMMLIB_HERE );
     #endif
 
-	for( size_t row = 0; row < O; ++row )
-	{
-		for( size_t col = 0; col < P; ++col )
-		{
-			result.at( row, col )
-				= at( row_offset + row, col_offset + col );
-		}
-	}
+    for( size_t row = 0; row < O; ++row )
+    {
+        for( size_t col = 0; col < P; ++col )
+        {
+            result.at( row, col )
+                = at( row_offset + row, col_offset + col );
+        }
+    }
     return 0;
 }
 
@@ -1656,14 +1656,14 @@ matrix< M, N, T >::
 set_sub_matrix( const matrix< O, P, T >& sub_matrix,
     size_t row_offset, size_t col_offset )
 {
-	for( size_t row = 0; row < O; ++row )
-	{
-		for( size_t col = 0; col < P; ++col )
-		{
+    for( size_t row = 0; row < O; ++row )
+    {
+        for( size_t col = 0; col < P; ++col )
+        {
             at( row_offset + row, col_offset + col )
                 = sub_matrix.at( row, col );
-		}
-	}
+        }
+    }
     return 0; // for sfinae
 }
 
@@ -1696,8 +1696,8 @@ typename enable_if< O == P && M == N && O == M && M >= 2 >::type*
 matrix< M, N, T >::
 get_adjugate( matrix< O, P, T >& adjugate ) const
 {
-	get_cofactors( adjugate );
-	adjugate = transpose( adjugate );
+    get_cofactors( adjugate );
+    adjugate = transpose( adjugate );
     return 0;
 }
 
@@ -1711,17 +1711,17 @@ get_cofactors( matrix< O, P, T >& cofactors ) const
 {
     matrix< M-1, N-1, T >   minor_;
 
-	const size_t _negate = 1u;
-	for( size_t row_index = 0; row_index < M; ++row_index )
-	{
-		for( size_t col_index = 0; col_index < N; ++col_index )
-		{
-			if ( ( row_index + col_index ) & _negate )
-				cofactors( row_index, col_index ) = -get_minor( minor_, row_index, col_index );
-			else
-				cofactors( row_index, col_index ) = get_minor( minor_, row_index, col_index );
-		}
-	}
+    const size_t _negate = 1u;
+    for( size_t row_index = 0; row_index < M; ++row_index )
+    {
+        for( size_t col_index = 0; col_index < N; ++col_index )
+        {
+            if ( ( row_index + col_index ) & _negate )
+                cofactors( row_index, col_index ) = -get_minor( minor_, row_index, col_index );
+            else
+                cofactors( row_index, col_index ) = get_minor( minor_, row_index, col_index );
+        }
+    }
     return 0;
 }
 
@@ -1734,25 +1734,25 @@ matrix< M, N, T >::
 get_minor( matrix< O, P, T >& minor_, size_t row_to_cut, size_t col_to_cut,
 typename enable_if< O == M-1 && P == N-1 && M == N && M >= 2 >::type* ) const
 {
-	size_t row_offset = 0;
-	size_t col_offset = 0;
-	for( size_t row_index = 0; row_index < M; ++row_index )
-	{
-		if ( row_index == row_to_cut )
-			row_offset = -1;
-		else
-		{
-			for( size_t col_index = 0; col_index < M; ++col_index )
-			{
-				if ( col_index == col_to_cut )
-					col_offset = -1;
-				else
-					minor_.at( row_index + row_offset, col_index + col_offset )
-						= at( row_index, col_index );
-			}
-			col_offset = 0;
-		}
-	}
+    size_t row_offset = 0;
+    size_t col_offset = 0;
+    for( size_t row_index = 0; row_index < M; ++row_index )
+    {
+        if ( row_index == row_to_cut )
+            row_offset = -1;
+        else
+        {
+            for( size_t col_index = 0; col_index < M; ++col_index )
+            {
+                if ( col_index == col_to_cut )
+                    col_offset = -1;
+                else
+                    minor_.at( row_index + row_offset, col_index + col_offset )
+                        = at( row_index, col_index );
+            }
+            col_offset = 0;
+        }
+    }
     return compute_determinant( minor_ );
 }
 
@@ -1764,31 +1764,31 @@ matrix< M, N, T >& matrix< M, N, T >::rotate(
 {
     const T angle = static_cast< T >( angle_ );
 
-    const T sine      = sin( angle );
-    const T cosine    = cos( angle );
+    const T sine      = std::sin( angle );
+    const T cosine    = std::cos( angle );
 
     // this is necessary since Visual Studio cannot resolve the
-    // pow()-call correctly if we just use 2.0 directly.
+    // std::pow()-call correctly if we just use 2.0 directly.
     // this way, the '2.0' is converted to the same format
     // as the axis components
 
-	const T _zero = 0.0;
-	const T one = 1.0;
+    const T _zero = 0.0;
+    const T one = 1.0;
     const T two = 2.0;
 
-    array[0]  = cosine + ( one - cosine ) * pow( axis.array[0], two );
+    array[0]  = cosine + ( one - cosine ) * std::pow( axis.array[0], two );
     array[1]  = ( one - cosine ) * axis.array[0] * axis.array[1] + sine * axis.array[2];
     array[2]  = ( one - cosine ) * axis.array[0] * axis.array[2] - sine * axis.array[1];
     array[3]  = _zero;
 
     array[4]  = ( one - cosine ) * axis.array[0] * axis.array[1] - sine * axis.array[2];
-    array[5]  = cosine + ( one - cosine ) * pow( axis.array[1], two );
+    array[5]  = cosine + ( one - cosine ) * std::pow( axis.array[1], two );
     array[6]  = ( one - cosine ) * axis.array[1] *  axis.array[2] + sine * axis.array[0];
     array[7]  = _zero;
 
     array[8]  = ( one - cosine ) * axis.array[0] * axis.array[2] + sine * axis.array[1];
     array[9]  = ( one - cosine ) * axis.array[1] * axis.array[2] - sine * axis.array[0];
-    array[10] = cosine + ( one - cosine ) * pow( axis.array[2], two );
+    array[10] = cosine + ( one - cosine ) * std::pow( axis.array[2], two );
     array[11] = _zero;
 
     array[12] = _zero;
@@ -1806,8 +1806,8 @@ matrix< M, N, T >& matrix< M, N, T >::rotate_x( const TT angle_,
 {
     const T angle       = static_cast< T >( angle_ );
 
-    const T sine        = sin( angle );
-    const T cosine      = cos( angle );
+    const T sine        = std::sin( angle );
+    const T cosine      = std::cos( angle );
 
     T tmp;
 
@@ -1837,8 +1837,8 @@ matrix< M, N, T >& matrix< M, N, T >::rotate_y( const TT angle_,
 {
     const T angle = static_cast< T >( angle_ );
 
-    const T sine      = sin( angle );
-    const T cosine    = cos( angle );
+    const T sine      = std::sin( angle );
+    const T cosine    = std::cos( angle );
 
     T tmp;
 
@@ -1868,8 +1868,8 @@ matrix< M, N, T >& matrix< M, N, T >::rotate_z( const TT angle_,
 {
     const T angle = static_cast< T >( angle_ );
 
-    const T sine      = sin( angle );
-    const T cosine    = cos( angle );
+    const T sine      = std::sin( angle );
+    const T cosine    = std::cos( angle );
 
     T tmp;
 
@@ -1899,8 +1899,8 @@ matrix< M, N, T >& matrix< M, N, T >::pre_rotate_x( const TT angle_,
 {
     const T angle = static_cast< T >( angle_ );
 
-    const T sine      = sin( angle );
-    const T cosine    = cos( angle );
+    const T sine      = std::sin( angle );
+    const T cosine    = std::cos( angle );
 
     T tmp;
 
@@ -1930,8 +1930,8 @@ matrix< M, N, T >& matrix< M, N, T >::pre_rotate_y( const TT angle_,
 {
     const T angle = static_cast< T >( angle_ );
 
-    const T sine      = sin( angle );
-    const T cosine    = cos( angle );
+    const T sine      = std::sin( angle );
+    const T cosine    = std::cos( angle );
 
     T tmp;
 
@@ -1961,8 +1961,8 @@ matrix< M, N, T >& matrix< M, N, T >::pre_rotate_z( const TT angle_,
 {
     const T angle = static_cast< T >( angle_ );
 
-    const T sine      = sin( angle );
-    const T cosine    = cos( angle );
+    const T sine      = std::sin( angle );
+    const T cosine    = std::cos( angle );
 
     T tmp;
 
@@ -2205,9 +2205,9 @@ template< typename init_functor_t >
 const matrix< M, N, T >
 matrix< M, N, T >::get_initialized_matrix()
 {
-	matrix< M, N, T > matrix_;
-	init_functor_t()( matrix_ );
-	return matrix_;
+    matrix< M, N, T > matrix_;
+    init_functor_t()( matrix_ );
+    return matrix_;
 }
 
 
@@ -2234,30 +2234,30 @@ template< size_t M, size_t N, typename T >
 double
 matrix< M, N, T >::frobenius_norm( ) const
 {
-	double norm = 0.0;
+    double norm = 0.0;
 
-	const_iterator it = begin(), it_end = end();
-	for( ; it != it_end; ++it )
-	{
-		norm += *it * *it;
-	}
+    const_iterator it = begin(), it_end = end();
+    for( ; it != it_end; ++it )
+    {
+        norm += *it * *it;
+    }
 
-	return sqrt(norm);
+    return sqrt(norm);
 }
 
 template< size_t M, size_t N, typename T >
 double
 matrix< M, N, T >::p_norm( double p ) const
 {
-	double norm = 0.0;
+    double norm = 0.0;
 
-	const_iterator it = begin(), it_end = end();
-	for( ; it != it_end; ++it )
-	{
-		norm += pow(*it, p);
-	}
+    const_iterator it = begin(), it_end = end();
+    for( ; it != it_end; ++it )
+    {
+        norm += std::pow(*it, p);
+    }
 
-	return pow(norm,1./p);
+    return std::pow(norm,1./p);
 }
 
 
@@ -2266,17 +2266,17 @@ template< size_t O >
 void
 matrix< M, N, T >::khatri_rao_product( const matrix< O, N, T >& right_, matrix< M*O, N, T >& prod_ ) const
 {
-	//build product for every column
-	for (size_t col = 0; col < N; ++col )
-	{
-		for ( size_t m = 0; m < M; ++m )
-		{
-			for (size_t o = 0; o < O; ++o )
-			{
-				prod_.at(O*m + o, col) = at( m, col ) * right_.at( o, col );
-			}
-		}
-	}
+    //build product for every column
+    for (size_t col = 0; col < N; ++col )
+    {
+        for ( size_t m = 0; m < M; ++m )
+        {
+            for (size_t o = 0; o < O; ++o )
+            {
+                prod_.at(O*m + o, col) = at( m, col ) * right_.at( o, col );
+            }
+        }
+    }
 }
 
 template< size_t M, size_t N, typename T  >
@@ -2284,20 +2284,20 @@ template< size_t O, size_t P >
 void
 matrix< M, N, T >::kronecker_product( const matrix< O, P, T >& right_, matrix< M*O, N*P, T >& result_ ) const
 {
-	//build product for every column
-	for (size_t m = 0; m < M; ++m )
-	{
-		for ( size_t n = 0; n < N; ++n )
-		{
-			for (size_t o = 0; o < O; ++o )
-			{
-				for (size_t p = 0; p < P; ++p )
-				{
-					result_.at(O*m + o, P*n + p) = at( m, n ) * right_.at( o, p );
-				}
-			}
-		}
-	}
+    //build product for every column
+    for (size_t m = 0; m < M; ++m )
+    {
+        for ( size_t n = 0; n < N; ++n )
+        {
+            for (size_t o = 0; o < O; ++o )
+            {
+                for (size_t p = 0; p < P; ++p )
+                {
+                    result_.at(O*m + o, P*n + p) = at( m, n ) * right_.at( o, p );
+                }
+            }
+        }
+    }
 }
 
 
@@ -2306,10 +2306,10 @@ template< typename TT >
 void
 matrix< M, N, T >::cast_from( const matrix< M, N, TT >& other )
 {
-	typedef vmml::matrix< M, N, TT > matrix_tt_type ;
-	typedef typename matrix_tt_type::const_iterator tt_const_iterator;
+    typedef vmml::matrix< M, N, TT > matrix_tt_type ;
+    typedef typename matrix_tt_type::const_iterator tt_const_iterator;
 
-	iterator it = begin(), it_end = end();
+    iterator it = begin(), it_end = end();
     tt_const_iterator other_it = other.begin();
     for( ; it != it_end; ++it, ++other_it )
     {
@@ -2322,34 +2322,34 @@ template< size_t M, size_t N, typename T  >
 T
 matrix< M, N, T >::get_min() const
 {
-	T min_value = static_cast<T>(std::numeric_limits<T>::max());
+    T min_value = static_cast<T>(std::numeric_limits<T>::max());
 
-	const_iterator  it = begin(),
-	it_end = end();
-	for( ; it != it_end; ++it)
-	{
-		if ( *it < min_value ) {
-			min_value = *it;
-		}
-	}
-	return min_value;
+    const_iterator  it = begin(),
+    it_end = end();
+    for( ; it != it_end; ++it)
+    {
+        if ( *it < min_value ) {
+            min_value = *it;
+        }
+    }
+    return min_value;
 }
 
 template< size_t M, size_t N, typename T  >
 T
 matrix< M, N, T >::get_max() const
 {
-	T max_value = static_cast<T>(0);
+    T max_value = static_cast<T>(0);
 
-	const_iterator  it = begin(),
-	it_end = end();
-	for( ; it != it_end; ++it)
-	{
-		if ( *it > max_value ) {
-			max_value = *it;
-		}
-	}
-	return max_value;
+    const_iterator  it = begin(),
+    it_end = end();
+    for( ; it != it_end; ++it)
+    {
+        if ( *it > max_value ) {
+            max_value = *it;
+        }
+    }
+    return max_value;
 }
 
 
@@ -2357,34 +2357,34 @@ template< size_t M, size_t N, typename T  >
 T
 matrix< M, N, T >::get_abs_min() const
 {
-	T min_value = static_cast<T>(std::numeric_limits<T>::max());
+    T min_value = static_cast<T>(std::numeric_limits<T>::max());
 
-	const_iterator  it = begin(),
-	it_end = end();
-	for( ; it != it_end; ++it)
-	{
-		if ( fabs(*it) < fabs(min_value) ) {
-			min_value = fabs(*it);
-		}
-	}
-	return min_value;
+    const_iterator  it = begin(),
+    it_end = end();
+    for( ; it != it_end; ++it)
+    {
+        if ( fabs(*it) < fabs(min_value) ) {
+            min_value = fabs(*it);
+        }
+    }
+    return min_value;
 }
 
 template< size_t M, size_t N, typename T  >
 T
 matrix< M, N, T >::get_abs_max() const
 {
-	T max_value = static_cast<T>(0);
+    T max_value = static_cast<T>(0);
 
-	const_iterator  it = begin(),
-	it_end = end();
-	for( ; it != it_end; ++it)
-	{
-		if ( fabs(*it) > fabs(max_value) ) {
-			max_value = fabs(*it);
-		}
-	}
-	return max_value;
+    const_iterator  it = begin(),
+    it_end = end();
+    for( ; it != it_end; ++it)
+    {
+        if ( fabs(*it) > fabs(max_value) ) {
+            max_value = fabs(*it);
+        }
+    }
+    return max_value;
 }
 
 
@@ -2393,50 +2393,50 @@ template< size_t M, size_t N, typename T >
 size_t
 matrix< M, N, T >::nnz() const
 {
-	size_t counter = 0;
+    size_t counter = 0;
 
-	const_iterator  it = begin(),
-	it_end = end();
-	for( ; it != it_end; ++it)
-	{
-		if ( *it != 0 ) {
-			++counter;
-		}
-	}
+    const_iterator  it = begin(),
+    it_end = end();
+    for( ; it != it_end; ++it)
+    {
+        if ( *it != 0 ) {
+            ++counter;
+        }
+    }
 
-	return counter;
+    return counter;
 }
 
 template< size_t M, size_t N, typename T >
 size_t
 matrix< M, N, T >::nnz( const T& threshold_ ) const
 {
-	size_t counter = 0;
+    size_t counter = 0;
 
-	const_iterator  it = begin(),
-	it_end = end();
-	for( ; it != it_end; ++it)
-	{
-		if ( fabs(*it) > threshold_ ) {
-			++counter;
-		}
-	}
+    const_iterator  it = begin(),
+    it_end = end();
+    for( ; it != it_end; ++it)
+    {
+        if ( fabs(*it) > threshold_ ) {
+            ++counter;
+        }
+    }
 
-	return counter;
+    return counter;
 }
 
 template< size_t M, size_t N, typename T >
 void
 matrix< M, N, T >::threshold( const T& threshold_value_ )
 {
-	iterator  it = begin(),
-	it_end = end();
-	for( ; it != it_end; ++it)
-	{
-		if ( fabs(*it) <= threshold_value_ ) {
-			*it = static_cast<T> (0);
-		}
-	}
+    iterator  it = begin(),
+    it_end = end();
+    for( ; it != it_end; ++it)
+    {
+        if ( fabs(*it) <= threshold_value_ ) {
+            *it = static_cast<T> (0);
+        }
+    }
 }
 
 
@@ -2445,25 +2445,25 @@ template< typename TT  >
 void
 matrix< M, N, T >::quantize_to( matrix< M, N, TT >& quantized_, const T& min_value, const T& max_value ) const
 {
-	long max_tt_range = long(std::numeric_limits< TT >::max());
-	long min_tt_range = long(std::numeric_limits< TT >::min());
-	long tt_range = (max_tt_range - min_tt_range);
+    long max_tt_range = long(std::numeric_limits< TT >::max());
+    long min_tt_range = long(std::numeric_limits< TT >::min());
+    long tt_range = (max_tt_range - min_tt_range);
 
-	T t_range = max_value - min_value;
+    T t_range = max_value - min_value;
 
-	typedef matrix< M, N, TT > m_tt_type ;
-	typedef typename m_tt_type::iterator tt_iterator;
-	tt_iterator it_quant = quantized_.begin();
-	const_iterator it = begin(), it_end = end();
+    typedef matrix< M, N, TT > m_tt_type ;
+    typedef typename m_tt_type::iterator tt_iterator;
+    tt_iterator it_quant = quantized_.begin();
+    const_iterator it = begin(), it_end = end();
 
-	for( ; it != it_end; ++it, ++it_quant )
-	{
-		if (std::numeric_limits<TT>::is_signed ) {
-			*it_quant = TT( std::min( std::max( min_tt_range, long(( *it * tt_range / t_range ) + 0.5)), max_tt_range ));
-		} else {
-			*it_quant = TT( std::min( std::max( min_tt_range, long(((*it - min_value) * tt_range / t_range) + 0.5)), max_tt_range ));
-		}
-	}
+    for( ; it != it_end; ++it, ++it_quant )
+    {
+        if (std::numeric_limits<TT>::is_signed ) {
+            *it_quant = TT( std::min( std::max( min_tt_range, long(( *it * tt_range / t_range ) + 0.5)), max_tt_range ));
+        } else {
+            *it_quant = TT( std::min( std::max( min_tt_range, long(((*it - min_value) * tt_range / t_range) + 0.5)), max_tt_range ));
+        }
+    }
 }
 
 
@@ -2472,9 +2472,9 @@ template< typename TT  >
 void
 matrix< M, N, T >::quantize( matrix< M, N, TT >& quantized_, T& min_value, T& max_value ) const
 {
-	min_value = get_min();
-	max_value = get_max();
-	quantize_to( quantized_, min_value, max_value );
+    min_value = get_min();
+    max_value = get_max();
+    quantize_to( quantized_, min_value, max_value );
 }
 
 
@@ -2484,24 +2484,24 @@ template< typename TT  >
 void
 matrix< M, N, T >::dequantize( matrix< M, N, TT >& dequantized_, const TT& min_value, const TT& max_value ) const
 {
-	long max_t_range = long(std::numeric_limits< T >::max());
-	long min_t_range = long(std::numeric_limits< T >::min());
-	long t_range = (max_t_range - min_t_range);
+    long max_t_range = long(std::numeric_limits< T >::max());
+    long min_t_range = long(std::numeric_limits< T >::min());
+    long t_range = (max_t_range - min_t_range);
 
-	TT tt_range = max_value - min_value;
+    TT tt_range = max_value - min_value;
 
-	typedef matrix< M, N, TT > m_tt_type ;
-	typedef typename m_tt_type::iterator tt_iterator;
-	tt_iterator it_dequant = dequantized_.begin();
-	const_iterator it = begin(), it_end = end();
-	for( ; it != it_end; ++it, ++it_dequant )
-	{
-		if (std::numeric_limits<T>::is_signed ) {
-			*it_dequant = std::min( std::max( min_value, TT((TT(*it) / t_range) * tt_range)), max_value );
-		} else {
-			*it_dequant = std::min( std::max( min_value, TT((((TT(*it) / t_range)) * tt_range ) + min_value)), max_value );
-		}
-	}
+    typedef matrix< M, N, TT > m_tt_type ;
+    typedef typename m_tt_type::iterator tt_iterator;
+    tt_iterator it_dequant = dequantized_.begin();
+    const_iterator it = begin(), it_end = end();
+    for( ; it != it_end; ++it, ++it_dequant )
+    {
+        if (std::numeric_limits<T>::is_signed ) {
+            *it_dequant = std::min( std::max( min_value, TT((TT(*it) / t_range) * tt_range)), max_value );
+        } else {
+            *it_dequant = std::min( std::max( min_value, TT((((TT(*it) / t_range)) * tt_range ) + min_value)), max_value );
+        }
+    }
 }
 
 template< size_t M, size_t N, typename T >
@@ -2509,30 +2509,30 @@ void
 matrix< M, N, T >::columnwise_sum( vector< N, T>& summed_columns_ ) const
 {
 
-	for ( size_t n = 0; n < N; ++n )
-	{
-		T value = 0;
-		for ( size_t m = 0; m < M; ++m )
-		{
-			value += at( m, n );
-		}
-		summed_columns_.at( n ) = value;
-	}
+    for ( size_t n = 0; n < N; ++n )
+    {
+        T value = 0;
+        for ( size_t m = 0; m < M; ++m )
+        {
+            value += at( m, n );
+        }
+        summed_columns_.at( n ) = value;
+    }
 }
 
 template< size_t M, size_t N, typename T >
 double
 matrix< M, N, T >::sum_elements( ) const
 {
-	double sum = 0.0;
+    double sum = 0.0;
 
-	const_iterator it = begin(), it_end = end();
-	for( ; it != it_end; ++it )
-	{
-		sum += *it;
-	}
+    const_iterator it = begin(), it_end = end();
+    for( ; it != it_end; ++it )
+    {
+        sum += *it;
+    }
 
-	return sum;
+    return sum;
 }
 
 template< size_t M, size_t N, typename T >
@@ -2540,12 +2540,12 @@ template< size_t R>
 typename enable_if< R == M && R == N>::type*
 matrix< M, N, T >::diag( const vector< R, T >& diag_values_ )
 {
-	zero();
-	for( size_t r = 0; r < R; ++r )
-	{
-		at(r, r) = static_cast< T >( diag_values_.at(r) );
-	}
-	return 0;
+    zero();
+    for( size_t r = 0; r < R; ++r )
+    {
+        at(r, r) = static_cast< T >( diag_values_.at(r) );
+    }
+    return 0;
 }
 
 
@@ -2553,20 +2553,20 @@ template< size_t M, size_t N, typename T >
 void
 matrix< M, N, T >::set_dct()
 {
-	double weight = 0.0f;
-	double num_rows = M;
-	double fill_value = 0.0f;
-	for( size_t row = 0; row < M; ++row )
-	{
-		weight = ( row == 0.0 )  ? sqrt(1/num_rows) : sqrt(2/num_rows); //to reiceive orthonormality
-		for( size_t col = 0; col < N; ++col )
-		{
-			fill_value = (2 * col + 1) * row * M_PI / (2*M);
-			fill_value = cos( fill_value );
-			fill_value *= weight;
-			at( row, col ) = static_cast< T >( fill_value )  ;
-		}
-	}
+    double weight = 0.0f;
+    double num_rows = M;
+    double fill_value = 0.0f;
+    for( size_t row = 0; row < M; ++row )
+    {
+        weight = ( row == 0.0 )  ? sqrt(1/num_rows) : sqrt(2/num_rows); //to reiceive orthonormality
+        for( size_t col = 0; col < N; ++col )
+        {
+            fill_value = (2 * col + 1) * row * M_PI / (2*M);
+            fill_value = std::cos( fill_value );
+            fill_value *= weight;
+            at( row, col ) = static_cast< T >( fill_value )  ;
+        }
+    }
 }
 
 
@@ -2574,93 +2574,93 @@ template< size_t M, size_t N, typename T >
 void
 matrix< M, N, T >::set_random( int seed )
 {
-	if ( seed >= 0 )
-		srand( seed );
+    if ( seed >= 0 )
+        srand( seed );
 
-	double fillValue = 0.0f;
-	for( size_t row = 0; row < M; ++row )
-	{
-		for( size_t col = 0; col < N; ++col )
-		{
-			fillValue = rand();
-			fillValue /= RAND_MAX;
-			at( row, col ) = -1.0 + 2.0 * static_cast< double >( fillValue )  ;
-		}
-	}
+    double fillValue = 0.0f;
+    for( size_t row = 0; row < M; ++row )
+    {
+        for( size_t col = 0; col < N; ++col )
+        {
+            fillValue = rand();
+            fillValue /= RAND_MAX;
+            at( row, col ) = -1.0 + 2.0 * static_cast< double >( fillValue )  ;
+        }
+    }
 }
 
 template< size_t M, size_t N, typename T >
 void
 matrix< M, N, T >::write_to_raw( const std::string& dir_, const std::string& filename_ ) const
 {
-	int dir_length = dir_.size() -1;
-	int last_separator = dir_.find_last_of( "/");
-	std::string path = dir_;
-	if (last_separator < dir_length ) {
-		path.append( "/" );
-	}
-	path.append( filename_ );
-	//check for format
-	if( filename_.find( "raw", filename_.size() -3) == std::string::npos )
+    int dir_length = dir_.size() -1;
+    int last_separator = dir_.find_last_of( "/");
+    std::string path = dir_;
+    if (last_separator < dir_length ) {
+        path.append( "/" );
+    }
+    path.append( filename_ );
+    //check for format
+    if( filename_.find( "raw", filename_.size() -3) == std::string::npos )
     {
-		path.append( ".");
-		path.append( "raw" );
-	}
-	std::string path_raw = path;
+        path.append( ".");
+        path.append( "raw" );
+    }
+    std::string path_raw = path;
 
-	std::ofstream outfile;
-	outfile.open( path_raw.c_str() );
-	if( outfile.is_open() ) {
-		size_t len_slice = sizeof(T) * M*N;
-		outfile.write( (char*)&(*this), len_slice );
-		outfile.close();
-	} else {
-		std::cout << "no file open" << std::endl;
-	}
+    std::ofstream outfile;
+    outfile.open( path_raw.c_str() );
+    if( outfile.is_open() ) {
+        size_t len_slice = sizeof(T) * M*N;
+        outfile.write( (char*)&(*this), len_slice );
+        outfile.close();
+    } else {
+        std::cout << "no file open" << std::endl;
+    }
 }
 
 template< size_t M, size_t N, typename T >
 void
 matrix< M, N, T >::read_from_raw( const std::string& dir_, const std::string& filename_ )
 {
-	int dir_length = dir_.size() -1;
-	int last_separator = dir_.find_last_of( "/");
-	std::string path = dir_;
-	if (last_separator < dir_length ) {
-		path.append( "/" );
-	}
-	path.append( filename_ );
+    int dir_length = dir_.size() -1;
+    int last_separator = dir_.find_last_of( "/");
+    std::string path = dir_;
+    if (last_separator < dir_length ) {
+        path.append( "/" );
+    }
+    path.append( filename_ );
 
-	size_t max_file_len = 2147483648u - sizeof(T) ;
-	size_t len_data = sizeof(T) * size();
-	size_t len_read = 0;
-	char* data = new char[ len_data ];
-	std::ifstream infile;
-	infile.open( path.c_str(), std::ios::in);
+    size_t max_file_len = 2147483648u - sizeof(T) ;
+    size_t len_data = sizeof(T) * size();
+    size_t len_read = 0;
+    char* data = new char[ len_data ];
+    std::ifstream infile;
+    infile.open( path.c_str(), std::ios::in);
 
-	if( infile.is_open())
-	{
-		iterator  it = begin(),
-		it_end = end();
+    if( infile.is_open())
+    {
+        iterator  it = begin(),
+        it_end = end();
 
-		while ( len_data > 0 )
-		{
-			len_read = (len_data % max_file_len ) > 0 ? len_data % max_file_len : len_data;
-			len_data -= len_read;
-			infile.read( data, len_read );
+        while ( len_data > 0 )
+        {
+            len_read = (len_data % max_file_len ) > 0 ? len_data % max_file_len : len_data;
+            len_data -= len_read;
+            infile.read( data, len_read );
 
-			T* T_ptr = (T*)&(data[0]);
-			for( ; (it != it_end) && (len_read > 0); ++it, len_read -= sizeof(T) )
-			{
-				*it = *T_ptr; ++T_ptr;
-			}
-		}
+            T* T_ptr = (T*)&(data[0]);
+            for( ; (it != it_end) && (len_read > 0); ++it, len_read -= sizeof(T) )
+            {
+                *it = *T_ptr; ++T_ptr;
+            }
+        }
 
-		delete[] data;
-		infile.close();
-	} else {
-		std::cout << "no file open" << std::endl;
-	}
+        delete[] data;
+        infile.close();
+    } else {
+        std::cout << "no file open" << std::endl;
+    }
 
 }
 
@@ -2671,28 +2671,28 @@ template< size_t M, size_t N, typename T >
 void
 matrix< M, N, T >::write_csv_file( const std::string& dir_, const std::string& filename_ ) const
 {
-	int dir_length = dir_.size() -1;
-	int last_separator = dir_.find_last_of( "/");
-	std::string path = dir_;
-	if (last_separator < dir_length ) {
-		path.append( "/" );
-	}
-	path.append( filename_ );
-	//check for format
-	int suffix_pos = filename_.find( "csv", filename_.size() -3);
-	if( suffix_pos == (-1)) {
-		path.append( ".");
-		path.append( "csv" );
-	}
+    int dir_length = dir_.size() -1;
+    int last_separator = dir_.find_last_of( "/");
+    std::string path = dir_;
+    if (last_separator < dir_length ) {
+        path.append( "/" );
+    }
+    path.append( filename_ );
+    //check for format
+    int suffix_pos = filename_.find( "csv", filename_.size() -3);
+    if( suffix_pos == (-1)) {
+        path.append( ".");
+        path.append( "csv" );
+    }
 
-	std::ofstream outfile;
-	outfile.open( path.c_str() );
-	if( outfile.is_open() ) {
-		outfile << *this  << std::endl;
-		outfile.close();
-	} else {
-		std::cout << "no file open" << std::endl;
-	}
+    std::ofstream outfile;
+    outfile.open( path.c_str() );
+    if( outfile.is_open() ) {
+        outfile << *this  << std::endl;
+        outfile.close();
+    } else {
+        std::cout << "no file open" << std::endl;
+    }
 
 }
 
@@ -2700,29 +2700,29 @@ template< size_t M, size_t N, typename T >
 void
 matrix< M, N, T >::read_csv_file( const std::string& dir_, const std::string& filename_ )
 {
-	int dir_length = dir_.size() -1;
-	int last_separator = dir_.find_last_of( "/");
-	std::string path = dir_;
-	if (last_separator < dir_length ) {
-		path.append( "/" );
-	}
-	path.append( filename_ );
-	//check for format
-	int suffix_pos = filename_.find( "csv", filename_.size() -3);
-	if( suffix_pos == (-1)) {
-		path.append( ".");
-		path.append( "csv" );
-	}
+    int dir_length = dir_.size() -1;
+    int last_separator = dir_.find_last_of( "/");
+    std::string path = dir_;
+    if (last_separator < dir_length ) {
+        path.append( "/" );
+    }
+    path.append( filename_ );
+    //check for format
+    int suffix_pos = filename_.find( "csv", filename_.size() -3);
+    if( suffix_pos == (-1)) {
+        path.append( ".");
+        path.append( "csv" );
+    }
 
-	std::ifstream infile;
-	infile.open( path.c_str(), std::ios::in);
-	if( infile.is_open() ) {
-		//TODO: not yet implemented
-		//infile >> *this  >> std::endl;
-		infile.close();
-	} else {
-		std::cout << "no file open" << std::endl;
-	}
+    std::ifstream infile;
+    infile.open( path.c_str(), std::ios::in);
+    if( infile.is_open() ) {
+        //TODO: not yet implemented
+        //infile >> *this  >> std::endl;
+        infile.close();
+    } else {
+        std::cout << "no file open" << std::endl;
+    }
 
 }
 
@@ -2731,52 +2731,52 @@ template< size_t M, size_t N, typename T >
 void
 matrix< M, N, T >::sum_rows( matrix< M/2, N, T>& other ) const
 {
-	typedef vector< N, T > row_type;
+    typedef vector< N, T > row_type;
 
-	row_type* row0 = new row_type;
-	row_type* row1 = new row_type;
+    row_type* row0 = new row_type;
+    row_type* row1 = new row_type;
 
-	other.zero();
+    other.zero();
 
-	for ( size_t row = 0; row < M; ++row )
-	{
-		get_row( row++, *row0 );
-		if ( row < M )
-		{
-			get_row( row, *row1 );
-			*row0 += *row1;
-			other.set_row( row/2 , *row0 );
-		}
-	}
+    for ( size_t row = 0; row < M; ++row )
+    {
+        get_row( row++, *row0 );
+        if ( row < M )
+        {
+            get_row( row, *row1 );
+            *row0 += *row1;
+            other.set_row( row/2 , *row0 );
+        }
+    }
 
-	delete row0;
-	delete row1;
+    delete row0;
+    delete row1;
 }
 
 template< size_t M, size_t N, typename T >
 void
 matrix< M, N, T >::sum_columns( matrix< M, N/2, T>& other ) const
 {
-	typedef vector< M, T > col_type;
+    typedef vector< M, T > col_type;
 
-	col_type* col0 = new col_type;
-	col_type* col1 = new col_type;
+    col_type* col0 = new col_type;
+    col_type* col1 = new col_type;
 
-	other.zero();
+    other.zero();
 
-	for ( size_t col = 0; col< N; ++col )
-	{
-		get_column( col++, *col0 );
-		if ( col < N )
-		{
-			get_column( col, *col1 );
-			*col0 += *col1;
-			other.set_column( col/2, *col0 );
-		}
-	}
+    for ( size_t col = 0; col< N; ++col )
+    {
+        get_column( col++, *col0 );
+        if ( col < N )
+        {
+            get_column( col, *col1 );
+            *col0 += *col1;
+            other.set_column( col/2, *col0 );
+        }
+    }
 
-	delete col0;
-	delete col1;
+    delete col0;
+    delete col1;
 }
 
 

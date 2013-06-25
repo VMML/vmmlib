@@ -237,11 +237,11 @@ public:
     // vector<> normalize( const vector<> );
     inline T normalize();
 
-	//sets all vector components to random values
-	//remember to set srand( seed );
-	//if seed is set to -1, srand( seed ) was set outside set_random
-	//otherwise srand( seed ) will be called with the given seed
-	void set_random( int seed = -1 );
+    //sets all vector components to random values
+    //remember to set srand( seed );
+    //if seed is set to -1, srand( seed ) was set outside set_random
+    //otherwise srand( seed ) will be called with the given seed
+    void set_random( int seed = -1 );
 
     inline T length() const;
     inline T squared_length() const;
@@ -1251,8 +1251,8 @@ vector< 3, T > vector< M, T >::rotate( const T theta, vector< M, TT > axis,
 {
     axis.normalize();
 
-    const T costheta = cos( theta );
-    const T sintheta = sin( theta );
+    const T costheta = std::cos( theta );
+    const T sintheta = std::sin( theta );
 
     return vector< 3, T >(
         (costheta + ( 1.0f - costheta ) * axis.x() * axis.x() ) * x()    +

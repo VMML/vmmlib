@@ -274,12 +274,12 @@ void svdecompose(
 				{
 					t = v[i][k];
 					u = v[j][k];
-					v[i][k] = u * pow( -1, i );
-					v[j][k] = t * pow( -1, j );
+					v[i][k] = u * std::pow( -1, i );
+					v[j][k] = t * std::pow( -1, j );
 					t = a[k][i];
 					u = a[k][j];
-					a[k][i] = u * pow( -1, i );
-					a[k][j] = t * pow( -1, j );
+					a[k][i] = u * std::pow( -1, i );
+					a[k][j] = t * std::pow( -1, j );
 				}
 			}
 	

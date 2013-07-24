@@ -630,7 +630,7 @@ namespace vmml
             {
                 fillValue = rand();
                 fillValue /= RAND_MAX;
-                fillValue *= std::numeric_limits< T >::max();
+                fillValue *= (std::numeric_limits< T >::max)();
                 _array[ index ] = static_cast< T >( fillValue )  ;
             }
         }
@@ -648,9 +648,9 @@ namespace vmml
 
                 fillValue = rand();
                 fillValue /= RAND_MAX;
-                fillValue *= std::numeric_limits< T >::max();
-                T fillValue2 = static_cast< T >(fillValue) % std::numeric_limits< T >::max();
-                fillValue2 -= std::numeric_limits< T >::max()/2;
+                fillValue *= (std::numeric_limits< T >::max)();
+                T fillValue2 = static_cast< T >(fillValue) % (std::numeric_limits< T >::max)();
+                fillValue2 -= (std::numeric_limits< T >::max)()/2;
                 _array[ index ] = fillValue2  ;
                 // test if ever > max/2 or < -max/2
 
@@ -734,7 +734,7 @@ namespace vmml
                 const TT* otherdata = other.get_array_ptr();
                 for( size_t index = 0;index < SIZE; ++index )
                 {
-                    _array[index] = T( std::min( std::max(int(0), int( otherdata[index] + 0.5)), int(std::numeric_limits< T >::max()) ));
+                    _array[index] = T( (std::min)( (std::max)(int(0), int( otherdata[index] + 0.5)), int((std::numeric_limits< T >::max)()) ));
                 }
             }
             else {

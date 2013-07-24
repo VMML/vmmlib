@@ -77,8 +77,8 @@ namespace vmml {
         infile.open(path_in_raw.c_str(), std::ios::in);
 
         if (infile.is_open() && outfile.is_open()) {
-            double max_tt_range = double(std::numeric_limits< TT >::max());
-            double min_tt_range = double(std::numeric_limits< TT >::min());
+            double max_tt_range = double((std::numeric_limits< TT >::max)());
+            double min_tt_range = double((std::numeric_limits< TT >::min)());
             double tt_range = max_tt_range - min_tt_range;
             double t_range = max_value_ - min_value_;
 
@@ -100,9 +100,9 @@ namespace vmml {
 
                         //Quantize value
                         if (std::numeric_limits<TT>::is_signed) {
-                            out_value = TT(std::min(std::max(min_tt_range, double((*in_value * tt_range / t_range) + 0.5)), max_tt_range));
+                            out_value = TT((std::min)((std::max)(min_tt_range, double((*in_value * tt_range / t_range) + 0.5)), max_tt_range));
                         } else {
-                            out_value = TT(std::min(std::max(min_tt_range, double(((*in_value - min_value_) * tt_range / t_range) + 0.5)), max_tt_range));
+                            out_value = TT((std::min)((std::max)(min_tt_range, double(((*in_value - min_value_) * tt_range / t_range) + 0.5)), max_tt_range));
                         }
 
                         //write_value

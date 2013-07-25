@@ -223,6 +223,8 @@ namespace vmml
             return os;
         }
 
+        template< size_t J1, size_t J2, size_t J3, size_t J4 >
+        typename enable_if< J1 <= I1 && J2 <= I2 && J3 <= I3 && J4 <= I4 >::type*
         get_sub_tensor4(tensor4<J1, J2, J3, J4, T >& result, size_t row_offset, size_t col_offset, size_t slice_offset, size_t t3_offset) const;
         
         // static members

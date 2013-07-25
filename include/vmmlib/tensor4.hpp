@@ -223,7 +223,8 @@ namespace vmml
             return os;
         }
 
-
+        get_sub_tensor4(tensor4<J1, J2, J3, J4, T >& result, size_t row_offset, size_t col_offset, size_t slice_offset, size_t t3_offset) const;
+        
         // static members
         static void     tensor4_allocate_data( T*& array_ );
         static void     tensor4_deallocate_data( T*& array_ );
@@ -278,7 +279,29 @@ namespace vmml
             tensor4_deallocate_data( _array );
         }
 
+        VMML_TEMPLATE_STRING
+        template< size_t J1, size_t J2, size_t J3, size_t J4 >
+        typename enable_if< J1 <= I1 && J2 <= I2 && J3 <= I3 && J4 <= I4 >::type*
+        VMML_TEMPLATE_CLASSNAME::
+        get_sub_tensor4(tensor4<J1, J2, J3, J4, T >& result,
+            size_t row_offset, size_t col_offset, size_t slice_offset, size_t t3_offset) const {
+            #ifdef VMMLIB_SAFE_ACCESSORS
+            if (J1 + row_offset > I1 || J2 + col_offset > I2 || J3 + slice_offset > I3 || J4 + t3_offset > I4)
+                VMMLIB_ERROR("index out of bounds.", VMMLIB_HERE);
+            #endif
 
+            for (size_t t3 = 0; t3 < J4; ++t3) {
+                for (size_t slice = 0; slice < J3; ++slice) {
+                    for (size_t row = 0; row < J1; ++row) {
+                        for (size_t col = 0; col < J2; ++col) {
+                            result.at(row, col, slice, t3)
+                                    = at(row_offset + row, col_offset + col, slice_offset + slice, t3_offset + t3);
+                        }
+                    }
+                }
+            }
+            return 0;
+        }
 
         VMML_TEMPLATE_STRING
         void

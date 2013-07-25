@@ -963,7 +963,7 @@ void matrix< M, N, T >::operator=( const matrix< P, Q, U >& source_ )
     const size_t minC =  Q < N ? Q : N;
 
     if( minL < M || minC < N )
-        (*this) = ZERO;
+        zero();
 
     for ( size_t i = 0 ; i < minL ; i++ )
         for ( size_t j = 0 ; j < minC ; j++ )

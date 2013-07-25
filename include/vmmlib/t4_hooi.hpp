@@ -48,6 +48,20 @@ namespace vmml {
                 t4_hosvd< R1, R2, R3, R4, I1, I2, I3, I4, T >::apply_mode4(data_, u4_);
             }
         };
+        
+        struct init_random {
+
+            inline void operator()(const t4_type& data_, u1_type& u1_, u2_type& u2_, u3_type & u3_, u4_type & u4_) {
+                srand(time(NULL));
+                u2_.set_random();
+                u3_.set_random();
+                u4_.set_random();
+
+                u2_ /= u2_.frobenius_norm();
+                u3_ /= u3_.frobenius_norm();
+                u4_ /= u4_.frobenius_norm();
+            }
+        };
 
     protected:
 

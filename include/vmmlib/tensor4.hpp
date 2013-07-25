@@ -242,7 +242,9 @@ namespace vmml
         // computes the array index for direct access
         inline size_t compute_index( size_t i1, size_t i2, size_t i3, size_t i4 ) const;
 
-
+        template< typename TT >
+        void quantize_log(tensor4< I1, I2, I3, I4, TT >& quantized_, tensor4< I1, I2, I3, I4, char >& signs_, T& min_value_, T& max_value_, const TT& tt_range_) const;
+        
     protected:
         tensor3_t&                   _get_tensor3( size_t index_ );
         const tensor3_t&             _get_tensor3( size_t index_ ) const;
@@ -1147,6 +1149,34 @@ namespace vmml
                 }
             }
             return sqrt(f_norm);
+        }
+        
+        VMML_TEMPLATE_STRING
+        template< typename TT >
+        void
+        VMML_TEMPLATE_CLASSNAME::quantize_log(tensor4< I1, I2, I3, I4, TT >& quantized_, tensor4< I1, I2, I3, I4, char >& signs_, T& min_value_, T& max_value_, const TT& tt_range_) const {
+            double max_tt_range = double(tt_range_);
+            double min_tt_range = 0;
+
+            min_value_ = 0;
+            max_value_ = get_abs_max();
+            double t_range = max_value_ - min_value_;
+
+            T* it = _array;
+            TT* it_quant = quantized_.get_array_ptr();
+            char* it_sign = signs_.get_array_ptr();
+            for (; it != _array+I1*I2*I3*I4; ++it, ++it_quant, ++it_sign) {
+                T value = fabs(*it);
+                *it_sign = ((*it) < 0.f) ? 0 : 1;
+                T quant_value = 0;
+                if (std::numeric_limits<TT>::is_signed) {
+                    quant_value = log2(1 + value) / log2(1 + t_range) * tt_range_;
+                    *it_quant = TT((std::min)((std::max)(min_tt_range, double(quant_value + 0.5)), max_tt_range));
+                } else {
+                    quant_value = log2(1 + (value - min_value_)) / log2(1 + t_range) * tt_range_;
+                    *it_quant = TT((std::min)((std::max)(min_tt_range, double(quant_value + 0.5)), max_tt_range));
+                }
+            }
         }
 
 #undef VMML_TEMPLATE_STRING

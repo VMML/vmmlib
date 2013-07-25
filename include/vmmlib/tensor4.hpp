@@ -1178,6 +1178,102 @@ namespace vmml
                 }
             }
         }
+        
+        VMML_TEMPLATE_STRING
+        double
+        VMML_TEMPLATE_CLASSNAME::mean() const {
+            double val = 0;
+            T* it = _array, *it_end = _array + I1*I2*I3*I4;
+            for (; it != it_end; ++it) {
+                val += double(abs(*it));
+            }
+
+            return ( val / size());
+        }
+
+        VMML_TEMPLATE_STRING
+        void
+        VMML_TEMPLATE_CLASSNAME::mean(T& mean_) const {
+            mean_ = static_cast<T> (mean());
+        }
+        
+        VMML_TEMPLATE_STRING
+        double
+        VMML_TEMPLATE_CLASSNAME::variance() const {
+            double val = 0.0;
+            double sum_val = 0.0;
+            double mean_val = mean();
+            T* it = _array, *it_end = _array+I1*I2*I3*I4;
+            for (; it != it_end; ++it) {
+                val = double(*it) - mean_val;
+                val *= val;
+                sum_val += val;
+            }
+
+            return double(sum_val / (size() - 1));
+        }
+        
+        VMML_TEMPLATE_STRING
+        double
+        VMML_TEMPLATE_CLASSNAME::stdev() const {
+            return sqrt(variance());
+        }
+        
+        VMML_TEMPLATE_STRING
+        T
+        VMML_TEMPLATE_CLASSNAME::get_min() const {
+            T tensor4_min = static_cast<T> ((std::numeric_limits<T>::max)());
+            
+            T *it = _array, *it_end = _array + I1*I2*I3*I4;
+            for (; it != it_end; ++it) {
+                if (*it < tensor4_min) {
+                    tensor4_min = *it;
+                }
+            }
+            return tensor4_min;
+        }
+
+        VMML_TEMPLATE_STRING
+        T
+        VMML_TEMPLATE_CLASSNAME::get_max() const {
+            T tensor4_max = static_cast<T> (0);
+
+            T *it = _array, *it_end = _array + I1*I2*I3*I4;
+            for (; it != it_end; ++it) {
+                if (*it > tensor4_max) {
+                    tensor4_max = *it;
+                }
+            }
+            return tensor4_max;
+        }
+
+        VMML_TEMPLATE_STRING
+        T
+        VMML_TEMPLATE_CLASSNAME::get_abs_min() const {
+            T tensor4_min = static_cast<T> ((std::numeric_limits<T>::max)());
+
+            T *it = _array, *it_end = _array + I1*I2*I3*I4;
+            for (; it != it_end; ++it) {
+                if (fabs(*it) < fabs(tensor4_min)) {
+                    tensor4_min = fabs(*it);
+                }
+            }
+            return tensor4_min;
+        }
+
+        VMML_TEMPLATE_STRING
+        T
+        VMML_TEMPLATE_CLASSNAME::get_abs_max() const {
+            T tensor4_max = static_cast<T> (0);
+
+            T *it = _array, *it_end = _array + I1*I2*I3*I4;
+            for (; it != it_end; ++it) {
+                if (fabs(*it) > fabs(tensor4_max)) {
+                    tensor4_max = fabs(*it);
+                }
+            }
+            return tensor4_max;
+        }
 
 #undef VMML_TEMPLATE_STRING
 #undef VMML_TEMPLATE_CLASSNAME

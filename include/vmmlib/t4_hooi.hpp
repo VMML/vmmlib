@@ -36,6 +36,9 @@ namespace vmml {
         typedef matrix< R4, I4, T > u4_t_type;
 
         template< typename T_init>
+        static tensor_stats als(const t4_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, u4_type& u4_, T_init init, const double& max_f_norm_ = 0.0, const size_t max_iterations = 10, const float tolerance = 1e-04);
+        
+        template< typename T_init>
         static tensor_stats als(const t4_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, u4_type& u4_, t4_core_type& core_, T_init init, const double& max_f_norm_ = 0.0, const size_t max_iterations = 10, const float tolerance = 1e-04);
 
         // init functors
@@ -81,6 +84,17 @@ namespace vmml {
 #define VMML_TEMPLATE_STRING        template< size_t R1, size_t R2, size_t R3, size_t R4, size_t I1, size_t I2, size_t I3, size_t I4, typename T >
 #define VMML_TEMPLATE_CLASSNAME     t4_hooi< R1, R2, R3, R4, I1, I2, I3, I4, T >
 
+    VMML_TEMPLATE_STRING
+    template< typename T_init>
+    tensor_stats
+    VMML_TEMPLATE_CLASSNAME::als(const t4_type& data_,
+            u1_type& u1_, u2_type& u2_, u3_type& u3_, u4_type& u4_,
+            T_init init,
+            const double& max_f_norm_, const size_t max_iterations_, const float tolerance_) {
+        t4_core_type core;
+        core.zero();
+        return als(data_, u1_, u2_, u3_, u4_, core, init, max_f_norm_, max_iterations_, tolerance_);
+    }
 
     VMML_TEMPLATE_STRING
     template< typename T_init>

@@ -1415,7 +1415,7 @@ namespace vmml {
         const_iterator it = begin(), it_end = end();
         const_iterator it_other = other_.begin();
         for (; it != it_end; ++it, ++it_other) {
-            abs_diff = fabs(*it) - fabs(*it_other);
+            abs_diff = fabs(*it - *it_other);
             f_norm += abs_diff * abs_diff;
         }
 

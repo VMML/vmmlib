@@ -1134,22 +1134,19 @@ namespace vmml
             }
             return sqrt(f_norm);
         }
-
-		VMML_TEMPLATE_STRING
+        
+        VMML_TEMPLATE_STRING
         double
-        VMML_TEMPLATE_CLASSNAME::frobenius_norm( const tensor4< I1, I2, I3, I4, T >& other ) const {
+        VMML_TEMPLATE_CLASSNAME::frobenius_norm(const tensor4< I1, I2, I3, I4, T>& other_) const {
             double f_norm = 0.0;
-            for (long i3 = 0; i3 < long(I3); ++i3) {
-                for (long i4 = 0; i4 < long(I4); ++i4) {
-                    for (long i1 = 0; i1 < long(I1); ++i1) {
-                        long i2 = 0;
-                        for (i2 = 0; i2 < long(I2); ++i2) {
-                            double abs_diff = fabs(at(i1, i2, i3, i4) - other.at(i1, i2, i3, i4));
-                            f_norm += abs_diff*abs_diff;
-                        }
-                    }
-                }
+            T abs_diff = 0;
+            T *it = _array, *it_end = _array + I1*I2*I3*I4;
+            T *it_other = other_._array;
+            for (; it != it_end; ++it, ++it_other) {
+                abs_diff = fabs(*it - *it_other);
+                f_norm += abs_diff * abs_diff;
             }
+
             return sqrt(f_norm);
         }
         

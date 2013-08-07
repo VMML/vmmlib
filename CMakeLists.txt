@@ -192,7 +192,7 @@ if(NOT MSVC)
 
   # workaround: 'make test' does not build tests beforehand
   add_custom_target(tests COMMAND ${CMAKE_CTEST_COMMAND} DEPENDS vmmlib_test)
-  add_custom_target(vmmlib-test DEPENDS vmmlib_test) # Travis CI hack
+  add_custom_target(vmmlib-test DEPENDS tests) # Travis CI hack
 endif()
 
 install(FILES ${HEADERS} DESTINATION include/vmmlib COMPONENT dev)

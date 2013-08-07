@@ -177,21 +177,22 @@ if(BLAS_FOUND)
 endif()
 
 if(NOT MSVC)
-  add_executable(vmmlib-test ${HEADERS} ${TESTS})
+  add_executable(vmmlib_test ${HEADERS} ${TESTS})
   if(LAPACK_FOUND)
-    target_link_libraries(vmmlib-test ${LAPACK_LIBRARIES})
+    target_link_libraries(vmmlib_test ${LAPACK_LIBRARIES})
   endif()
   if(BLAS_FOUND)
-    target_link_libraries(vmmlib-test ${BLAS_LIBRARIES})
+    target_link_libraries(vmmlib_test ${BLAS_LIBRARIES})
   endif()
 
-  get_target_property(EXECUTABLE vmmlib-test LOCATION)
+  get_target_property(EXECUTABLE vmmlib_test LOCATION)
   STRING(REGEX REPLACE "\\$\\(.*\\)" "\${CTEST_CONFIGURATION_TYPE}"
     EXECUTABLE "${EXECUTABLE}")
-  add_test(vmmlib-test ${EXECUTABLE})
+  add_test(vmmlib_test ${EXECUTABLE})
 
   # workaround: 'make test' does not build tests beforehand
-  add_custom_target(tests COMMAND ${CMAKE_CTEST_COMMAND} DEPENDS vmmlib-test)
+  add_custom_target(tests COMMAND ${CMAKE_CTEST_COMMAND} DEPENDS vmmlib_test)
+  add_custom_target(vmmlib-test DEPENDS vmmlib_test) # Travis CI hack
 endif()
 
 install(FILES ${HEADERS} DESTINATION include/vmmlib COMPONENT dev)

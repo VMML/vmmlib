@@ -4,6 +4,11 @@ include(System)
 list(APPEND FIND_PACKAGES_DEFINES ${SYSTEM})
 
 find_package(OpenMP )
+
+if(EXISTS ${CMAKE_SOURCE_DIR}/CMake/FindPackagesPost.cmake)
+  include(${CMAKE_SOURCE_DIR}/CMake/FindPackagesPost.cmake)
+endif()
+
 if(OpenMP_FOUND)
   set(OpenMP_name OpenMP)
 endif()
@@ -12,16 +17,14 @@ if(OPENMP_FOUND)
 endif()
 if(OpenMP_name)
   list(APPEND FIND_PACKAGES_DEFINES VMMLIB_USE_OPENMP)
+  set(FIND_PACKAGES_FOUND "${FIND_PACKAGES_FOUND} OpenMP")
   link_directories(${${OpenMP_name}_LIBRARY_DIRS})
   if(NOT "${${OpenMP_name}_INCLUDE_DIRS}" MATCHES "-NOTFOUND")
     include_directories(${${OpenMP_name}_INCLUDE_DIRS})
   endif()
 endif()
 
-
-if(EXISTS ${CMAKE_SOURCE_DIR}/CMake/FindPackagesPost.cmake)
-  include(${CMAKE_SOURCE_DIR}/CMake/FindPackagesPost.cmake)
-endif()
+set(VMMLIB_BUILD_DEBS autoconf;automake;cmake;git;git-svn;pkg-config;subversion)
 
 set(VMMLIB_DEPENDS OpenMP)
 
@@ -54,3 +57,17 @@ file(APPEND ${DEFINES_FILE_IN}
 
 include(UpdateFile)
 update_file(${DEFINES_FILE_IN} ${DEFINES_FILE})
+if(Boost_FOUND) # another WAR for broken boost stuff...
+  set(Boost_VERSION ${Boost_MAJOR_VERSION}.${Boost_MINOR_VERSION}.${Boost_SUBMINOR_VERSION})
+endif()
+if(CUDA_FOUND)
+  string(REPLACE "-std=c++11" "" CUDA_HOST_FLAGS "${CUDA_HOST_FLAGS}")
+  string(REPLACE "-std=c++0x" "" CUDA_HOST_FLAGS "${CUDA_HOST_FLAGS}")
+endif()
+if(FIND_PACKAGES_FOUND)
+  if(MSVC)
+    message(STATUS "Configured with ${FIND_PACKAGES_FOUND}")
+  else()
+    message(STATUS "Configured with ${CMAKE_BUILD_TYPE}${FIND_PACKAGES_FOUND}")
+  endif()
+endif()

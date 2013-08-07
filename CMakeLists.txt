@@ -189,6 +189,9 @@ if(NOT MSVC)
   STRING(REGEX REPLACE "\\$\\(.*\\)" "\${CTEST_CONFIGURATION_TYPE}"
     EXECUTABLE "${EXECUTABLE}")
   add_test(vmmlib_test ${EXECUTABLE})
+
+  # workaround: 'make test' does not build tests beforehand
+  add_custom_target(tests COMMAND ${CMAKE_CTEST_COMMAND} DEPENDS vmmlib_test)
 endif()
 
 install(FILES ${HEADERS} DESTINATION include/vmmlib COMPONENT dev)
@@ -198,3 +201,4 @@ include(DoxygenRule) # must be after all targets
 include(CPackConfig)
 include(CTest)
 include(PackageConfig)
+

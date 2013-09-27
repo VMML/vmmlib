@@ -590,9 +590,7 @@ vector< M, T >::vector( const vector< M, U >& source_ )
 
 
 
-template< size_t M, typename T >
-void
-vector< M, T >::set( T _a )
+template< size_t M, typename T > void vector< M, T >::set( T _a )
 {
     for( iterator it = begin(), it_end = end(); it != it_end; ++it )
     {
@@ -603,18 +601,15 @@ vector< M, T >::set( T _a )
 
 #ifndef SWIG
 template< size_t M, typename T >
-void
-vector< M, T >::set( const vector< M-1, T >& v, T _a )
+void vector< M, T >::set( const vector< M-1, T >& v, T _a )
 {
     memcpy( array, v.array, sizeof( T ) * (M-1) );
     at( M-1 ) = _a;
 }
 #endif
 
-template< size_t M, typename T >
-template< size_t N >
-void
-vector< M, T >::set( const vector< N, T >& v )
+template< size_t M, typename T > template< size_t N >
+void vector< M, T >::set( const vector< N, T >& v )
 {
     size_t minimum = M;
     if (N < M) minimum = N;
@@ -622,8 +617,7 @@ vector< M, T >::set( const vector< N, T >& v )
 }
 
 template< size_t M, typename T >
-void
-vector< M, T >::set( T _x, T _y )
+void vector< M, T >::set( T _x, T _y )
 {
     array[ 0 ] = _x;
     array[ 1 ] = _y;
@@ -631,8 +625,7 @@ vector< M, T >::set( T _x, T _y )
 
 
 template< size_t M, typename T >
-void
-vector< M, T >::set( T _x, T _y, T _z )
+void vector< M, T >::set( T _x, T _y, T _z )
 {
     array[ 0 ] = _x;
     array[ 1 ] = _y;
@@ -642,8 +635,7 @@ vector< M, T >::set( T _x, T _y, T _z )
 
 
 template< size_t M, typename T >
-void
-vector< M, T >::set( T _x, T _y, T _z, T _w )
+void vector< M, T >::set( T _x, T _y, T _z, T _w )
 {
     array[ 0 ] = _x;
     array[ 1 ] = _y;

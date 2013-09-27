@@ -70,8 +70,7 @@ public:
     void zero();
     void identity();
 
-    template< size_t DIM >
-    void set( const matrix< DIM, DIM, T >& rotation_matrix_ );
+    template< size_t D > void set( const matrix< D, D, T >& rotation_matrix_ );
 
     void set( T ww, T xx, T yy, T zz);
     void set( vector< 3, T >& xyz, T w );
@@ -158,13 +157,12 @@ public:
     quaternion rotate_y( T theta, const vector< 3, T >& a );
     quaternion rotate_z( T theta, const vector< 3, T >& a );
 
-    static quaternion slerp( T a, const quaternion& p, 
+    static quaternion slerp( T a, const quaternion& p,
         const quaternion& q, const T epsilon = 1e-13 );
 
     matrix< 3, 3, T > get_rotation_matrix() const;
 
-    template< size_t DIM >
-    void get_rotation_matrix( matrix< DIM, DIM, T >& result ) const;
+    template< size_t D > void get_rotation_matrix( matrix< D, D, T >& result ) const;
 
     friend std::ostream& operator<< ( std::ostream& os, const quaternion& q )
     {
@@ -231,10 +229,7 @@ quaternion< T >::quaternion( T x_, T y_, T z_, T w_ )
 
 
 template < typename T >
-quaternion< T >::quaternion(
-    const vector< 3, T >& xyz,
-    T w_
-    )
+quaternion< T >::quaternion( const vector< 3, T >& xyz, T w_ )
 {
     super::set( xyz, w_ );
 }
@@ -250,10 +245,9 @@ quaternion< T >::quaternion( const vector< 3, T >& xyz )
 
 
 
-template< typename T >
-template< size_t M >
+template< typename T > template< size_t M >
 quaternion< T >::quaternion( const matrix< M, M, T >& rotation_matrix_,
-    typename enable_if< M >= 3 >::type* )
+                             typename enable_if< M >= 3 >::type* )
 {
     this->template set< M >( rotation_matrix_ );
 }
@@ -261,10 +255,8 @@ quaternion< T >::quaternion( const matrix< M, M, T >& rotation_matrix_,
 
 
  // top-left 3x3 is interpreted as rot matrix.
-template < typename T >
-template< size_t DIM >
-void quaternion< T >::
-set( const matrix< DIM, DIM, T >& M )
+template < typename T > template< size_t D >
+void quaternion< T >::set( const matrix< D, D, T >& M )
 {
     T trace = M( 0, 0 ) + M( 1, 1 ) + M( 2,2 ) + 1.0;
 
@@ -334,6 +326,7 @@ set( const matrix< DIM, DIM, T >& M )
         }
         else
         {
+            *this = ZERO;
             assert( 0 );
         }
     }
@@ -886,9 +879,8 @@ quaternion< T >::get_rotation_matrix() const
 
 
 
-template < typename T >
-template< size_t DIM >
-void quaternion< T >::get_rotation_matrix( matrix< DIM, DIM, T >& M ) const
+template < typename T > template< size_t D >
+void quaternion< T >::get_rotation_matrix( matrix< D, D, T >& M ) const
 {
     T w2 = w() * w();
     T x2 = x() * x();
@@ -941,7 +933,7 @@ slerp( T a, const quaternion< T >& p, const quaternion< T >& q, const T epsilon 
 
         qx *= coeff2;
         px *= coeff1;
-        
+
         px += qx;
     }
     else

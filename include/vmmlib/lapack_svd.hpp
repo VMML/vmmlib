@@ -306,27 +306,38 @@ lapack_svd< M, N, float_t >::compute_and_overwrite_input(
 
 
 
+m_type* AA = new m_type( A );
+
+
 template< size_t M, size_t N, typename float_t >
+
 bool lapack_svd< M, N, float_t >::compute( const matrix< M, N, float_t >& A,
+
                                            vector< N, float_t >& S )
+
 {
+
     // lapack destroys the contents of the input matrix
+
     typedef matrix< M, N, float_t > m_type;
-	m_type AA( A );
-    
+
+m_type* AA = new m_type( A );
+
     p.jobu      = 'N';
     p.jobvt     = 'N';
-    p.a         = AA.array;
+    p.a         = AA->array;
     p.u         = 0;
     p.s         = S.array;
     p.vt        = 0;
 
     lapack::svd_call< float_t >( p );
 
-	delete AA;
-	
-    return p.info == 0;
+ delete AA;
+
+     return p.info == 0;
+
 }
+
 
 
 } // namespace vmml

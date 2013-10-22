@@ -304,11 +304,6 @@ lapack_svd< M, N, float_t >::compute_and_overwrite_input(
     return p.info == 0;
 }
 
-
-
-m_type* AA = new m_type( A );
-
-
 template< size_t M, size_t N, typename float_t >
 
 bool lapack_svd< M, N, float_t >::compute( const matrix< M, N, float_t >& A,

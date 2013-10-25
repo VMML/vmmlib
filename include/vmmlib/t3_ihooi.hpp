@@ -1,10 +1,10 @@
-/* 
+/*
  * VMMLib - Tensor Classes
- *  
+ *
  * @author Rafael Ballester
  *
- * incremental version of higher-order orthogonal iteration (HOOI), see t3_hooi.hpp 
- * 
+ * incremental version of higher-order orthogonal iteration (HOOI), see t3_hooi.hpp
+ *
  */
 
 
@@ -65,7 +65,7 @@ namespace vmml {
     tensor_stats
     VMML_TEMPLATE_CLASSNAME::i_als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, t3_core_type& core_, T_init init, const size_t max_iterations_, const float tolerance) {
         tensor_stats result;
-        
+
         if ((R1 % NBLOCKS != 0) or (R2 % NBLOCKS != 0) or (R3 % NBLOCKS != 0)) {
             std::ostringstream convert1, convert2, convert3, convert4;
             convert1 << R1;
@@ -149,7 +149,7 @@ namespace vmml {
         delete u3_incr;
         delete residual_data;
         delete approx_data;
-        
+
         return result;
     }
 
@@ -158,7 +158,7 @@ namespace vmml {
     tensor_stats
     VMML_TEMPLATE_CLASSNAME::i_cp_als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, t3_core_type& core_, T_init init, const size_t max_iterations_, const float tolerance) {
         tensor_stats result;
-        
+
         if ((R1 % NBLOCKS != 0) or (R2 % NBLOCKS != 0) or (R3 % NBLOCKS != 0)) {
             std::ostringstream convert1, convert2, convert3, convert4, convert5;
             convert1 << R;
@@ -213,9 +213,6 @@ namespace vmml {
         typedef matrix < R3 / NBLOCKS, I3, T_coeff > u3_inv_tmp_type;
         u3_inv_tmp_type* u3_inv_tmp = new u3_inv_tmp_type;
 
-        // TODO move up
-        typedef t3_hooi < R1 / NBLOCKS, R2 / NBLOCKS, R3 / NBLOCKS, I1, I2, I3, T_coeff > hooi_type;
-
         for (size_t i = 0; i < NBLOCKS; ++i) {
 #ifdef TUCKER_LOG
             std::cout << "Incremental CP-Tucker: block number '" << i << "'" << std::endl;
@@ -224,7 +221,7 @@ namespace vmml {
             // Do CP-ALS for this block
             result += hopm_type::als(*residual_data, *u1_cp_tmp, *u2_cp_tmp, *u3_cp_tmp, *lambdas_tmp, typename hopm_type::init_hosvd(), max_iterations_, tolerance);
 
-            // Compute the pseudoinverses 
+            // Compute the pseudoinverses
             u1_cp_tmp->get_sub_matrix(*u1_tmp, 0, 0);
             compute_pseudoinverse< u1_tmp_type > compute_pinv1;
             compute_pinv1(*u1_tmp, *u1_tmp2);
@@ -285,7 +282,7 @@ namespace vmml {
         delete u3_incr;
         delete residual_data;
         delete approx_data;
-        
+
         return result;
     }
 

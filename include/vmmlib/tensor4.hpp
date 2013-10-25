@@ -226,7 +226,7 @@ namespace vmml
         template< size_t J1, size_t J2, size_t J3, size_t J4 >
         typename enable_if< J1 <= I1 && J2 <= I2 && J3 <= I3 && J4 <= I4 >::type*
         get_sub_tensor4(tensor4<J1, J2, J3, J4, T >& result, size_t row_offset, size_t col_offset, size_t slice_offset, size_t t3_offset) const;
-        
+
         // static members
         static void     tensor4_allocate_data( T*& array_ );
         static void     tensor4_deallocate_data( T*& array_ );
@@ -246,7 +246,7 @@ namespace vmml
 
         template< typename TT >
         void quantize_log(tensor4< I1, I2, I3, I4, TT >& quantized_, tensor4< I1, I2, I3, I4, char >& signs_, T& min_value_, T& max_value_, const TT& tt_range_) const;
-        
+
     protected:
         tensor3_t&                   _get_tensor3( size_t index_ );
         const tensor3_t&             _get_tensor3( size_t index_ ) const;
@@ -755,8 +755,6 @@ namespace vmml
         void
         VMML_TEMPLATE_CLASSNAME::float_t_to_uint_t( const tensor4< I1, I2, I3, I4, TT >& other )
         {
-            typedef tensor4< I1, I2, I3, I4, TT > t3_tt_type ;
-
             if( sizeof(T) == 1 || sizeof(T) == 2) {
                 const TT* otherdata = other.get_array_ptr();
                 for( size_t index = 0;index < SIZE; ++index )
@@ -1134,7 +1132,7 @@ namespace vmml
             }
             return sqrt(f_norm);
         }
-        
+
         VMML_TEMPLATE_STRING
         double
         VMML_TEMPLATE_CLASSNAME::frobenius_norm(const tensor4< I1, I2, I3, I4, T>& other_) const {
@@ -1149,7 +1147,7 @@ namespace vmml
 
             return sqrt(f_norm);
         }
-        
+
         VMML_TEMPLATE_STRING
         template< typename TT >
         void
@@ -1177,7 +1175,7 @@ namespace vmml
                 }
             }
         }
-        
+
         VMML_TEMPLATE_STRING
         double
         VMML_TEMPLATE_CLASSNAME::mean() const {
@@ -1195,7 +1193,7 @@ namespace vmml
         VMML_TEMPLATE_CLASSNAME::mean(T& mean_) const {
             mean_ = static_cast<T> (mean());
         }
-        
+
         VMML_TEMPLATE_STRING
         double
         VMML_TEMPLATE_CLASSNAME::variance() const {
@@ -1211,18 +1209,18 @@ namespace vmml
 
             return double(sum_val / (size() - 1));
         }
-        
+
         VMML_TEMPLATE_STRING
         double
         VMML_TEMPLATE_CLASSNAME::stdev() const {
             return sqrt(variance());
         }
-        
+
         VMML_TEMPLATE_STRING
         T
         VMML_TEMPLATE_CLASSNAME::get_min() const {
             T tensor4_min = static_cast<T> ((std::numeric_limits<T>::max)());
-            
+
             T *it = _array, *it_end = _array + I1*I2*I3*I4;
             for (; it != it_end; ++it) {
                 if (*it < tensor4_min) {

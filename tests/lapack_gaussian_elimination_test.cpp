@@ -16,15 +16,14 @@ bool
 lapack_gaussian_elimination_test::run()
 {
     bool global_ok = true;
-    typedef vector< 3, float > vec3f;
 
     {
         bool ok = true;
-        
+
         matrix< 3, 3, float >   A;
         vector< 3, float >      B;
         vector< 3, float >      X;
-            
+
         A( 0, 0 )   = 2;
         A( 0, 1 )   = 1;
         A( 0, 2 )   = -1;
@@ -40,16 +39,16 @@ lapack_gaussian_elimination_test::run()
         A( 2, 2 )   = 2;
         B( 2 )      = -3;
 
-        
+
         vmml::lapack::gaussian_elimination< 1, 3, float > ge;
         try
         {
             X   = B;
             ge.compute( A, X );
             float epsilon = 1e-6;
-            
+
             //std::cout << " X " << X << std::endl;
-            
+
             TEST( fabs( X( 0 ) - 2.0f ) < epsilon
                 && fabs( X( 1 ) - 3.0f ) < epsilon
                 &&  fabs( X( 2 ) - -1.0f ) < epsilon
@@ -68,7 +67,7 @@ lapack_gaussian_elimination_test::run()
             std::cout << B << std::endl;
             std::cout << X << std::endl;
         }
-        
+
     }
 
     return global_ok;

@@ -2,18 +2,29 @@
 
 include(System)
 list(APPEND FIND_PACKAGES_DEFINES ${SYSTEM})
+find_package(PkgConfig)
 
-find_package(OpenMP )
+set(ENV{PKG_CONFIG_PATH} "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig:$ENV{PKG_CONFIG_PATH}")
+if(PKG_CONFIG_EXECUTABLE)
+  find_package(OpenMP )
+  if((NOT OpenMP_FOUND) AND (NOT OPENMP_FOUND))
+    pkg_check_modules(OpenMP OpenMP)
+  endif()
+else()
+  find_package(OpenMP  )
+endif()
+
 
 if(EXISTS ${CMAKE_SOURCE_DIR}/CMake/FindPackagesPost.cmake)
   include(${CMAKE_SOURCE_DIR}/CMake/FindPackagesPost.cmake)
 endif()
 
-if(OpenMP_FOUND)
-  set(OpenMP_name OpenMP)
-endif()
 if(OPENMP_FOUND)
   set(OpenMP_name OPENMP)
+  set(OpenMP_FOUND TRUE)
+elseif(OpenMP_FOUND)
+  set(OpenMP_name OpenMP)
+  set(OPENMP_FOUND TRUE)
 endif()
 if(OpenMP_name)
   list(APPEND FIND_PACKAGES_DEFINES VMMLIB_USE_OPENMP)
@@ -24,7 +35,7 @@ if(OpenMP_name)
   endif()
 endif()
 
-set(VMMLIB_BUILD_DEBS autoconf;automake;cmake;git;git-svn;pkg-config;subversion)
+set(VMMLIB_BUILD_DEBS autoconf;automake;cmake;git;git-review;git-svn;ninja-build;pkg-config;subversion)
 
 set(VMMLIB_DEPENDS OpenMP)
 
@@ -43,10 +54,10 @@ file(WRITE ${DEFINES_FILE_IN}
   "#define ${CMAKE_PROJECT_NAME}_DEFINES_${SYSTEM}_H\n\n")
 file(WRITE ${OPTIONS_CMAKE} "# Optional modules enabled during build\n")
 foreach(DEF ${FIND_PACKAGES_DEFINES})
-  add_definitions(-D${DEF})
+  add_definitions(-D${DEF}=1)
   file(APPEND ${DEFINES_FILE_IN}
   "#ifndef ${DEF}\n"
-  "#  define ${DEF}\n"
+  "#  define ${DEF} 1\n"
   "#endif\n")
 if(NOT DEF STREQUAL SYSTEM)
   file(APPEND ${OPTIONS_CMAKE} "set(${DEF} ON)\n")

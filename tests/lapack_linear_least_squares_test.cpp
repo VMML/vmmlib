@@ -16,15 +16,14 @@ bool
 lapack_linear_least_squares_test::run()
 {
     bool global_ok = true;
-    typedef vector< 3, float > vec3f;
 
     {
         bool ok = true;
-        
+
         matrix< 3, 2, float >   A;
         vector< 3, float >      B;
         vector< 2, float >      X;
-            
+
         A( 0, 0 )   = 1;
         A( 0, 1 )   = 4;
         B( 0 )      = 7;
@@ -37,7 +36,7 @@ lapack_linear_least_squares_test::run()
         A( 2, 1 )   = 6;
         B( 2 )      = 9;
 
-        
+
         vmml::lapack::linear_least_squares_xgels< 3, 2, float > llsq;
         try
         {
@@ -57,7 +56,7 @@ lapack_linear_least_squares_test::run()
             std::cout << B << std::endl;
             std::cout << X << std::endl;
         }
-        
+
     }
 
     return global_ok;

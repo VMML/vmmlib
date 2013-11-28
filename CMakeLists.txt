@@ -98,6 +98,8 @@ set(HEADERS
   include/vmmlib/t3_ihopm.hpp
   include/vmmlib/t3_ihooi.hpp
   include/vmmlib/t3_ttm.hpp
+  include/vmmlib/tensor_mmapper.hpp
+  include/vmmlib/tensor_stats.hpp
   include/vmmlib/tensor3.hpp
   include/vmmlib/tensor3_iterator.hpp
   include/vmmlib/tucker3_exporter.hpp
@@ -142,6 +144,9 @@ set(TESTS
 )
 
 if(LAPACK_FOUND)
+  set(LAPACK_HEADERS 
+    include/vmmlib/lapack/detail/clapack.h
+    include/vmmlib/lapack/detail/f2c.h )
   add_definitions(-DVMMLIB_USE_LAPACK)
   list(APPEND TESTS
     tests/blas_daxpy_test.cpp
@@ -197,6 +202,10 @@ endif()
 
 install(FILES ${HEADERS} DESTINATION include/vmmlib COMPONENT dev)
 install(FILES ${DOCS} DESTINATION share/vmmlib COMPONENT dev)
+
+if(LAPACK_FOUND)
+   install(FILES ${LAPACK_HEADERS} DESTINATION include/vmmlib/lapack/detail COMPONENT dev)
+endif()
 
 include(DoxygenRule) # must be after all targets
 include(CPackConfig)

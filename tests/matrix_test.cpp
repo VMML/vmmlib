@@ -676,28 +676,30 @@ bool matrix_test::run()
         }
     }
 
-    // set( .... )
+    // set( .... ), _translation()
     {
         ok = true;
 
-        double mData[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
+        double mData[] = {  0,  1,  2,  3,
+                            4,  5,  6,  7,
+                            8,  9, 10, 11,
+                           12, 13, 14, 15 };
 
         matrix< 4, 4, double > m4x4;
         matrix< 4, 4, double > m4x4C;
+
         m4x4C = mData;
-
         m4x4.set( mData, mData + 16, true );
+        TEST( m4x4 == m4x4C );
 
-        TEST(m4x4 == m4x4C);
+        const vector< 3, double > trans( 3, 7, 11 );
+        TEST( m4x4.get_translation() == trans );
 
         m4x4C = transpose( m4x4C );
-
         m4x4.set( mData, mData + 16, false );
-
-        TEST(m4x4 == m4x4C);
+        TEST( m4x4 == m4x4C );
 
         log( "set( iterator_t, bool ) ", ok );
-
     }
 
     // test direct sum

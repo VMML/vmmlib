@@ -362,11 +362,12 @@ public:
 
     template< typename TT >
     matrix< M, N, T >& set_translation( const vector< 3, TT >& t,
-                         typename enable_if< M == N && M == 4, TT >::type* = 0 );
+                        typename enable_if< M == N && M == 4, TT >::type* = 0 );
 
     template< typename TT >
-    void get_translation( vector< 3, TT >& translation_,
-        typename enable_if< M == N && M == 4, TT >::type* = 0 ) const;
+    void get_translation( vector< N-1, TT >& translation_ ) const;
+
+    vector< N-1, T > get_translation() const;
 
     // hack for static-member-init
     template< typename init_functor_t >
@@ -2096,16 +2097,21 @@ inline matrix< M, N, T >& matrix< M, N, T >::set_translation(
     return set_translation( translation_.array );
 }
 
-template< size_t M, size_t N, typename T >
-template< typename TT >
-inline void
-matrix< M, N, T >::
-get_translation( vector< 3, TT >& translation_,
-    typename enable_if< M == N && M == 4, TT >::type* ) const
+template< size_t M, size_t N, typename T > template< typename TT > inline
+void matrix< M, N, T >::get_translation( vector< N-1, TT >& translation_ )
+    const
 {
-    translation_.array[ 0 ] = array[ 12 ];
-    translation_.array[ 1 ] = array[ 13 ];
-    translation_.array[ 2 ] = array[ 14 ];
+    for( size_t i = 0; i < N-1; ++i )
+        translation_.array[ i ] = array[ i * M ];
+}
+
+
+template< size_t M, size_t N, typename T >
+inline vector< N-1, T > matrix< M, N, T >::get_translation() const
+{
+    vector< N-1, T > result;
+    get_translation( result );
+    return result;
 }
 
 

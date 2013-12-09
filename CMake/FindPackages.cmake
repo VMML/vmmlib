@@ -35,7 +35,7 @@ if(OpenMP_name)
   endif()
 endif()
 
-set(VMMLIB_BUILD_DEBS autoconf;automake;cmake;git;git-review;git-svn;ninja-build;pkg-config;subversion)
+set(VMMLIB_BUILD_DEBS autoconf;automake;cmake;doxygen;git;git-review;git-svn;lcov;ninja-build;pkg-config;subversion)
 
 set(VMMLIB_DEPENDS OpenMP)
 

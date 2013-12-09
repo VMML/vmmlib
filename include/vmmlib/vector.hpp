@@ -193,8 +193,7 @@ public:
     vector( const vector< N, T >& source_,
             typename enable_if< N == M + 1 >::type* = 0  );
 
-    template< typename U >
-    vector( const vector< M, U >& source_ );
+    template< typename U > vector( const vector< M, U >& source_ );
 
     void set( T a ); // sets all components to a;
 #ifndef SWIG

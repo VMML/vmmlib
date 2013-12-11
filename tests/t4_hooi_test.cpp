@@ -5,21 +5,15 @@
 
 #include <sstream>
 
-#define TEST( x ) \
-{ \
-    ok = x; \
-    global_ok &= ok; \
-}
-
 namespace vmml
 {
-	
+
 	bool
 	t4_hooi_test::run()
 	{
         bool global_ok = true;
 		bool ok = false;
-		
+
 		double precision = 0.001;
 
 		tensor4< 2, 2, 2, 2, double> t4_data;
@@ -34,7 +28,7 @@ namespace vmml
 		matrix< 2, 1, double > u2_check;
 		matrix< 2, 1, double > u3_check;
         matrix< 2, 1, double > u4_check;
-        
+
 		double data_u1[] = { 0.6327, 0.7744 };
 		u1_check.set( data_u1, data_u1 + 2);
 
@@ -51,22 +45,22 @@ namespace vmml
 		tensor4< 1, 1, 1, 1, double > core_check;
 		double data_core[] = { 34.9529 };
 		core_check.set( data_core, data_core + 1);
-		
+
 		typedef t4_hooi< 1, 1, 1, 1, 2, 2, 2, 2, double > hooi_type;
 		hooi_type::als( t4_data, u1, u2, u3, u4, core, hooi_type::init_hosvd() );
-       
+
 		TEST(u1.equals( u1_check, precision ) &&
                 u2.equals( u2_check, precision ) &&
                 u3.equals( u3_check, precision ) &&
                 u3.equals( u3_check, precision ) &&
                 core.equals( core_check, precision  ));
 		if ( ok )
-		{	
+		{
 			log( "HOOI rank-(1,1,1) approximation" , ok  );
 		} else
 		{
 			std::stringstream error;
-			error 
+			error
 			<< "HOOI rank-(1,1,1) approximation: " << std::setprecision(16) << std::endl
 			<< "U1 should be: " << std::endl << u1_check << std::endl
 			<< "U1 is: " << std::endl << u1 << std::endl
@@ -76,12 +70,12 @@ namespace vmml
 			<< "U3 is: " << std::endl << u3 << std::endl
 			<< "core should be: " << std::endl << core_check << std::endl
 			<< "core is: " << std::endl << core << std::endl;
-			
-			
+
+
 			log_error( error.str() );
 		}
-		
+
 		return global_ok;
 	}
-	
+
 } //end vmml namespace

@@ -5,12 +5,6 @@
 
 #include <sstream>
 
-#define TEST( x ) \
-{ \
-    ok = x; \
-    global_ok &= ok; \
-}
-
 namespace vmml
 {
 
@@ -37,7 +31,7 @@ bool matrix_test::run()
 
         TEST(m0 == m_correct);
 
-        if ( ok )
+        if( ok )
         {
             matrix< 4, 4, double > m_c2;
             m_c2( 0, 0 )    = 1;
@@ -693,7 +687,8 @@ bool matrix_test::run()
         TEST( m4x4 == m4x4C );
 
         const vector< 3, double > trans( 3, 7, 11 );
-        TEST( m4x4.get_translation() == trans );
+        TESTINFO( m4x4.get_translation() == trans,
+                  m4x4.get_translation() << " != " << trans );
 
         m4x4C = transpose( m4x4C );
         m4x4.set( mData, mData + 16, false );

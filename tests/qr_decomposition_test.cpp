@@ -5,12 +5,6 @@
 
 #include <sstream>
 
-#define TEST( x ) \
-{ \
-    ok = x; \
-    global_ok &= ok; \
-}
-
 namespace vmml
 {
 bool
@@ -18,7 +12,7 @@ qr_decomposition_test::run()
 {
     bool global_ok = true;
     bool ok = true;
-    
+
     // tests qr decomposition using modified gram-schmidt
     {
         matrix< 3, 3, double > A, Q, R;
@@ -30,7 +24,7 @@ qr_decomposition_test::run()
             6./7, -69./175, 58./175,
             3./7, 158./175, -6./175,
             -2./7, 6./35, 33./35 };
-        
+
         double Rcorrect[] = { 14, 21, -14, 0, 175, -70, 0, 0, -35 };
         matrix< 3, 3, double > Qc, Rc;
         Qc.set( Qcorrect, Qcorrect + 9 );
@@ -41,7 +35,7 @@ qr_decomposition_test::run()
             vector< 3, double > q = Q.get_column( index );
             vector< 3, double > qc = Qc.get_column( index );
             TEST(q == qc);
-            if ( ! ok ) 
+            if ( ! ok )
             {
                 q *= -1.0;
                 TEST(q == qc);
@@ -51,16 +45,16 @@ qr_decomposition_test::run()
         {
             vector< 3, double > r = R.get_row( index );
             vector< 3, double > rc = Rc.get_row( index );
-            TEST(r == rc); 
-            if ( ! ok ) 
+            TEST(r == rc);
+            if ( ! ok )
             {
                 r *= -1.0;
                 TEST(r == rc);
             }
         }
-        
+
         log( "QR decomposition using modified gram-schmidt, maximal precision", ok, true );
-        
+
         if ( ! ok )
         {
             ok = true;
@@ -69,8 +63,8 @@ qr_decomposition_test::run()
             {
                 vector< 3, double > q = Q.get_column( index );
                 vector< 3, double > qc = Qc.get_column( index );
-                TEST(q.equals( qc, tolerance )); 
-                if ( ! ok ) 
+                TEST(q.equals( qc, tolerance ));
+                if ( ! ok )
                 {
                     q *= -1.0;
                     TEST(q.equals( qc, tolerance ));
@@ -80,15 +74,15 @@ qr_decomposition_test::run()
             {
                 vector< 3, double > r = R.get_row( index );
                 vector< 3, double > rc = Rc.get_row( index );
-                TEST(r.equals( rc, tolerance )); 
-                if ( ! ok ) 
+                TEST(r.equals( rc, tolerance ));
+                if ( ! ok )
                 {
                     r *= -1.0;
                     TEST(r.equals( rc ));
                 }
             }
             log( "QR decomposition using modified gram-schmidt, tolerance 1e-9", ok );
-            if ( ! ok ) 
+            if ( ! ok )
             {
                 std::stringstream error;
                 error << " A " << A << std::endl;
@@ -107,4 +101,3 @@ qr_decomposition_test::run()
 
 
 } // namespace vmml
-

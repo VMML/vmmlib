@@ -5,12 +5,6 @@
 #include <vmmlib/tensor_mmapper.hpp>
 #include <sstream>
 
-#define TEST( x ) \
-{ \
-    ok = x; \
-    global_ok &= ok; \
-}
-
 namespace vmml
 {
 
@@ -948,7 +942,7 @@ namespace vmml
             << "deq. from log-scale: " << std::endl << t3_dequant_log << std::endl
             << "deq. from linear: " << std::endl << t3_dequant2 << std::endl;
 #endif
-            
+
             //linear quantization with separate sign encoding
             tensor3< 2, 4, 3, float >  t3_raw3;
             signs.zero(); t3_quant.zero();
@@ -1279,7 +1273,7 @@ namespace vmml
 
             log( "fill tensor3 with symmetric random values" , ok  );
 
-  
+
         }
 // FIXME rand() depends on stdlib version
 //        {
@@ -1378,7 +1372,7 @@ namespace vmml
             remove("out.raw");
 
         }
-        
+
         return global_ok;
     }
 

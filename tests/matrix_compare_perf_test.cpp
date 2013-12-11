@@ -15,14 +15,14 @@ matrix_compare_perf_test::run()
 
     double Mdata4x4[] = { 17., 24., 1., 8., 23., 5., 7., 14.,
      4., 6., 13., 20., 10., 12., 19., 21. };
-    
+
     matrix< 4, 4 > m, m_inverse;
     m = Mdata4x4;
-    
+
     Matrix4< double > m_old, m_old_inverse;
     m_old.set( Mdata4x4 );
-    
-    
+
+
     new_test( "matrix 4x4 inversion comparison" );
     start( "old" );
     for( size_t i = 0; i < iterations; ++i )
@@ -38,8 +38,8 @@ matrix_compare_perf_test::run()
     }
     stop();
     compare();
-    
-    
+
+
     double d;
 
     new_test( "operator[]" );
@@ -93,8 +93,8 @@ matrix_compare_perf_test::run()
     }
     stop();
     compare();
-    
-    
+
+
 
     new_test( "copy ctor" );
     start( "old" );
@@ -155,7 +155,7 @@ matrix_compare_perf_test::run()
             //mm = matrix< 4, 4, double >::IDENTITY;
         }
         stop();
-        
+
     }
     compare();
 
@@ -179,7 +179,7 @@ matrix_compare_perf_test::run()
             //mm = matrix< 4, 4, double >::ZERO;
         }
         stop();
-        
+
     }
     compare();
 
@@ -188,10 +188,10 @@ matrix_compare_perf_test::run()
     {
         Matrix4< double > mm_old;
         matrix< 4, 4, double > mm;
-        
+
         Vector3< double > axis_old;
         vector< 3, double > axis;
-        
+
         double axisData[] = { 1.4, 2.4, -3 };
 
         axis_old = axisData;
@@ -199,7 +199,7 @@ matrix_compare_perf_test::run()
 
         axis = axisData;
         axis.normalize();
-        
+
         double angle = 1.3333333333333333333333;
 
         start( "old" );
@@ -215,13 +215,12 @@ matrix_compare_perf_test::run()
             mm.rotate( angle, axis );
         }
         stop();
-        
+
     }
     compare();
-    
-    
+
+
 
 }
 
 } // namespace vmml
-

@@ -4,12 +4,6 @@
 #include <vmmlib/t4_converter.hpp>
 #include <sstream>
 
-#define TEST( x ) \
-{ \
-    ok = x; \
-    global_ok &= ok; \
-}
-
 namespace vmml
 {
 
@@ -76,4 +70,3 @@ namespace vmml
 
 
 } // namespace vmml
-

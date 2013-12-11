@@ -21,4 +21,3 @@ protected:
 } // namespace vmml
 
 #endif
-

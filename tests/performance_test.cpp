@@ -35,14 +35,13 @@ performance_test::compare()
 {
     size_t size = _last_times.size();
     assert( size > 1 );
-    
+
     double s1 = _last_times[ size - 1 ];
     double s0 = _last_times[ size - 2 ];
-    
+
     _log << ( s1 / s0 ) * 1e2 << "% \n\n";
-    
+
 }
 
 
 } // namespace vmml
-

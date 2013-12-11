@@ -4,12 +4,6 @@
 #include <sstream>
 #include <stdint.h>
 
-#define TEST( x ) \
-{ \
-    ok = x; \
-    global_ok &= ok; \
-}
-
 namespace vmml
 {
 
@@ -126,4 +120,3 @@ namespace vmml
 
 
 } // namespace vmml
-

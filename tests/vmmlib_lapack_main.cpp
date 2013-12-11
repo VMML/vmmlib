@@ -29,12 +29,12 @@ main( int argc, const char* argv[] )
     b.at( 0, 0 ) = 7;
     b.at( 1, 0 ) = 8;
     b.at( 2, 0 ) = 9;
-    
+
     lapack_linear_least_squares< 1, 3, double > llsq;
 
     llsq.compute( A, b );
     std::cout << b << std::endl;
-    
+
 
 #endif
 
@@ -63,4 +63,3 @@ main( int argc, const char* argv[] )
     std::cout << Vt << std::endl;
 #endif
 }
-

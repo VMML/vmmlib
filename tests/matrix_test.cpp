@@ -692,7 +692,7 @@ bool matrix_test::run()
         m4x4.set( mData, mData + 16, true );
         TEST( m4x4 == m4x4C );
 
-        const vector< 3, double > trans( 3, 7, 11 );
+        const vector< 3, double > trans( 12, 13, 14 );
         TEST( m4x4.get_translation() == trans );
 
         m4x4C = transpose( m4x4C );

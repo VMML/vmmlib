@@ -261,7 +261,7 @@ bool quaternion_test::run()
         cout << "Quaternion: all tests passed!" << endl;
 
 #endif
-	return true;
+	return global_ok;
 }
 
 }

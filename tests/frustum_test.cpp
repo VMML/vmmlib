@@ -66,7 +66,7 @@ bool frustum_test::_test( const frustum_culler< float > fc )
     TESTINFO( fc.test_aabb( xy, xy, zBorder ) == VISIBILITY_PARTIAL,
               fc.test_aabb( xy, xy, zBorder ));
 
-    return global_ok;
+    return global_ok && ok;
 }
 
 } // namespace vmml

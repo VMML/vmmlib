@@ -30,28 +30,49 @@ if(APPLE)
   find_library(LAPACK_LIBRARIES Accelerate)
   if(LAPACK_LIBRARIES)
     set(LAPACK_FOUND TRUE)
+    set(BLAS_FOUND TRUE)
+    set(LAPACK_LIBRARIES lapack)
+    set(BLAS_LIBRARIES blas)
   endif(LAPACK_LIBRARIES)
-elseif(NOT CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-#  enable_language(Fortran OPTIONAL) # eile: Why needed?
-  if (VMMLIB_USE_BLAS)
-    find_package(BLAS)
-    if(BLAS_FOUND)
-      list(GET BLAS_LIBRARIES 0 BLAS_LIBRARY_DIR)
-      get_filename_component(BLAS_LIBRARY_DIR ${BLAS_LIBRARY_DIR} PATH)
-      find_path(BLAS_INCLUDE_DIR cblas.h ${BLAS_LIBRARY_DIR}/../include
-        NO_DEFAULT_PATH)
-      if(BLAS_INCLUDE_DIR)
-        find_package(LAPACK)
-      else()
-        message(STATUS "Missing cblas.h in ${BLAS_LIBRARY_DIR}/../include, disabling BLAS support")
-        set(BLAS_FOUND)
-      endif()
+endif()
+
+if(BLAS_FOUND)
+    check_library_exists(${BLAS_LIBRARIES} cblas_dgemm "cblas.h" CBLAS_DGEMM_SUPPORTED)
+    if(NOT CBLAS_DGEMM_SUPPORTED)
+        message(STATUS "Default blas library doesnt support cblas_dgemm")
+        set(BLAS_FOUND FALSE)
     endif()
-  endif()
+endif()
+
+set(ATLAS_BLAS_FOUND FALSE)
+
+if(NOT BLAS_FOUND)
+  if(ATLAS_CBLAS_LIBRARY AND ATLAS_CBLAS_INCLUDE_DIR)
+      message(STATUS "Atlas cblas found")
+      set(BLAS_LIBRARIES ${ATLAS_CBLAS_LIBRARY})
+      set(BLAS_FOUND TRUE)
+      set(ATLAS_BLAS_FOUND TRUE)
+      include_directories(BEFORE ${ATLAS_CBLAS_INCLUDE_DIR})
+   endif()
+endif()
+
+# If Atlas blas is found, try using the lapack version from atlas
+if(ATLAS_BLAS_FOUND)
+  if(ATLAS_LAPACK_ATLAS_LIBRARY AND ATLAS_CLAPACK_ATLAS_LIBRARY AND ATLAS_CLAPACK_INCLUDE_DIR)
+      message(STATUS "Atlas clapack found")
+      set(LAPACK_LIBRARIES ${ATLAS_LAPACK_ATLAS_LIBRARY} ${ATLAS_CLAPACK_ATLAS_LIBRARY})
+      set(LAPACK_FOUND TRUE)
+      include_directories(BEFORE ${ATLAS_LAPACK_INCLUDE_DIR})
+   endif()
+endif()
+
+if((NOT BLAS_FOUND) OR (NOT LAPACK_FOUND))
+   message(STATUS "Missing lapack and/or cblas, disabling BLAS/LAPACK support")
+   set(BLAS_FOUND FALSE)
+   set(LAPACK_FOUND FALSE)
 endif()
 
 set(DOCS README.md AUTHORS LICENSE.txt ACKNOWLEDGEMENTS)
-set(BLAS_LIBRARIES blas)
 
 update_file(${CMAKE_CURRENT_SOURCE_DIR}/include/vmmlib/version.in.hpp
   ${OUTPUT_INCLUDE_DIR}/vmmlib/version.hpp)
@@ -142,7 +163,6 @@ set(TESTS
 # tests/vmmlib_lapack_main.cpp
 # tests/vmmlib_performance_tests_main.cpp
 )
-
 if(LAPACK_FOUND)
   set(LAPACK_HEADERS 
     include/vmmlib/lapack/detail/clapack.h
@@ -177,6 +197,7 @@ if(LAPACK_FOUND)
 
 )
 endif()
+
 if(BLAS_FOUND)
   add_definitions(-DVMMLIB_USE_BLAS)
 endif()

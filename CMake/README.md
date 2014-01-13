@@ -1,30 +1,22 @@
 # CMake Modules
 
-## Use in other projects
+This repository contains common CMake modules. To use it, create a
+.gitexternals in your project:
 
-First integration into another project:
+    # -*- mode: cmake -*-
+    include(GitExternal)
+    git_external("${CMAKE_CURRENT_LIST_DIR}/CMake/common"
+      "https://github.com/Eyescale/CMake.git" "fca9d25")
 
-    git remote add -f CMake https://github.com/Eyescale/CMake.git
-    git read-tree --prefix=CMake -u CMake/master
-    git commit -am 'Merging CMake subtree'
+Copy GitExternals.cmake from this repository to CMake/, and use it in
+your top-level CMakeLists.txt:
 
-Setup for new clone of a project:
+    list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMake
+      ${CMAKE_SOURCE_DIR}/CMake/common)
+    include(.gitexternals)
+    include(Common)
 
-    git remote add -f CMake https://github.com/Eyescale/CMake.git
-
-Update:
-
-    git pull -s subtree CMake master
-    git push
-
-## Updates
-
-    [fork repository]
-    git clone https://github.com/<fork>/CMake.git
-    [change]
-    git commit ...
-    git push
-    [open pull request]
+To update, simply change the SHA hash in .gitexternals.
 
 ## Documentation
 
@@ -33,6 +25,6 @@ Update:
     ../GITHUB_ORGANIZATION/Project-M.m/.
 - **GNUModules**: *module* target to create a
     [GNU module](http://modules.sourceforge.net/). See file for details.
-- [GitTargets documentation](CMake/blob/master/doc/GitTargets.md)
+- [GitTargets documentation](doc/GitTargets.md)
 - **UpdateFile**: *update_file* CMake function which uses configure_file
     but leaves target untouched if unchanged.

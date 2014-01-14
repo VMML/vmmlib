@@ -9,16 +9,19 @@ find_program(DEBUILD_EXECUTABLE debuild)
 find_program(DPUT_EXECUTABLE dput)
 
 if(NOT DEBUILD_EXECUTABLE)
-  message(STATUS "debuild not found")
+  message(STATUS "debuild not found, no PPA upload")
   return()
 endif()
 if(NOT DPUT_EXECUTABLE)
-  message(STATUS "dput not found")
+  message(STATUS "dput not found, no PPA upload")
   return()
 endif()
-if(CMAKE_BINARY_DIR MATCHES "${CMAKE_SOURCE_DIR}/")
-  message(STATUS "Build directory ${CMAKE_BINARY_DIR} is a sub-directory of "
-    "source directory ${CMAKE_SOURCE_DIR}, no PPA upload")
+if(NOT GIT_EXECUTABLE)
+  message(STATUS "git not found, no PPA upload")
+  return()
+endif()
+if(NOT CPACK_PACKAGE_NAME)
+  message(STATUS "CPACK_PACKAGE_NAME not set, no PPA upload")
   return()
 endif()
 
@@ -59,9 +62,14 @@ function(UPLOAD_PPA UBUNTU_NAME)
   file(REMOVE_RECURSE ${DEBIAN_BASE_DIR})
   set(DEBIAN_SOURCE_DIR
     ${DEBIAN_BASE_DIR}/${CPACK_DEBIAN_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-source)
-  execute_process(COMMAND ${CMAKE_COMMAND} -E
-    copy_directory ${CMAKE_SOURCE_DIR} ${DEBIAN_SOURCE_DIR}
-    )
+  execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory ${DEBIAN_BASE_DIR})
+  execute_process(
+    COMMAND ${GIT_EXECUTABLE} archive --worktree-attributes
+    --prefix ${CPACK_DEBIAN_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-source/
+    -o ${DEBIAN_BASE_DIR}.tar HEAD
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+  execute_process(COMMAND ${CMAKE_COMMAND} -E tar xzf ${DEBIAN_BASE_DIR}.tar
+    WORKING_DIRECTORY ${DEBIAN_BASE_DIR})
 
   file(MAKE_DIRECTORY ${DEBIAN_SOURCE_DIR}/debian)
   file(REMOVE_RECURSE ${DEBIAN_SOURCE_DIR}/.git)
@@ -220,5 +228,6 @@ function(UPLOAD_PPAS)
   upload_ppa(precise)
   upload_ppa(quantal)
   upload_ppa(raring)
+  upload_ppa(saucy)
   add_custom_target(dput DEPENDS ${DPUT_TARGETS})
 endfunction()

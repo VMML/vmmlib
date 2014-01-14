@@ -6,16 +6,11 @@
 #include <sstream>
 #include <cmath>
 
-#define TEST( x ) \
-{ \
-    ok = x; \
-    global_ok &= ok; \
-}
-
 namespace vmml
 {
 bool lowpass_filter_test::run()
 {
+    bool ok = true;
     bool global_ok = true;
     double data[] = { 0, 2, 4, 8, 16 };
     vector< 5, double > v;
@@ -31,7 +26,6 @@ bool lowpass_filter_test::run()
     float tmp = 9;
     const double filtered = filter.get();
 
-    bool ok;
     TEST(filtered == tmp);
 
     log( "low pass filter, filter ( data, smooth_factor )", ok );

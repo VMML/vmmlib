@@ -3,12 +3,6 @@
 
 #include <vmmlib/lapack_linear_least_squares.hpp>
 
-#define TEST( x ) \
-{ \
-    ok = x; \
-    global_ok &= ok; \
-}
-
 namespace vmml
 {
 
@@ -63,4 +57,3 @@ lapack_linear_least_squares_test::run()
 }
 
 } // namespace vmml
-

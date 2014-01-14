@@ -7,12 +7,6 @@
 #include <vmmlib/tensor_mmapper.hpp>
 #include <sstream>
 
-#define TEST( x ) \
-{ \
-    ok = x; \
-    global_ok &= ok; \
-}
-
 namespace vmml
 {
     bool tensor4_test::run()
@@ -931,7 +925,7 @@ namespace vmml
             log_error( error.str(),  fail_test);
 
         }
-        
+
         {
             tensor4< 2, 2, 2, 2, double > t4_data;
             double data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
@@ -941,7 +935,7 @@ namespace vmml
             tuck4_dec.tucker_als(t4_data, hooi_type::init_hosvd());
             tensor4< 2, 2, 2, 2, double > reco, reco_check;
             tuck4_dec.reconstruct( reco );
-            
+
             double data_reco_check[] = { 2.5882, 2.8606, 3.1682, 3.5017, 3.9482, 4.3637, 4.8330, 5.3417, 7.7110, 8.5226, 9.4390, 10.4326, 11.7627, 13.0008, 14.3988, 15.9144 };
             reco_check.set( data_reco_check, data_reco_check + 16 );
             double precision = 1.0e-2;

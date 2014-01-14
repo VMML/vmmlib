@@ -73,7 +73,7 @@ main( int argc, const char* argv[] )
 
 	vmml::svd_test svd_test_;
 	run_and_log( svd_test_ );
-    
+
     vmml::util_test util_test_;
     run_and_log( util_test_ );
 
@@ -140,10 +140,10 @@ main( int argc, const char* argv[] )
 
 	vmml::tensor4_test t4t;
     run_and_log( t4t );
-    
+
     vmml::t4_hooi_test t4hooi;
     run_and_log( t4hooi );
-    
+
     vmml::t4_ttm_test t4ttm;
     run_and_log( t4ttm );
 

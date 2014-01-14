@@ -2102,7 +2102,7 @@ void matrix< M, N, T >::get_translation( vector< N-1, TT >& translation_ )
     const
 {
     for( size_t i = 0; i < N-1; ++i )
-        translation_.array[ i ] = array[ i * M ];
+        translation_.array[ i ] = array[ i + M * (N - 1) ];
 }
 
 

@@ -3,12 +3,6 @@
 #include "vmmlib/t3_ihooi.hpp"
 #include <sstream>
 
-#define TEST( x ) \
-{ \
-    ok = x; \
-    global_ok &= ok; \
-}
-
 namespace vmml {
 
     bool
@@ -79,7 +73,7 @@ namespace vmml {
 
         u3_check.set(data_u3_check, data_u3_check + 24);
 
-        bool ok;
+        bool ok = true;
         TEST(u1.equals(u1_check, precision) &&
                 u2.equals(u2_check, precision) &&
                 u3.equals(u3_check, precision) &&
@@ -182,7 +176,7 @@ namespace vmml {
 
         u3_check.set(data_u3_check, data_u3_check + I * R);
 
-        bool ok;
+        bool ok = true;
         TEST(t3_core.equals(t3_core_check, precision) &&
                 u1.equals(u1_check, precision) &&
                 u2.equals(u2_check, precision) &&

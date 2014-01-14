@@ -357,7 +357,7 @@ public:
         {
             os << vector_.at( index ) << ", ";
         }
-        os << vector_.at( index ) << ") ";
+        os << vector_.at( index ) << ")";
 #endif
         return os;
     }

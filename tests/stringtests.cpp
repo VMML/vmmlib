@@ -28,18 +28,18 @@ int main( int argc, const char* argv[] )
 	}
 
 	ok = m3.set( tokens );
-	if ( ok ) 
+	if ( ok )
 		std::cout << m3 << std::endl;
 	else
 		std::cout << "failed: matrix3::set( const std::vector< std::string >& values )" << std::endl;
-	
+
 	matrix3data.clear();
 	ok = m3.getString( matrix3data, " " );
 	if ( ok )
 		std::cout << matrix3data << std::endl;
 	else
 		std::cout << "failed: matrix3::getString( .. ) " << std::endl;
-	
+
 	// matrix4 string tests
 	std::string matrix4data = "1.0 3.2 2.1 1.5 6.4 23.5 7.5 15.3 1.0 3.2 2.1 1.5 6.4 23.5 7.5 15.3";
 	vmml::Matrix4< double > m4;
@@ -52,7 +52,7 @@ int main( int argc, const char* argv[] )
 	}
 	else
 		std::cout << "failed: matrix4::set( const std::string& values )" << std::endl;
-	
+
 	tokens.clear();
 	for( size_t i = 0; i < 16; ++i )
 	{
@@ -61,7 +61,7 @@ int main( int argc, const char* argv[] )
 	}
 
 	ok = m4.set( tokens );
-	if ( ok ) 
+	if ( ok )
 		std::cout << m4 << std::endl;
 	else
 		std::cout << "failed: matrix4::set( const std::vector< std::string >& values )" << std::endl;
@@ -85,7 +85,7 @@ int main( int argc, const char* argv[] )
 	}
 	else
 		std::cout << "failed: vector2::set( const std::string& values )" << std::endl;
-	
+
 	tokens.clear();
 	for( size_t i = 0; i < 2; ++i )
 	{
@@ -94,7 +94,7 @@ int main( int argc, const char* argv[] )
 	}
 
 	ok = v2.set( tokens );
-	if ( ok ) 
+	if ( ok )
 		std::cout << v2 << std::endl;
 	else
 		std::cout << "failed: vector2::set( const std::vector< std::string >& values )" << std::endl;
@@ -119,7 +119,7 @@ int main( int argc, const char* argv[] )
 	}
 	else
 		std::cout << "failed: vector3::set( const std::string& values )" << std::endl;
-	
+
 	tokens.clear();
 	for( size_t i = 0; i < 3; ++i )
 	{
@@ -128,7 +128,7 @@ int main( int argc, const char* argv[] )
 	}
 
 	ok = v3.set( tokens );
-	if ( ok ) 
+	if ( ok )
 		std::cout << v3 << std::endl;
 	else
 		std::cout << "failed: vector3::set( const std::vector< std::string >& values )" << std::endl;
@@ -152,7 +152,7 @@ int main( int argc, const char* argv[] )
 	}
 	else
 		std::cout << "failed: vector4::set( const std::string& values )" << std::endl;
-	
+
 	tokens.clear();
 	for( size_t i = 0; i < 4; ++i )
 	{
@@ -161,7 +161,7 @@ int main( int argc, const char* argv[] )
 	}
 
 	ok = v4.set( tokens );
-	if ( ok ) 
+	if ( ok )
 		std::cout << v4 << std::endl;
 	else
 		std::cout << "failed: vector4::set( const std::vector< std::string >& values )" << std::endl;
@@ -175,4 +175,3 @@ int main( int argc, const char* argv[] )
 
 
 }
-

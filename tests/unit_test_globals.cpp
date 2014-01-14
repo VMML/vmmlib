@@ -116,4 +116,3 @@ unit_test_globals::destroy_instance()
 }
 
 } // namespace vmml
-

@@ -13,23 +13,20 @@ unit_test::unit_test( const std::string& test_name )
 	_log += "\n";
 }
 
-
-
-void
-unit_test::log( const std::string& msg, bool status_ok, bool warning_only )
+void unit_test::log( const std::string& msg, bool status_ok, bool warning_only )
 {
     _globals.notify_test();
 
     if ( status_ok )
         _log += _globals.get_ok_prefix();
-    else 
+    else
     {
-        if ( warning_only ) 
+        if ( warning_only )
         {
             _log += _globals.get_warn_prefix();
             _globals.notify_warn();
         }
-        else 
+        else
         {
             _log += _globals.get_fail_prefix();
             _globals.notify_fail();
@@ -41,14 +38,10 @@ unit_test::log( const std::string& msg, bool status_ok, bool warning_only )
 	_log += "\n";
 }
 
-
-
-void
-unit_test::log_error( const std::string& msg, bool warning_only  )
+void unit_test::log_error( const std::string& msg, bool warning_only  )
 {
     log(msg, false, warning_only);
 }
 
 
 } // namespace vmml
-

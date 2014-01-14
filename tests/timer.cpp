@@ -72,7 +72,7 @@ timer::get_seconds()
             _tmp_time /= CLOCKS_PER_SEC;
         #else
             gettimeofday( &_t_end, 0 );
-            
+
             _total_time += static_cast< double >( _t_end.tv_sec - _t_begin.tv_sec );
             _tmp_time = 1e-6 * static_cast< double >( _t_end.tv_usec - _t_begin.tv_usec  );
         #endif
@@ -82,4 +82,3 @@ timer::get_seconds()
 
 
 } // namespace stream_process
-

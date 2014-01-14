@@ -3,12 +3,6 @@
 
 #include <vmmlib/lapack_gaussian_elimination.hpp>
 
-#define TEST( x ) \
-{ \
-    ok = x; \
-    global_ok &= ok; \
-}
-
 namespace vmml
 {
 
@@ -74,4 +68,3 @@ lapack_gaussian_elimination_test::run()
 }
 
 } // namespace vmml
-

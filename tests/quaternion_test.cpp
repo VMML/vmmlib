@@ -5,12 +5,6 @@
 
 #include <iostream>
 
-#define TEST( x ) \
-{ \
-    ok = x; \
-    global_ok &= ok; \
-}
-
 using namespace std;
 namespace vmml
 {
@@ -267,10 +261,7 @@ bool quaternion_test::run()
         cout << "Quaternion: all tests passed!" << endl;
 
 #endif
-	return true;
+	return global_ok;
 }
 
 }
-
-
-

@@ -37,7 +37,7 @@ namespace vmml {
 
         template< typename T_init>
         static tensor_stats als(const t4_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, u4_type& u4_, T_init init, const double& max_f_norm_ = 0.0, const size_t max_iterations = 10, const float tolerance = 1e-04);
-        
+
         template< typename T_init>
         static tensor_stats als(const t4_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, u4_type& u4_, t4_core_type& core_, T_init init, const double& max_f_norm_ = 0.0, const size_t max_iterations = 10, const float tolerance = 1e-04);
 
@@ -45,16 +45,16 @@ namespace vmml {
 
         struct init_hosvd {
 
-            inline void operator()(const t4_type& data_, u1_type& u1_, u2_type& u2_, u3_type & u3_, u4_type & u4_) {
+            inline void operator()(const t4_type& data_, u2_type& u2_, u3_type & u3_, u4_type & u4_) {
                 t4_hosvd< R1, R2, R3, R4, I1, I2, I3, I4, T >::apply_mode2(data_, u2_);
                 t4_hosvd< R1, R2, R3, R4, I1, I2, I3, I4, T >::apply_mode3(data_, u3_);
                 t4_hosvd< R1, R2, R3, R4, I1, I2, I3, I4, T >::apply_mode4(data_, u4_);
             }
         };
-        
+
         struct init_random {
 
-            inline void operator()(const t4_type& data_, u1_type& u1_, u2_type& u2_, u3_type & u3_, u4_type & u4_) {
+            inline void operator()(const t4_type&, u2_type& u2_, u3_type & u3_, u4_type & u4_) {
                 srand(time(NULL));
                 u2_.set_random();
                 u3_.set_random();
@@ -107,7 +107,7 @@ namespace vmml {
         tensor_stats result;
 
         //intialize basis matrices
-        init(data_, u1_, u2_, u3_, u4_);
+        init(data_, u2_, u3_, u4_);
 
         core_.zero();
         T max_f_norm = 0.0;
@@ -154,7 +154,7 @@ namespace vmml {
 
             optimize_mode3(data_, u1_, u2_, u4_, projection3);
             t4_hosvd< R1, R2, R3, R4, R1, R2, I3, R4, T >::apply_mode3(projection3, u3_);
-            
+
             optimize_mode4(data_, u1_, u2_, u3_, projection4);
             t4_hosvd< R1, R2, R3, R4, R1, R2, R3, I4, T >::apply_mode4(projection4, u4_);
 
@@ -245,7 +245,7 @@ namespace vmml {
         delete u2_inv;
         delete u4_inv;
     }
-    
+
     VMML_TEMPLATE_STRING
     void
     VMML_TEMPLATE_CLASSNAME::optimize_mode4(const t4_type& data_, const u1_type& u1_, const u2_type& u2_, const u3_type& u3_,
@@ -277,4 +277,3 @@ namespace vmml {
 }//end vmml namespace
 
 #endif
-

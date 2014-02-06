@@ -61,7 +61,7 @@ namespace blas
 
     template< typename float_t >
     inline float_t
-    dot_call( dot_params< float_t >& p )
+    dot_call( dot_params< float_t >& )
     {
         VMMLIB_ERROR( "not implemented for this type.", VMMLIB_HERE );
     }
@@ -156,4 +156,3 @@ blas_dot< M, float_t >::compute( const vector_t& A_, const vector_t& B_, float_t
 } // namespace vmml
 
 #endif
-

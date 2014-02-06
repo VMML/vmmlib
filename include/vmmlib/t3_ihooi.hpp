@@ -47,12 +47,11 @@ namespace vmml {
         typedef matrix< I3, 1, T_coeff > u3_1col_type;
 
         // Incremental Tucker-ALS
-        template< typename T_init >
-        static tensor_stats i_als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, t3_core_type& core_, T_init init, const size_t max_iterations_ = 50, const float tolerance = 1e-04);
+        static tensor_stats i_als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, t3_core_type& core_, const float tolerance = 1e-04);
 
         // Incremental CP-Tucker-ALS: at each iteration, R-rank CP is performed, but a (R1,R2,R3)-Tucker core (R1,R2,R3 <= R) is computed from the resulting matrices.
-        template< size_t R, typename T_init >
-        static tensor_stats i_cp_als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, t3_core_type& core_, T_init init, const size_t max_iterations_ = 50, const float tolerance = 1e-04);
+        template< size_t R >
+        static tensor_stats i_cp_als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, t3_core_type& core_, const size_t max_iterations_ = 50, const float tolerance = 1e-04);
     };
 
 
@@ -61,9 +60,8 @@ namespace vmml {
 #define VMML_TEMPLATE_CLASSNAME		t3_ihooi< R1, R2, R3, NBLOCKS, I1, I2, I3, T_val, T_coeff >
 
     VMML_TEMPLATE_STRING
-    template< typename T_init>
     tensor_stats
-    VMML_TEMPLATE_CLASSNAME::i_als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, t3_core_type& core_, T_init init, const size_t max_iterations_, const float tolerance) {
+    VMML_TEMPLATE_CLASSNAME::i_als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, t3_core_type& core_, const float tolerance) {
         tensor_stats result;
 
         if ((R1 % NBLOCKS != 0) or (R2 % NBLOCKS != 0) or (R3 % NBLOCKS != 0)) {
@@ -154,9 +152,9 @@ namespace vmml {
     }
 
     VMML_TEMPLATE_STRING
-    template< size_t R, typename T_init>
+    template< size_t R >
     tensor_stats
-    VMML_TEMPLATE_CLASSNAME::i_cp_als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, t3_core_type& core_, T_init init, const size_t max_iterations_, const float tolerance) {
+    VMML_TEMPLATE_CLASSNAME::i_cp_als(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type& u3_, t3_core_type& core_, const size_t max_iterations_, const float tolerance) {
         tensor_stats result;
 
         if ((R1 % NBLOCKS != 0) or (R2 % NBLOCKS != 0) or (R3 % NBLOCKS != 0)) {

@@ -39,15 +39,13 @@
 #  include "t4_ttm_test.hpp"
 #endif
 
-void
-run_and_log( vmml::unit_test& test )
+void run_and_log( vmml::unit_test& test )
 {
     test.run();
     std::cout << test << std::endl;
 }
 
-int
-main( int argc, const char* argv[] )
+int main( int, const char** )
 {
 
     vmml::vector_test vector_test_;

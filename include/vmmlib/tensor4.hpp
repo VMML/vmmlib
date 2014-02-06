@@ -138,7 +138,7 @@ namespace vmml
         void cast_from( const tensor4< I1, I2, I3, I4, TT >& other );
 
         template< size_t J1, size_t J2, size_t  J3, size_t J4, typename TT >
-        void cast_from( const tensor4< J1, J2, J3, J4, TT >& other, const long& slice_idx_start_ = 0 );
+        void cast_from( const tensor4< J1, J2, J3, J4, TT >& other );
 
 
         template< typename TT >
@@ -723,7 +723,7 @@ namespace vmml
         VMML_TEMPLATE_STRING
         template< size_t J1, size_t J2, size_t J3, size_t J4, typename TT >
         void
-        VMML_TEMPLATE_CLASSNAME::cast_from( const tensor4< J1, J2, J3, J4, TT >& other, const long& slice_idx_start_ )
+        VMML_TEMPLATE_CLASSNAME::cast_from( const tensor4< J1, J2, J3, J4, TT >& other )
         {
             this->zero();
             int j4 = I4 < J4? I4 : J4;

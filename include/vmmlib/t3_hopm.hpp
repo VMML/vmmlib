@@ -74,7 +74,7 @@ namespace vmml {
 
         struct init_random {
 
-            inline void operator()(const t3_type& data_, u2_type& u2_, u3_type & u3_) {
+            inline void operator()(const t3_type&, u2_type& u2_, u3_type & u3_) {
                 srand(time(NULL));
                 u2_.set_random();
                 u3_.set_random();
@@ -86,7 +86,7 @@ namespace vmml {
 
         struct init_dct {
 
-            inline void operator()(const t3_type& data_, u2_type& u2_, u3_type & u3_) {
+            inline void operator()(const t3_type&, u2_type& u2_, u3_type & u3_) {
                 u2_.set_dct();
                 u3_.set_dct();
             }
@@ -466,4 +466,3 @@ namespace vmml {
 }//end vmml namespace
 
 #endif
-

@@ -12,18 +12,18 @@
 
 /**
 *
-* this is a wrapper for the following lapack routines: 
-*   
+* this is a wrapper for the following lapack routines:
+*
 * xGESV
 *
 *
-*/ 
+*/
 
 
 namespace vmml
 {
 
-// XYYZZZ 
+// XYYZZZ
 // X    = data type: S - float, D - double
 // YY   = matrix type, GE - general, TR - triangular
 // ZZZ  = function name
@@ -49,12 +49,12 @@ struct xgesv_params
     float_t*        b;  // input b, output X
     lapack_int      ldb; // leading dimension of b
     lapack_int      info;
-    
-    friend std::ostream& operator << ( std::ostream& os, 
+
+    friend std::ostream& operator << ( std::ostream& os,
         const xgesv_params< float_t >& p )
     {
-        os 
-            << "n "         << p.n 
+        os
+            << "n "         << p.n
             << " nrhs "     << p.nrhs
             << " lda "      << p.lda
             << " ldb "      << p.ldb
@@ -62,19 +62,19 @@ struct xgesv_params
             << std::endl;
         return os;
     }
-    
+
 };
 
 
 #if 0
-/* Subroutine */ int dgesv_(integer *n, integer *nrhs, doublereal *a, integer 
+/* Subroutine */ int dgesv_(integer *n, integer *nrhs, doublereal *a, integer
 	*lda, integer *ipiv, doublereal *b, integer *ldb, integer *info);
 #endif
 
 
 template< typename float_t >
 inline void
-xgesv_call( xgesv_params< float_t >& p )
+xgesv_call( xgesv_params< float_t >& )
 {
     VMMLIB_ERROR( "not implemented for this type.", VMMLIB_HERE );
 }
@@ -84,7 +84,7 @@ template<>
 inline void
 xgesv_call( xgesv_params< float >& p )
 {
-    sgesv_( 
+    sgesv_(
         &p.n,
         &p.nrhs,
         p.a,
@@ -102,7 +102,7 @@ template<>
 inline void
 xgesv_call( xgesv_params< double >& p )
 {
-    dgesv_( 
+    dgesv_(
         &p.n,
         &p.nrhs,
         p.a,
@@ -120,22 +120,22 @@ struct gaussian_elimination
 {
     // computes x ( Ax = b ). x replaces b on output.
     void compute(
-        matrix< N, N, float_t >& A, 
-        matrix< N, M, float_t >& b 
+        matrix< N, N, float_t >& A,
+        matrix< N, M, float_t >& b
         );
 
-    void compute( 
-        matrix< N, N, float_t >& A, 
-        vector< N, float_t >& b 
+    void compute(
+        matrix< N, N, float_t >& A,
+        vector< N, float_t >& b
         );
-        
+
     gaussian_elimination();
     ~gaussian_elimination();
 
     const lapack::xgesv_params< float_t >& get_params() { return p; }
 
     lapack::xgesv_params< float_t > p;
-    
+
 }; // struct lapack_linear_least_squares
 
 
@@ -144,13 +144,13 @@ template< size_t M, size_t N, typename float_t >
 void
 gaussian_elimination< M, N, float_t >::
 compute(
-        matrix< N, N, float_t >& A, 
-        matrix< N, M, float_t >& b 
+        matrix< N, N, float_t >& A,
+        matrix< N, M, float_t >& b
         )
 {
     p.a = A.array;
     p.b = b.array;
-    
+
     lapack::xgesv_call( p );
 
     if ( p.info != 0 )
@@ -168,13 +168,13 @@ template< size_t M, size_t N, typename float_t >
 void
 gaussian_elimination< M, N, float_t >::
 compute(
-        matrix< N, N, float_t >& A, 
+        matrix< N, N, float_t >& A,
         vector< N, float_t >& b
         )
 {
     p.a = A.array;
     p.b = b.array;
-    
+
     lapack::xgesv_call( p );
 
     if ( p.info != 0 )
@@ -215,4 +215,3 @@ gaussian_elimination< M, N, float_t >::
 } // namespace vmml
 
 #endif
-

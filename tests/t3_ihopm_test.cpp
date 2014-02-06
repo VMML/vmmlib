@@ -125,7 +125,7 @@ namespace vmml {
             0.3386, 0.3150, 0.4488, 0.4173, 0.2756, 0.3150, 0.3465, 0.3386, 0.2835, 0.2677, 0.2362, 0.2913, 0.2598, 0.2520, 0.2756, 0.3071
         };
         t3_input.set(data_input, data_input + 64);
-        t3_ihooi< R, R, R, NBLOCKS, I, I, I, double >::i_cp_als<R > (t3_input, u1, u2, u3, t3_core, hooi_type::init_hosvd(), 20, -1);
+        t3_ihooi< R, R, R, NBLOCKS, I, I, I, double >::i_cp_als<R > (t3_input, u1, u2, u3, t3_core, 20, -1);
 
         double data_check[] = {
             2.8832, -0.0128, 0, 0,

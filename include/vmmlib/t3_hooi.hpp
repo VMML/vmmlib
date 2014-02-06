@@ -69,7 +69,7 @@ namespace vmml {
 
         struct init_hosvd {
 
-            inline void operator()(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type & u3_) {
+            inline void operator()(const t3_type& data_, u2_type& u2_, u3_type & u3_) {
                 t3_hosvd< R1, R2, R3, I1, I2, I3, T >::apply_mode2(data_, u2_);
                 t3_hosvd< R1, R2, R3, I1, I2, I3, T >::apply_mode3(data_, u3_);
             }
@@ -77,7 +77,7 @@ namespace vmml {
 
         struct init_random {
 
-            inline void operator()(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type & u3_) {
+            inline void operator()(const t3_type&, u2_type& u2_, u3_type & u3_) {
                 srand(time(NULL));
                 u2_.set_random();
                 u3_.set_random();
@@ -89,7 +89,7 @@ namespace vmml {
 
         struct init_dct {
 
-            inline void operator()(const t3_type& data_, u1_type& u1_, u2_type& u2_, u3_type & u3_) {
+            inline void operator()(const t3_type&, u2_type& u2_, u3_type & u3_) {
                 u2_.set_dct();
                 u3_.set_dct();
             }
@@ -136,7 +136,7 @@ namespace vmml {
         tensor_stats result;
 
         //intialize basis matrices
-        init(data_, u1_, u2_, u3_);
+        init(data_, u2_, u3_);
 
         core_.zero();
         T max_f_norm = 0.0;
@@ -360,4 +360,3 @@ namespace vmml {
 }//end vmml namespace
 
 #endif
-

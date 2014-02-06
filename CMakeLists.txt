@@ -19,6 +19,7 @@ set(MACPORTS_DIR eyescalePorts) # override for now...
 include(Common)
 include(GitTargets)
 include(FindPackages)
+include(CheckLibraryExists)
 
 if(CMAKE_COMPILER_IS_GNUCXX)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-shadow -Wno-sign-compare -Wno-extra -Wno-strict-aliasing")
@@ -166,7 +167,7 @@ set(TESTS
 # tests/vmmlib_performance_tests_main.cpp
 )
 if(LAPACK_FOUND)
-  set(LAPACK_HEADERS 
+  set(LAPACK_HEADERS
     include/vmmlib/lapack/detail/clapack.h
     include/vmmlib/lapack/detail/f2c.h )
   add_definitions(-DVMMLIB_USE_LAPACK)
@@ -234,4 +235,3 @@ include(DoxygenRule) # must be after all targets
 include(CPackConfig)
 include(CTest)
 include(PackageConfig)
-

@@ -12,18 +12,18 @@
 
 /**
 *
-* this is a wrapper for the following lapack routines: 
-*   
+* this is a wrapper for the following lapack routines:
+*
 * xGELS
 *
 *
-*/ 
+*/
 
 
 namespace vmml
 {
 
-// XYYZZZ 
+// XYYZZZ
 // X    = data type: S - float, D - double
 // YY   = matrix type, GE - general, TR - triangular
 // ZZZ  = function name
@@ -49,21 +49,21 @@ struct llsq_params_xgels
     float_t*        a;      // input A
     lapack_int      lda;    // leading dimension of A (number of rows)
     float_t*        b;      // input B, output X
-    lapack_int      ldb;    // leading dimension of b 
+    lapack_int      ldb;    // leading dimension of b
     float_t*        work;   // workspace
     lapack_int      lwork;  // workspace size
     lapack_int      info;   // 'return' value
-    
-    friend std::ostream& operator << ( std::ostream& os, 
+
+    friend std::ostream& operator << ( std::ostream& os,
         const llsq_params_xgels< float_t >& p )
     {
-        os 
+        os
             << " m "        << p.m
-            << " n "        << p.n 
+            << " n "        << p.n
             << " nrhs "     << p.nrhs
             << " lda "      << p.lda
-            << " ldb "      << p.ldb 
-            << " lwork "    << p.lwork 
+            << " ldb "      << p.ldb
+            << " lwork "    << p.lwork
             << " info "     << p.info
             << std::endl;
         return os;
@@ -76,12 +76,12 @@ struct llsq_params_xgels
 #if 0
 void dgels_(const char *trans, const int *M, const int *N, const int *nrhs,
     double *A, const int *lda, double *b, const int *ldb, double *work,
-    const int * lwork, int *info); 
+    const int * lwork, int *info);
 #endif
 
 template< typename float_t >
 inline void
-llsq_call_xgels( llsq_params_xgels< float_t >& p )
+llsq_call_xgels( llsq_params_xgels< float_t >& )
 {
     VMMLIB_ERROR( "not implemented for this type.", VMMLIB_HERE );
 }
@@ -129,18 +129,18 @@ llsq_call_xgels( llsq_params_xgels< double >& p )
 template< size_t M, size_t N, typename float_t >
 struct linear_least_squares_xgels
 {
-    bool compute( 
-        const matrix< M, N, float_t >& A, 
-        const vector< M, float_t >& B, 
+    bool compute(
+        const matrix< M, N, float_t >& A,
+        const vector< M, float_t >& B,
         vector< N, float_t >& x );
-    
+
     linear_least_squares_xgels();
     ~linear_least_squares_xgels();
-       
+
     const lapack::llsq_params_xgels< float_t >& get_params(){ return p; };
 
     matrix< M, N, float_t >& get_factorized_A() { return _A; }
-    
+
 protected:
     matrix< M, N, float_t > _A;
     vector< M, float_t >    _b;
@@ -153,16 +153,16 @@ protected:
 
 template< size_t M, size_t N, typename float_t >
 bool
-linear_least_squares_xgels< M, N, float_t >::compute( 
-    const matrix< M, N, float_t >& A, 
-    const vector< M, float_t >& B, 
+linear_least_squares_xgels< M, N, float_t >::compute(
+    const matrix< M, N, float_t >& A,
+    const vector< M, float_t >& B,
     vector< N, float_t >& x )
 {
     _A = A;
     _b = B;
-    
+
     llsq_call_xgels( p );
-    
+
     // success
     if ( p.info == 0 )
     {
@@ -170,9 +170,9 @@ linear_least_squares_xgels< M, N, float_t >::compute(
         {
             x( index ) = _b( index );
         }
-    
+
         return true;
-    }    
+    }
     if ( p.info < 0 )
     {
         VMMLIB_ERROR( "xGELS - invalid argument.", VMMLIB_HERE );
@@ -182,7 +182,7 @@ linear_least_squares_xgels< M, N, float_t >::compute(
         std::cout << "A\n" << A << std::endl;
         std::cout << "B\n" << B << std::endl;
 
-        VMMLIB_ERROR( "least squares solution could not be computed.", 
+        VMMLIB_ERROR( "least squares solution could not be computed.",
             VMMLIB_HERE );
     }
     return false;
@@ -242,32 +242,32 @@ struct llsq_params_xgesv
     float_t*        b;  // input b, output X
     lapack_int      ldb; // leading dimension of b
     lapack_int      info;
-    
-    friend std::ostream& operator << ( std::ostream& os, 
+
+    friend std::ostream& operator << ( std::ostream& os,
         const llsq_params_xgesv< float_t >& p )
     {
-        os 
-            << "n "         << p.n 
+        os
+            << "n "         << p.n
             << " nrhs "     << p.nrhs
             << " lda "      << p.lda
-            << " ldb "      << p.ldvt 
+            << " ldb "      << p.ldvt
             << " info "     << p.info
             << std::endl;
         return os;
     }
-    
+
 };
 
 
 #if 0
-/* Subroutine */ int dgesv_(integer *n, integer *nrhs, doublereal *a, integer 
+/* Subroutine */ int dgesv_(integer *n, integer *nrhs, doublereal *a, integer
 	*lda, integer *ipiv, doublereal *b, integer *ldb, integer *info);
 #endif
 
 
 template< typename float_t >
 inline void
-llsq_call_xgesv( llsq_params_xgesv< float_t >& p )
+llsq_call_xgesv( llsq_params_xgesv< float_t >& )
 {
     VMMLIB_ERROR( "not implemented for this type.", VMMLIB_HERE );
 }
@@ -277,7 +277,7 @@ template<>
 inline void
 llsq_call_xgesv( llsq_params_xgesv< float >& p )
 {
-    sgesv_( 
+    sgesv_(
         &p.n,
         &p.nrhs,
         p.a,
@@ -295,7 +295,7 @@ template<>
 inline void
 llsq_call_xgesv( llsq_params_xgesv< double >& p )
 {
-    dgesv_( 
+    dgesv_(
         &p.n,
         &p.nrhs,
         p.a,
@@ -313,8 +313,8 @@ struct linear_least_squares_xgesv
 {
     // computes x ( Ax = b ). x replaces b on output.
     void compute(
-        matrix< N, N, float_t >& A, 
-        matrix< N, M, float_t >& b 
+        matrix< N, N, float_t >& A,
+        matrix< N, M, float_t >& b
         );
 
     linear_least_squares_xgesv();
@@ -323,7 +323,7 @@ struct linear_least_squares_xgesv
     const lapack::llsq_params_xgesv< float_t >& get_params() { return p; }
 
     lapack::llsq_params_xgesv< float_t > p;
-    
+
 }; // struct lapack_linear_least_squares
 
 
@@ -331,13 +331,13 @@ template< size_t M, size_t N, typename float_t >
 void
 linear_least_squares_xgesv< M, N, float_t >::
 compute(
-        matrix< N, N, float_t >& A, 
-        matrix< N, M, float_t >& b 
+        matrix< N, N, float_t >& A,
+        matrix< N, M, float_t >& b
         )
 {
     p.a = A.array;
     p.b = b.array;
-    
+
     lapack::llsq_call_xgesv( p );
 
     if ( p.info != 0 )
@@ -378,4 +378,3 @@ linear_least_squares_xgesv< M, N, float_t >::
 } // namespace vmml
 
 #endif
-

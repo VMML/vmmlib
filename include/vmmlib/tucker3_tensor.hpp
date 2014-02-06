@@ -1,6 +1,6 @@
-/* 
+/*
  * VMMLib - Tensor Classes
- *  
+ *
  * @author Susanne Suter
  * @author Jonas Boesch
  *
@@ -9,7 +9,7 @@
  * - De Lathauwer, De Moor, Vandewalle, 2000a: A multilinear singular value decomposition, SIAM J. Matrix Anal. Appl.
  * - De Lathauwer, De Moor, Vandewalle, 2000b: On the Best rank-1 and Rank-(R_1, R_2, ..., R_N) Approximation and Applications of Higher-Order Tensors, SIAM J. Matrix Anal. Appl.
  * - Kolda & Bader, 2009: Tensor Decompositions and Applications, SIAM Review.
- * 
+ *
  * see also quantized Tucker3 tensor (qtucker3_tensor.hpp)
  */
 
@@ -150,7 +150,7 @@ namespace vmml {
 
     	template< typename T_init>
     	tensor_stats decompose(const t3_type& data_, T_init init, const size_t max_iterations = 10, const float tolerance = 10);
-        
+
         template< typename T_init>
         tensor_stats tucker_als(const t3_type& data_, T_init init, const size_t max_iterations = 10, const float tolerance = 1e-04);
 
@@ -165,7 +165,7 @@ namespace vmml {
 	//        void tucker_als(const t3_type& data_, T_init init);
 	//        template< size_t NBLOCKS, typename T_init >
 	//        void incr_block_diag_als(const t3_type& data_, T_init init);
-	//	void incr_block_diag_als( T_init init );	
+	//	void incr_block_diag_als( T_init init );
 
 
         template< size_t K1, size_t K2, size_t K3>
@@ -209,7 +209,7 @@ namespace vmml {
 
     protected:
 
-        tucker3_type operator=(const tucker3_type& other) {
+        tucker3_type operator=(const tucker3_type&) {
             return (*this);
         };
 
@@ -372,10 +372,10 @@ namespace vmml {
     VMML_TEMPLATE_STRING
     double
     VMML_TEMPLATE_CLASSNAME::error(t3_type& original) const {
-        
+
         t3_comp_type data;
         t3_ttm::full_tensor3_matrix_multiplication(_core_comp, *_u1_comp, *_u2_comp, *_u3_comp, data);
-        
+
         double err = data.frobenius_norm(original) / original.frobenius_norm() * 100;
         return err;
     }
@@ -440,14 +440,14 @@ namespace vmml {
         tucker_als(data_, typename hooi_type::init_random());
     }
 
-    
+
 	VMML_TEMPLATE_STRING
 	template< typename T_init>
 	tensor_stats
 	VMML_TEMPLATE_CLASSNAME::decompose(const t3_type& data_, T_init init, const size_t max_iterations, const float tolerance)	{
 		return tucker_als(data_, init, max_iterations, tolerance);
 	}
-    
+
     VMML_TEMPLATE_STRING
     template< typename T_init>
     tensor_stats
@@ -713,4 +713,3 @@ namespace vmml {
 } // namespace vmml
 
 #endif
-

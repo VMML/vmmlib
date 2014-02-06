@@ -9,17 +9,17 @@
 #include <vmmlib/lapack_svd.hpp>
 #include <vmmlib/blas_dgemm.hpp>
 
-/* 
+/*
  *** computes the pseudo inverse of a non-square matrix ***
  - the pseudo inverse is computed by the help of SVD
  - the tolerance for the significant singular values is optionally set
- - implementation works only for matrices with more rows than columns or quadratic 
+ - implementation works only for matrices with more rows than columns or quadratic
    matrices. use a transposed input matrix for matrices with more columns than rows
  */
 
 namespace vmml {
     // T            - vmml::matrix<...> or compatible
-    // Tinternal    - float or double 
+    // Tinternal    - float or double
 
     template< typename T, typename Tinternal = double >
             class compute_pseudoinverse {
@@ -215,7 +215,7 @@ namespace vmml {
         : _work(0), _work_inv(0) {
         }
 
-        compute_pseudoinverse(const compute_pseudoinverse& cp)
+        compute_pseudoinverse(const compute_pseudoinverse& )
         : _work(0), _work_inv(0) {
         }
 
@@ -237,4 +237,3 @@ namespace vmml {
 }// end vmml namespace
 
 #endif
-

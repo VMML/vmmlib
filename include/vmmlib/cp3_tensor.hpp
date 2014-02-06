@@ -145,7 +145,7 @@ namespace vmml {
 
         template< typename T_init >
         tensor_stats decompose(const t3_type& data_, T_init init, const size_t max_iterations_ = 50, const float tolerance = 1e-04);
-        
+
         template< typename T_init >
         tensor_stats cp_als(const t3_type& data_, T_init init, const size_t max_iterations_ = 50, const float tolerance = 1e-04);
 
@@ -157,13 +157,13 @@ namespace vmml {
 
     protected:
 
-        cp3_tensor(const cp3_tensor< R, I1, I1, I1, T_value, T_coeff >& other) {
+        cp3_tensor(const cp3_tensor< R, I1, I1, I1, T_value, T_coeff >&) {
         };
 
-        cp3_tensor< R, I1, I1, I1, T_value, T_coeff > operator=(const cp3_tensor< R, I1, I1, I1, T_value, T_coeff >& other) {
+        cp3_tensor< R, I1, I1, I1, T_value, T_coeff > operator=(const cp3_tensor< R, I1, I1, I1, T_value, T_coeff >& ) {
             return *this;
         };
-        
+
         typedef cp3_tensor< R, I1, I2, I3, T_value, T_coeff > cp3_type;
 	    friend std::ostream& operator <<(std::ostream& os, const cp3_type& dec_ ) {
             lambda_type lambdas;
@@ -174,12 +174,12 @@ namespace vmml {
             dec_.get_u2(*u2);
             u3_type* u3 = new u3_type;
             dec_.get_u3(*u3);
-			
+
             os << "U1: " << std::endl << *u1 << std::endl
 			<< "U2: " << std::endl << *u2 << std::endl
 			<< "U3: " << std::endl << *u3 << std::endl
 			<< "lambdas: " << std::endl << lambdas << std::endl;
-			
+
             delete u1;
             delete u2;
             delete u3;
@@ -301,7 +301,7 @@ namespace vmml {
     VMML_TEMPLATE_CLASSNAME::decompose(const t3_type& data_, T_init init, const size_t max_iterations_, const float tolerance) {
 		return cp_als(data_, init, max_iterations_, tolerance );
     }
-    
+
     VMML_TEMPLATE_STRING
     template< typename T_init >
     tensor_stats
@@ -438,4 +438,3 @@ namespace vmml {
 } // namespace vmml
 
 #endif
-

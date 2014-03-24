@@ -17,9 +17,6 @@
 #  include "lapack_gaussian_elimination_test.hpp"
 #  include "lapack_svd_test.hpp"
 #  include "lapack_sym_eigs_test.hpp"
-#  include "blas_daxpy_test.hpp"
-#  include "blas_dgemm_test.hpp"
-#  include "blas_dot_test.hpp"
 #  include "cp3_tensor_test.hpp"
 #  include "qtucker3_tensor_test.hpp"
 #  include "t3_hooi_test.hpp"
@@ -37,6 +34,12 @@
 #  include "t4_hooi_test.hpp"
 #  include "t4_converter_test.hpp"
 #  include "t4_ttm_test.hpp"
+#endif
+
+#ifdef VMMLIB_USE_BLAS
+#  include "blas_daxpy_test.hpp"
+#  include "blas_dgemm_test.hpp"
+#  include "blas_dot_test.hpp"
 #endif
 
 void run_and_log( vmml::unit_test& test )
@@ -87,7 +90,9 @@ int main( int, const char** )
 
 	vmml::lapack_sym_eigs_test lapack_sym_eigs_test_;
     run_and_log( lapack_sym_eigs_test_ );
+#endif
 
+#ifdef VMMLIB_USE_BLAS
     vmml::blas_dgemm_test blas_mm;
     run_and_log( blas_mm );
 
@@ -96,11 +101,35 @@ int main( int, const char** )
 
 	vmml::blas_daxpy_test b_daxpy;
     run_and_log( b_daxpy );
+#endif
+
+#ifdef VMMLIB_USE_BLAS 
+#ifdef VMMLIB_USE_LAPACK
+    vmml::t3_hosvd_test t3hosvd;
+    run_and_log( t3hosvd );
+
+    vmml::t3_ihooi_test t3ihooi;
+    run_and_log( t3ihooi );
+
+    vmml::t3_hopm_test t3hopm;
+    run_and_log( t3hopm );
+
+	vmml::t3_ihopm_test t3ihopm;
+    run_and_log( t3ihopm );
+
+    vmml::t3_hooi_test t3hooi;
+    run_and_log( t3hooi );
 
     vmml::matrix_pseudoinverse_test m_pinv;
     run_and_log( m_pinv );
 
-    vmml::tensor3_test t3t;
+    vmml::cp3_tensor_test cp3t;
+    run_and_log( cp3t );
+
+    vmml::qtucker3_tensor_test tt3tq;
+    run_and_log( tt3tq );
+    
+      vmml::tensor3_test t3t;
     run_and_log( t3t );
 
     vmml::tensor3_iterator_test t3it;
@@ -109,32 +138,11 @@ int main( int, const char** )
     vmml::t3_ttm_test t3ttm;
     run_and_log( t3ttm );
 
-    vmml::t3_hosvd_test t3hosvd;
-    run_and_log( t3hosvd );
-
-    vmml::t3_hooi_test t3hooi;
-    run_and_log( t3hooi );
-
-	vmml::t3_hopm_test t3hopm;
-    run_and_log( t3hopm );
-
-	vmml::t3_ihopm_test t3ihopm;
-    run_and_log( t3ihopm );
-
-    vmml::t3_ihooi_test t3ihooi;
-    run_and_log( t3ihooi );
-
     vmml::tucker3_tensor_test tt3t;
     run_and_log( tt3t );
 
-    vmml::qtucker3_tensor_test tt3tq;
-    run_and_log( tt3tq );
-
 	vmml::tucker3_exporter_importer_test tt3ei;
     run_and_log( tt3ei );
-
-	vmml::cp3_tensor_test cp3t;
-    run_and_log( cp3t );
 
 	vmml::tensor4_test t4t;
     run_and_log( t4t );
@@ -147,8 +155,7 @@ int main( int, const char** )
 
 	vmml::t4_converter_test t4ct;
     run_and_log( t4ct );
-
-
+#endif
 #endif
 
     std::cout << vmml::unit_test_globals::get_instance() << std::endl;

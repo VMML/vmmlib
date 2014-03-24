@@ -1,7 +1,7 @@
 
 
 set(VMMLIB_PACKAGE_VERSION 1.7.0)
-set(VMMLIB_REPO_URL https://github.com/VMML/vmmlib.git)
+set(VMMLIB_REPO_URL https://github.com/bilgili/vmmlib.git)
 #set(VMMLIB_REPO_TAG 1.4)
 set(VMMLIB_DEPENDS REQUIRED OpenMP OPTIONAL LAPACK CBLAS)
 set(VMMLIB_FORCE_BUILD ${CI_BUILD})

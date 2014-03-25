@@ -12,12 +12,18 @@ set(LAST_RELEASE 1.6.1)
 option(VMMLIB_USE_BLAS "Disable to turn blas detection off" ON)
 mark_as_advanced(VMMLIB_USE_BLAS)
 
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMake)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMake
+  ${CMAKE_SOURCE_DIR}/CMake/common)
+include(GitExternal)
+include(Common)
+
+include(Buildyard)
+if(BUILDYARD_STOP)
+  return()
+endif()
 
 set(MACPORTS_DIR eyescalePorts) # override for now...
 
-include(Common)
-include(GitTargets)
 include(FindPackages)
 include(CheckLibraryExists)
 
@@ -31,47 +37,9 @@ if(VMMLIB_USE_BLAS)
     if(APPLE)
       find_library(LAPACK_LIBRARIES Accelerate)
       if(LAPACK_LIBRARIES)
-        set(LAPACK_FOUND TRUE)
-        set(BLAS_FOUND TRUE)
         set(LAPACK_LIBRARIES lapack)
-        set(BLAS_LIBRARIES blas)
+        set(CBLAS_LIBRARIES blas)
       endif(LAPACK_LIBRARIES)
-    endif()
-
-    if(BLAS_FOUND)
-        check_library_exists(${BLAS_LIBRARIES} cblas_dgemm "cblas.h" CBLAS_DGEMM_SUPPORTED)
-        if(NOT CBLAS_DGEMM_SUPPORTED)
-            message(STATUS "Default blas library doesnt support cblas_dgemm")
-            set(BLAS_FOUND FALSE)
-        endif()
-    endif()
-
-    set(ATLAS_BLAS_FOUND FALSE)
-
-    if(NOT BLAS_FOUND)
-      if(ATLAS_CBLAS_LIBRARY AND ATLAS_CBLAS_INCLUDE_DIR)
-          message(STATUS "Atlas cblas found")
-          set(BLAS_LIBRARIES ${ATLAS_CBLAS_LIBRARY})
-          set(BLAS_FOUND TRUE)
-          set(ATLAS_BLAS_FOUND TRUE)
-          include_directories(BEFORE ${ATLAS_CBLAS_INCLUDE_DIR})
-       endif()
-    endif()
-
-    # If Atlas blas is found, try using the lapack version from atlas
-    if(ATLAS_BLAS_FOUND)
-      if(ATLAS_LAPACK_ATLAS_LIBRARY AND ATLAS_CLAPACK_ATLAS_LIBRARY AND ATLAS_CLAPACK_INCLUDE_DIR)
-          message(STATUS "Atlas clapack found")
-          set(LAPACK_LIBRARIES ${ATLAS_LAPACK_ATLAS_LIBRARY} ${ATLAS_CLAPACK_ATLAS_LIBRARY})
-          set(LAPACK_FOUND TRUE)
-          include_directories(BEFORE ${ATLAS_LAPACK_INCLUDE_DIR})
-       endif()
-    endif()
-
-    if((NOT BLAS_FOUND) OR (NOT LAPACK_FOUND))
-       message(STATUS "Missing lapack and/or cblas, disabling BLAS/LAPACK support")
-       set(BLAS_FOUND FALSE)
-       set(LAPACK_FOUND FALSE)
     endif()
 endif()
 
@@ -82,12 +50,12 @@ update_file(${CMAKE_CURRENT_SOURCE_DIR}/include/vmmlib/version.in.hpp
 
 set(HEADERS
   ${OUTPUT_INCLUDE_DIR}/vmmlib/version.hpp
-  include/vmmlib/aabb.hpp
   include/vmmlib/blas_daxpy.hpp
   include/vmmlib/blas_dgemm.hpp
   include/vmmlib/blas_dot.hpp
   include/vmmlib/blas_includes.hpp
   include/vmmlib/blas_types.hpp
+  include/vmmlib/aabb.hpp
   include/vmmlib/cp3_tensor.hpp
   include/vmmlib/enable_if.hpp
   include/vmmlib/exception.hpp
@@ -160,35 +128,32 @@ set(TESTS
   tests/lowpass_filter_test.cpp
   tests/vector_test.cpp
   tests/util_test.cpp
-  tests/vmmlib_unit_tests_main.cpp
-# tests/matrix_compare_perf_test.cpp
-# tests/stringtests.cpp
-# tests/vmmlib_lapack_main.cpp
-# tests/vmmlib_performance_tests_main.cpp
-)
+  tests/vmmlib_unit_tests_main.cpp )
+
 if(LAPACK_FOUND)
+  add_definitions(-DVMMLIB_USE_LAPACK)
   set(LAPACK_HEADERS
     include/vmmlib/lapack/detail/clapack.h
     include/vmmlib/lapack/detail/f2c.h )
-  add_definitions(-DVMMLIB_USE_LAPACK)
   list(APPEND TESTS
-    tests/blas_daxpy_test.cpp
-    tests/blas_dgemm_test.cpp
-    tests/blas_dot_test.cpp
-    tests/cp3_tensor_test.cpp
     tests/lapack_gaussian_elimination_test.cpp
     tests/lapack_linear_least_squares_test.cpp
     tests/lapack_svd_test.cpp
     tests/lapack_sym_eigs_test.cpp
-    tests/matrix_pseudoinverse_test.cpp
-    tests/qtucker3_tensor_test.cpp
-    tests/svd_lapack_vs_old.cpp
-    tests/t3_hooi_test.cpp
-    tests/t3_hopm_test.cpp
-    tests/t3_hosvd_test.cpp
-    tests/t3_ihooi_test.cpp
-    tests/t3_ihopm_test.cpp
-    tests/t3_ttm_test.cpp
+    tests/svd_lapack_vs_old.cpp )
+endif()
+
+if(CBLAS_FOUND)
+  add_definitions(-DVMMLIB_USE_BLAS)
+  list(APPEND TESTS
+    tests/blas_daxpy_test.cpp
+    tests/blas_dgemm_test.cpp
+    tests/blas_dot_test.cpp )
+endif()
+
+if(CBLAS_FOUND AND LAPACK_FOUND)
+  add_definitions(-DVMMLIB_USE_BLAS)
+  list(APPEND TESTS
     tests/tensor3_iterator_test.cpp
     tests/tensor3_test.cpp
     tests/tucker3_exporter_importer_test.cpp
@@ -197,12 +162,15 @@ if(LAPACK_FOUND)
     tests/t4_converter_test.cpp
     tests/tensor4_test.cpp
     tests/t4_ttm_test.cpp
-
-)
-endif()
-
-if(BLAS_FOUND)
-  add_definitions(-DVMMLIB_USE_BLAS)
+    tests/t3_ttm_test.cpp
+    tests/t3_hosvd_test.cpp
+    tests/t3_ihooi_test.cpp
+    tests/t3_hopm_test.cpp
+    tests/t3_ihopm_test.cpp
+    tests/t3_hooi_test.cpp
+    tests/qtucker3_tensor_test.cpp
+    tests/matrix_pseudoinverse_test.cpp
+    tests/cp3_tensor_test.cpp )
 endif()
 
 if(NOT MSVC)
@@ -210,8 +178,8 @@ if(NOT MSVC)
   if(LAPACK_FOUND)
     target_link_libraries(vmmlib_test ${LAPACK_LIBRARIES})
   endif()
-  if(BLAS_FOUND)
-    target_link_libraries(vmmlib_test ${BLAS_LIBRARIES})
+  if(CBLAS_FOUND)
+    target_link_libraries(vmmlib_test ${CBLAS_LIBRARIES})
   endif()
 
   get_target_property(EXECUTABLE vmmlib_test LOCATION)

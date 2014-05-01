@@ -116,7 +116,6 @@ namespace vmml {
 
         typedef tensor3< R, R, R, double> t3_core_type;
         t3_core_type t3_core;
-        typedef t3_hooi< R, R, R, I, I, I > hooi_type;
         tensor3< I, I, I, double > t3_input;
         double data_input[] = {
             0.3780, 0.3150, 0.3386, 0.2047, 0.2913, 0.3071, 0.2835, 0.1024, 0.2362, 0.2835, 0.2677, 0.1024, 0.3543, 1.1181, 1.5354, 0.3858,

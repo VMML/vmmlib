@@ -6,8 +6,11 @@ project(vmmlib)
 set(VERSION_MAJOR 1)
 set(VERSION_MINOR 7)
 set(VERSION_PATCH 0)
-set(RELEASE_VERSION OFF) # OFF or ABI version
-set(LAST_RELEASE 1.6.1)
+set(VERSION_ABI 2)
+set(LAST_RELEASE 1.7.0)
+
+set(GITTARGETS_RELEASE_BRANCH minor)
+set(DPUT_HOST "ppa:eilemann/equalizer-dev")
 
 option(VMMLIB_USE_BLAS "Disable to turn blas detection off" ON)
 mark_as_advanced(VMMLIB_USE_BLAS)
@@ -45,8 +48,8 @@ endif()
 
 set(DOCS README.md AUTHORS LICENSE.txt ACKNOWLEDGEMENTS)
 
-update_file(${CMAKE_CURRENT_SOURCE_DIR}/include/vmmlib/version.in.hpp
-  ${OUTPUT_INCLUDE_DIR}/vmmlib/version.hpp)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/vmmlib/version.in.hpp
+  ${OUTPUT_INCLUDE_DIR}/vmmlib/version.hpp @ONLY)
 
 set(HEADERS
   ${OUTPUT_INCLUDE_DIR}/vmmlib/version.hpp

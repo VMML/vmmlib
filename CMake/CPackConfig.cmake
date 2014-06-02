@@ -1,4 +1,4 @@
-# Copyright (c) 2012 Stefan Eilemann <eile@eyescale.ch>
+# Copyright (c) 2012-2014 Stefan Eilemann <eile@eyescale.ch>
 
 # Info: http://www.itk.org/Wiki/CMake:Component_Install_With_CPack
 
@@ -26,3 +26,4 @@ set(CPACK_COMPONENT_DEV_DESCRIPTION
   "Header and Library Files for ${CPACK_PROJECT_NAME} Development")
 
 include(CommonCPack)
+include(OSSCPack)

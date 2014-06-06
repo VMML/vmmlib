@@ -176,6 +176,9 @@ if(CBLAS_FOUND AND LAPACK_FOUND)
     tests/cp3_tensor_test.cpp )
 endif()
 
+list(APPEND CPPCHECK_EXTRA_ARGS
+  --suppress=*:${CMAKE_SOURCE_DIR}/tests/*)
+
 if(NOT MSVC)
   add_executable(vmmlib_test ${HEADERS} ${TESTS})
   if(LAPACK_FOUND)

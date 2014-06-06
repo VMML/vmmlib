@@ -1,3 +1,4 @@
 CMakeLists.txt.user*
 Makefile
 /nbproject/private/
+CMake/common

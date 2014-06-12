@@ -2248,7 +2248,7 @@ matrix< M, N, T >::frobenius_norm( ) const
         norm += *it * *it;
     }
 
-    return sqrt(norm);
+    return std::sqrt(norm);
 }
 
 template< size_t M, size_t N, typename T >
@@ -2564,7 +2564,8 @@ matrix< M, N, T >::set_dct()
     double fill_value = 0.0f;
     for( size_t row = 0; row < M; ++row )
     {
-        weight = ( row == 0.0 )  ? sqrt(1/num_rows) : sqrt(2/num_rows); //to reiceive orthonormality
+        weight = ( row == 0.0 ) ? std::sqrt(1/num_rows) :
+                              std::sqrt(2/num_rows); //to receive orthonormality
         for( size_t col = 0; col < N; ++col )
         {
             fill_value = (2 * col + 1) * row * M_PI / (2*M);

@@ -71,22 +71,18 @@ public:
     inline const_reverse_iterator rbegin() const;
     inline const_reverse_iterator rend() const;
 
-    #ifndef VMMLIB_NO_CONVERSION_OPERATORS
+#  ifndef VMMLIB_NO_CONVERSION_OPERATORS
     // conversion operators
     inline operator T*();
     inline operator const T*() const;
-    #else
+#  else
     inline T& operator[]( size_t index );
     inline const T& operator[]( size_t index ) const;
-    #endif
+#  endif
 
     // accessors
     inline T& operator()( size_t index );
     inline const T& operator()( size_t index ) const;
-    #if 0
-    inline T& operator[]( size_t index );
-    inline const T& operator[]( size_t index ) const;
-    #endif
 
     inline T& at( size_t index );
     inline const T& at( size_t index ) const;
@@ -1172,7 +1168,7 @@ inline T vector< M, T >::normalize()
 template< size_t M, typename T >
 inline T vector< M, T >::length() const
 {
-    return sqrt( squared_length() );
+    return std::sqrt( squared_length() );
 }
 
 template< size_t M, typename T >
@@ -1191,7 +1187,7 @@ template< size_t M, typename T >
 inline T
 vector< M, T >::distance( const vector< M, T >& other_vector_ ) const
 {
-    return sqrt( squared_distance( other_vector_ ) );
+    return std::sqrt( squared_distance( other_vector_ ) );
 }
 
 
@@ -1712,7 +1708,7 @@ vector< M, T >::sqrt_elementwise()
 {
     for( iterator it = begin(), it_end = end(); it != it_end; ++it )
     {
-        (*it) = sqrt(*it);
+        (*it) = std::sqrt(*it);
     }
 }
 
@@ -1794,7 +1790,7 @@ vector< M, T >::norm( ) const
         norm_v += *it * *it;
     }
 
-    return sqrt(norm_v);
+    return std::sqrt(norm_v);
 }
 
 template< size_t M, typename T >

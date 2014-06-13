@@ -34,6 +34,14 @@ function(GIT_EXTERNAL DIR REPO TAG)
   endif()
 
   if(IS_DIRECTORY "${DIR}/.git")
+    execute_process(COMMAND ${GIT_EXECUTABLE} rev-parse --short HEAD
+      OUTPUT_VARIABLE currentref OUTPUT_STRIP_TRAILING_WHITESPACE
+      WORKING_DIRECTORY ${DIR})
+    if(currentref STREQUAL TAG) # nothing to do
+      return()
+    endif()
+
+    # reset generated files
     foreach(GIT_EXTERNAL_RESET_FILE ${GIT_EXTERNAL_RESET})
       execute_process(
         COMMAND "${GIT_EXECUTABLE}" reset -q "${GIT_EXTERNAL_RESET_FILE}"
@@ -45,6 +53,7 @@ function(GIT_EXTERNAL DIR REPO TAG)
         WORKING_DIRECTORY "${DIR}")
     endforeach()
 
+    # fetch latest update
     execute_process(COMMAND "${GIT_EXECUTABLE}" fetch --all -q
       RESULT_VARIABLE nok ERROR_VARIABLE error
       WORKING_DIRECTORY "${DIR}")
@@ -52,6 +61,7 @@ function(GIT_EXTERNAL DIR REPO TAG)
       message(STATUS "Update of ${DIR} failed:\n   ${error}")
     endif()
 
+    # checkout requested tag
     execute_process(
       COMMAND "${GIT_EXECUTABLE}" checkout -q "${TAG}"
       RESULT_VARIABLE nok ERROR_VARIABLE error
@@ -99,6 +109,7 @@ if(EXISTS ${GIT_EXTERNALS})
           endif()
           if(NOT TARGET update_git_external)
             add_custom_target(update_git_external)
+            add_custom_target(flatten_git_external)
             add_dependencies(update update_git_external)
           endif()
 
@@ -139,6 +150,24 @@ endif()")
             WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}")
           add_dependencies(update_git_external
             update_git_external_${GIT_EXTERNAL_NAME})
+
+          # Flattens a git external repository into its parent repo:
+          # * Clean any changes from external
+          # * Unlink external from git: Remove external/.git and .gitexternals
+          # * Add external directory to parent
+          # * Commit with flattened repo and tag info
+          # - Depend on release branch checked out
+          add_custom_target(flatten_git_external_${GIT_EXTERNAL_NAME}
+            COMMAND ${GIT_EXECUTABLE} clean -dfx
+            COMMAND ${CMAKE_COMMAND} -E remove_directory .git
+            COMMAND ${CMAKE_COMMAND} -E remove -f ${CMAKE_CURRENT_SOURCE_DIR}/.gitexternals
+            COMMAND ${GIT_EXECUTABLE} add -f .
+            COMMAND ${GIT_EXECUTABLE} commit -m "Flatten ${REPO} into ${DIR} at ${TAG}" . ${CMAKE_CURRENT_SOURCE_DIR}/.gitexternals
+            COMMENT "Flatten ${REPO} into ${DIR}"
+            DEPENDS make-branch
+            WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/${DIR}")
+          add_dependencies(flatten_git_external
+            flatten_git_external_${GIT_EXTERNAL_NAME})
         endif()
       endif()
     endif()

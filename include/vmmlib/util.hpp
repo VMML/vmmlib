@@ -44,7 +44,7 @@ create_translation( const vector< M - 1, T > &arg )
 
 	return ret;
 }
-    
+
 template< typename T >
 inline matrix< 4, 4, T >
 create_translation( const vector< 3, T > &arg )
@@ -69,7 +69,7 @@ create_rotation( T angle, const vector< M - 1, T > &axis )
 
 	return ret;
 }
-    
+
 template< typename T >
 inline matrix< 4, 4, T >
 create_rotation( T angle, const vector< 3, T > &axis )
@@ -91,7 +91,7 @@ create_scaling( const vector< N - 1, T > &arg )
     matrix< M, N, T > ret;
     identity(ret);
     ret.scale(arg);
-    
+
     return ret;
 }
 
@@ -121,45 +121,23 @@ inline void zero( vector< M, T > &arg )
 }
 
 template< size_t M, typename T >
-vector< M, T >
-min( const vector< M, T > &arg0,  const vector< M, T > &arg1 )
+vector< M, T > min( const vector< M, T > &arg0,  const vector< M, T > &arg1 )
 {
 	vector< M, T > ret;
-	zero( ret );
 
 	for( size_t i = 0; i < M; ++i )
-	{
-		if( arg0[i] < arg1[i])
-		{
-			ret[i] = arg0[i];
-		}
-		else
-		{
-			ret[i] = arg1[i];
-		}
-	}
+        ret[i] = std::min( arg0[i], arg1[i] );
 
 	return ret;
 }
 
 template< size_t M, typename T >
-vector< M, T >
-max( const vector< M, T > &arg0,  const vector< M, T > &arg1 )
+vector< M, T > max( const vector< M, T > &arg0,  const vector< M, T > &arg1 )
 {
 	vector< M, T > ret;
-	zero( ret );
 
 	for( size_t i = 0; i < M; ++i )
-	{
-		if( arg0[i] >= arg1[i])
-		{
-			ret[i] = arg0[i];
-		}
-		else
-		{
-			ret[i] = arg1[i];
-		}
-	}
+        ret[i] = std::max( arg0[i], arg1[i] );
 
 	return ret;
 }

@@ -25,10 +25,10 @@ inline T squared( const T a )
 template< class T >
 inline T pythag( T a, T b )
 {
-    a = fabs(a);
-    b = fabs(b);
+    a = std::abs(a);
+    b = std::abs(b);
     if ( a > b )
-        return a * sqrt( 1.0 + squared( b / a ) );
+        return a * std::sqrt( 1.0 + squared( b / a ) );
     else
         return ( b == 0.0 ) ? 0.0 : b * sqrt( 1.0 + squared( a / b ) );
 }
@@ -38,7 +38,7 @@ inline T pythag( T a, T b )
 template< class T >
 inline T sign( T a, T b )
 {
-    return ( b >= 0.0 ) ? fabs( a ) : -fabs( a );
+    return ( b >= 0.0 ) ? std::abs( a ) : -std::abs( a );
 }
 
 
@@ -48,7 +48,7 @@ struct abs_less
 {
     T operator()( const T& a, const T& b )
     {
-        return fabs(a) < fabs( b );
+        return std::abs(a) < std::abs( b );
     }
 };
 
@@ -58,7 +58,7 @@ struct abs_greater
 {
     T operator()( const T& a, const T& b )
     {
-        return fabs(a) > fabs( b );
+        return std::abs(a) > std::abs( b );
     }
 };
 
@@ -68,4 +68,3 @@ struct abs_greater
 } // namespace vmml
 
 #endif
-

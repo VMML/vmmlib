@@ -6,8 +6,11 @@ project(vmmlib)
 set(VERSION_MAJOR 1)
 set(VERSION_MINOR 7)
 set(VERSION_PATCH 0)
-set(RELEASE_VERSION OFF) # OFF or ABI version
-set(LAST_RELEASE 1.6.1)
+set(VERSION_ABI 2)
+set(LAST_RELEASE 1.7.0)
+
+set(GITTARGETS_RELEASE_BRANCH minor)
+set(DPUT_HOST "ppa:eilemann/equalizer-dev")
 
 option(VMMLIB_USE_BLAS "Disable to turn blas detection off" ON)
 mark_as_advanced(VMMLIB_USE_BLAS)
@@ -45,17 +48,17 @@ endif()
 
 set(DOCS README.md AUTHORS LICENSE.txt ACKNOWLEDGEMENTS)
 
-update_file(${CMAKE_CURRENT_SOURCE_DIR}/include/vmmlib/version.in.hpp
-  ${OUTPUT_INCLUDE_DIR}/vmmlib/version.hpp)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/vmmlib/version.in.hpp
+  ${OUTPUT_INCLUDE_DIR}/vmmlib/version.hpp @ONLY)
 
 set(HEADERS
   ${OUTPUT_INCLUDE_DIR}/vmmlib/version.hpp
+  include/vmmlib/aabb.hpp
   include/vmmlib/blas_daxpy.hpp
   include/vmmlib/blas_dgemm.hpp
   include/vmmlib/blas_dot.hpp
   include/vmmlib/blas_includes.hpp
   include/vmmlib/blas_types.hpp
-  include/vmmlib/aabb.hpp
   include/vmmlib/cp3_tensor.hpp
   include/vmmlib/enable_if.hpp
   include/vmmlib/exception.hpp
@@ -87,16 +90,22 @@ set(HEADERS
   include/vmmlib/t3_hooi.hpp
   include/vmmlib/t3_hopm.hpp
   include/vmmlib/t3_hosvd.hpp
-  include/vmmlib/t3_ihopm.hpp
   include/vmmlib/t3_ihooi.hpp
+  include/vmmlib/t3_ihopm.hpp
   include/vmmlib/t3_ttm.hpp
-  include/vmmlib/tensor_mmapper.hpp
-  include/vmmlib/tensor_stats.hpp
+  include/vmmlib/t4_converter.hpp
+  include/vmmlib/t4_hooi.hpp
+  include/vmmlib/t4_hosvd.hpp
+  include/vmmlib/t4_ttm.hpp
   include/vmmlib/tensor3.hpp
   include/vmmlib/tensor3_iterator.hpp
+  include/vmmlib/tensor4.hpp
+  include/vmmlib/tensor_mmapper.hpp
+  include/vmmlib/tensor_stats.hpp
   include/vmmlib/tucker3_exporter.hpp
   include/vmmlib/tucker3_importer.hpp
   include/vmmlib/tucker3_tensor.hpp
+  include/vmmlib/tucker4_tensor.hpp
   include/vmmlib/util.hpp
   include/vmmlib/validator.hpp
   include/vmmlib/vector.hpp
@@ -104,12 +113,6 @@ set(HEADERS
   include/vmmlib/visibility.hpp
   include/vmmlib/vmmlib.hpp
   include/vmmlib/vmmlib_config.hpp
-  include/vmmlib/tensor4.hpp
-  include/vmmlib/t4_converter.hpp
-  include/vmmlib/t4_hooi.hpp
-  include/vmmlib/t4_hosvd.hpp
-  include/vmmlib/t4_ttm.hpp
-  include/vmmlib/tucker4_tensor.hpp
 )
 
 set(TESTS

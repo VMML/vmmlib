@@ -45,7 +45,12 @@ protected:
 
 };
 
-
+template< typename T >
+inline std::ostream& operator << ( std::ostream& os,
+                                   const AxisAlignedBoundingBox< T >& aabb )
+{
+    return os << aabb.getMin() << " - " << aabb.getMax();
+}
 
 template< typename T >
 AxisAlignedBoundingBox< T >::AxisAlignedBoundingBox()

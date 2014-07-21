@@ -23,6 +23,7 @@
 #ifndef __VMML__VMMLIB__HPP__
 #define __VMML__VMMLIB__HPP__
 
+#include <vmmlib/aabb.hpp>
 #include <vmmlib/frustum.hpp>
 #include <vmmlib/frustum_culler.hpp>
 #include <vmmlib/intersection.hpp>

@@ -27,6 +27,7 @@ public:
     inline const vector< 3, T >& getMax() const;
 
     inline void merge( const AxisAlignedBoundingBox< T >& aabb );
+    inline void merge( const vector< 3, T >& point );
 
     inline void setEmpty( bool empty = true );
     inline bool isEmpty() const;
@@ -55,7 +56,8 @@ AxisAlignedBoundingBox< T >::AxisAlignedBoundingBox()
 
 
 template< typename T >
-AxisAlignedBoundingBox< T >::AxisAlignedBoundingBox( const vector< 3, T >& pMin, const vector< 3, T >& pMax )
+AxisAlignedBoundingBox< T >::AxisAlignedBoundingBox( const vector< 3, T >& pMin,
+                                                     const vector< 3, T >& pMax)
     : _min( pMin )
     , _max( pMax )
     , _dirty( false )
@@ -208,8 +210,7 @@ AxisAlignedBoundingBox< T >::getDimension() const
 
 
 template< typename T >
-void
-AxisAlignedBoundingBox< T >::merge( const AxisAlignedBoundingBox< T >& aabb )
+void AxisAlignedBoundingBox< T >::merge( const AxisAlignedBoundingBox<T>& aabb )
 {
     if ( aabb._empty )
         return; // nothing to do
@@ -242,11 +243,34 @@ AxisAlignedBoundingBox< T >::merge( const AxisAlignedBoundingBox< T >& aabb )
         _max.z() = max.z();
 }
 
+template< typename T >
+void AxisAlignedBoundingBox< T >::merge( const vector< 3, T >& point )
+{
+    if( _empty )
+    {
+        _min = point;
+        _max = point;
+        _empty = _dirty = false;
+        return;
+    }
 
+    if ( point.x() < _min.x() )
+        _min.x() = point.x();
+    if ( point.y() < _min.y() )
+        _min.y() = point.y();
+    if ( point.z() < _min.z() )
+        _min.z() = point.z();
+
+    if ( point.x() > _max.x() )
+        _max.x() = point.x();
+    if ( point.y() > _max.y() )
+        _max.y() = point.y();
+    if ( point.z() > _max.z() )
+        _max.z() = point.z();
+}
 
 template< typename T >
-inline void
-AxisAlignedBoundingBox< T >::setEmpty( bool empty )
+inline void AxisAlignedBoundingBox< T >::setEmpty( bool empty )
 {
     _empty = empty;
 }
@@ -285,4 +309,3 @@ typedef AxisAlignedBoundingBox< float > Aabbf;
 }; //namespace vmml
 
 #endif
-

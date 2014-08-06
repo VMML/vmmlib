@@ -1,1 +1,1 @@
-config.vmml https://github.com/VMML/config.git master
+config.eyescale https://github.com/Eyescale/config.git master

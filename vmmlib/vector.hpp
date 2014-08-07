@@ -1,8 +1,10 @@
 /*
- * Copyright (c) 2006-2012, Visualization and Multimedia Lab,
- *                          University of Zurich <http://vmml.ifi.uzh.ch>
+ * Copyright (c) 2006-2014, Visualization and Multimedia Lab,
+ *                          University of Zurich <http://vmml.ifi.uzh.ch>;
+ *                          Eyescale Software GmbH;
+ *                          Blue Brain Project, EPFL
  *
- * This file is part of VMMLib <http://vmmlib.sourceforge.net/>
+ * This file is part of VMMLib <https://github.com/VMML/vmmlib/>
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:

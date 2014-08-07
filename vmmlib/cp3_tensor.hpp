@@ -1,17 +1,55 @@
 /*
+ * Copyright (c) 2006-2014, Visualization and Multimedia Lab,
+ *                          University of Zurich <http://vmml.ifi.uzh.ch>;
+ *                          Eyescale Software GmbH;
+ *                          Blue Brain Project, EPFL
+ *
+ * This file is part of VMMLib <https://github.com/VMML/vmmlib/>
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.  Redistributions in binary
+ * form must reproduce the above copyright notice, this list of conditions and
+ * the following disclaimer in the documentation and/or other materials provided
+ * with the distribution.  Neither the name of the Visualization and Multimedia
+ * Lab, University of Zurich nor the names of its contributors may be used to
+ * endorse or promote products derived from this software without specific prior
+ * written permission.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/*
  * VMMLib - Tensor Classes
  *
  * @author Susanne Suter
  * @author Jonas Boesch
  * @author Rafael Ballester
  *
- * The cp3 tensor class is consists of three basis matrices u1-u3 and R lambda values for a given rank-R approximation
- * CP stands for Candecomp/Parafac (1970)
- * - Carroll & Chang, 1970: Analysis of Individual Differences in Multidimensional Scaling via an N-way generalization of ``Eckart--Young'' decompositions, Psychometrika.
- * - Harshman, 1970: Foundations of the PARAFAC procedure: Models and conditions for an 'explanatory' multi-modal factor analysis,UCLA Working Papers in Phonetics.
- * - De Lathauwer, De Moor, Vandewalle, 2000: A multilinear singular value decomposition, SIAM J. Matrix Anal. Appl.
- * - Kolda & Bader, 2009: Tensor Decompositions and Applications, SIAM Review.
+ * The cp3 tensor class is consists of three basis matrices u1-u3 and R lambda
+ * values for a given rank-R approximation.  CP stands for Candecomp/Parafac
+ * (1970)
  *
+ * - Carroll & Chang, 1970: Analysis of Individual Differences in
+ *   Multidimensional Scaling via an N-way generalization of ``Eckart--Young''
+ *   decompositions, Psychometrika.
+ * - Harshman, 1970: Foundations of the PARAFAC procedure: Models and conditions
+ *   for an 'explanatory' multi-modal factor analysis,UCLA Working Papers in
+ *   Phonetics.
+ * - De Lathauwer, De Moor, Vandewalle, 2000: A multilinear singular value
+ *   decomposition, SIAM J. Matrix Anal. Appl.
+ * - Kolda & Bader, 2009: Tensor Decompositions and Applications, SIAM Review.
  */
 
 #ifndef __VMML__CP3_TENSOR__HPP__

@@ -47,7 +47,7 @@ struct set_to_zero_functor
     {
         matrix_ = static_cast< typename T::value_type >( 0.0 );
     }
-    
+
 }; // struct set_to_zero
 
 
@@ -68,7 +68,7 @@ struct set_to_identity_functor
 }; // struct set_to_identity
 
 
-// this functor compares to matrices, and also returns true/equal if 
+// this functor compares to matrices, and also returns true/equal if
 // the matrices have the same values but some rows/columns are inverted
 template< typename T >
 struct matrix_equals_allow_inverted_rows : std::binary_function< const T&, const T&, bool >
@@ -80,12 +80,12 @@ struct matrix_equals_allow_inverted_rows : std::binary_function< const T&, const
         bool ok = true;
         for( size_t index = 0; ok && index < r; ++index )
         {
-            if ( matrix0.get_row( index ) != matrix1.get_row( index ) 
+            if ( matrix0.get_row( index ) != matrix1.get_row( index )
                 && matrix0.get_row( index ) != - matrix1.get_row( index ) )
             {
                 ok = false;
             }
-        
+
         }
         return ok;
     }
@@ -96,14 +96,14 @@ struct matrix_equals_allow_inverted_rows : std::binary_function< const T&, const
         bool ok = true;
         for( size_t index = 0; ok && index < r; ++index )
         {
-            if ( 
-                ! matrix0.get_row( index ).equals( matrix1.get_row( index ), tolerance ) 
+            if (
+                ! matrix0.get_row( index ).equals( matrix1.get_row( index ), tolerance )
                 && ! matrix0.get_row( index ).equals( - matrix1.get_row( index ), tolerance )
                 )
             {
                 ok = false;
             }
-        
+
         }
         return ok;
     }
@@ -121,12 +121,12 @@ struct matrix_equals_allow_inverted_columns : std::binary_function< const T&, co
         bool ok = true;
         for( size_t index = 0; ok && index < r; ++index )
         {
-            if ( matrix0.get_column( index ) != matrix1.get_column( index ) 
+            if ( matrix0.get_column( index ) != matrix1.get_column( index )
                 && matrix0.get_column( index ) != - matrix1.get_column( index ) )
             {
                 ok = false;
             }
-        
+
         }
         return ok;
     }
@@ -137,14 +137,14 @@ struct matrix_equals_allow_inverted_columns : std::binary_function< const T&, co
         bool ok = true;
         for( size_t index = 0; ok && index < r; ++index )
         {
-            if ( 
-                ! matrix0.get_column( index ).equals( matrix1.get_column( index ), tolerance ) 
+            if (
+                ! matrix0.get_column( index ).equals( matrix1.get_column( index ), tolerance )
                 && ! matrix0.get_column( index ).equals( - matrix1.get_column( index ), tolerance )
                 )
             {
                 ok = false;
             }
-        
+
         }
         return ok;
     }
@@ -156,4 +156,3 @@ struct matrix_equals_allow_inverted_columns : std::binary_function< const T&, co
 } // namespace vmml
 
 #endif
-

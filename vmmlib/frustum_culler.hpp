@@ -52,7 +52,7 @@ public:
     typedef vector< 4, T >    vec4;
 
     // contructors
-    frustum_culler() {} // warning: components NOT initialised
+    frustum_culler() {}
     ~frustum_culler(){}
 
     /** Set up the culling state using a 4x4 projection*modelView matrix. */

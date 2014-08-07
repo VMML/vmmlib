@@ -54,14 +54,45 @@ class vector
 {
 public:
     typedef T                                       value_type;
-    typedef T*                                      pointer;
-    typedef T&                                      reference;
     typedef T*                                      iterator;
     typedef const T*                                const_iterator;
     typedef std::reverse_iterator< iterator >       reverse_iterator;
     typedef std::reverse_iterator< const_iterator > const_reverse_iterator;
 
     static const size_t DIMENSION = M;
+
+    // constructors
+    vector() : array() {} // http://stackoverflow.com/questions/5602030
+    explicit vector( const T& a ); // sets all components to a;
+    vector( const T& x, const T& y );
+    vector( const T& x, const T& y, const T& z );
+    vector( const T& x, const T& y, const T& z, const T& w );
+
+#ifndef SWIG
+    // initializes the first M-1 values from vector_, the last from last_
+    vector( const vector< M-1, T >& vector_, T last_ );
+#endif
+
+    vector( const T* values );
+
+#ifdef __OSG_MATH
+    template< typename OSGVEC3 >
+    explicit vector( const OSGVEC3& from,
+                     typename enable_if< M == 3, OSGVEC3 >::type* = 0 );
+#endif
+
+    // vec< M > with homogeneous coordinates <-> vec< M-1 > conversion ctor
+    // to-homogenous-coordinates ctor
+    template< size_t N >
+    vector( const vector< N, T >& source_,
+            typename enable_if< N == M - 1 >::type* = 0 );
+
+    // from-homogenous-coordinates vector
+    template< size_t N >
+    vector( const vector< N, T >& source_,
+            typename enable_if< N == M + 1 >::type* = 0  );
+
+    template< typename U > vector( const vector< M, U >& source_ );
 
     // iterators
     inline iterator begin();
@@ -159,39 +190,6 @@ public:
     vector operator-() const;
 
     const vector& negate();
-
-    // constructors
-    vector() {}; // std ctor - WARNING: NO INITIALIZATION
-    explicit vector( const T& a ); // sets all components to a;
-    vector( const T& x, const T& y );
-    vector( const T& x, const T& y, const T& z );
-    vector( const T& x, const T& y, const T& z, const T& w );
-
-#ifndef SWIG
-    // initializes the first M-1 values from vector_, the last from last_
-    vector( const vector< M-1, T >& vector_, T last_ );
-#endif
-
-    vector( const T* values );
-
-#ifdef __OSG_MATH
-    template< typename OSGVEC3 >
-    explicit vector( const OSGVEC3& from,
-                     typename enable_if< M == 3, OSGVEC3 >::type* = 0 );
-#endif
-
-    // vec< M > with homogeneous coordinates <-> vec< M-1 > conversion ctor
-    // to-homogenous-coordinates ctor
-    template< size_t N >
-    vector( const vector< N, T >& source_,
-            typename enable_if< N == M - 1 >::type* = 0 );
-
-    // from-homogenous-coordinates vector
-    template< size_t N >
-    vector( const vector< N, T >& source_,
-            typename enable_if< N == M + 1 >::type* = 0  );
-
-    template< typename U > vector( const vector< M, U >& source_ );
 
     void set( T a ); // sets all components to a;
 #ifndef SWIG

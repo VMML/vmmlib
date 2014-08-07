@@ -78,7 +78,7 @@ public:
     using super::iter_set;
 
     //constructors
-    quaternion(); // warning: components NOT initialised (for performance)
+    quaternion() { w() = 1.; }
     quaternion( T x, T y, T z, T w );
 
     quaternion( const vector< 3, T >& xyz , T w );
@@ -230,15 +230,6 @@ const quaternion< T > quaternion< T >::QUATERJ( 0, 1, 0, 0 );
 
 template < typename T >
 const quaternion< T > quaternion< T >::QUATERK( 0, 0, 1, 0 );
-
-
-template < typename T >
-quaternion< T >::quaternion()
-{
-    // intentionally left empty
-}
-
-
 
 template < typename T >
 quaternion< T >::quaternion( T x_, T y_, T z_, T w_ )
@@ -992,4 +983,3 @@ quaternion< T >::operator=( const vector< 4, T >& other )
 
 }
 #endif
-

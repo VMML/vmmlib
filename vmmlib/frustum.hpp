@@ -48,7 +48,7 @@ public:
     VMMLIB_ALIGN( T array[6] );
 
     // contructors
-    frustum(); // warning: components NOT initialised ( for performance )
+    frustum() : array() {} // http://stackoverflow.com/questions/5602030
     frustum( const T left, const T right, const T bottom, const T top,
              const T near_plane, const T far_plane );
 
@@ -142,13 +142,6 @@ const frustum< T > frustum< T >::DEFAULT( static_cast< T >( -1.0 ),
                                           static_cast< T >( 1.0 ),
                                           static_cast< T >( 0.1 ),
                                           static_cast< T >( 100.0 ) );
-
-
-
-template < typename T >
-frustum< T >::frustum()
-{}
-
 
 
 template < typename T >

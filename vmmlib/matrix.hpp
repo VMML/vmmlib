@@ -59,8 +59,6 @@ class matrix
 {
 public:
     typedef T                                       value_type;
-    typedef T*                                      pointer;
-    typedef T&                                      reference;
     typedef T*                                      iterator;
     typedef const T*                                const_iterator;
     typedef std::reverse_iterator< iterator >       reverse_iterator;
@@ -68,6 +66,12 @@ public:
 
     static const size_t         ROWS = M;
     static const size_t         COLS = N;
+
+    // ctors
+    matrix() : array() {} // http://stackoverflow.com/questions/5602030
+
+    template< size_t P, size_t Q, typename U >
+    matrix( const matrix< P, Q, U >& source_ );
 
     // accessors
     inline T& operator()( size_t row_index, size_t col_index );
@@ -87,18 +91,11 @@ public:
     const_reverse_iterator  rbegin() const;
     const_reverse_iterator  rend() const;
 
-    // ctors
-    // note: this ctor does not initialize anything because of performance reasons.
-    matrix();
-
-    template< size_t P, size_t Q, typename U >
-    matrix( const matrix< P, Q, U >& source_ );
-
-    #ifndef VMMLIB_NO_CONVERSION_OPERATORS
+#ifndef VMMLIB_NO_CONVERSION_OPERATORS
     // auto conversion operator
     operator T*();
     operator const T*() const;
-    #endif
+#endif
 
     bool operator==( const matrix& other ) const;
     bool operator!=( const matrix& other ) const;
@@ -837,12 +834,6 @@ bool is_positive_definite( const matrix< M, N, T >& matrix_,
     return true;
 }
 
-
-template< size_t M, size_t N, typename T >
-matrix< M, N, T >::matrix()
-{
-    // no initialization for performance reasons.
-}
 
 template< size_t M, size_t N, typename T >
 template< size_t P, size_t Q, typename U >

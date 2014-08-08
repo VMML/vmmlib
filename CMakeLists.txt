@@ -121,6 +121,7 @@ if(CBLAS_FOUND)
 endif()
 
 add_subdirectory(tests)
+add_subdirectory(tests_old)
 
 install(FILES ${HEADERS} DESTINATION include/vmmlib COMPONENT dev)
 install(FILES ${DOCS} DESTINATION share/vmmlib COMPONENT dev)

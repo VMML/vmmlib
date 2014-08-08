@@ -125,7 +125,7 @@ public:
     quaternion negate() const;
     quaternion operator-() const;
 
-    const quaternion& operator=(const quaternion& other);
+    quaternion& operator=(const quaternion& other);
     const vector< 4, T >& operator=( const vector< 4, T >& other );
 
     //
@@ -396,8 +396,7 @@ void quaternion< T >::set( input_iterator_t begin_, input_iterator_t end_ )
 
 
 template < typename T >
-bool
-quaternion< T >::operator==( const T& a ) const
+bool quaternion< T >::operator==( const T& a ) const
 {
     return ( w() == a && x() == 0 && y() == 0 && z() == 0 );
 }
@@ -412,8 +411,7 @@ bool quaternion< T >::operator!=( const T& a ) const
 
 
 template < typename T >
-bool
-quaternion< T >::operator==( const vector< 4, T >& a ) const
+bool quaternion< T >::operator==( const vector< 4, T >& a ) const
 {
     return this->operator==(
         reinterpret_cast< const quaternion< T >& >( a )
@@ -964,8 +962,7 @@ slerp( T a, const quaternion< T >& p, const quaternion< T >& q, const T epsilon 
 
 
 template < typename T >
-const quaternion< T >&
-quaternion< T >::operator=(const quaternion& other)
+quaternion< T >& quaternion< T >::operator=(const quaternion& other)
 {
     memcpy( array, other.array, 4 * sizeof( T ) );
     return *this;

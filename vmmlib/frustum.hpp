@@ -59,7 +59,7 @@ public:
 
     ~frustum();
 
-    const frustum& operator=( const frustum& source_ );
+    frustum& operator=( const frustum& source_ );
     template< typename U >
     void operator=( const frustum< U >& source_ );
 
@@ -184,8 +184,7 @@ frustum< T >::~frustum()
 
 
 template< typename T >
-const frustum< T >&
-frustum< T >::operator=( const frustum& source_ )
+frustum< T >& frustum< T >::operator=( const frustum& source_ )
 {
     memcpy( array, source_.array, 6 * sizeof( T ) );
     return *this;

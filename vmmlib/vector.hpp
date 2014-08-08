@@ -147,13 +147,13 @@ public:
     bool operator<( const vector& other ) const;
 
     // remember kids: c_arrays are dangerous and evil!
-    const vector& operator=( const T* c_array );
+    vector& operator=( const T* c_array );
     T operator=( T filler );
 
-    const vector& operator=( const vector& other );
+    vector& operator=( const vector& other );
+
     // returns void to avoid 'silent' loss of precision when chaining
-    template< typename U >
-    void operator=( const vector< M, U >& other );
+    template< typename U > void operator=( const vector< M, U >& other );
 
     // to-homogenous-coordinates assignment operator
     // non-chainable because of sfinae
@@ -1354,8 +1354,7 @@ bool vector< M, T >::operator==( const vector< M, T >& other ) const
 
 
 template< size_t M, typename T >
-bool
-vector< M, T >::operator!=( const vector< M, T >& other ) const
+bool vector< M, T >::operator!=( const vector< M, T >& other ) const
 {
     return ! this->operator==( other );
 }
@@ -1391,11 +1390,9 @@ vector< M, T >::operator<( const vector< M, T >& other ) const
 
 // to-homogenous-coordinates assignment operator
 // non-chainable because of sfinae
-template< size_t M, typename T >
-template< size_t N >
+template< size_t M, typename T > template< size_t N >
 typename enable_if< N == M - 1 >::type*
-vector< M, T >::
-operator=( const vector< N, T >& source_ )
+vector< M, T >::operator=( const vector< N, T >& source_ )
 {
     std::copy( source_.begin(), source_.end(), begin() );
     at( M - 1 ) = static_cast< T >( 1.0 );
@@ -1405,11 +1402,9 @@ operator=( const vector< N, T >& source_ )
 
 // from-homogenous-coordinates assignment operator
 // non-chainable because of sfinae
-template< size_t M, typename T >
-template< size_t N >
+template< size_t M, typename T > template< size_t N >
 typename enable_if< N == M + 1 >::type*
-vector< M, T >::
-operator=( const vector< N, T >& source_ )
+vector< M, T >::operator=( const vector< N, T >& source_ )
 {
     const T w_reci = static_cast< T >( 1.0 ) / source_( M );
     iterator it = begin(), it_end = end();
@@ -1422,8 +1417,7 @@ operator=( const vector< N, T >& source_ )
 
 
 template< size_t M, typename T >
-const vector< M, T >&
-vector< M, T >::operator=( const T* c_array )
+vector< M, T >& vector< M, T >::operator=( const T* c_array )
 {
     iter_set( c_array, c_array + M );
     return *this;
@@ -1432,8 +1426,7 @@ vector< M, T >::operator=( const T* c_array )
 
 
 template< size_t M, typename T >
-T
-vector< M, T >::operator=( T filler_value )
+T vector< M, T >::operator=( T filler_value )
 {
     for( size_t index = 0; index < M; ++index )
     {
@@ -1446,8 +1439,7 @@ vector< M, T >::operator=( T filler_value )
 
 
 template< size_t M, typename T >
-const vector< M, T >&
-vector< M, T >::operator=( const vector< M, T >& other )
+vector< M, T >& vector< M, T >::operator=( const vector< M, T >& other )
 {
     if( this != &other )
         memcpy( array, other.array, M * sizeof( T ) );
@@ -1457,10 +1449,8 @@ vector< M, T >::operator=( const vector< M, T >& other )
 
 
 // returns void to avoid 'silent' loss of precision when chaining
-template< size_t M, typename T >
-template< typename U >
-void
-vector< M, T >::operator=( const vector< M, U >& source_ )
+template< size_t M, typename T > template< typename U >
+void vector< M, T >::operator=( const vector< M, U >& source_ )
 {
     typedef typename vector< M, U >::const_iterator u_c_iter;
     u_c_iter it = source_.begin(), it_end = source_.end();
@@ -1800,12 +1790,10 @@ vector< M, T >::set_random( int seed )
     if ( seed >= 0 )
         srand( seed );
 
-    double fillValue = 0.0f;
     for( size_t i = 0; i < M; ++i )
     {
-        fillValue = rand();
-        fillValue /= RAND_MAX;
-        at( i ) = -1.0 + 2.0 * static_cast< double >( fillValue )  ;
+        const double fillValue = double( rand( )) / double( RAND_MAX );
+        at( i ) = -1.0 + 2.0 * fillValue;
     }
 }
 

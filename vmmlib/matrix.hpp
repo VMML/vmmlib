@@ -68,7 +68,7 @@ public:
     static const size_t         COLS = N;
 
     // ctors
-    matrix() : array() {} // http://stackoverflow.com/questions/5602030
+    matrix();
 
     template< size_t P, size_t Q, typename U >
     matrix( const matrix< P, Q, U >& source_ );
@@ -111,11 +111,8 @@ public:
     void multiply_piecewise( const matrix& other );
 
     // (this) matrix = left matrix_mxp * right matrix_pxn
-    template< size_t P >
-    void multiply(
-        const matrix< M, P, T >& left,
-        const matrix< P, N, T >& right
-        );
+    template< size_t P > void multiply( const matrix< M, P, T >& left,
+                                        const matrix< P, N, T >& right );
 
     // convolution operation (extending borders) of (this) matrix and the given kernel
     template< size_t U, size_t V >
@@ -233,7 +230,6 @@ public:
     void set_dct();
 
     void zero();
-    void identity();
 
     double frobenius_norm() const;
     double p_norm( double p ) const;
@@ -584,14 +580,11 @@ multiply( const matrix< M, P, T >& left, const matrix< P, N, T >& right,
 
 
 template< size_t M, size_t N, typename T >
-inline typename enable_if< M == N >::type*
-identity( matrix< M, N, T >& matrix_ )
+inline typename enable_if< M == N >::type* identity( matrix< M, N, T >& m )
 {
-    matrix_ = static_cast< T >( 0.0 );
+    m = static_cast< T >( 0.0 );
     for( size_t index = 0; index < M; ++index )
-    {
-        matrix_( index, index ) = static_cast< T >( 1.0 );
-    }
+        m( index, index ) = static_cast< T >( 1.0 );
     return 0; // for sfinae
 }
 
@@ -834,6 +827,15 @@ bool is_positive_definite( const matrix< M, N, T >& matrix_,
     return true;
 }
 
+
+template< size_t M, size_t N, typename T >
+matrix< M, N, T >::matrix()
+    : array() // http://stackoverflow.com/questions/5602030
+{
+    if( M == N )
+        for( size_t i = 0; i < M; ++i )
+            at( i, i ) = static_cast< T >( 1.0 );
+}
 
 template< size_t M, size_t N, typename T >
 template< size_t P, size_t Q, typename U >
@@ -1516,17 +1518,13 @@ void matrix< M, N, T >::set( input_iterator_t begin_,
 
 
 template< size_t M, size_t N, typename T >
-void
-matrix< M, N, T >::zero()
+void matrix< M, N, T >::zero()
 {
     fill( static_cast< T >( 0.0 ) );
 }
 
-
 template< size_t M, size_t N, typename T >
-void
-matrix< M, N, T >::
-operator=( T value_ )
+void matrix< M, N, T >::operator=( T value_ )
 {
     std::fill( begin(), end(), value_ );
 }
@@ -1606,8 +1604,7 @@ matrix< M, N, T >::operator-=( T scalar )
 template< size_t M, size_t N, typename T >
 template< size_t O, size_t P, size_t Q, size_t R >
 typename enable_if< M == O + Q && N == P + R >::type*
-matrix< M, N, T >::
-direct_sum( const matrix< O, P, T >& upper_left,
+matrix< M, N, T >::direct_sum( const matrix< O, P, T >& upper_left,
     const matrix< Q, R, T >& lower_right )
 {
     (*this) = static_cast< T >( 0.0 );
@@ -1636,8 +1633,7 @@ direct_sum( const matrix< O, P, T >& upper_left,
 template< size_t M, size_t N, typename T >
 template< size_t O, size_t P >
 matrix< O, P, T >
-matrix< M, N, T >::
-get_sub_matrix( size_t row_offset, size_t col_offset,
+matrix< M, N, T >::get_sub_matrix( size_t row_offset, size_t col_offset,
 typename enable_if< O <= M && P <= N >::type* ) const
 {
     matrix< O, P, T > result;
@@ -2244,9 +2240,8 @@ matrix< M, N, T >::get_initialized_matrix()
 template< size_t M, size_t N, typename T >
 const matrix< M, N, T >
 matrix< M, N, T >::IDENTITY(
-    matrix< M, N, T >::
-        get_initialized_matrix< set_to_identity_functor< matrix< M, N, T > > >()
-    );
+    matrix< M, N, T >::get_initialized_matrix<
+                           set_to_identity_functor< matrix< M, N, T > > >( ));
 
 
 template< size_t M, size_t N, typename T >
@@ -2581,13 +2576,13 @@ template< size_t M, size_t N, typename T >
 void
 matrix< M, N, T >::set_dct()
 {
-    double weight = 0.0f;
-    double num_rows = M;
+    const double num_rows = M;
     double fill_value = 0.0f;
     for( size_t row = 0; row < M; ++row )
     {
-        weight = ( row == 0.0 ) ? std::sqrt(1/num_rows) :
-                              std::sqrt(2/num_rows); //to receive orthonormality
+        // to receive orthonormality
+        const double weight = ( row == 0.0 ) ? std::sqrt(1/num_rows) :
+                                               std::sqrt(2/num_rows);
         for( size_t col = 0; col < N; ++col )
         {
             fill_value = (2 * col + 1) * row * M_PI / (2*M);
@@ -2662,7 +2657,6 @@ matrix< M, N, T >::read_from_raw( const std::string& dir_, const std::string& fi
 
     size_t max_file_len = 2147483648u - sizeof(T) ;
     size_t len_data = sizeof(T) * size();
-    size_t len_read = 0;
     char* data = new char[ len_data ];
     std::ifstream infile;
     infile.open( path.c_str(), std::ios::in);
@@ -2674,7 +2668,8 @@ matrix< M, N, T >::read_from_raw( const std::string& dir_, const std::string& fi
 
         while ( len_data > 0 )
         {
-            len_read = (len_data % max_file_len ) > 0 ? len_data % max_file_len : len_data;
+            const size_t len_read = (len_data % max_file_len ) > 0 ?
+                                        len_data % max_file_len : len_data;
             len_data -= len_read;
             infile.read( data, len_read );
 

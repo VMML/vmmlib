@@ -107,7 +107,7 @@ if(EXISTS ${GIT_EXTERNALS})
         list(GET DATA 2 TAG)
 
         # Create a unique, flat name
-        string(REPLACE "/" "_" GIT_EXTERNAL_NAME ${DIR})
+        string(REPLACE "/" "_" GIT_EXTERNAL_NAME ${DIR}_${PROJECT_NAME})
 
         if(NOT TARGET update_git_external_${GIT_EXTERNAL_NAME}) # not done
           # pull in identified external
@@ -124,7 +124,7 @@ if(EXISTS ${GIT_EXTERNALS})
           endif()
 
           # Create a unique, flat name
-          file(RELATIVE_PATH GIT_EXTERNALS_BASE ${CMAKE_SOURCE_DIR}
+          file(RELATIVE_PATH GIT_EXTERNALS_BASE ${CMAKE_CURRENT_SOURCE_DIR}
             ${GIT_EXTERNALS})
           string(REPLACE "/" "_" GIT_EXTERNAL_TARGET ${GIT_EXTERNALS_BASE})
 

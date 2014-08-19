@@ -14,8 +14,8 @@ set(GITTARGETS_RELEASE_BRANCH minor)
 option(VMMLIB_USE_BLAS "Disable to turn blas detection off" ON)
 mark_as_advanced(VMMLIB_USE_BLAS)
 
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake
-  ${CMAKE_CURRENT_SOURCE_DIR}/CMake/common)
+list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake
+  ${PROJECT_SOURCE_DIR}/CMake/common)
 include(GitExternal)
 include(Common)
 
@@ -42,7 +42,7 @@ endif()
 
 set(DOCS README.md AUTHORS LICENSE.txt ACKNOWLEDGEMENTS)
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/vmmlib/version.in.hpp
+configure_file(${PROJECT_SOURCE_DIR}/vmmlib/version.in.hpp
   ${OUTPUT_INCLUDE_DIR}/vmmlib/version.hpp @ONLY)
 
 set(HEADERS
@@ -188,6 +188,10 @@ if(NOT MSVC)
 
   # workaround: 'make test' does not build tests beforehand
   add_custom_target(vmmlib_tests COMMAND ${CMAKE_CTEST_COMMAND} DEPENDS vmmlib_test)
+  if(NOT TARGET tests)
+    add_custom_target(tests DEPENDS vmmlib_tests)
+  endif()
+  add_dependencies(tests vmmlib_tests)
   add_custom_target(vmmlib-test DEPENDS vmmlib_tests) # Travis CI hack
 endif()
 

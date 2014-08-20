@@ -199,7 +199,6 @@ public:
         return os;
     };
 
-    static const quaternion ZERO;
     static const quaternion IDENTITY;
     static const quaternion QUATERI;
     static const quaternion QUATERJ;

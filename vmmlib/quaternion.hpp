@@ -216,9 +216,6 @@ typedef quaternion< double > quaterniond;
 // - implementation - //
 
 template < typename T >
-const quaternion< T > quaternion< T >::ZERO( 0, 0, 0, 0 );
-
-template < typename T >
 const quaternion< T > quaternion< T >::IDENTITY( 0, 0, 0, 1 );
 
 template < typename T >
@@ -339,7 +336,7 @@ void quaternion< T >::set( const matrix< D, D, T >& M )
         }
         else
         {
-            *this = ZERO;
+            (*this) = super::ZERO;
             assert( 0 );
         }
     }
@@ -350,7 +347,7 @@ void quaternion< T >::set( const matrix< D, D, T >& M )
 template < typename T >
 void quaternion< T >::zero()
 {
-    (*this) = ZERO;
+    (*this) = super::ZERO;
 }
 
 

@@ -343,7 +343,6 @@ BOOST_AUTO_TEST_CASE(vector_tbd1)
     {
         BOOST_CHECK(*it == *fit);
     }
-    vd = 0.0;
     vd = vf;
     for( ; it != it_end; ++it, ++fit )
     {

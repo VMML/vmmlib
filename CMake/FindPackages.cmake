@@ -32,6 +32,15 @@ else()
   find_package(CBLAS  )
 endif()
 
+if(PKG_CONFIG_EXECUTABLE)
+  find_package(Boost 1.41.0 COMPONENTS unit_test_framework)
+  if((NOT Boost_FOUND) AND (NOT BOOST_FOUND))
+    pkg_check_modules(Boost Boost>=1.41.0)
+  endif()
+else()
+  find_package(Boost 1.41.0  COMPONENTS unit_test_framework)
+endif()
+
 
 if(EXISTS ${CMAKE_SOURCE_DIR}/CMake/FindPackagesPost.cmake)
   include(${CMAKE_SOURCE_DIR}/CMake/FindPackagesPost.cmake)
@@ -85,9 +94,25 @@ if(CBLAS_name)
   endif()
 endif()
 
+if(BOOST_FOUND)
+  set(Boost_name BOOST)
+  set(Boost_FOUND TRUE)
+elseif(Boost_FOUND)
+  set(Boost_name Boost)
+  set(BOOST_FOUND TRUE)
+endif()
+if(Boost_name)
+  list(APPEND FIND_PACKAGES_DEFINES VMMLIB_USE_BOOST)
+  set(FIND_PACKAGES_FOUND "${FIND_PACKAGES_FOUND} Boost")
+  link_directories(${${Boost_name}_LIBRARY_DIRS})
+  if(NOT "${${Boost_name}_INCLUDE_DIRS}" MATCHES "-NOTFOUND")
+    include_directories(SYSTEM ${${Boost_name}_INCLUDE_DIRS})
+  endif()
+endif()
+
 set(VMMLIB_BUILD_DEBS autoconf;automake;cmake;doxygen;git;git-review;pkg-config;subversion)
 
-set(VMMLIB_DEPENDS OpenMP;LAPACK;CBLAS)
+set(VMMLIB_DEPENDS OpenMP;LAPACK;CBLAS;Boost)
 
 # Write defines.h and options.cmake
 if(NOT PROJECT_INCLUDE_NAME)

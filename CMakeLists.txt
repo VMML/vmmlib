@@ -15,7 +15,7 @@ option(VMMLIB_USE_BLAS "Disable to turn blas detection off" ON)
 mark_as_advanced(VMMLIB_USE_BLAS)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake
-  ${PROJECT_SOURCE_DIR}/CMake/common)
+                              ${PROJECT_SOURCE_DIR}/CMake/common)
 include(GitExternal)
 include(Common)
 
@@ -109,97 +109,26 @@ set(HEADERS
   vmmlib/vmmlib_config.hpp
 )
 
-set(TESTS
-  tests/frustum_test.cpp
-  tests/intersection_test.cpp
-  tests/jacobi_test.cpp
-  tests/matrix_test.cpp
-  tests/perf_test.cpp
-  tests/performance_test.cpp
-  tests/qr_decomposition_test.cpp
-  tests/quaternion_test.cpp
-  tests/svd_test.cpp
-  tests/timer.cpp
-  tests/unit_test.cpp
-  tests/unit_test_globals.cpp
-  tests/lowpass_filter_test.cpp
-  tests/vector_test.cpp
-  tests/util_test.cpp
-  tests/vmmlib_unit_tests_main.cpp )
-
 if(LAPACK_FOUND)
   add_definitions(-DVMMLIB_USE_LAPACK)
   set(LAPACK_HEADERS
     vmmlib/lapack/detail/clapack.h
     vmmlib/lapack/detail/f2c.h )
-  list(APPEND TESTS
-    tests/lapack_gaussian_elimination_test.cpp
-    tests/lapack_linear_least_squares_test.cpp
-    tests/lapack_svd_test.cpp
-    tests/lapack_sym_eigs_test.cpp
-    tests/svd_lapack_vs_old.cpp )
 endif()
 
 if(CBLAS_FOUND)
   add_definitions(-DVMMLIB_USE_BLAS)
-  list(APPEND TESTS
-    tests/blas_daxpy_test.cpp
-    tests/blas_dgemm_test.cpp
-    tests/blas_dot_test.cpp )
 endif()
 
-if(CBLAS_FOUND AND LAPACK_FOUND)
-  add_definitions(-DVMMLIB_USE_BLAS)
-  list(APPEND TESTS
-    tests/tensor3_iterator_test.cpp
-    tests/tensor3_test.cpp
-    tests/tucker3_exporter_importer_test.cpp
-    tests/tucker3_tensor_test.cpp
-    tests/t4_hooi_test.cpp
-    tests/t4_converter_test.cpp
-    tests/tensor4_test.cpp
-    tests/t4_ttm_test.cpp
-    tests/t3_ttm_test.cpp
-    tests/t3_hosvd_test.cpp
-    tests/t3_ihooi_test.cpp
-    tests/t3_hopm_test.cpp
-    tests/t3_ihopm_test.cpp
-    tests/t3_hooi_test.cpp
-    tests/qtucker3_tensor_test.cpp
-    tests/matrix_pseudoinverse_test.cpp
-    tests/cp3_tensor_test.cpp )
-endif()
-
-list(APPEND CPPCHECK_EXTRA_ARGS --suppress=*:${CMAKE_SOURCE_DIR}/tests/*)
-
-if(NOT MSVC)
-  add_executable(vmmlib_test ${HEADERS} ${TESTS})
-  if(LAPACK_FOUND)
-    target_link_libraries(vmmlib_test ${LAPACK_LIBRARIES})
-  endif()
-  if(CBLAS_FOUND)
-    target_link_libraries(vmmlib_test ${CBLAS_LIBRARIES})
-  endif()
-
-  get_target_property(EXECUTABLE vmmlib_test LOCATION)
-  STRING(REGEX REPLACE "\\$\\(.*\\)" "\${CTEST_CONFIGURATION_TYPE}"
-    EXECUTABLE "${EXECUTABLE}")
-  add_test(vmmlib_test ${EXECUTABLE})
-
-  # workaround: 'make test' does not build tests beforehand
-  add_custom_target(vmmlib_tests COMMAND ${CMAKE_CTEST_COMMAND} DEPENDS vmmlib_test)
-  if(NOT TARGET tests)
-    add_custom_target(tests DEPENDS vmmlib_tests)
-  endif()
-  add_dependencies(tests vmmlib_tests)
-  add_custom_target(vmmlib-test DEPENDS vmmlib_tests) # Travis CI hack
-endif()
+add_subdirectory(tests)
+add_subdirectory(tests_old)
 
 install(FILES ${HEADERS} DESTINATION include/vmmlib COMPONENT dev)
 install(FILES ${DOCS} DESTINATION share/vmmlib COMPONENT dev)
 
 if(LAPACK_FOUND)
-   install(FILES ${LAPACK_HEADERS} DESTINATION include/vmmlib/lapack/detail COMPONENT dev)
+  install(FILES ${LAPACK_HEADERS} DESTINATION include/vmmlib/lapack/detail
+    COMPONENT dev)
 endif()
 
 include(DoxygenRule) # must be after all targets

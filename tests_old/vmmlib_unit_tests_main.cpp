@@ -2,7 +2,6 @@
 
 #include "unit_test_globals.hpp"
 
-#include "vector_test.hpp"
 #include "matrix_test.hpp"
 #include "lowpass_filter_test.hpp"
 #include "frustum_test.hpp"
@@ -50,10 +49,6 @@ void run_and_log( vmml::unit_test& test )
 
 int main( int, const char** )
 {
-
-    vmml::vector_test vector_test_;
-    run_and_log( vector_test_ );
-
     vmml::matrix_test matrix_test_;
     run_and_log( matrix_test_ );
 
@@ -103,7 +98,7 @@ int main( int, const char** )
     run_and_log( b_daxpy );
 #endif
 
-#ifdef VMMLIB_USE_BLAS 
+#ifdef VMMLIB_USE_BLAS
 #ifdef VMMLIB_USE_LAPACK
     vmml::t3_hosvd_test t3hosvd;
     run_and_log( t3hosvd );
@@ -128,7 +123,7 @@ int main( int, const char** )
 
     vmml::qtucker3_tensor_test tt3tq;
     run_and_log( tt3tq );
-    
+
       vmml::tensor3_test t3t;
     run_and_log( t3t );
 

@@ -1,0 +1,5 @@
+.travis.yml merge=ours
+CMake/FindPackages.cmake merge=ours
+CMake/FindRequired.cmake merge=ours
+CMake/GitExternal.cmake merge=ours
+CMake/depends.txt merge=ours

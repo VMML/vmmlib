@@ -60,7 +60,7 @@ if(CBLAS_FOUND)
   endif()
 endif()
 
-list(APPEND CPPCHECK_EXTRA_ARGS --suppress=*:${CMAKE_CURRENT_SOURCE_DIR}/*)
+list(APPEND CPPCHECK_EXTRA_ARGS --suppress=*:${PROJECT_SOURCE_DIR}/*)
 
 add_executable(vmmlib_test ${TESTS})
 get_target_property(EXECUTABLE vmmlib_test LOCATION)

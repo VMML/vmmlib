@@ -2668,7 +2668,7 @@ matrix< M, N, T >::read_from_raw( const std::string& dir_, const std::string& fi
 
         while ( len_data > 0 )
         {
-            const size_t len_read = (len_data % max_file_len ) > 0 ?
+            size_t len_read = (len_data % max_file_len ) > 0 ?
                                         len_data % max_file_len : len_data;
             len_data -= len_read;
             infile.read( data, len_read );

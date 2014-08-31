@@ -361,8 +361,8 @@ BOOST_AUTO_TEST_CASE(vector_tbd2)
     BOOST_CHECK(v3.x() == vf.x() && v3.y() == vf.y());
 
     //elementwise sqrt
-    vector< 4, float > vsq( 9.0, 4.0, 1.0, 2.0 );
-    vector< 4, float > vsq_check( 3.0, 2.0, 1.0, 1.414213538169861 );
+    vector< 4, double > vsq(9.0, 4.0, 1.0, 2.0);
+    vector< 4, double > vsq_check( 3.0, 2.0, 1.0, 1.414213538169861 );
     vsq.sqrt_elementwise();
     BOOST_CHECK(vsq == vsq_check);
 

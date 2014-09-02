@@ -362,9 +362,9 @@ BOOST_AUTO_TEST_CASE(vector_tbd2)
 
     //elementwise sqrt
     vector< 4, double > vsq(9.0, 4.0, 1.0, 2.0);
-    vector< 4, double > vsq_check( 3.0, 2.0, 1.0, 1.414213538169861 );
+    vector< 4, double > vsq_check( 3.0, 2.0, 1.0, std::sqrt( 2.0 ));
     vsq.sqrt_elementwise();
-    BOOST_CHECK(vsq == vsq_check);
+    BOOST_CHECK_EQUAL( vsq, vsq_check );
 
     //elementwise sqrt
     vector< 4, float > vr( 9.0, 4.0, 1.0, 2.0 );

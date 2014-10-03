@@ -4,7 +4,6 @@ if(MSVC)
 endif()
 
 set(TESTS
-  frustum_test.cpp
   intersection_test.cpp
   jacobi_test.cpp
   matrix_test.cpp

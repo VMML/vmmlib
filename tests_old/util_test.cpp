@@ -99,9 +99,9 @@ bool util_test::run()
     // tests create_rotation
     ok = true;
     {
-        vec4f v( -0.5f, 0.5f, 0.0f, 1.0f );
-        v = create_rotation( M_PI_F, vec3f( 1.0f, 1.0f, 0.0f) ) * v;
-        vec4f tmp( 0.5f, -0.5f, 0.0, 1.0f );
+        vector< 4, float > v( -0.5f, 0.5f, 0.0f, 1.0f );
+        v = create_rotation( M_PI_F, vector< 3, float >( 1.0f, 1.0f, 0.0f) ) * v;
+        vector< 4, float > tmp( 0.5f, -0.5f, 0.0, 1.0f );
 
         TEST( equals( v, tmp ) )
 
@@ -117,11 +117,11 @@ bool util_test::run()
     // tests apply_rotation
     ok = true;
     {
-        vec4f v( -0.5f, 0.0f, 0.5f, 1.0f );
+        vector< 4, float > v( -0.5f, 0.0f, 0.5f, 1.0f );
         mat4f m = mat4f::IDENTITY;
         apply_rotation( m, M_PI_F, 1.0f, 1.0f, 1.0f );
         v = m * v;
-        vec4f tmp( 0.5f, 0.0f, -0.5f, 1.0f );
+        vector< 4, float > tmp( 0.5f, 0.0f, -0.5f, 1.0f );
 
         TEST( equals( v, tmp ) )
 
@@ -137,9 +137,9 @@ bool util_test::run()
     // tests create_scaling
     ok = true;
     {
-        vec4f v(1.0f, 2.0f, 3.0f, 1.0f);
+        vector< 4, float > v(1.0f, 2.0f, 3.0f, 1.0f);
         v = create_scaling(2.0f) * v;
-        vec4f tmp(2.0f, 4.0f, 6.0f, 1.0f);
+        vector< 4, float > tmp(2.0f, 4.0f, 6.0f, 1.0f);
 
         TEST( equals( v, tmp ) )
 
@@ -155,8 +155,8 @@ bool util_test::run()
     // tests manhattan
     ok = true;
     {
-        vec3f v1(1.0, 2.0, 3.0);
-        vec3f v2(2.0, 1.0, 4.0);
+        vector< 3, float > v1(1.0, 2.0, 3.0);
+        vector< 3, float > v2(2.0, 1.0, 4.0);
         float d = manhattan(v2 - v1);
         float tmp = 3;
 
@@ -174,9 +174,9 @@ bool util_test::run()
     // tests zero
     ok = true;
     {
-        vec4f v(1.0, 2.0, 3.0, 1.0);
+        vector< 4, float > v(1.0, 2.0, 3.0, 1.0);
         zero( v );
-        vec4f tmp = vec4f::ZERO;
+        vector< 4, float > tmp = vector< 4, float >::ZERO;
 
         TEST( equals( v, tmp ) )
 
@@ -192,10 +192,10 @@ bool util_test::run()
     // tests min
     ok = true;
     {
-        vec3f v1(1.0, 2.0, 3.0);
-        vec3f v2(2.0, 1.0, 4.0);
-        vec3f v = min(v1, v2);
-        vec3f tmp(1.0f, 1.0f, 3.0f);
+        vector< 3, float > v1(1.0, 2.0, 3.0);
+        vector< 3, float > v2(2.0, 1.0, 4.0);
+        vector< 3, float > v = min(v1, v2);
+        vector< 3, float > tmp(1.0f, 1.0f, 3.0f);
 
         TEST( equals( v, tmp ) )
 
@@ -211,10 +211,10 @@ bool util_test::run()
     // tests max
     ok = true;
     {
-        vec3f v1(1.0, 2.0, 3.0);
-        vec3f v2(2.0, 1.0, 4.0);
-        vec3f v = max(v1, v2);
-        vec3f tmp(2.0f, 2.0f, 4.0f);
+        vector< 3, float > v1(1.0, 2.0, 3.0);
+        vector< 3, float > v2(2.0, 1.0, 4.0);
+        vector< 3, float > v = max(v1, v2);
+        vector< 3, float > tmp(2.0f, 2.0f, 4.0f);
 
         TEST( equals( v, tmp ) )
 

@@ -452,7 +452,6 @@ public:
     friend std::ostream& operator << ( std::ostream& os,
         const matrix< M, N, T >& matrix )
     {
-#ifdef EQFABRIC_API_H
         const std::ios::fmtflags flags = os.flags();
         const int                prec  = os.precision();
 
@@ -470,23 +469,6 @@ public:
         }
         os.precision( prec );
         os.setf( flags );
-#else
-        for( size_t row_index = 0; row_index < M; ++row_index )
-        {
-            os << "(";
-            for( size_t col_index = 0; col_index < N; ++col_index )
-            {
-                if( sizeof(T) ==sizeof(unsigned char)) {
-                    os << int(matrix.at( row_index, col_index ));
-                } else {
-                    os << matrix.at( row_index, col_index );
-                }
-                if (col_index + 1 < N )
-                    os << ", ";
-            }
-            os << ")" << std::endl;
-        }
-#endif
         return os;
     };
 
@@ -2224,10 +2206,8 @@ rend() const
 
 
 
-template< size_t M, size_t N, typename T >
-template< typename init_functor_t >
-const matrix< M, N, T >
-matrix< M, N, T >::get_initialized_matrix()
+template< size_t M, size_t N, typename T > template< typename init_functor_t >
+const matrix< M, N, T > matrix< M, N, T >::get_initialized_matrix()
 {
     matrix< M, N, T > matrix_;
     init_functor_t()( matrix_ );

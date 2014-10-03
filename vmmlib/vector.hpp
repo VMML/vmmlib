@@ -334,7 +334,6 @@ public:
 
     friend std::ostream& operator<< ( std::ostream& os, const vector& vector_ )
     {
-#ifdef EQFABRIC_API_H
         const std::ios::fmtflags flags = os.flags();
         const int                prec  = os.precision();
 
@@ -346,15 +345,6 @@ public:
         os << "]";
         os.precision( prec );
         os.setf( flags );
-#else
-        os << "(";
-        size_t index = 0;
-        for( ; index < M - 1; ++index )
-        {
-            os << vector_.at( index ) << ", ";
-        }
-        os << vector_.at( index ) << ")";
-#endif
         return os;
     }
 
@@ -386,16 +376,6 @@ public:
 //
 // typedefs and statics
 //
-
-#ifndef VMMLIB_NO_TYPEDEFS
-typedef vector< 2, float >  vec2f;
-typedef vector< 2, double > vec2d;
-typedef vector< 3, float >  vec3f;
-typedef vector< 3, double > vec3d;
-typedef vector< 4, float >  vec4f;
-typedef vector< 4, double > vec4d;
-#endif
-
 #ifndef SWIG
 template< size_t M, typename T >
 const vector< M, T > vector< M, T >::FORWARD( 0, 0, -1 );
@@ -436,8 +416,7 @@ bool equals( const vector< M, T >& a, const vector< M, T >& b )
 
 // allows float * vector, not only vector * float
 template< size_t M, typename T >
-static vector< M, T >
-operator* ( T factor, const vector< M, T >& vector_ )
+static vector< M, T > operator* ( T factor, const vector< M, T >& vector_ )
 {
     return vector_ * factor;
 }

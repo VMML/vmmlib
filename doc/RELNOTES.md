@@ -6,13 +6,20 @@ Release Notes {#mainpage}
 # Introduction {#Introduction}
 vmmlib - a templatized C++ vector and matrix math library
 
-Its basic functionality includes a vector and a matrix class, with additional functionality for the often-used 3d and 4d vectors and 3x3 and 4x4 matrices. More advanced features include solvers, frustum computations and frustum culling classes, and spatial data structures. vmmlib also offers support for manipulating 3rd-order and 4th-order tensors, as well as several algorithms for tensor approximation.
+VMMLib includes a vector and a matrix class, with additional
+functionality for the often-used 3d and 4d vectors and 3x3 and 4x4
+matrices. More advanced features include solvers, frustum computations
+and frustum culling classes and spatial data structures
 
-Vmmlib is implemented using C++ templates, making it versatile. Being a header library, it is very easy to integrate into other (your) libraries and programs. There is no need to build and install a library, just include the headers and you’re set. The BSD license allows the usage both in open source and commercial closed source software.
+VMMLib is implemented using C++ templates, making it versatile. Being a
+header library, it is very easy to integrate into other (your) libraries
+and programs. There is no need to build and install a library, just
+include the headers and you’re set. The BSD license allows the usage
+both in open source and commercial closed source software.
 
 # New in this release {#NewInThisRelease}
 
-vmmlib 1.7 includes several fixes and enhancements over the last release, such as:
+vmmlib 1.8 includes several fixes and enhancements over the last release, such as:
 
 ##Bug Fixes {#BugFixes}
 * Sanitization of Matrix::get_translation API
@@ -22,7 +29,8 @@ vmmlib 1.7 includes several fixes and enhancements over the last release, such a
 ##Enhancements {#Enhancements}
 * Provide option to find project via find_file
 * Added support for snapshot module
-* Remove OSS package targets from CommonCPack to speed up CMake run and use less disk space for non-OSS packages
+* Remove OSS package targets from CommonCPack to speed up CMake run and
+  use less disk space for non-OSS packages
 * Added TUVOK library
 * Added various C++11 features
 
@@ -52,4 +60,3 @@ vmmlib 1.7 includes several fixes and enhancements over the last release, such a
 * Contributions can be merged into vmmlib via a pull request
 
 # Errata {#Errata}
-

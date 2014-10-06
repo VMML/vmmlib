@@ -32,7 +32,7 @@
 #define BOOST_TEST_MODULE frustum
 #include <boost/test/unit_test.hpp>
 
-static void _testCull( const vmml::frustum_culler< float > fc )
+static void _testCull( const vmml::frustum_culler< float >& fc )
 {
     const vmml::vector< 4, float > sphereIn( 0.f, 0.f, -10.f, 1.f );
     const vmml::vector< 4, float > sphereOut( 0.f, 0.f, 0.f, .5f );

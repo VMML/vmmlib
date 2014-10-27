@@ -401,6 +401,9 @@ const vector< M, T > vector< M, T >::UNIT_Z( 0, 0, 1 );
 #endif
 
 #ifndef VMMLIB_NO_TYPEDEFS
+#  ifdef _MSC_VER
+     typedef UINT8 uint8_t;
+#  endif
 typedef vmml::vector< 2, int > Vector2i; //!< A two-component integer vector
 typedef vmml::vector< 3, int > Vector3i; //!< A three-component integer vector
 typedef vmml::vector< 4, int > Vector4i; //!< A four-component integer vector

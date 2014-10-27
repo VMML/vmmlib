@@ -1,15 +1,13 @@
 # Copyright (c) 2011 Daniel Pfeifer <daniel@pfeifer-mail.de>
+#               2011-2014 Stefan.Eilemann@epfl.ch
 
 cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 project(vmmlib)
 
 set(VERSION_MAJOR 1)
-set(VERSION_MINOR 7)
+set(VERSION_MINOR 8)
 set(VERSION_PATCH 0)
 set(VERSION_ABI 3)
-set(LAST_RELEASE 1.7.0)
-
-set(GITTARGETS_RELEASE_BRANCH minor)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake
                               ${PROJECT_SOURCE_DIR}/CMake/common)

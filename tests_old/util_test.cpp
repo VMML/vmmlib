@@ -118,7 +118,7 @@ bool util_test::run()
     ok = true;
     {
         vector< 4, float > v( -0.5f, 0.0f, 0.5f, 1.0f );
-        mat4f m = mat4f::IDENTITY;
+        Matrix4f m = Matrix4f::IDENTITY;
         apply_rotation( m, M_PI_F, 1.0f, 1.0f, 1.0f );
         v = m * v;
         vector< 4, float > tmp( 0.5f, 0.0f, -0.5f, 1.0f );

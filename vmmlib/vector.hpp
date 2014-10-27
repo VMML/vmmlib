@@ -348,10 +348,7 @@ public:
         return os;
     }
 
-
-
-    // storage
-    VMMLIB_ALIGN( T array[ M ] );
+    T array[ M ];    //!< storage
 
 #ifndef SWIG
     // Vector3 defaults
@@ -401,6 +398,19 @@ template< size_t M, typename T >
 const vector< M, T > vector< M, T >::UNIT_Y( 0, 1, 0 );
 template< size_t M, typename T >
 const vector< M, T > vector< M, T >::UNIT_Z( 0, 0, 1 );
+#endif
+
+#ifndef VMMLIB_NO_TYPEDEFS
+typedef vmml::vector< 2, int > Vector2i; //!< A two-component integer vector
+typedef vmml::vector< 3, int > Vector3i; //!< A three-component integer vector
+typedef vmml::vector< 4, int > Vector4i; //!< A four-component integer vector
+typedef vmml::vector< 3, double >Vector3d; //!< A three-component double vector
+typedef vmml::vector< 4, double >Vector4d; //!< A four-component double vector
+typedef vmml::vector< 2, float > Vector2f; //!< A two-component float vector
+typedef vmml::vector< 3, float > Vector3f; //!< A three-component float vector
+typedef vmml::vector< 4, float > Vector4f; //!< A four-component float vector
+typedef vmml::vector< 3, uint8_t > Vector3ub; //!< A three-component byte vector
+typedef vmml::vector< 4, uint8_t > Vector4ub; //!< A four-component byte vector
 #endif
 
 //

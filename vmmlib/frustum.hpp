@@ -45,7 +45,7 @@ namespace vmml
 template< typename T > class frustum
 {
 public:
-    VMMLIB_ALIGN( T array[6] );
+    T array[6]; //!< left, right, bottom, top, near, far storage
 
     // contructors
     frustum() : array() {} // http://stackoverflow.com/questions/5602030
@@ -124,8 +124,8 @@ public:
 };
 
 #ifndef VMMLIB_NO_TYPEDEFS
-typedef frustum< float >  frustumf;
-typedef frustum< double > frustumd;
+typedef frustum< float >  Frustumf;
+typedef frustum< double > Frustumd;
 #endif
 
 } // namespace vmml

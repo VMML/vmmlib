@@ -473,8 +473,7 @@ public:
     };
 
     // protected:
-    // column_by_column
-    VMMLIB_ALIGN( T array[ M * N ] );
+    T array[ M * N ]; //!< column by column storage
 
     // static members
     static const matrix< M, N, T > IDENTITY;
@@ -484,10 +483,10 @@ public:
 
 
 #ifndef VMMLIB_NO_TYPEDEFS
-typedef matrix< 3, 3, float >   mat3f;
-typedef matrix< 3, 3, double  > mat3d;
-typedef matrix< 4, 4, float >   mat4f;
-typedef matrix< 4, 4, double >  mat4d;
+typedef vmml::matrix< 3, 3, double > Matrix3d; //!< A 3x3 double matrix
+typedef vmml::matrix< 4, 4, double > Matrix4d; //!< A 4x4 double matrix
+typedef vmml::matrix< 3, 3, float >  Matrix3f; //!< A 3x3 float matrix
+typedef vmml::matrix< 4, 4, float >  Matrix4f; //!< A 4x4 float matrix
 #endif
 
 /*

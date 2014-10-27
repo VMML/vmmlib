@@ -31,32 +31,29 @@
 #define BOOST_TEST_MODULE axisAlignedBoundingBox
 #include <boost/test/unit_test.hpp>
 
-typedef vmml::AxisAlignedBoundingBox< float > AABBf;
-typedef vmml::vector< 3, float > Vector3f;
-
 BOOST_AUTO_TEST_CASE(axisAlignedBoundingBox_base)
 {
-    AABBf box1;
+    vmml::AABBf box1;
     BOOST_CHECK_EQUAL( box1.isEmpty(), true );
 
-    const Vector3f p1( 0.f, 0.f, 0.f );
+    const vmml::Vector3f p1( 0.f, 0.f, 0.f );
     box1.merge( p1 );
     BOOST_CHECK_EQUAL( box1.isEmpty(), true );
     BOOST_CHECK_EQUAL( box1.getMin(), p1 );
     BOOST_CHECK_EQUAL( box1.getMax(), p1 );
 
-    const Vector3f p2( 1.f, 1.f, 1.f );
+    const vmml::Vector3f p2( 1.f, 1.f, 1.f );
     box1.merge( p2 );
     BOOST_CHECK_EQUAL( box1.isEmpty(), false );
     BOOST_CHECK_EQUAL( box1.getMin(), p1 );
     BOOST_CHECK_EQUAL( box1.getMax(), p2 );
     BOOST_CHECK_EQUAL( box1.getDimension(), p2 );
 
-    const AABBf box2( -p2, p2 );
+    const vmml::AABBf box2( -p2, p2 );
     BOOST_CHECK_EQUAL( box2.isEmpty(), false );
     BOOST_CHECK_EQUAL( box2.getMin(), -p2 );
     BOOST_CHECK_EQUAL( box2.getMax(), p2 );
-    BOOST_CHECK_EQUAL( box2.getDimension(), Vector3f( 2.f, 2.f, 2.f ));
+    BOOST_CHECK_EQUAL( box2.getDimension(), vmml::Vector3f( 2.f, 2.f, 2.f ));
 
     box1.merge( box2 );
     BOOST_CHECK_EQUAL( box1, box2 );

@@ -45,15 +45,15 @@ namespace vmml
  * semantics on an empty bounding box. set() and merge() operations will define
  * the bounding box correctly.
  */
-template< typename T > class AxisAlignedBoundingBox
+template< typename T > class AABB
 {
 public:
     /** Create an empty bounding box. */
-    AxisAlignedBoundingBox();
-    AxisAlignedBoundingBox( const vector< 3, T >& pMin,
+    AABB();
+    AABB( const vector< 3, T >& pMin,
                             const vector< 3, T >& pMax );
-    AxisAlignedBoundingBox( const vector< 4, T >& sphere );
-    AxisAlignedBoundingBox( T cx, T cy, T cz, T size );
+    AABB( const vector< 4, T >& sphere );
+    AABB( T cx, T cy, T cz, T size );
 
     bool isIn( const vector< 3, T >& pos );
     bool isIn2d( const vector< 3, T >& pos ); // only x and y components are checked
@@ -69,16 +69,16 @@ public:
     vector< 3, T >& getMin();
     vector< 3, T >& getMax();
 
-    void merge( const AxisAlignedBoundingBox< T >& aabb );
+    void merge( const AABB< T >& aabb );
     void merge( const vector< 3, T >& point );
 
     void setEmpty();
     bool isEmpty() const;
 
-    AxisAlignedBoundingBox operator*( const T value ) const;
-    AxisAlignedBoundingBox operator/( const T value ) const;
-    AxisAlignedBoundingBox operator+( const T value ) const;
-    AxisAlignedBoundingBox operator-( const T value ) const;
+    AABB operator*( const T value ) const;
+    AABB operator/( const T value ) const;
+    AABB operator+( const T value ) const;
+    AABB operator-( const T value ) const;
 
     void operator*=( const T value );
     void operator/=( const T value );
@@ -86,42 +86,47 @@ public:
     void operator-=( const T value );
 
     template< class U >
-    bool operator==( const AxisAlignedBoundingBox< U >& other ) const;
+    bool operator==( const AABB< U >& other ) const;
     template< class U >
-    bool operator!=( const AxisAlignedBoundingBox< U >& other ) const;
+    bool operator!=( const AABB< U >& other ) const;
 
     vector< 3, T > getCenter() const;
     vector< 3, T > getDimension() const;
 
-    static AxisAlignedBoundingBox< T > makeUnitBox();
+    static AABB< T > makeUnitBox();
 
 protected:
     vector< 3, T > _min;
     vector< 3, T > _max;
 };
 
+#ifndef VMMLIB_NO_TYPEDEFS
+typedef AABB< float >  AABBf;
+typedef AABB< double > AABBd;
+#endif
+
 template< typename T >
 inline std::ostream& operator << ( std::ostream& os,
-                                   const AxisAlignedBoundingBox< T >& aabb )
+                                   const AABB< T >& aabb )
 {
     return os << aabb.getMin() << " - " << aabb.getMax();
 }
 
 template< typename T >
-AxisAlignedBoundingBox< T >::AxisAlignedBoundingBox()
+AABB< T >::AABB()
     : _min( std::numeric_limits< T >::max( ))
     , _max( -std::numeric_limits< T >::max( ))
 {}
 
 template< typename T >
-AxisAlignedBoundingBox< T >::AxisAlignedBoundingBox( const vector< 3, T >& pMin,
+AABB< T >::AABB( const vector< 3, T >& pMin,
                                                      const vector< 3, T >& pMax)
     : _min( pMin )
     , _max( pMax )
 {}
 
 template< typename T >
-AxisAlignedBoundingBox< T >::AxisAlignedBoundingBox( const vector< 4, T >& sphere )
+AABB< T >::AABB( const vector< 4, T >& sphere )
 {
     _max = _min = sphere.getCenter();
     _max += sphere.getRadius();
@@ -129,7 +134,7 @@ AxisAlignedBoundingBox< T >::AxisAlignedBoundingBox( const vector< 4, T >& spher
 }
 
 template< typename T >
-AxisAlignedBoundingBox< T >::AxisAlignedBoundingBox( T cx, T cy, T cz, T size )
+AABB< T >::AABB( T cx, T cy, T cz, T size )
 {
     _max = _min = vector< 3, T >( cx, cy, cz );
     _max += size;
@@ -137,7 +142,7 @@ AxisAlignedBoundingBox< T >::AxisAlignedBoundingBox( T cx, T cy, T cz, T size )
 }
 
 template< typename T >
-inline bool AxisAlignedBoundingBox< T >::isIn( const vector< 4, T >& sphere )
+inline bool AABB< T >::isIn( const vector< 4, T >& sphere )
 {
     vector< 3, T > sv ( sphere.getCenter() );
     sv += sphere.getRadius();
@@ -150,7 +155,7 @@ inline bool AxisAlignedBoundingBox< T >::isIn( const vector< 4, T >& sphere )
 }
 
 template< typename T >
-inline bool AxisAlignedBoundingBox< T >::isIn( const vector< 3, T >& pos )
+inline bool AABB< T >::isIn( const vector< 3, T >& pos )
 {
     if ( pos.x() > _max.x() || pos.y() > _max.y() || pos.z() > _max.z() ||
          pos.x() < _min.x() || pos.y() < _min.y() || pos.z() < _min.z( ))
@@ -161,7 +166,7 @@ inline bool AxisAlignedBoundingBox< T >::isIn( const vector< 3, T >& pos )
 }
 
 template< typename T >
-inline bool AxisAlignedBoundingBox< T >::isIn2d( const vector< 3, T >& pos )
+inline bool AABB< T >::isIn2d( const vector< 3, T >& pos )
 {
     if ( pos.x() > _max.x() || pos.y() > _max.y() || pos.x() < _min.x() ||
          pos.y() < _min.y( ))
@@ -172,7 +177,7 @@ inline bool AxisAlignedBoundingBox< T >::isIn2d( const vector< 3, T >& pos )
 }
 
 template< typename T >
-inline void AxisAlignedBoundingBox< T >::set( const vector< 3, T >& pMin,
+inline void AABB< T >::set( const vector< 3, T >& pMin,
     const vector< 3, T >& pMax )
 {
     _min = pMin;
@@ -180,7 +185,7 @@ inline void AxisAlignedBoundingBox< T >::set( const vector< 3, T >& pMin,
 }
 
 template< typename T >
-inline void AxisAlignedBoundingBox< T >::set( T cx, T cy, T cz, T size )
+inline void AABB< T >::set( T cx, T cy, T cz, T size )
 {
     vector< 3, T > center( cx, cy, cz );
     _min = center - size;
@@ -188,127 +193,127 @@ inline void AxisAlignedBoundingBox< T >::set( T cx, T cy, T cz, T size )
 }
 
 template< typename T >
-inline void AxisAlignedBoundingBox< T >::setMin( const vector< 3, T >& pMin )
+inline void AABB< T >::setMin( const vector< 3, T >& pMin )
 {
     _min = pMin;
 }
 
 template< typename T >
-inline void AxisAlignedBoundingBox< T >::setMax( const vector< 3, T >& pMax )
+inline void AABB< T >::setMax( const vector< 3, T >& pMax )
 {
     _max = pMax;
 }
 
 template< typename T >
-inline const vector< 3, T >& AxisAlignedBoundingBox< T >::getMin() const
+inline const vector< 3, T >& AABB< T >::getMin() const
 {
     return _min;
 }
 
 template< typename T >
-inline const vector< 3, T >& AxisAlignedBoundingBox< T >::getMax() const
+inline const vector< 3, T >& AABB< T >::getMax() const
 {
     return _max;
 }
 
-template< typename T > inline vector< 3, T >& AxisAlignedBoundingBox< T >::getMin()
+template< typename T > inline vector< 3, T >& AABB< T >::getMin()
 {
     return _min;
 }
 
-template< typename T > inline vector< 3, T >& AxisAlignedBoundingBox< T >::getMax()
+template< typename T > inline vector< 3, T >& AABB< T >::getMax()
 {
     return _max;
 }
 
-template< typename T > AxisAlignedBoundingBox< T >
-AxisAlignedBoundingBox< T >::operator*( const T value ) const
+template< typename T > AABB< T >
+AABB< T >::operator*( const T value ) const
 {
-    AxisAlignedBoundingBox result = *this;
+    AABB result = *this;
     result *= value;
     return result;
 }
 
-template< typename T > AxisAlignedBoundingBox< T >
-AxisAlignedBoundingBox< T >::operator/( const T value ) const
+template< typename T > AABB< T >
+AABB< T >::operator/( const T value ) const
 {
-    AxisAlignedBoundingBox result = *this;
+    AABB result = *this;
     result /= value;
     return result;
 }
 
-template< typename T > AxisAlignedBoundingBox< T >
-AxisAlignedBoundingBox< T >::operator+( const T value ) const
+template< typename T > AABB< T >
+AABB< T >::operator+( const T value ) const
 {
-    AxisAlignedBoundingBox result = *this;
+    AABB result = *this;
     result += value;
     return result;
 }
 
-template< typename T > AxisAlignedBoundingBox< T >
-AxisAlignedBoundingBox< T >::operator-( const T value ) const
+template< typename T > AABB< T >
+AABB< T >::operator-( const T value ) const
 {
-    AxisAlignedBoundingBox result = *this;
+    AABB result = *this;
     result -= value;
     return result;
 }
 
 template< typename T >
-void AxisAlignedBoundingBox< T >::operator*=( const T value )
+void AABB< T >::operator*=( const T value )
 {
     _min *= value;
     _max *= value;
 }
 
 template< typename T >
-void AxisAlignedBoundingBox< T >::operator/=( const T value )
+void AABB< T >::operator/=( const T value )
 {
     _min /= value;
     _max /= value;
 }
 
 template< typename T >
-void AxisAlignedBoundingBox< T >::operator+=( const T value )
+void AABB< T >::operator+=( const T value )
 {
     _min += value;
     _max += value;
 }
 
 template< typename T >
-void AxisAlignedBoundingBox< T >::operator-=( const T value )
+void AABB< T >::operator-=( const T value )
 {
     _min -= value;
     _max -= value;
 }
 
 template< typename T > template< class U > bool
-AxisAlignedBoundingBox< T >::operator==( const AxisAlignedBoundingBox< U >& other )
+AABB< T >::operator==( const AABB< U >& other )
     const
 {
     return _min == other._min && _max == other._max;
 }
 
 template< typename T > template< class U > bool
-AxisAlignedBoundingBox< T >::operator!=( const AxisAlignedBoundingBox< U >& other )
+AABB< T >::operator!=( const AABB< U >& other )
     const
 {
     return _min != other._min || _max != other._max;
 }
 
 template< typename T >
-vector< 3, T > AxisAlignedBoundingBox< T >::getCenter() const
+vector< 3, T > AABB< T >::getCenter() const
 {
     return _min + ( ( _max - _min ) * 0.5f );
 }
 
 template< typename T >
-vector< 3, T > AxisAlignedBoundingBox< T >::getDimension() const
+vector< 3, T > AABB< T >::getDimension() const
 {
     return _max - _min;
 }
 
 template< typename T >
-void AxisAlignedBoundingBox< T >::merge( const AxisAlignedBoundingBox<T>& aabb )
+void AABB< T >::merge( const AABB<T>& aabb )
 {
     const vector< 3, T >& min = aabb.getMin();
     const vector< 3, T >& max = aabb.getMax();
@@ -329,7 +334,7 @@ void AxisAlignedBoundingBox< T >::merge( const AxisAlignedBoundingBox<T>& aabb )
 }
 
 template< typename T >
-void AxisAlignedBoundingBox< T >::merge( const vector< 3, T >& point )
+void AABB< T >::merge( const vector< 3, T >& point )
 {
     if ( point.x() < _min.x() )
         _min.x() = point.x();
@@ -347,23 +352,23 @@ void AxisAlignedBoundingBox< T >::merge( const vector< 3, T >& point )
 }
 
 template< typename T >inline
-void AxisAlignedBoundingBox< T >::setEmpty()
+void AABB< T >::setEmpty()
 {
     _min = std::numeric_limits< T >::max();
     _max = -std::numeric_limits< T >::max();
 }
 
 
-template< typename T > inline bool AxisAlignedBoundingBox< T >::isEmpty() const
+template< typename T > inline bool AABB< T >::isEmpty() const
 {
     return ( _min.x() >=  _max.x() || _min.y() >=  _max.y() ||
              _min.z() >=  _max.x( ));
 }
 
 template< typename T >
-AxisAlignedBoundingBox< T > AxisAlignedBoundingBox< T >::makeUnitBox()
+AABB< T > AABB< T >::makeUnitBox()
 {
-    return AxisAlignedBoundingBox( vector< 3, T >::ZERO, vector< 3, T >::ONE );
+    return AABB( vector< 3, T >::ZERO, vector< 3, T >::ONE );
 }
 
 }; //namespace vmml

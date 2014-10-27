@@ -281,7 +281,7 @@ struct llsq_params_xgesv
             << "n "         << p.n
             << " nrhs "     << p.nrhs
             << " lda "      << p.lda
-            << " ldb "      << p.ldvt
+            << " ldb "      << p.ldb
             << " info "     << p.info
             << std::endl;
         return os;

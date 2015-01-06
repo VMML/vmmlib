@@ -352,6 +352,15 @@ BOOST_AUTO_TEST_CASE(vector_cross)
     BOOST_CHECK( index == 1 && ui == 5 );
 }
 
+BOOST_AUTO_TEST_CASE(vector_product)
+{
+    const vector< 3, float > v0( 1, 2, 3 );
+    BOOST_CHECK_EQUAL( v0.product(), 6 );
+
+    const vector< 3, int > v1( -6, 5, -4 );
+    BOOST_CHECK_EQUAL( v1.product(), 120 );
+}
+
 BOOST_AUTO_TEST_CASE(vector_tbd1)
 {
     vector< 4, float > v1( -1.0f, 3.0f, -99.0f, -0.9f );

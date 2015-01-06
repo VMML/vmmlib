@@ -241,8 +241,11 @@ public:
     inline T length() const;
     inline T squared_length() const;
 
-    inline T distance( const vector& other_vector_ ) const;
-    inline T squared_distance( const vector& other_vector_ ) const;
+    inline T distance( const vector& other ) const;
+    inline T squared_distance( const vector& other ) const;
+
+    /** @return the product of all elements of this vector */
+    T product() const;
 
     template< typename TT >
     vector< 3, T > rotate( const T theta, vector< M, TT > axis,
@@ -580,9 +583,7 @@ vector< M, T >::vector( const vector< M, U >& source_ )
 template< size_t M, typename T > void vector< M, T >::set( T _a )
 {
     for( iterator it = begin(), it_end = end(); it != it_end; ++it )
-    {
         *it = _a;
-    }
 }
 
 
@@ -738,9 +739,7 @@ vector< M, T >::operator*( const vector< M, T >& other ) const
 {
     vector< M, T > result;
     for( size_t index = 0; index < M; ++index )
-    {
         result.at( index ) = at( index ) * other.at( index );
-    }
     return result;
 }
 
@@ -752,9 +751,7 @@ vector< M, T >::operator/( const vector< M, T >& other ) const
 {
     vector< M, T > result;
     for( size_t index = 0; index < M; ++index )
-    {
         result.at( index ) = at( index ) / other.at( index );
-    }
     return result;
 }
 
@@ -766,9 +763,7 @@ vector< M, T >::operator+( const vector< M, T >& other ) const
 {
     vector< M, T > result;
     for( size_t index = 0; index < M; ++index )
-    {
         result.at( index ) = at( index ) + other.at( index );
-    }
     return result;
 }
 
@@ -780,9 +775,7 @@ vector< M, T >::operator-( const vector< M, T >& other ) const
 {
     vector< M, T > result;
     for( size_t index = 0; index < M; ++index )
-    {
         result.at( index ) = at( index ) - other.at( index );
-    }
     return result;
 }
 
@@ -794,9 +787,7 @@ void
 vector< M, T >::operator*=( const vector< M, T >& other )
 {
     for( size_t index = 0; index < M; ++index )
-    {
         at( index ) *= other.at( index );
-    }
 }
 
 
@@ -806,9 +797,7 @@ void
 vector< M, T >::operator/=( const vector< M, T >& other )
 {
     for( size_t index = 0; index < M; ++index )
-    {
         at( index ) /= other.at( index );
-    }
 }
 
 
@@ -818,9 +807,7 @@ void
 vector< M, T >::operator+=( const vector< M, T >& other )
 {
     for( size_t index = 0; index < M; ++index )
-    {
         at( index ) += other.at( index );
-    }
 }
 
 
@@ -830,9 +817,7 @@ void
 vector< M, T >::operator-=( const vector< M, T >& other )
 {
     for( size_t index = 0; index < M; ++index )
-    {
         at( index ) -= other.at( index );
-    }
 }
 
 
@@ -843,9 +828,7 @@ vector< M, T >::operator*( const T other ) const
 {
     vector< M, T > result;
     for( size_t index = 0; index < M; ++index )
-    {
         result.at( index ) = at( index ) * other;
-    }
     return result;
 }
 
@@ -857,9 +840,7 @@ vector< M, T >::operator/( const T other ) const
 {
     vector< M, T > result;
     for( size_t index = 0; index < M; ++index )
-    {
         result.at( index ) = at( index ) / other;
-    }
     return result;
 }
 
@@ -871,9 +852,7 @@ vector< M, T >::operator+( const T other ) const
 {
     vector< M, T > result;
     for( size_t index = 0; index < M; ++index )
-    {
         result.at( index ) = at( index ) + other;
-    }
     return result;
 }
 
@@ -885,9 +864,7 @@ vector< M, T >::operator-( const T other ) const
 {
     vector< M, T > result;
     for( size_t index = 0; index < M; ++index )
-    {
         result.at( index ) = at( index ) - other;
-    }
     return result;
 }
 
@@ -899,9 +876,7 @@ void
 vector< M, T >::operator*=( const T other )
 {
     for( size_t index = 0; index < M; ++index )
-    {
         at( index ) *= other;
-    }
 }
 
 
@@ -911,9 +886,7 @@ void
 vector< M, T >::operator/=( const T other )
 {
     for( size_t index = 0; index < M; ++index )
-    {
         at( index ) /= other;
-    }
 }
 
 
@@ -923,9 +896,7 @@ void
 vector< M, T >::operator+=( const T other )
 {
     for( size_t index = 0; index < M; ++index )
-    {
         at( index ) += other;
-    }
 }
 
 
@@ -935,9 +906,7 @@ void
 vector< M, T >::operator-=( const T other )
 {
     for( size_t index = 0; index < M; ++index )
-    {
         at( index ) -= other;
-    }
 }
 
 
@@ -957,9 +926,7 @@ const vector< M, T >&
 vector< M, T >::negate()
 {
     for( size_t index = 0; index < M; ++index )
-    {
         array[ index ] = -array[ index ];
-    }
     return *this;
 }
 
@@ -1177,31 +1144,33 @@ inline T vector< M, T >::squared_length() const
 
 template< size_t M, typename T >
 inline T
-vector< M, T >::distance( const vector< M, T >& other_vector_ ) const
+vector< M, T >::distance( const vector< M, T >& other ) const
 {
-    return std::sqrt( squared_distance( other_vector_ ) );
+    return std::sqrt( squared_distance( other ) );
 }
 
 
 
 template< size_t M, typename T >
-inline T
-vector< M, T >::squared_distance( const vector< M, T >& other_vector_ ) const
+inline T vector< M, T >::squared_distance( const vector< M, T >& other ) const
 {
     vector< M, T > tmp( *this );
-    tmp -= other_vector_;
+    tmp -= other;
     return tmp.squared_length();
 }
 
-
+template< size_t M, typename T > inline T vector< M, T >::product() const
+{
+    T result = at( 0 );
+    for( size_t i = 1; i < M; ++i )
+        result *= at( i );
+    return result;
+}
 
 template< size_t M, typename T >
-void
-vector< M, T >::compute_normal(
-    const vector< M, T >& aa,
-    const vector< M, T >& bb,
-    const vector< M, T >& cc
-    )
+void vector< M, T >::compute_normal( const vector< M, T >& aa,
+                                     const vector< M, T >& bb,
+                                     const vector< M, T >& cc )
 {
     vector< M, T > u,v;
     // right hand system, CCW triangle
@@ -1354,15 +1323,12 @@ bool vector< M, T >::operator!=( const vector< M, T >& other ) const
 
 template< size_t M, typename T >
 bool
-vector< M, T >::
-equals( const vector< M, T >& other, T tolerance ) const
+vector< M, T >::equals( const vector< M, T >& other, T tolerance ) const
 {
-    bool is_ok = true;
-    for( size_t index = 0; is_ok && index < M; ++index )
-    {
-        is_ok = fabs( at( index ) - other( index ) ) < tolerance;
-    }
-    return is_ok;
+    for( size_t index = 0; index < M; ++index )
+        if( fabs( at( index ) - other( index ) ) >= tolerance )
+            return false;
+    return true;
 
 }
 
@@ -1401,9 +1367,7 @@ vector< M, T >::operator=( const vector< N, T >& source_ )
     const T w_reci = static_cast< T >( 1.0 ) / source_( M );
     iterator it = begin(), it_end = end();
     for( size_t index = 0; it != it_end; ++it, ++index )
-    {
         *it = source_( index ) * w_reci;
-    }
     return 0;
 }
 
@@ -1421,9 +1385,7 @@ template< size_t M, typename T >
 T vector< M, T >::operator=( T filler_value )
 {
     for( size_t index = 0; index < M; ++index )
-    {
         at( index ) = filler_value;
-    }
     return filler_value;
 }
 
@@ -1447,9 +1409,7 @@ void vector< M, T >::operator=( const vector< M, U >& source_ )
     typedef typename vector< M, U >::const_iterator u_c_iter;
     u_c_iter it = source_.begin(), it_end = source_.end();
     for( iterator my_it = begin(); it != it_end; ++it, ++my_it )
-    {
         *my_it = static_cast< T >( *it );
-    }
 }
 
 
@@ -1462,10 +1422,7 @@ vector< M, T >::iter_set( input_iterator_t begin_, input_iterator_t end_ )
     input_iterator_t in_it = begin_;
     iterator it = begin(), it_end = end();
     for( ; it != it_end && in_it != end_; ++it, ++in_it )
-    {
         (*it) = static_cast< T >( *in_it );
-    }
-
 }
 
 template< size_t M, typename T >

@@ -407,16 +407,19 @@ const vector< M, T > vector< M, T >::UNIT_Z( 0, 0, 1 );
 #  ifdef _MSC_VER
      typedef UINT8 uint8_t;
 #  endif
-typedef vmml::vector< 2, int > Vector2i; //!< A two-component integer vector
-typedef vmml::vector< 3, int > Vector3i; //!< A three-component integer vector
-typedef vmml::vector< 4, int > Vector4i; //!< A four-component integer vector
-typedef vmml::vector< 3, double >Vector3d; //!< A three-component double vector
-typedef vmml::vector< 4, double >Vector4d; //!< A four-component double vector
-typedef vmml::vector< 2, float > Vector2f; //!< A two-component float vector
-typedef vmml::vector< 3, float > Vector3f; //!< A three-component float vector
-typedef vmml::vector< 4, float > Vector4f; //!< A four-component float vector
-typedef vmml::vector< 3, uint8_t > Vector3ub; //!< A three-component byte vector
-typedef vmml::vector< 4, uint8_t > Vector4ub; //!< A four-component byte vector
+typedef vmml::vector< 2, int > Vector2i;
+typedef vmml::vector< 3, int > Vector3i;
+typedef vmml::vector< 4, int > Vector4i;
+typedef vmml::vector< 2, unsigned > Vector2ui;
+typedef vmml::vector< 3, unsigned > Vector3ui;
+typedef vmml::vector< 4, unsigned > Vector4ui;
+typedef vmml::vector< 3, double > Vector3d;
+typedef vmml::vector< 4, double > Vector4d;
+typedef vmml::vector< 2, float > Vector2f;
+typedef vmml::vector< 3, float > Vector3f;
+typedef vmml::vector< 4, float > Vector4f;
+typedef vmml::vector< 3, uint8_t > Vector3ub;
+typedef vmml::vector< 4, uint8_t > Vector4ub;
 #endif
 
 //

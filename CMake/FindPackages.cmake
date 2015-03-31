@@ -52,30 +52,10 @@ macro(COMMON_PACKAGE Name)
   endif()
 endmacro()
 
-common_package(OpenMP    )
 common_package(Boost 1.41.0   COMPONENTS unit_test_framework)
 
 if(EXISTS ${PROJECT_SOURCE_DIR}/CMake/FindPackagesPost.cmake)
   include(${PROJECT_SOURCE_DIR}/CMake/FindPackagesPost.cmake)
-endif()
-
-if(OPENMP_FOUND)
-  set(OpenMP_name OPENMP)
-  set(OpenMP_FOUND TRUE)
-elseif(OpenMP_FOUND)
-  set(OpenMP_name OpenMP)
-  set(OPENMP_FOUND TRUE)
-endif()
-if(OpenMP_name)
-  list(APPEND FIND_PACKAGES_DEFINES VMMLIB_USE_OPENMP)
-  if(NOT COMMON_LIBRARY_TYPE MATCHES "SHARED")
-    list(APPEND VMMLIB_DEPENDENT_LIBRARIES OpenMP)
-  endif()
-  set(FIND_PACKAGES_FOUND "${FIND_PACKAGES_FOUND} OpenMP")
-  link_directories(${${OpenMP_name}_LIBRARY_DIRS})
-  if(NOT "${${OpenMP_name}_INCLUDE_DIRS}" MATCHES "-NOTFOUND")
-    include_directories(${${OpenMP_name}_INCLUDE_DIRS})
-  endif()
 endif()
 
 if(BOOST_FOUND)
@@ -99,7 +79,7 @@ endif()
 
 set(VMMLIB_BUILD_DEBS autoconf;automake;cmake;doxygen;git;git-review;pkg-config;subversion)
 
-set(VMMLIB_DEPENDS OpenMP;Boost)
+set(VMMLIB_DEPENDS Boost)
 
 # Write defines.h and options.cmake
 if(NOT PROJECT_INCLUDE_NAME)

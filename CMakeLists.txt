@@ -10,7 +10,7 @@ set(VERSION_PATCH 0)
 set(VERSION_ABI 3)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake
-                              ${PROJECT_SOURCE_DIR}/CMake/common)
+                              ${CMAKE_SOURCE_DIR}/CMake/common)
 include(GitExternal)
 include(Common)
 include(FindPackages)

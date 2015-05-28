@@ -8,7 +8,7 @@
 #    update target to bump the tag to the master revision by
 #    recreating .gitexternals.
 #  * Provides function
-#      git_external(<directory> <giturl> <gittag> [NO_UPDATE, VERBOSE]
+#      git_external(<directory> <giturl> <gittag> [VERBOSE]
 #        [RESET <files>])
 #    which will check out directory in CMAKE_SOURCE_DIR (if relative)
 #    or in the given absolute path using the given repository and tag
@@ -29,13 +29,15 @@
 #    repositories, pointing to github.com/<user>/<project>. Defaults to user
 #    name or GIT_EXTERNAL_USER environment variable.
 
-find_package(Git)
+if(NOT GIT_FOUND)
+  find_package(Git QUIET)
+endif()
 if(NOT GIT_EXECUTABLE)
   return()
 endif()
 
 include(CMakeParseArguments)
-option(GIT_EXTERNAL_DISABLE_UPDATE "Disable update of cloned repositories" ON)
+option(GIT_EXTERNAL_DISABLE_UPDATE "Disable update of cloned repositories" OFF)
 option(GIT_EXTERNAL_VERBOSE "Print git commands as they are executed" OFF)
 
 set(GIT_EXTERNAL_USER $ENV{GIT_EXTERNAL_USER})
@@ -81,7 +83,7 @@ function(GIT_EXTERNAL DIR REPO TAG)
   if(NOT EXISTS "${DIR}")
     message(STATUS "git clone ${REPO} ${DIR}")
     execute_process(
-      COMMAND "${GIT_EXECUTABLE}" clone "${REPO}" "${DIR}"
+      COMMAND "${GIT_EXECUTABLE}" clone --recursive "${REPO}" "${DIR}"
       RESULT_VARIABLE nok ERROR_VARIABLE error
       WORKING_DIRECTORY "${GIT_EXTERNAL_DIR}")
     if(nok)
@@ -259,6 +261,11 @@ endif()")
             WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/${DIR}")
           add_dependencies(flatten_git_external
             flatten_git_external_${GIT_EXTERNAL_NAME})
+
+          foreach(_target flatten_git_external_${GIT_EXTERNAL_NAME} flatten_git_external update_git_external_${GIT_EXTERNAL_NAME} ${GIT_EXTERNAL_TARGET} update_git_external update)
+            set_target_properties(${_target} PROPERTIES
+              EXCLUDE_FROM_DEFAULT_BUILD ON FOLDER "git")
+          endforeach()
         endif()
       endif()
     endif()

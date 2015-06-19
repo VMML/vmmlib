@@ -112,15 +112,24 @@ inline std::ostream& operator << ( std::ostream& os,
     return os << aabb.getMin() << " - " << aabb.getMax();
 }
 
-template< typename T >
-AABB< T >::AABB()
+template< typename T > AABB< T >::AABB()
     : _min( std::numeric_limits< T >::max( ))
-    , _max( -std::numeric_limits< T >::max( ))
+    , _max( std::numeric_limits< T >::min( ))
+{}
+
+template<> inline AABB< float >::AABB()
+    : _min( std::numeric_limits< float >::max( ))
+    , _max( -std::numeric_limits< float >::max( ))
+{}
+
+template<> inline AABB< double >::AABB()
+    : _min( std::numeric_limits< double >::max( ))
+    , _max( -std::numeric_limits< double >::max( ))
 {}
 
 template< typename T >
 AABB< T >::AABB( const vector< 3, T >& pMin,
-                                                     const vector< 3, T >& pMax)
+                 const vector< 3, T >& pMax)
     : _min( pMin )
     , _max( pMax )
 {}
@@ -178,7 +187,7 @@ inline bool AABB< T >::isIn2d( const vector< 3, T >& pos )
 
 template< typename T >
 inline void AABB< T >::set( const vector< 3, T >& pMin,
-    const vector< 3, T >& pMax )
+                            const vector< 3, T >& pMax )
 {
     _min = pMin;
     _max = pMax;

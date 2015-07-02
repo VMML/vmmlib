@@ -4,3 +4,4 @@ Makefile
 GNUmakefile
 /nbproject/private/
 CMake/common
+build

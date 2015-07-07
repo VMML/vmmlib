@@ -239,8 +239,10 @@ public:
 
     void read_csv_file( const std::string& dir_, const std::string& filename_ );
     void write_csv_file( const std::string& dir_, const std::string& filename_ ) const;
-    void write_to_raw( const std::string& dir_, const std::string& filename_ ) const;
     void read_from_raw( const std::string& dir_, const std::string& filename_ ) ;
+    void write_to_raw( const std::string& dir_, const std::string& filename_ ) const;
+    void read_from_stream( std::istream& is );
+    void write_to_stream( std::ostream& os ) const;
 
     template< typename TT >
         void quantize_to( Matrix< M, N, TT >& quantized_, const T& min_value, const T& max_value ) const;
@@ -2736,6 +2738,32 @@ Matrix< M, N, T >::read_csv_file( const std::string& dir_, const std::string& fi
         std::cout << "no file open" << std::endl;
     }
 
+}
+
+template< size_t M, size_t N, typename T >
+void
+Matrix< M, N, T >::read_from_stream( std::istream& is )
+{
+    for( size_t row_index = 0; row_index < M; ++row_index )
+    {
+        for( size_t col_index = 0; col_index < N; ++col_index )
+        {
+            is >> at( row_index, col_index );
+        }
+    }
+}
+
+template< size_t M, size_t N, typename T >
+void
+Matrix< M, N, T >::write_to_stream( std::ostream& os ) const
+{
+     for( size_t row_index = 0; row_index < M; ++row_index )
+     {
+         for( size_t col_index = 0; col_index < N; ++col_index )
+         {
+             os << at( row_index, col_index ) << " ";
+         }
+     }
 }
 
 

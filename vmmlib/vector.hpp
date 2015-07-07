@@ -335,6 +335,9 @@ public:
     // test each component of the vector for isnan and isinf
     //  inline bool is_valid() const; -> moved to class validator
 
+    void read_from_stream( std::istream& is );
+    void write_to_stream( std::ostream& os ) const;
+
     friend std::ostream& operator<< ( std::ostream& os, const Vector& vector_ )
     {
         const std::ios::fmtflags flags = os.flags();
@@ -1731,6 +1734,25 @@ Vector< M, T >::nnz() const
     return counter;
 }
 
+template< size_t M, typename T >
+void
+Vector< M, T >::read_from_stream( std::istream& is )
+{
+    for( size_t i = 0; i < M; ++i )
+    {
+        is >> at( i );
+    }
+}
+
+template< size_t M, typename T >
+void
+Vector< M, T >::write_to_stream( std::ostream& os ) const
+{
+    for( size_t i = 0; i < M; ++i )
+    {
+         os << at( i ) << " ";
+    }
+}
 
 template< size_t M, typename T >
 double

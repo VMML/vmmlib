@@ -495,7 +495,7 @@ typedef Matrix< 3, 3, float > mat3f;
 typedef Matrix< 3, 3, double > mat3d;
 typedef Matrix< 4, 4, float > mat4f;
 typedef Matrix< 4, 4, double > mat4d;
-template< size_t M, size_t N, typename T >
+template< size_t M, size_t N, typename T = float >
 using matrix = Matrix<M, N, T>;
 #endif
 

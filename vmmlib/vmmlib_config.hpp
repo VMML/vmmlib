@@ -29,8 +29,8 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-#ifndef VMML__VMMLIB_CONFIG__HPP
-#define VMML__VMMLIB_CONFIG__HPP
+#ifndef VMMLIB__VMMLIB_CONFIG__HPP
+#define VMMLIB__VMMLIB_CONFIG__HPP
 
 // #define VMMLIB_NO_SFINAE
 
@@ -55,5 +55,11 @@ typedef SSIZE_T ssize_t;
 #  endif
 #  define VMMLIB_THROW_EXCEPTIONS
 #endif
+
+// Define VMMLIB_NO_TYPEDEFS to prevent creating typedefs for common types (e.g. Vector2i)
+//#define VMMLIB_NO_TYPEDEFS
+
+// Define VMMLIB_OLD_TYPEDEFS to keep using the old lowercase names (backwards compatibility)
+#define VMMLIB_OLD_TYPEDEFS
 
 #endif

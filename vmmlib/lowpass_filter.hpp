@@ -36,8 +36,8 @@
  * implement multiplication by a scalar float for smoothing
  */
 
-#ifndef VMML__LOWPASSFILTER__HPP
-#define VMML__LOWPASSFILTER__HPP
+#ifndef VMMLIB__LOWPASSFILTER__HPP
+#define VMMLIB__LOWPASSFILTER__HPP
 
 #include <deque>
 
@@ -112,7 +112,7 @@ void LowpassFilter< M, T>::set_smooth_factor( const float& f )
     _smooth_factor = f;
 }
 
-#ifdef VMMLIB_BACKWARD_TYPEDEFS
+#ifdef VMMLIB_OLD_TYPEDEFS
 template< typename T >
 using lowpass_filter = LowpassFilter<T>;
 #endif

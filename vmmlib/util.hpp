@@ -30,8 +30,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef VMML__UTIL__HPP
-#define VMML__UTIL__HPP
+#ifndef VMMLIB__UTIL__HPP
+#define VMMLIB__UTIL__HPP
 
 #include "vector.hpp"
 #include "matrix.hpp"

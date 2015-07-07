@@ -37,8 +37,8 @@
  * (e.g. sphere)
  */
 
-#ifndef VMML__INTERSECTION__HPP
-#define VMML__INTERSECTION__HPP
+#ifndef VMMLIB__INTERSECTION__HPP
+#define VMMLIB__INTERSECTION__HPP
 
 #include <vmmlib/vector.hpp>
 
@@ -115,7 +115,7 @@ Intersection< T >::test_sphere( const vec4& sphere, T& t ) const
     return true;
 }
 
-#ifdef VMMLIB_BACKWARD_TYPEDEFS
+#ifdef VMMLIB_OLD_TYPEDEFS
 template< typename T >
 using intersection = Intersection<T>;
 #endif

@@ -30,8 +30,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef VMML__FRUSTUM_CULLER__HPP
-#define VMML__FRUSTUM_CULLER__HPP
+#ifndef VMMLIB__FRUSTUM_CULLER__HPP
+#define VMMLIB__FRUSTUM_CULLER__HPP
 
 #include <vmmlib/vector.hpp>
 #include <vmmlib/matrix.hpp>
@@ -110,9 +110,13 @@ private:
 
 
 #ifndef VMMLIB_NO_TYPEDEFS
+typedef FrustumCuller< float >  FrustumCullerf;
+typedef FrustumCuller< double > FrustumCullerd;
 
-typedef FrustumCuller< float >  frustum_cullerf;
-typedef FrustumCuller< double > frustum_cullerd;
+#ifdef VMMLIB_OLD_TYPEDEFS
+typedef FrustumCullerf frustum_cullerf;
+typedef FrustumCullerd frustum_cullerd;
+#endif
 
 #endif
 

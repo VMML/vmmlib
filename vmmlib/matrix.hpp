@@ -29,8 +29,8 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-#ifndef VMML__MATRIX__HPP
-#define VMML__MATRIX__HPP
+#ifndef VMMLIB__MATRIX__HPP
+#define VMMLIB__MATRIX__HPP
 
 #include <vmmlib/vmmlib_config.hpp>
 
@@ -489,15 +489,16 @@ typedef vmml::Matrix< 3, 3, double > Matrix3d; //!< A 3x3 double matrix
 typedef vmml::Matrix< 4, 4, double > Matrix4d; //!< A 4x4 double matrix
 typedef vmml::Matrix< 3, 3, float >  Matrix3f; //!< A 3x3 float matrix
 typedef vmml::Matrix< 4, 4, float >  Matrix4f; //!< A 4x4 float matrix
-#endif
 
-#ifdef VMMLIB_BACKWARD_TYPEDEFS
+#ifdef VMMLIB_OLD_TYPEDEFS
 typedef Matrix< 3, 3, float > mat3f;
 typedef Matrix< 3, 3, double > mat3d;
 typedef Matrix< 4, 4, float > mat4f;
 typedef Matrix< 4, 4, double > mat4d;
 template< size_t M, size_t N, typename T >
 using matrix = Matrix<M, N, T>;
+#endif
+
 #endif
 
 /*

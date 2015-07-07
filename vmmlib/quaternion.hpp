@@ -30,8 +30,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef VMML__QUATERNION__HPP
-#define VMML__QUATERNION__HPP
+#ifndef VMMLIB__QUATERNION__HPP
+#define VMMLIB__QUATERNION__HPP
 
 #include <vmmlib/vector.hpp>
 #include <vmmlib/matrix.hpp>
@@ -209,13 +209,14 @@ public:
 #ifndef VMMLIB_NO_TYPEDEFS
 typedef Quaternion< float >  Quaternionf;
 typedef Quaternion< double > Quaterniond;
-#endif
 
-#ifdef VMMLIB_BACKWARD_TYPEDEFS
+#ifdef VMMLIB_OLD_TYPEDEFS
 typedef Quaternion< float >  quaternionf;
 typedef Quaternion< double > quaterniond;
 template< typename T >
 using quaternion = Quaternion<T>;
+#endif
+
 #endif
 
 // - implementation - //

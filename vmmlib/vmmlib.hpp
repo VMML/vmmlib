@@ -33,8 +33,8 @@
  * and Andrew Willmott's VL.
  */
 
-#ifndef VMML__VMMLIB__HPP
-#define VMML__VMMLIB__HPP
+#ifndef VMMLIB__VMMLIB__HPP
+#define VMMLIB__VMMLIB__HPP
 
 #include <vmmlib/aabb.hpp>
 #include <vmmlib/frustum.hpp>

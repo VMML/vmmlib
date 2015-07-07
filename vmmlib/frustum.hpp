@@ -30,8 +30,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef VMML__FRUSTUM__HPP
-#define VMML__FRUSTUM__HPP
+#ifndef VMMLIB__FRUSTUM__HPP
+#define VMMLIB__FRUSTUM__HPP
 
 #include <vmmlib/vmmlib_config.hpp>
 #include <vmmlib/matrix.hpp>
@@ -126,13 +126,14 @@ public:
 #ifndef VMMLIB_NO_TYPEDEFS
 typedef Frustum< float >  Frustumf;
 typedef Frustum< double > Frustumd;
-#endif
 
-#ifdef VMMLIB_BACKWARD_TYPEDEFS
+#ifdef VMMLIB_OLD_TYPEDEFS
 typedef Frustum< float > frustumf;
 typedef Frustum< double > frustumd;
 template< typename T >
 using frustum = Frustum<T>;
+#endif
+
 #endif
 
 } // namespace vmml

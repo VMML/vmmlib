@@ -30,8 +30,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef VMML__VECTOR__HPP
-#define VMML__VECTOR__HPP
+#ifndef VMMLIB__VECTOR__HPP
+#define VMMLIB__VECTOR__HPP
 
 #include <vmmlib/vmmlib_config.hpp>
 #include <vmmlib/math.hpp>
@@ -420,9 +420,8 @@ typedef vmml::Vector< 3, float > Vector3f;
 typedef vmml::Vector< 4, float > Vector4f;
 typedef vmml::Vector< 3, uint8_t > Vector3ub;
 typedef vmml::Vector< 4, uint8_t > Vector4ub;
-#endif
 
-#ifdef VMMLIB_BACKWARD_TYPEDEFS
+#ifdef VMMLIB_OLD_TYPEDEFS
 typedef Vector< 2, float > vec2f;
 typedef Vector< 2, double > vec2d;
 typedef Vector< 3, float > vec3f;
@@ -431,6 +430,8 @@ typedef Vector< 4, float > vec4f;
 typedef Vector< 4, double > vec4d;
 template< size_t M, typename T >
 using vector = Vector<M, T>;
+#endif
+
 #endif
 
 //

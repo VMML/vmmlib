@@ -1,5 +1,5 @@
-#ifndef __VMML__VECTOR_TEST__HPP__
-#define __VMML__VECTOR_TEST__HPP__
+#ifndef VMMLIB__VECTOR_TEST__HPP
+#define VMMLIB__VECTOR_TEST__HPP
 
 #include "unit_test.hpp"
 

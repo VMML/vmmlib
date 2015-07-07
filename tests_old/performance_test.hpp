@@ -1,5 +1,5 @@
-#ifndef __VMML__PERFORMANCE_TEST__HPP__
-#define __VMML__PERFORMANCE_TEST__HPP__
+#ifndef VMMLIB__PERFORMANCE_TEST__HPP
+#define VMMLIB__PERFORMANCE_TEST__HPP
 
 #include "timer.hpp"
 #include <sstream>

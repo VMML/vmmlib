@@ -1,5 +1,5 @@
-#ifndef __VMML__TIMER__HPP__
-#define __VMML__TIMER__HPP__
+#ifndef VMMLIB__TIMER__HPP
+#define VMMLIB__TIMER__HPP
 
 #ifdef __APPLE__
 #include <mach/mach.h>

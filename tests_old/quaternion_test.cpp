@@ -8,14 +8,14 @@
 using namespace std;
 namespace vmml
 {
-typedef quaternion< float > quaternionf;
-typedef quaternion< double > quaterniond;
+typedef Quaternion< float > Quaternionf;
+typedef Quaternion< double > Quaterniond;
 
 
 bool quaternion_test::run()
 {
     bool global_ok = true;
-    quaternion< double > q;
+    Quaternion< double > q;
     double QData[] = { 1., 6., 3., 8.  };
     for( size_t index = 0; index < 4; ++index )
     {
@@ -25,7 +25,7 @@ bool quaternion_test::run()
     // operator==/!= tests
     {
         bool ok = true;
-        quaterniond qq, qqq;
+        Quaterniond qq, qqq;
         qq.array[ 0 ] = qqq.array[ 0 ] = 1.0;
         qq.array[ 1 ] = qqq.array[ 1 ] = 6.0;
         qq.array[ 2 ] = qqq.array[ 2 ] = 3.0;
@@ -38,7 +38,7 @@ bool quaternion_test::run()
     // operator= tests
     {
         bool ok = true;
-        quaterniond tquaternion_test = q;
+        Quaterniond tquaternion_test = q;
         TEST(tquaternion_test == q );
 
         tquaternion_test.iter_set< double* >( QData, QData + 4 );
@@ -53,25 +53,25 @@ bool quaternion_test::run()
     // ctor tests
     {
         bool ok = true;
-        quaterniond qq( q );
+        Quaterniond qq( q );
         TEST(q == qq);
 
-        quaterniond t( 1., 6., 3., 8 );
+        Quaterniond t( 1., 6., 3., 8 );
         if ( ok )
             TEST(q == t);
 
-        vector< 3, double > xyz;
+        Vector< 3, double > xyz;
         double xyzData[] = { 1., 6., 3. };
         xyz = xyzData;
 
-        quaterniond s( xyz, 8 );
+        Quaterniond s( xyz, 8 );
         if ( ok )
             TEST(q == s);
 
-        matrix< 3, 3, double > mat;
+        Matrix< 3, 3, double > mat;
         double matData[] = { 1., 0., 0., 0., 0., 1., 0., -1., 0. };
         mat = matData;
-        const quaterniond u( mat );
+        const Quaterniond u( mat );
 
         TEST( u.w() == sqrt( 2. ) / 2. &&
               u.x() == - ( 1 / sqrt( 2. ) ) &&
@@ -83,7 +83,7 @@ bool quaternion_test::run()
     // set test
     {
         bool ok = true;
-        quaterniond qqq;
+        Quaterniond qqq;
         qqq.set ( 1., 6., 3., 8. );
         TEST( qqq == q );
         log( "set( x,y,z,w )", ok );
@@ -100,7 +100,7 @@ bool quaternion_test::run()
     //conjugate() test
     {
         bool ok = true;
-        quaterniond conj(  -1., -6., -3., 8. );
+        Quaterniond conj(  -1., -6., -3., 8. );
         TEST( q.get_conjugate() == conj );
 
         conj.conjugate();
@@ -113,10 +113,10 @@ bool quaternion_test::run()
     // quat / scalar operations
     {
         bool ok = true;
-        quaterniond t;
+        Quaterniond t;
         t.set( 1, 2, 3, 4 );
 
-        quaterniond t3;
+        Quaterniond t3;
         t3.set( 3, 6, 9, 12 );
 
         double f = 3.0;
@@ -144,10 +144,10 @@ bool quaternion_test::run()
     {
         bool ok = true;
 
-        quaterniond qq;
+        Quaterniond qq;
         qq.set( 8, 3, 6, 1 );
 
-        quaterniond qpqq;
+        Quaterniond qpqq;
         qpqq.set(  9., 9., 9., 9.   );
 
         // +, +=
@@ -168,9 +168,9 @@ bool quaternion_test::run()
 
         // *, *=
         qq.set( 2, 3, 4, 1 );
-        quaterniond q2( 3, 2, 1, 4 );
-        quaterniond p = qq * q2;
-        quaterniond pCorrect( 6, 24, 12, -12 );
+        Quaterniond q2( 3, 2, 1, 4 );
+        Quaterniond p = qq * q2;
+        Quaterniond pCorrect( 6, 24, 12, -12 );
         if (ok)
             TEST(p == pCorrect);
 
@@ -187,13 +187,13 @@ bool quaternion_test::run()
     {
         bool ok = true;
 
-        quaterniond qq( 1, 2, 3, 4 );
-        quaterniond q2( -6, 5, -4, 2 );
+        Quaterniond qq( 1, 2, 3, 4 );
+        Quaterniond q2( -6, 5, -4, 2 );
 
-        vector< 3, double > v = qq.cross( q2 );
+        Vector< 3, double > v = qq.cross( q2 );
 
-        vector< 3, double > v0( 1, 2, 3 );
-        vector< 3, double > v1( -6, 5, -4 );
+        Vector< 3, double > v0( 1, 2, 3 );
+        Vector< 3, double > v1( -6, 5, -4 );
 
         TEST( v == v0.cross( v1 ) );
 
@@ -239,8 +239,8 @@ bool quaternion_test::run()
         assert( 0 );
 	}
 
-	Vector3d vector3_test( -30., -4., 18. );
-	if ( tquaternion_test.cross( _quaternion ) != vector3_test )
+    Vector3d vector3_test( -30., -4., 18. );
+    if ( tquaternion_test.cross( _quaternion ) != vector3_test )
 	{
 		cout << "test: Quaternion::cross( quaternion ) failed!" << endl;
         failed();

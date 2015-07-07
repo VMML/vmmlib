@@ -1,5 +1,5 @@
-#ifndef __VMML__INTERSECTION_TEST__HPP__
-#define __VMML__INTERSECTION_TEST__HPP__
+#ifndef VMMLIB__INTERSECTION_TEST__HPP
+#define VMMLIB__INTERSECTION_TEST__HPP
 
 #include "unit_test.hpp"
 

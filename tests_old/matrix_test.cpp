@@ -13,13 +13,13 @@ bool matrix_test::run()
     bool global_ok = true;
     bool ok = false;
 
-    matrix< 2, 3, double > m0;
+    Matrix< 2, 3, double > m0;
     double data[] = { 1, 2, 3, 4, 5, 6 };
 
 
     // iterator set test
     {
-        matrix< 2, 3, double > m_correct;
+        Matrix< 2, 3, double > m_correct;
         m_correct( 0, 0 )   = 1;
         m_correct( 0, 1 )   = 2;
         m_correct( 0, 2 )   = 3;
@@ -33,7 +33,7 @@ bool matrix_test::run()
 
         if( ok )
         {
-            matrix< 4, 4, double > m_c2;
+            Matrix< 4, 4, double > m_c2;
             m_c2( 0, 0 )    = 1;
             m_c2( 0, 1 )    = 2;
             m_c2( 0, 2 )    = 3;
@@ -53,7 +53,7 @@ bool matrix_test::run()
 
             double m2_data[] =
                 { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
-            matrix< 4, 4, double > m2;
+            Matrix< 4, 4, double > m2;
             m2.set( m2_data, m2_data + 16 );
 
             TEST(m2 == m_c2);
@@ -72,7 +72,7 @@ bool matrix_test::run()
     // test operator== / operator !=
     {
         ok = true;
-		matrix< 2, 3, double > m0_copy;
+        Matrix< 2, 3, double > m0_copy;
 		m0.set( data, data + 6 );
 		m0_copy.set( data, data + 6 );
 		TEST(m0 == m0_copy);
@@ -92,7 +92,7 @@ bool matrix_test::run()
     // test equal
     {
         ok = true;
-		matrix< 2, 3, double > m0_copy;
+        Matrix< 2, 3, double > m0_copy;
 		m0.set( data, data + 6 );
 		m0_copy.set( data, data + 6 );
         m0( 0, 0 ) += 0.00000005;
@@ -111,7 +111,7 @@ bool matrix_test::run()
     // test copy ctor
     {
         ok = true;
-		matrix< 2, 3, double > m0_copy( m0 );
+        Matrix< 2, 3, double > m0_copy( m0 );
 		TEST(m0 == m0_copy);
 		if ( ok )
 		{
@@ -130,15 +130,15 @@ bool matrix_test::run()
     // test ::IDENTITY / ::ZERO
     {
         ok = true;
-		matrix< 5, 5, double > identity( matrix< 5, 5, double >::IDENTITY );
-		matrix< 5, 2, double > zero( matrix< 5, 2, double >::ZERO );
+        Matrix< 5, 5, double > identity( Matrix< 5, 5, double >::IDENTITY );
+        Matrix< 5, 2, double > zero( Matrix< 5, 2, double >::ZERO );
 
         double id_data[] = { 1,0,0,0,0, 0,1,0,0,0,  0,0,1,0,0, 0,0,0,1,0, 0,0,0,0,1 };
-		matrix< 5, 5, double > id_correct;
+        Matrix< 5, 5, double > id_correct;
         id_correct = id_data;
 
         double zero_data[] = { 0,0,0,0,0, 0,0,0,0,0 };
-		matrix< 5, 2, double > zero_correct;
+        Matrix< 5, 2, double > zero_correct;
         zero_correct = zero_data;
 
 		TEST(identity == id_correct);
@@ -160,13 +160,13 @@ bool matrix_test::run()
     {
         ok = true;
 
-        matrix< 2, 2, double > m1, m2;
+        Matrix< 2, 2, double > m1, m2;
         double m1_data[] = { 1, 2, 3, 4 };
         double m2_data[] = { 2, 3, 4, 5 };
         m1 = m1_data;
         m2 = m2_data;
 
-        matrix< 2, 2, double > result;
+        Matrix< 2, 2, double > result;
         double result_data[] = { 3, 5, 7, 9 };
         result = result_data;
 
@@ -187,13 +187,13 @@ bool matrix_test::run()
     {
         ok = true;
 
-        matrix< 2, 2, double > m1, m2;
+        Matrix< 2, 2, double > m1, m2;
         double m1_data[] = { 3, 5, 7, 9 };
         double m2_data[] = { 2, 3, 4, 5 };
         m1 = m1_data;
         m2 = m2_data;
 
-        matrix< 2, 2, double > result;
+        Matrix< 2, 2, double > result;
         double result_data[] = { 1, 2, 3, 4 };
         result = result_data;
 
@@ -238,13 +238,13 @@ bool matrix_test::run()
     // test getRow/setRow/getColumn/setColumn
     {
         ok = true;
-		matrix< 2, 3, double > M;
+        Matrix< 2, 3, double > M;
 		double Mdata[] = { 1, 2, 3, 4, 5, 6 };
 		M = Mdata;
-		matrix< 1, 3, double > M_row;
+        Matrix< 1, 3, double > M_row;
         M.get_row( 1, M_row );
 
-		matrix< 2, 1, double > M_column;
+        Matrix< 2, 1, double > M_column;
         M.get_column( 2, M_column );
 
 		for( size_t column = 0; ok && column < 3; ++column )
@@ -258,7 +258,7 @@ bool matrix_test::run()
 		}
 
 		double Mdata_row[] = { 3, 2, 5, 4, 5, 6 };
-		matrix< 2, 3, double > Mr;
+        Matrix< 2, 3, double > Mr;
 		Mr = Mdata_row;
 
 		M = Mdata;
@@ -272,7 +272,7 @@ bool matrix_test::run()
 		}
 
 		double Mdata_column[] = { 1, 5, 3, 4, 2, 6 };
-		matrix< 2, 3, double > Mc;
+        Matrix< 2, 3, double > Mc;
 		Mc = Mdata_column;
 		M = Mdata;
 		M_column.at( 0, 0 ) = 5;
@@ -303,8 +303,8 @@ bool matrix_test::run()
     {
         ok = true;
 		m0 = data;
-        matrix< 3, 2, double > m1;
-        matrix< 3, 2, double > m0t = transpose( m0 );
+        Matrix< 3, 2, double > m1;
+        Matrix< 3, 2, double > m0t = transpose( m0 );
         m1.set( data, data + 6, false );
 
         TEST(m1 == m0t);
@@ -321,18 +321,18 @@ bool matrix_test::run()
     // test multiplication
     {
         ok = true;
-        matrix< 2, 3, double > mul0;
+        Matrix< 2, 3, double > mul0;
         double mul0data[] = { 1, 0, 2, -1, 3, 1 };
         mul0 = mul0data;
 
-        matrix< 3, 2, double > mul1;
+        Matrix< 3, 2, double > mul1;
         double mul1data[] = { 3, 1, 2, 1, 1, 0 };
         mul1 = mul1data;
 
-        matrix< 2, 2, double > result;
+        Matrix< 2, 2, double > result;
         result.multiply( mul0, mul1 );
 
-        matrix< 2, 2, double > correct_result;
+        Matrix< 2, 2, double > correct_result;
         double correct_result_data[] = { 5, 1, 4, 2 };
         correct_result = correct_result_data;
         TEST(result == correct_result);
@@ -345,7 +345,7 @@ bool matrix_test::run()
 
         if ( ok )
         {
-            matrix< 2, 2, double > id2;
+            Matrix< 2, 2, double > id2;
             identity( id2 );
 
             if ( result * id2 != result )
@@ -357,8 +357,8 @@ bool matrix_test::run()
         if ( ok )
         {
             #if 1
-            matrix< 2, 2, double > mul2, mul3;
-            matrix< 2, 2, double > correct_result1;
+            Matrix< 2, 2, double > mul2, mul3;
+            Matrix< 2, 2, double > correct_result1;
             double res_data[] = { 3, 1, 4, 1 };
             correct_result1 = res_data;
             #endif
@@ -386,7 +386,7 @@ bool matrix_test::run()
     // test matrix * column vector multiplication
     {
         ok = true;
-        matrix< 4, 4, double > transform;
+        Matrix< 4, 4, double > transform;
         double transformData[] =
         {
             0.6555, 0.2769, 0.6948, 0.4387,
@@ -395,14 +395,14 @@ bool matrix_test::run()
             0, 0, 0, 1
         };
         transform = transformData;
-        vector< 4, double > v;
+        Vector< 4, double > v;
         double vData[] = { 0.1869, 0.4898, 0.4456, 1 };
         v = vData;
 
-        vector< 4, double > v_result;
+        Vector< 4, double > v_result;
         v_result = transform * v;
 
-        vector< 4, double > v_correct_result;
+        Vector< 4, double > v_correct_result;
         double vResultData[] = { 1.0064414500000000707302660885034,
             .57752579999999997806270357614267,
             1.3684200999999998060729922144674,
@@ -431,7 +431,7 @@ bool matrix_test::run()
     // test matrix4x4 * vector3 multiplication
     {
         ok = true;
-        matrix< 4, 4, double > transform;
+        Matrix< 4, 4, double > transform;
         double transformData[] =
         {
             0.6555, 0.2769, 0.6948, 0.4387,
@@ -440,14 +440,14 @@ bool matrix_test::run()
             0, 0, 0, 1
         };
         transform = transformData;
-        vector< 3, double > v;
+        Vector< 3, double > v;
         double vData[] = { 0.1869, 0.4898, 0.4456 };
         v = vData;
 
-        vector< 3, double > v_result;
+        Vector< 3, double > v_result;
         v_result = transform * v;
 
-        vector< 3, double > v_correct_result;
+        Vector< 3, double > v_correct_result;
         double vResultData[] =
         {
             1.0064414500000000707302660885034,
@@ -481,7 +481,7 @@ bool matrix_test::run()
 
 	ok = true;
 	{
-		matrix< 3, 2 > m;
+        Matrix< 3, 2 > m;
 		try
 		{
 			m.at( 3, 2 );
@@ -513,14 +513,14 @@ bool matrix_test::run()
 
 	// getSubMatrix
     {
-        matrix< 2, 3, double >  m_src;
+        Matrix< 2, 3, double >  m_src;
         double m_src_data[] = { 1, 2, 3, 4, 5, 6 };
         m_src = m_src_data;
-        matrix< 1, 2, double >  m_sub;
+        Matrix< 1, 2, double >  m_sub;
 
         m_src.get_sub_matrix( m_sub, 1, 1 );
 
-        matrix< 1, 2, double > result;
+        Matrix< 1, 2, double > result;
         double res_data[] = { 5, 6 };
         result = res_data;
 
@@ -529,17 +529,17 @@ bool matrix_test::run()
 	}
 
     {
-        matrix< 2, 3, double >  m_src;
+        Matrix< 2, 3, double >  m_src;
         double m_src_data[] = { 1, 2, 3, 4, 5, 6 };
         m_src = m_src_data;
 
-        matrix< 2, 2, double >  m_sub;
+        Matrix< 2, 2, double >  m_sub;
         double m_sub_data[] = { 7, 8, 9, 0 };
         m_sub = m_sub_data;
 
         m_src.set_sub_matrix( m_sub, 0, 1 );
 
-        matrix< 2, 3, double > result;
+        Matrix< 2, 3, double > result;
         double res_data[] = { 1, 7, 8, 4, 9, 0 };
         result = res_data;
 
@@ -552,7 +552,7 @@ bool matrix_test::run()
     // matrix inversion for 2x2
     {
         ok = true;
-        matrix< 2, 2, double > M, M_inverse, M_inverse_correct;
+        Matrix< 2, 2, double > M, M_inverse, M_inverse_correct;
         double Mdata[] =
         #if 1
         { 1., 3., 4., 2. };
@@ -600,7 +600,7 @@ bool matrix_test::run()
     // matrix inversion for 3x3
     {
         ok = true;
-        matrix< 3, 3 > M, M_inverse, M_inverse_correct;
+        Matrix< 3, 3 > M, M_inverse, M_inverse_correct;
         double Mdata[] = { 8, 1, 6, 3, 5, 7, 4, 9, 2 };
         M.set( Mdata, Mdata + 9 );
 
@@ -636,7 +636,7 @@ bool matrix_test::run()
     // matrix inversion for 4x4
     {
         ok = true;
-        matrix< 4, 4, double > M, M_inverse, M_inverse_correct;
+        Matrix< 4, 4, double > M, M_inverse, M_inverse_correct;
         double Mdata[] = { 17., 24., 1., 8., 23., 5., 7., 14.,
              4., 6., 13., 20., 10., 12., 19., 21. };
         M.set( Mdata, Mdata + 16 );
@@ -679,14 +679,14 @@ bool matrix_test::run()
                             8,  9, 10, 11,
                            12, 13, 14, 15 };
 
-        matrix< 4, 4, double > m4x4;
-        matrix< 4, 4, double > m4x4C;
+        Matrix< 4, 4, double > m4x4;
+        Matrix< 4, 4, double > m4x4C;
 
         m4x4C = mData;
         m4x4.set( mData, mData + 16, true );
         TEST( m4x4 == m4x4C );
 
-        const vector< 3, double > trans( 12, 13, 14 );
+        const Vector< 3, double > trans( 12, 13, 14 );
         TESTINFO( m4x4.get_translation() == trans,
                   m4x4.get_translation() << " != " << trans );
 
@@ -699,16 +699,16 @@ bool matrix_test::run()
 
     // test direct sum
     {
-        matrix< 2, 1, double > upper_left;
+        Matrix< 2, 1, double > upper_left;
         double ul_data[] = { 1, 2 };
         upper_left = ul_data;
 
-        matrix< 2, 3, double > lower_right;
+        Matrix< 2, 3, double > lower_right;
         double lr_data[] = { 3, 4, 5, 6, 7, 8 };
         lower_right = lr_data;
 
-        matrix< 4, 4, double > result;
-        matrix< 4, 4, double > correct_result;
+        Matrix< 4, 4, double > result;
+        Matrix< 4, 4, double > correct_result;
         double corr_res_data[] = {
             1, 0, 0, 0,
             2, 0, 0, 0,
@@ -723,9 +723,9 @@ bool matrix_test::run()
 
     // test determinants
     {
-        matrix< 2, 2, double >  m22;
-        matrix< 3, 3, double >  m33;
-        matrix< 4, 4, double >  m44;
+        Matrix< 2, 2, double >  m22;
+        Matrix< 3, 3, double >  m33;
+        Matrix< 4, 4, double >  m44;
 
         double data_[] =
         {
@@ -750,13 +750,13 @@ bool matrix_test::run()
 
 	// test convolution
 	{
-		matrix< 4, 4, int > m1;
+        Matrix< 4, 4, int > m1;
 		int test_data[] = {
             1, 2, 3, 4,
             5, 6, 7, 8,
             9, 8, 7, 6,
             5, 4, 3, 2 };
-		matrix< 3, 3, int > kernel;
+        Matrix< 3, 3, int > kernel;
 		int test_kernel[] = {
 			1, 2, 3,
 			4, 5, 6,
@@ -766,7 +766,7 @@ bool matrix_test::run()
 		kernel = test_kernel;
 		m1.convolve(kernel);
 
-		matrix< 4, 4, int > correct_result;
+        Matrix< 4, 4, int > correct_result;
         int corr_res_data[] = {
             159, 192, 237, 264,
             297, 296, 293, 290,
@@ -781,10 +781,10 @@ bool matrix_test::run()
 
     {
         ok = true;
-        matrix< 4, 4, double > m;
+        Matrix< 4, 4, double > m;
         identity( m );
 
-        vector< 3, double >  v;
+        Vector< 3, double >  v;
         //double scale[] = { 1.0, 0.0, 0.0 };
         m.pre_rotate_x( 2.3 );
         //m.scale( scale );
@@ -800,7 +800,7 @@ bool matrix_test::run()
     #ifndef VMMLIB_NO_CONVERSION_OPERATORS
     {
 
-        matrix< 4, 4, double > m;
+        Matrix< 4, 4, double > m;
         double* array               = m;
         //const double* const_array   = m;
 
@@ -812,7 +812,7 @@ bool matrix_test::run()
 
 	{
 		//test computation of norm
-		matrix< 4, 4, int > data_2;
+        Matrix< 4, 4, int > data_2;
 		int test_data[] = {
 			1, 2, 3, 4,
 			5, 6, 7, 8,
@@ -836,10 +836,10 @@ bool matrix_test::run()
 
 	{
 		//test khatri-rao matrix product
-		matrix< 3, 4, int > left;
-		matrix< 4, 4, int > right;
-		matrix< 12, 4, int > khatri_rao;
-		matrix< 12, 4, int > khatri_rao_check;
+        Matrix< 3, 4, int > left;
+        Matrix< 4, 4, int > right;
+        Matrix< 12, 4, int > khatri_rao;
+        Matrix< 12, 4, int > khatri_rao_check;
 		int data_left[] = {
 			1, 2, 3, 4,
 			5, 6, 7, 8,
@@ -886,10 +886,10 @@ bool matrix_test::run()
 
 	{
 		//test kronecker product
-		matrix< 3, 4, int > left;
-		matrix< 4, 4, int > right;
-		matrix< 12, 16, int > kronecker;
-		matrix< 12, 16, int > kronecker_check;
+        Matrix< 3, 4, int > left;
+        Matrix< 4, 4, int > right;
+        Matrix< 12, 16, int > kronecker;
+        Matrix< 12, 16, int > kronecker_check;
 		int data_left[] = {
 			1, 2, 3, 4,
 			5, 6, 7, 8,
@@ -937,9 +937,9 @@ bool matrix_test::run()
 
 	{
 		//matrix type cast
-		matrix< 2, 3, float > matrix_type_a;
-		matrix< 2, 3, int > matrix_type_b;
-		matrix< 2, 3, int > matrix_type_b_check;
+        Matrix< 2, 3, float > matrix_type_a;
+        Matrix< 2, 3, int > matrix_type_b;
+        Matrix< 2, 3, int > matrix_type_b_check;
 
 		matrix_type_a.fill(2.4);
 		matrix_type_b_check.fill(2);
@@ -962,7 +962,7 @@ bool matrix_test::run()
 
 	//get_min() + get_max()
 	{
-		matrix< 3, 2, int >  m_get_min_max;
+        Matrix< 3, 2, int >  m_get_min_max;
 		m_get_min_max.zero();
 		m_get_min_max.at(0,1) = 4; m_get_min_max.at(2,1) = 8;
 
@@ -986,12 +986,12 @@ bool matrix_test::run()
 
 	//quantize
 	{
-		matrix< 4, 3, float >  m_raw;
+        Matrix< 4, 3, float >  m_raw;
 		m_raw.fill(0.45692);
 		m_raw.at( 2,2) = 0.67777; m_raw.at(1,0) = 0.111111; m_raw.at(2,0) = -0.23; m_raw.at(3, 0) = -0.99;
 		m_raw.at(0,0) = -0.8; m_raw.at(2,1) = 0.0; m_raw.at(3,2) = 0.99; m_raw.at(1,0) = 0.23;
-		matrix< 4, 3, unsigned char >  m_quant; m_quant.zero();
-		matrix< 4, 3, unsigned char >  m_quant_check;
+        Matrix< 4, 3, unsigned char >  m_quant; m_quant.zero();
+        Matrix< 4, 3, unsigned char >  m_quant_check;
 		int data_unsigned[] = {24, 186, 186, 157, 186, 186, 98, 128, 215, 0, 186, 255};
 		m_quant_check.set(data_unsigned, data_unsigned+12);
 
@@ -1000,8 +1000,8 @@ bool matrix_test::run()
 
 		m_raw.quantize( m_quant, min_value, max_value );
 
-		matrix< 4, 3, char >  m_quant_sign; m_quant_sign.zero();
-		matrix< 4, 3, char >  m_quant_sign_check;
+        Matrix< 4, 3, char >  m_quant_sign; m_quant_sign.zero();
+        Matrix< 4, 3, char >  m_quant_sign_check;
 		int data_signed[] = {-102, 59, 59, 30, 59, 59, -29, 0, 87, -127, 59, 127};
 		m_quant_sign_check.set(data_signed, data_signed +12 );
 
@@ -1009,8 +1009,8 @@ bool matrix_test::run()
 
 
 		//dequantize
-		matrix< 4, 3, float >  m_dequant;
-		matrix< 4, 3, float >  m_dequant_sign;
+        Matrix< 4, 3, float >  m_dequant;
+        Matrix< 4, 3, float >  m_dequant_sign;
 
 		m_quant.dequantize( m_dequant, min_value, max_value );
 		m_quant_sign.dequantize( m_dequant_sign, min_value, max_value );
@@ -1037,12 +1037,12 @@ bool matrix_test::run()
 	{
 		//number of nonzeros
 
-		matrix< 4, 5, int > m_nnz;
+        Matrix< 4, 5, int > m_nnz;
 		m_nnz.fill(2);
 		m_nnz.at( 3,3 ) = 0; m_nnz.at( 2,3 ) = -4;
 		size_t number_nonzeros = m_nnz.nnz();
 
-		matrix< 4, 4, float > m_nnz2;
+        Matrix< 4, 4, float > m_nnz2;
 		m_nnz2.fill( 0.9878);
 		m_nnz2.at( 3,3 ) = 0; m_nnz2.at( 2,3 ) = -1; m_nnz2.at( 2,2 ) = 0.045; m_nnz2.at( 1,2 ) = -0.085;
 		m_nnz2.at( 0,2 ) = 0.00000035; m_nnz2.at( 0,1 ) = -0.00000035;
@@ -1055,7 +1055,7 @@ bool matrix_test::run()
 	{
 		//threshold
 
-		matrix< 4, 4, float > m_thresh;
+        Matrix< 4, 4, float > m_thresh;
 		m_thresh.fill( 0.9878);
 		m_thresh.at( 3,3 ) = 0; m_thresh.at( 2,3 ) = -1; m_thresh.at( 2,2 ) = 0.045;
 		m_thresh.at( 1,2 ) = -0.085; m_thresh.at( 0,2 ) = 0.00000035; m_thresh.at( 0,1 ) = -0.00000035;
@@ -1071,9 +1071,9 @@ bool matrix_test::run()
 	{
 		//multiply piecewise
 
-		matrix< 4, 3, float > mmp;
-		matrix< 4, 3, float > mmp_other;
-		matrix< 4, 3, float > mmp_check;
+        Matrix< 4, 3, float > mmp;
+        Matrix< 4, 3, float > mmp_other;
+        Matrix< 4, 3, float > mmp_check;
 		mmp.fill( 3 );
 		mmp_other.fill( 2 );
 		mmp_check.fill( 6 );
@@ -1086,9 +1086,9 @@ bool matrix_test::run()
 	{
 		//columnwise sum
 
-		matrix< 4, 3, float > m_cs;
-		vector< 3, float > summed_cols;
-		vector< 3, float > summed_cols_check;
+        Matrix< 4, 3, float > m_cs;
+        Vector< 3, float > summed_cols;
+        Vector< 3, float > summed_cols_check;
 		m_cs.fill( 3 );
 		summed_cols_check.set( 12 );
 
@@ -1101,7 +1101,7 @@ bool matrix_test::run()
 	{
 		//columnwise sum
 
-		matrix< 4, 3, float > m;
+        Matrix< 4, 3, float > m;
 		m.fill( 3 );
 
 		double sum = m.sum_elements();
@@ -1115,14 +1115,14 @@ bool matrix_test::run()
 	{
 		//symmetric covariance matrix
 
-		matrix< 2, 4, float > m_sc;
+        Matrix< 2, 4, float > m_sc;
 		float sc_data[] = { 11, 12, 13, 14, 21, 22, 23, 24 };
         m_sc = sc_data;
 
-		matrix< 2, 2, float > m_cov;
+        Matrix< 2, 2, float > m_cov;
 		m_sc.symmetric_covariance( m_cov );
 
-		matrix< 2, 2, float > m_cov_check;
+        Matrix< 2, 2, float > m_cov_check;
 		float cov_data[] = { 630, 1130, 1130, 2030};
         m_cov_check = cov_data;
 
@@ -1134,10 +1134,10 @@ bool matrix_test::run()
 	{
 		//set dct (discrete cosine transform) values
 
-		matrix< 4, 6, float > m_dct;
+        Matrix< 4, 6, float > m_dct;
 		m_dct.set_dct();
 
-		matrix< 4, 6, float > m_dct_check;
+        Matrix< 4, 6, float > m_dct_check;
 		float dct_data[] = {
 			0.5, 0.5, 0.5, 0.5, 0.5, 0.5,
 			0.653281509876, 0.270598053932, -0.270598053932, -0.653281509876, -0.653281509876, -0.270598053932,
@@ -1153,7 +1153,7 @@ bool matrix_test::run()
 
 	{
 		// sum rows / sum columns
-		matrix< 5, 7, unsigned int > m1;
+        Matrix< 5, 7, unsigned int > m1;
 		unsigned int m_data[] = {
 			0, 1, 2, 3, 4, 5, 6,
 			7, 8, 9, 10, 11, 12, 13,
@@ -1162,8 +1162,8 @@ bool matrix_test::run()
 			28, 29, 30, 31, 32, 33, 34
 		};
 		m1.set( m_data, m_data + 35 );
-		matrix< 2, 7, unsigned int> m2;
-		matrix< 2, 7, unsigned int> m2_check;
+        Matrix< 2, 7, unsigned int> m2;
+        Matrix< 2, 7, unsigned int> m2_check;
 		unsigned int m2_data[] = {
 			7, 9, 11, 13, 15, 17, 19,
 			35, 37, 39, 41, 43, 45, 47
@@ -1172,8 +1172,8 @@ bool matrix_test::run()
 
 		m1.sum_rows( m2 );
 
-		matrix< 5, 3, unsigned int> m3;
-		matrix< 5, 3, unsigned int> m3_check;
+        Matrix< 5, 3, unsigned int> m3;
+        Matrix< 5, 3, unsigned int> m3_check;
 		unsigned int m3_data[] = {
 			1, 5, 9,
 			15, 19, 23,

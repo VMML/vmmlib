@@ -1,3 +1,52 @@
+07-07-2015
+
+# New in this release
+
+* Moved sections from RELNOTES.md to relevant files.
+* Removed leading and trailing underscores from header guards.
+* Removed all tensor-related classes (they will be a deprecated section of the soon-to-come companion library vmml::tensor).
+- Changed class names to CamelCase. Created typedefs for backwards compatibility.
+* Updated copyright notes.
+* Merged updates from Eyescale fork
+
+05-02-2013
+
+# New in this release
+
+###CMake
+* use now only CMake to create a Makefile
+
+###Use Tensor Approximation Classes (based on LAPACK, BLAS)
+* define VMMLIB_USE_LAPACK in Makefile (changed from VMMLIB_BASIC_ONLY)
+
+### Matrix
+* added matrix validators
+
+###BLAS Wrapper
+* added BLAS DAXPY wrapper
+
+###Filtering
+* added intersection, lowpass_filter class
+* updates in frustum_culler
+
+###Unit Tests
+* boolean global results of every test are now consistent with every subtest
+
+## Bug Fixes
+
+vmmlib 1.6 includes several fixes over the last release, such as:
+
+* various test fixes
+* precision bug of CP3 tensor reconstruction error measurement
+* tensor4 "<<" operator
+* computation of residual norm in HOOI
+* corrected formula for quaternion slerp
+
+## Known Issues
+
+* memory mapping for windows to be tested
+* test for slerp and matrix validators are not yet implemented
+* tests that depend on rand() are deactivated: they may break with different stdlib versions
+* tests that depend on LAPACK and BLAS are not fully supported for Windows
 
 
-2012-02-21: validator class instead of matrix.is_valid(), vector.is_valid()

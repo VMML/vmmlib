@@ -1,5 +1,5 @@
-#ifndef __VMML_QUATERNION_TEST__HPP__
-#define __VMML_QUATERNION_TEST__HPP__
+#ifndef VMML_QUATERNION_TEST__HPP
+#define VMML_QUATERNION_TEST__HPP
 
 #include "unit_test.hpp"
 

@@ -1,5 +1,5 @@
-#ifndef __VMML__MATRIX_COMPARE_PERF_TEST__HPP__
-#define __VMML__MATRIX_COMPARE_PERF_TEST__HPP__
+#ifndef VMMLIB__MATRIX_COMPARE_PERF_TEST__HPP
+#define VMMLIB__MATRIX_COMPARE_PERF_TEST__HPP
 
 #include "performance_test.hpp"
 

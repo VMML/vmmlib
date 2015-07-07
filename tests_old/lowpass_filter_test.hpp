@@ -1,5 +1,5 @@
-#ifndef __VMML__LOWPASS_FILTER_TEST__HPP__
-#define __VMML__LOWPASS_FILTER_TEST__HPP__
+#ifndef VMMLIB__LOWPASS_FILTER_TEST__HPP
+#define VMMLIB__LOWPASS_FILTER_TEST__HPP
 
 #include "unit_test.hpp"
 

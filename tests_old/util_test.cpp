@@ -58,11 +58,11 @@ bool util_test::run()
     // tests create_translation
     ok = true;
     {
-        vector< 3, double > v(1, 2, 3);
-        matrix< 4, 4, double > tmp = matrix< 4, 4, double >::IDENTITY;
-        tmp.set_column(3, vector< 4, double >(v, 1));
+        Vector< 3, double > v(1, 2, 3);
+        Matrix< 4, 4, double > tmp = Matrix< 4, 4, double >::IDENTITY;
+        tmp.set_column(3, Vector< 4, double >(v, 1));
 
-        matrix<4, 4, double> m = create_translation(v);
+        Matrix<4, 4, double> m = create_translation(v);
 
         TEST( equals( m, tmp ) )
 
@@ -78,11 +78,11 @@ bool util_test::run()
     // tests apply_translation
     ok = true;
     {
-        vector< 3, double > v(1.0, 2.0, 3.0);
-        matrix< 4, 4, double > tmp = matrix< 4, 4, double >::IDENTITY;
-        tmp.set_column(3, vector< 4, double >(v, 1));
+        Vector< 3, double > v(1.0, 2.0, 3.0);
+        Matrix< 4, 4, double > tmp = Matrix< 4, 4, double >::IDENTITY;
+        tmp.set_column(3, Vector< 4, double >(v, 1));
 
-        matrix<4, 4, double> m = matrix<4, 4, double>::IDENTITY;
+        Matrix<4, 4, double> m = Matrix<4, 4, double>::IDENTITY;
         apply_translation(m, 1.0, 2.0, 3.0);
 
         TEST( equals( m, tmp ) )
@@ -99,9 +99,9 @@ bool util_test::run()
     // tests create_rotation
     ok = true;
     {
-        vector< 4, float > v( -0.5f, 0.5f, 0.0f, 1.0f );
-        v = create_rotation( M_PI_F, vector< 3, float >( 1.0f, 1.0f, 0.0f) ) * v;
-        vector< 4, float > tmp( 0.5f, -0.5f, 0.0, 1.0f );
+        Vector< 4, float > v( -0.5f, 0.5f, 0.0f, 1.0f );
+        v = create_rotation( M_PI_F, Vector< 3, float >( 1.0f, 1.0f, 0.0f) ) * v;
+        Vector< 4, float > tmp( 0.5f, -0.5f, 0.0, 1.0f );
 
         TEST( equals( v, tmp ) )
 
@@ -117,11 +117,11 @@ bool util_test::run()
     // tests apply_rotation
     ok = true;
     {
-        vector< 4, float > v( -0.5f, 0.0f, 0.5f, 1.0f );
+        Vector< 4, float > v( -0.5f, 0.0f, 0.5f, 1.0f );
         Matrix4f m = Matrix4f::IDENTITY;
         apply_rotation( m, M_PI_F, 1.0f, 1.0f, 1.0f );
         v = m * v;
-        vector< 4, float > tmp( 0.5f, 0.0f, -0.5f, 1.0f );
+        Vector< 4, float > tmp( 0.5f, 0.0f, -0.5f, 1.0f );
 
         TEST( equals( v, tmp ) )
 
@@ -137,9 +137,9 @@ bool util_test::run()
     // tests create_scaling
     ok = true;
     {
-        vector< 4, float > v(1.0f, 2.0f, 3.0f, 1.0f);
+        Vector< 4, float > v(1.0f, 2.0f, 3.0f, 1.0f);
         v = create_scaling(2.0f) * v;
-        vector< 4, float > tmp(2.0f, 4.0f, 6.0f, 1.0f);
+        Vector< 4, float > tmp(2.0f, 4.0f, 6.0f, 1.0f);
 
         TEST( equals( v, tmp ) )
 
@@ -155,8 +155,8 @@ bool util_test::run()
     // tests manhattan
     ok = true;
     {
-        vector< 3, float > v1(1.0, 2.0, 3.0);
-        vector< 3, float > v2(2.0, 1.0, 4.0);
+        Vector< 3, float > v1(1.0, 2.0, 3.0);
+        Vector< 3, float > v2(2.0, 1.0, 4.0);
         float d = manhattan(v2 - v1);
         float tmp = 3;
 
@@ -174,9 +174,9 @@ bool util_test::run()
     // tests zero
     ok = true;
     {
-        vector< 4, float > v(1.0, 2.0, 3.0, 1.0);
+        Vector< 4, float > v(1.0, 2.0, 3.0, 1.0);
         zero( v );
-        vector< 4, float > tmp = vector< 4, float >::ZERO;
+        Vector< 4, float > tmp = Vector< 4, float >::ZERO;
 
         TEST( equals( v, tmp ) )
 
@@ -192,10 +192,10 @@ bool util_test::run()
     // tests min
     ok = true;
     {
-        vector< 3, float > v1(1.0, 2.0, 3.0);
-        vector< 3, float > v2(2.0, 1.0, 4.0);
-        vector< 3, float > v = min(v1, v2);
-        vector< 3, float > tmp(1.0f, 1.0f, 3.0f);
+        Vector< 3, float > v1(1.0, 2.0, 3.0);
+        Vector< 3, float > v2(2.0, 1.0, 4.0);
+        Vector< 3, float > v = min(v1, v2);
+        Vector< 3, float > tmp(1.0f, 1.0f, 3.0f);
 
         TEST( equals( v, tmp ) )
 
@@ -211,10 +211,10 @@ bool util_test::run()
     // tests max
     ok = true;
     {
-        vector< 3, float > v1(1.0, 2.0, 3.0);
-        vector< 3, float > v2(2.0, 1.0, 4.0);
-        vector< 3, float > v = max(v1, v2);
-        vector< 3, float > tmp(2.0f, 2.0f, 4.0f);
+        Vector< 3, float > v1(1.0, 2.0, 3.0);
+        Vector< 3, float > v2(2.0, 1.0, 4.0);
+        Vector< 3, float > v = max(v1, v2);
+        Vector< 3, float > tmp(2.0f, 2.0f, 4.0f);
 
         TEST( equals( v, tmp ) )
 

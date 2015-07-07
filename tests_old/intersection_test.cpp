@@ -12,11 +12,11 @@ bool intersection_test::run()
     bool ok = true;
     bool global_ok = true;
 
-    const vector< 4, float > sphere = vector< 4, float >(10.f, 0.f, 0.f, 0.1f);
-    const vector< 3, float > rayOrigin = vector< 3, float >(0.f, 0.f, 0.f);
-    const vector< 3, float > rayDir = vector< 3, float >(1.f, 0.f, 0.f);
+    const Vector< 4, float > sphere = Vector< 4, float >(10.f, 0.f, 0.f, 0.1f);
+    const Vector< 3, float > rayOrigin = Vector< 3, float >(0.f, 0.f, 0.f);
+    const Vector< 3, float > rayDir = Vector< 3, float >(1.f, 0.f, 0.f);
 
-    intersection< float > intersection( rayOrigin, rayDir);
+    Intersection< float > intersection( rayOrigin, rayDir);
 
     float t = 0, tmp = 9.9f;
     intersection.test_sphere(sphere, t);

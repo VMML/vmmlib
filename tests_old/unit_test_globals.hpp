@@ -1,5 +1,5 @@
-#ifndef __VMML__UNIT_TEST_GLOBALS__HPP__
-#define __VMML__UNIT_TEST_GLOBALS__HPP__
+#ifndef VMMLIB__UNIT_TEST_GLOBALS__HPP
+#define VMMLIB__UNIT_TEST_GLOBALS__HPP
 
 #include <string>
 #include <iostream>

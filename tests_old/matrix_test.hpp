@@ -1,5 +1,5 @@
-#ifndef __VMML__MATRIX_TEST__HPP__
-#define __VMML__MATRIX_TEST__HPP__
+#ifndef VMMLIB__MATRIX_TEST__HPP
+#define VMMLIB__MATRIX_TEST__HPP
 
 #include "unit_test.hpp"
 

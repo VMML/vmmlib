@@ -13,10 +13,10 @@ bool lowpass_filter_test::run()
     bool ok = true;
     bool global_ok = true;
     double data[] = { 0, 2, 4, 8, 16 };
-    vector< 5, double > v;
+    Vector< 5, double > v;
     v.iter_set(data, data+5);
 
-    lowpass_filter< 4, double > filter (.5f);
+    LowpassFilter< 4, double > filter (.5f);
     filter.add(data[0]);
     filter.add(data[1]);
     filter.add(data[2]);

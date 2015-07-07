@@ -50,7 +50,7 @@ set(HEADERS
 )
 
 add_subdirectory(tests)
-add_subdirectory(tests_old)
+#add_subdirectory(tests_old)
 
 install(FILES ${HEADERS} DESTINATION include/vmmlib COMPONENT dev)
 install(FILES ${DOCS} DESTINATION share/vmmlib COMPONENT dev)

@@ -1,5 +1,5 @@
-#ifndef __VMML__QR_DECOMPOSITION_TEST__HPP__
-#define __VMML__QR_DECOMPOSITION_TEST__HPP__
+#ifndef VMMLIB__QR_DECOMPOSITION_TEST__HPP
+#define VMMLIB__QR_DECOMPOSITION_TEST__HPP
 
 #include "unit_test.hpp"
 

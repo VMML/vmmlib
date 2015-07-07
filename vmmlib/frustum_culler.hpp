@@ -114,6 +114,8 @@ typedef FrustumCuller< float >  FrustumCullerf;
 typedef FrustumCuller< double > FrustumCullerd;
 
 #ifdef VMMLIB_OLD_TYPEDEFS
+template< typename T >
+using frustum_culler = FrustumCuller<T>;
 typedef FrustumCullerf frustum_cullerf;
 typedef FrustumCullerd frustum_cullerd;
 #endif

@@ -8,9 +8,6 @@ More advanced features include solvers, frustum computations and frustum culling
 
 Vmmlib is implemented using C++ templates, making it versatile. Being a header library, it is very easy to integrate into other (your) libraries and programs. There is no need to build and install a library, just include the headers and you’re set. The BSD license allows the usage both in open source and commercial closed source software. 
 
-VMMLib depends on LAPACK and BLAS, if you just want to use VMMLib basic
-without depending on LAPACK/BLAS, don't include the affected header files. 
-
 For more information please see http://vmml.github.com/vmmlib/
 
 ## Support

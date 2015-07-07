@@ -2,12 +2,14 @@
 
 # New in this release
 
-* Moved sections from RELNOTES.md to relevant files.
-* Removed leading and trailing underscores from header guards.
-* Removed all tensor-related classes (they will be a deprecated section of the soon-to-come companion library vmml::tensor).
-- Changed class names to CamelCase. Created typedefs for backwards compatibility.
-* Updated copyright notes.
+* Removed all tensor-related classes (they will be a deprecated section of the soon-to-come companion library vmml::tensor with these functionalities)
+* Added serialization functions read_from_stream and write_to_stream to matrix.hpp
+* Moved sections from RELNOTES.md to relevant files
+* Removed leading and trailing underscores from header guards
+* Changed class names to CamelCase. Created typedefs for backwards compatibility (they can be deactivated, but are on by default --preprocessor variable VMMLIB_OLD_TYPEDEFS)
+* Updated copyright notes
 * Merged updates from Eyescale fork
+* Disabled (by default) old tests
 
 05-02-2013
 

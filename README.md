@@ -18,10 +18,6 @@ For more information please see http://vmml.github.com/vmmlib/
 * comments and requests can be issued at http://github.com/VMML/vmmlib/issues
 * contributions can be merged into vmmlib via a pull request
 
-## Planned Future Extensions
-
-* decomposition and reconstruction algorithms for 4D tensors
-
 # About
 
 ## Platform Support

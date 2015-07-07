@@ -39,6 +39,8 @@
 #ifndef VMMLIB__LOWPASSFILTER__HPP
 #define VMMLIB__LOWPASSFILTER__HPP
 
+#include <vmmlib/vmmlib_config.hpp>
+
 #include <deque>
 
 namespace vmml
@@ -113,8 +115,8 @@ void LowpassFilter< M, T>::set_smooth_factor( const float& f )
 }
 
 #ifdef VMMLIB_OLD_TYPEDEFS
-template< typename T >
-using lowpass_filter = LowpassFilter<T>;
+template< size_t M, typename T >
+using lowpass_filter = LowpassFilter<M, T>;
 #endif
 
 } // namespace vmml

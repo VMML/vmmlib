@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2014, Visualization and Multimedia Lab,
+ * Copyright (c) 2006-2015, Visualization and Multimedia Lab,
  *                          University of Zurich <http://vmml.ifi.uzh.ch>,
  *                          Eyescale Software GmbH,
  *                          Blue Brain Project, EPFL
@@ -29,8 +29,8 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-#ifndef __VMMLIB__EXCEPTION__HPP__
-#define __VMMLIB__EXCEPTION__HPP__
+#ifndef VMMLIB__EXCEPTION__HPP
+#define VMMLIB__EXCEPTION__HPP
 
 #include <iostream>
 #include <stdexcept>

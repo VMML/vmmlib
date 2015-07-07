@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2014, Visualization and Multimedia Lab,
+ * Copyright (c) 2006-2015, Visualization and Multimedia Lab,
  *                          University of Zurich <http://vmml.ifi.uzh.ch>,
  *                          Eyescale Software GmbH,
  *                          Blue Brain Project, EPFL
@@ -29,8 +29,8 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-#ifndef __VMML_VECTOR_TRAITS_HPP__
-#define __VMML_VECTOR_TRAITS_HPP__
+#ifndef VMML_VECTOR_TRAITS_HPP
+#define VMML_VECTOR_TRAITS_HPP
 
 #include <vmmlib/vector.hpp>
 #include <boost/la/vector_traits.hpp>

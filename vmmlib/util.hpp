@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2014, Visualization and Multimedia Lab,
+ * Copyright (c) 2006-2015, Visualization and Multimedia Lab,
  *                          University of Zurich <http://vmml.ifi.uzh.ch>,
  *                          Eyescale Software GmbH,
  *                          Blue Brain Project, EPFL
@@ -30,8 +30,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef __VMML__UTIL__HPP__
-#define __VMML__UTIL__HPP__
+#ifndef VMML__UTIL__HPP
+#define VMML__UTIL__HPP
 
 #include "vector.hpp"
 #include "matrix.hpp"
@@ -61,10 +61,10 @@ equals( T arg0, U arg1)
 
 
 template< size_t M, size_t N, typename T >
-inline matrix< M, N, T >
-create_translation( const vector< M - 1, T > &arg )
+inline Matrix< M, N, T >
+create_translation( const Vector< M - 1, T > &arg )
 {
-	matrix< M, N, T > ret;
+    Matrix< M, N, T > ret;
 	identity( ret );
 	ret.set_translation( arg );
 
@@ -72,24 +72,24 @@ create_translation( const vector< M - 1, T > &arg )
 }
 
 template< typename T >
-inline matrix< 4, 4, T >
-create_translation( const vector< 3, T > &arg )
+inline Matrix< 4, 4, T >
+create_translation( const Vector< 3, T > &arg )
 {
    return create_translation< 4, 4 >(arg);
 }
 
 template< size_t M, size_t N, typename T >
 inline void
-apply_translation( matrix< M, N, T > &m, T t0, T t1, T t2 )
+apply_translation( Matrix< M, N, T > &m, T t0, T t1, T t2 )
 {
-    m *= create_translation< M, N, T >( vector< M - 1, T >( t0, t1, t2 ) );
+    m *= create_translation< M, N, T >( Vector< M - 1, T >( t0, t1, t2 ) );
 }
 
 template< size_t M, size_t N, typename T >
-inline matrix< M, N, T >
-create_rotation( T angle, const vector< M - 1, T > &axis )
+inline Matrix< M, N, T >
+create_rotation( T angle, const Vector< M - 1, T > &axis )
 {
-	matrix< M, N, T > ret;
+    Matrix< M, N, T > ret;
 	identity( ret );
 	ret.rotate( angle, axis );
 
@@ -97,24 +97,24 @@ create_rotation( T angle, const vector< M - 1, T > &axis )
 }
 
 template< typename T >
-inline matrix< 4, 4, T >
-create_rotation( T angle, const vector< 3, T > &axis )
+inline Matrix< 4, 4, T >
+create_rotation( T angle, const Vector< 3, T > &axis )
 {
     return create_rotation< 4, 4 >( angle, axis );
 }
 
 template< size_t M, size_t N, typename T >
 inline void
-apply_rotation( matrix< M, N, T > &m, T angle, T t0, T t1, T t2 )
+apply_rotation( Matrix< M, N, T > &m, T angle, T t0, T t1, T t2 )
 {
-    m *= create_rotation< M, N, T >( angle, vector< M - 1, T >( t0, t1, t2 ) );
+    m *= create_rotation< M, N, T >( angle, Vector< M - 1, T >( t0, t1, t2 ) );
 }
 
 template< size_t M, size_t N, typename T >
-inline matrix< M, N, T >
-create_scaling( const vector< N - 1, T > &arg )
+inline Matrix< M, N, T >
+create_scaling( const Vector< N - 1, T > &arg )
 {
-    matrix< M, N, T > ret;
+    Matrix< M, N, T > ret;
     identity(ret);
     ret.scale(arg);
 
@@ -122,18 +122,18 @@ create_scaling( const vector< N - 1, T > &arg )
 }
 
 template< typename T >
-inline matrix< 4, 4, T >
+inline Matrix< 4, 4, T >
 const
-create_scaling( const vector< 3, T > &arg )
+create_scaling( const Vector< 3, T > &arg )
 {
     return create_scaling< 4, 4 >(arg);
 }
 
 template< typename T >
-inline matrix< 4, 4, T >
+inline Matrix< 4, 4, T >
 create_scaling( T arg )
 {
-    return create_scaling< 4, 4 >( vector< 3, T >( arg ) );
+    return create_scaling< 4, 4 >( Vector< 3, T >( arg ) );
 }
 
 
@@ -141,15 +141,15 @@ create_scaling( T arg )
 
 
 template< size_t M, typename T >
-inline void zero( vector< M, T > &arg )
+inline void zero( Vector< M, T > &arg )
 {
 	std::fill( arg.begin(), arg.end(), 0 );
 }
 
 template< size_t M, typename T >
-vector< M, T > min( const vector< M, T > &arg0,  const vector< M, T > &arg1 )
+Vector< M, T > min( const Vector< M, T > &arg0,  const Vector< M, T > &arg1 )
 {
-	vector< M, T > ret;
+    Vector< M, T > ret;
 
 	for( size_t i = 0; i < M; ++i )
         ret[i] = std::min( arg0[i], arg1[i] );
@@ -158,9 +158,9 @@ vector< M, T > min( const vector< M, T > &arg0,  const vector< M, T > &arg1 )
 }
 
 template< size_t M, typename T >
-vector< M, T > max( const vector< M, T > &arg0,  const vector< M, T > &arg1 )
+Vector< M, T > max( const Vector< M, T > &arg0,  const Vector< M, T > &arg1 )
 {
-	vector< M, T > ret;
+    Vector< M, T > ret;
 
 	for( size_t i = 0; i < M; ++i )
         ret[i] = std::max( arg0[i], arg1[i] );
@@ -170,7 +170,7 @@ vector< M, T > max( const vector< M, T > &arg0,  const vector< M, T > &arg1 )
 
 template< size_t M, typename T >
 T
-manhattan( const vector< M, T > &arg )
+manhattan( const Vector< M, T > &arg )
 {
 	T ret = 0;
 	for( size_t i = 0; i < M; ++i )

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2014, Visualization and Multimedia Lab,
+ * Copyright (c) 2006-2015, Visualization and Multimedia Lab,
  *                          University of Zurich <http://vmml.ifi.uzh.ch>,
  *                          Eyescale Software GmbH,
  *                          Blue Brain Project, EPFL
@@ -29,8 +29,8 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-#ifndef __VMML__QR_DECOMPOSITION__HPP__
-#define __VMML__QR_DECOMPOSITION__HPP__
+#ifndef VMML__QR_DECOMPOSITION__HPP
+#define VMML__QR_DECOMPOSITION__HPP
 
 #include <vmmlib/matrix.hpp>
 #include <vmmlib/vector.hpp>
@@ -51,18 +51,18 @@ namespace vmml
 
 template< size_t M, size_t N, typename T >
 void qr_decompose_gram_schmidt(
-    const matrix< M, N, T >& A_,
-    matrix< M, M, T >& Q,
-    matrix< N, N, T >& R
+    const Matrix< M, N, T >& A_,
+    Matrix< M, M, T >& Q,
+    Matrix< N, N, T >& R
     )
 {
     Q   = 0.0;
     R   = 0.0;
 
     // create a copy of A_ since we will change it in the algorithm
-    matrix< M, N, T > A( A_ );
+    Matrix< M, N, T > A( A_ );
 
-    vector< M, T > a_column, q_column;
+    Vector< M, T > a_column, q_column;
 
     #if 0
     // for each column
@@ -93,7 +93,7 @@ void qr_decompose_gram_schmidt(
         }
     }
     #else
-    vector< M, T >  v;
+    Vector< M, T >  v;
     for( unsigned j = 0; j < N; ++j )
     {
         A.get_column( j, v );

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2014, Visualization and Multimedia Lab,
+ * Copyright (c) 2006-2015, Visualization and Multimedia Lab,
  *                          University of Zurich <http://vmml.ifi.uzh.ch>,
  *                          Eyescale Software GmbH,
  *                          Blue Brain Project, EPFL
@@ -33,8 +33,8 @@
  * and Andrew Willmott's VL.
  */
 
-#ifndef __VMML__VMMLIB__HPP__
-#define __VMML__VMMLIB__HPP__
+#ifndef VMML__VMMLIB__HPP
+#define VMML__VMMLIB__HPP
 
 #include <vmmlib/aabb.hpp>
 #include <vmmlib/frustum.hpp>

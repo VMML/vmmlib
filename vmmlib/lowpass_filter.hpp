@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2014, Visualization and Multimedia Lab,
+ * Copyright (c) 2006-2015, Visualization and Multimedia Lab,
  *                          University of Zurich <http://vmml.ifi.uzh.ch>,
  *                          Eyescale Software GmbH,
  *                          Blue Brain Project, EPFL
@@ -36,22 +36,22 @@
  * implement multiplication by a scalar float for smoothing
  */
 
-#ifndef __VMML__LOWPASS_FILTER__HPP__
-#define __VMML__LOWPASS_FILTER__HPP__
+#ifndef VMML__LOWPASSFILTER__HPP
+#define VMML__LOWPASSFILTER__HPP
 
 #include <deque>
 
 namespace vmml
 {
-template< size_t M, typename T > class lowpass_filter
+template< size_t M, typename T > class LowpassFilter
 {
 public:
     /**
       Constructor
       @param[in]    F   Smooth factor to use during the filter process
      */
-    lowpass_filter( const float F ) : _smooth_factor(F) {}
-    ~lowpass_filter() {}
+    LowpassFilter( const float F ) : _smooth_factor(F) {}
+    ~LowpassFilter() {}
 
     /**
       Filter the content of the data structure
@@ -85,7 +85,7 @@ private:
 };
 
 
-template< size_t M, typename T > T lowpass_filter< M, T >::add( const T& value )
+template< size_t M, typename T > T LowpassFilter< M, T >::add( const T& value )
 {
     _data.push_front( value );
 
@@ -107,10 +107,15 @@ template< size_t M, typename T > T lowpass_filter< M, T >::add( const T& value )
 }
 
 template< size_t M, typename T >
-void lowpass_filter< M, T>::set_smooth_factor( const float& f )
+void LowpassFilter< M, T>::set_smooth_factor( const float& f )
 {
     _smooth_factor = f;
 }
+
+#ifdef VMMLIB_BACKWARD_TYPEDEFS
+template< typename T >
+using lowpass_filter = LowpassFilter<T>;
+#endif
 
 } // namespace vmml
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2014, Visualization and Multimedia Lab,
+ * Copyright (c) 2006-2015, Visualization and Multimedia Lab,
  *                          University of Zurich <http://vmml.ifi.uzh.ch>,
  *                          Eyescale Software GmbH,
  *                          Blue Brain Project, EPFL
@@ -37,18 +37,18 @@
  * (e.g. sphere)
  */
 
-#ifndef __VMML__INTERSECTION__HPP__
-#define __VMML__INTERSECTION__HPP__
+#ifndef VMML__INTERSECTION__HPP
+#define VMML__INTERSECTION__HPP
 
 #include <vmmlib/vector.hpp>
 
 namespace vmml
 {
-template< typename T > class intersection
+template< typename T > class Intersection
 {
 public:
-    typedef vector< 3, T >    vec3;
-    typedef vector< 4, T >    vec4;
+    typedef Vector< 3, T >    vec3;
+    typedef Vector< 4, T >    vec4;
 
     /**
       Constructors
@@ -56,11 +56,11 @@ public:
       @param[in]    origin      Ray origin
       @param[in]    direction   Ray direction
      */
-    intersection( const vec3& origin, const vec3& direction )
+    Intersection( const vec3& origin, const vec3& direction )
         : _origin ( origin )
         , _direction ( vmml::normalize( direction ))
     {}
-    ~intersection() {}
+    ~Intersection() {}
 
     /**
       Ray Sphere Intersection - Optimized solution
@@ -78,12 +78,12 @@ private:
     const vec3 _origin;
     const vec3 _direction;
 
-}; // class intersection
+}; // class Intersection
 
 
 template< typename T >
 bool
-intersection< T >::test_sphere( const vec4& sphere, T& t ) const
+Intersection< T >::test_sphere( const vec4& sphere, T& t ) const
 {
     const vec3 center = vec3(sphere.x(), sphere.y(), sphere.z());
     const T radius = sphere.w();
@@ -115,6 +115,10 @@ intersection< T >::test_sphere( const vec4& sphere, T& t ) const
     return true;
 }
 
+#ifdef VMMLIB_BACKWARD_TYPEDEFS
+template< typename T >
+using intersection = Intersection<T>;
+#endif
 
 } // namespace vmml
 

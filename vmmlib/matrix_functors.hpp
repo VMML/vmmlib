@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2014, Visualization and Multimedia Lab,
+ * Copyright (c) 2006-2015, Visualization and Multimedia Lab,
  *                          University of Zurich <http://vmml.ifi.uzh.ch>,
  *                          Eyescale Software GmbH,
  *                          Blue Brain Project, EPFL
@@ -29,8 +29,8 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-#ifndef __VMML__MATRIX_FUNCTORS__HPP__
-#define __VMML__MATRIX_FUNCTORS__HPP__
+#ifndef VMML__MATRIX_FUNCTORS__HPP
+#define VMML__MATRIX_FUNCTORS__HPP
 
 #include <vmmlib/enable_if.hpp>
 

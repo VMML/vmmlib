@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2014, Visualization and Multimedia Lab,
+ * Copyright (c) 2006-2015, Visualization and Multimedia Lab,
  *                          University of Zurich <http://vmml.ifi.uzh.ch>,
  *                          Eyescale Software GmbH,
  *                          Blue Brain Project, EPFL
@@ -30,8 +30,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef __VMML__QUATERNION__HPP__
-#define __VMML__QUATERNION__HPP__
+#ifndef VMML__QUATERNION__HPP
+#define VMML__QUATERNION__HPP
 
 #include <vmmlib/vector.hpp>
 #include <vmmlib/matrix.hpp>
@@ -58,10 +58,10 @@ namespace vmml
 {
 
 template < typename T >
-class quaternion : private vector< 4, T >
+class Quaternion : private Vector< 4, T >
 {
 public:
-    typedef vector< 4, T >  super;
+    typedef Vector< 4, T >  super;
 
     using super::operator();
     //using super::operator=;
@@ -78,25 +78,25 @@ public:
     using super::iter_set;
 
     //constructors
-    quaternion() { w() = 1.; }
-    quaternion( T x, T y, T z, T w );
+    Quaternion() { w() = 1.; }
+    Quaternion( T x, T y, T z, T w );
 
-    quaternion( const vector< 3, T >& xyz , T w );
+    Quaternion( const Vector< 3, T >& xyz , T w );
     // initializes the quaternion with xyz, sets w to zero
-    quaternion( const vector< 3, T >& xyz );
+    Quaternion( const Vector< 3, T >& xyz );
 
     // uses the top-left 3x3 part of the supplied matrix as rotation matrix
     template< size_t M >
-    quaternion( const matrix< M, M, T >& rotation_matrix_,
+    Quaternion( const Matrix< M, M, T >& rotation_matrix_,
         typename enable_if< M >= 3 >::type* = 0 );
 
     void zero();
     void identity();
 
-    template< size_t D > void set( const matrix< D, D, T >& rotation_matrix_ );
+    template< size_t D > void set( const Matrix< D, D, T >& rotation_matrix_ );
 
     void set( T ww, T xx, T yy, T zz);
-    void set( vector< 3, T >& xyz, T w );
+    void set( Vector< 3, T >& xyz, T w );
 
     template< typename input_iterator_t >
     void set( input_iterator_t begin_, input_iterator_t end_ );
@@ -104,47 +104,47 @@ public:
     bool operator==( const T& a ) const;
     bool operator!=( const T& a ) const;
 
-    bool operator==( const quaternion& a ) const;
-    bool operator!=( const quaternion& a ) const;
+    bool operator==( const Quaternion& a ) const;
+    bool operator!=( const Quaternion& a ) const;
 
-    bool operator==( const vector< 4, T >& a ) const;
-    bool operator!=( const vector< 4, T >& a ) const;
+    bool operator==( const Vector< 4, T >& a ) const;
+    bool operator!=( const Vector< 4, T >& a ) const;
 
-    bool is_akin( const quaternion& a,
+    bool is_akin( const Quaternion& a,
                  const T& delta = std::numeric_limits< T >::epsilon() );
 
     void conjugate();
-    quaternion get_conjugate() const;
+    Quaternion get_conjugate() const;
 
     T abs() const;
     T squared_abs() const;
 
     T normalize();
-    quaternion get_normalized() const;
+    Quaternion get_normalized() const;
 
-    quaternion negate() const;
-    quaternion operator-() const;
+    Quaternion negate() const;
+    Quaternion operator-() const;
 
-    quaternion& operator=(const quaternion& other);
-    const vector< 4, T >& operator=( const vector< 4, T >& other );
+    Quaternion& operator=(const Quaternion& other);
+    const Vector< 4, T >& operator=( const Vector< 4, T >& other );
 
     //
     // quaternion/quaternion operations
     //
-    quaternion operator+( const quaternion< T >& a ) const;
-    quaternion operator-( const quaternion< T >& a ) const;
+    Quaternion operator+( const Quaternion< T >& a ) const;
+    Quaternion operator-( const Quaternion< T >& a ) const;
     // caution: a * q != q * a in general
-    quaternion operator*( const quaternion< T >& a ) const;
-    void operator+=( const quaternion< T >& a );
-    void operator-=( const quaternion< T >& a );
+    Quaternion operator*( const Quaternion< T >& a ) const;
+    void operator+=( const Quaternion< T >& a );
+    void operator-=( const Quaternion< T >& a );
     // caution: a *= q != q *= a in general
-    void operator*=( const quaternion< T >& a );
+    void operator*=( const Quaternion< T >& a );
 
     //
     // quaternion/scalar operations
     //
-    quaternion operator*( T a ) const;
-    quaternion operator/( T a ) const;
+    Quaternion operator*( T a ) const;
+    Quaternion operator/( T a ) const;
 
     void operator*=( T a );
     void operator/=( T a );
@@ -152,42 +152,42 @@ public:
     //
     //quaternion/vector operations
     //
-    quaternion operator+( const vector< 3, T >& a ) const;
-    quaternion operator-( const vector< 3, T >& a ) const;
-    quaternion operator*( const vector< 3, T >& a ) const;
+    Quaternion operator+( const Vector< 3, T >& a ) const;
+    Quaternion operator-( const Vector< 3, T >& a ) const;
+    Quaternion operator*( const Vector< 3, T >& a ) const;
 
-    void operator+=( const vector< 3, T >& a );
-    void operator-=( const vector< 3, T >& a );
-    void operator*=( const vector< 3, T >& a );
+    void operator+=( const Vector< 3, T >& a );
+    void operator-=( const Vector< 3, T >& a );
+    void operator*=( const Vector< 3, T >& a );
 
     // vec3 = this x b
-    vector< 3, T > cross( const quaternion< T >& b ) const;
+    Vector< 3, T > cross( const Quaternion< T >& b ) const;
 
-    T dot( const quaternion< T >& a ) const;
-    static T dot( const quaternion< T >& a, const quaternion< T >& b );
+    T dot( const Quaternion< T >& a ) const;
+    static T dot( const Quaternion< T >& a, const Quaternion< T >& b );
 
     // returns multiplicative inverse
-    quaternion inverse();
+    Quaternion inverse();
 
-    void normal( const quaternion& aa, const quaternion& bb, const quaternion& cc,  const quaternion& dd );
-    quaternion normal( const quaternion& aa, const quaternion& bb, const quaternion& cc );
+    void normal( const Quaternion& aa, const Quaternion& bb, const Quaternion& cc,  const Quaternion& dd );
+    Quaternion normal( const Quaternion& aa, const Quaternion& bb, const Quaternion& cc );
 
     // to combine two rotations, multiply the respective quaternions before using rotate
     // instead of rotating twice for increased performance, but be aware of non-commutativity!
-    void rotate( T theta, const vector< 3, T >& a );
-    quaternion rotate( T theta, vector< 3, T >& axis, const vector< 3, T >& a );
-    quaternion rotate_x( T theta, const vector< 3, T >& a );
-    quaternion rotate_y( T theta, const vector< 3, T >& a );
-    quaternion rotate_z( T theta, const vector< 3, T >& a );
+    void rotate( T theta, const Vector< 3, T >& a );
+    Quaternion rotate( T theta, Vector< 3, T >& axis, const Vector< 3, T >& a );
+    Quaternion rotate_x( T theta, const Vector< 3, T >& a );
+    Quaternion rotate_y( T theta, const Vector< 3, T >& a );
+    Quaternion rotate_z( T theta, const Vector< 3, T >& a );
 
-    static quaternion slerp( T a, const quaternion& p,
-        const quaternion& q, const T epsilon = 1e-13 );
+    static Quaternion slerp( T a, const Quaternion& p,
+        const Quaternion& q, const T epsilon = 1e-13 );
 
-    matrix< 3, 3, T > get_rotation_matrix() const;
+    Matrix< 3, 3, T > get_rotation_matrix() const;
 
-    template< size_t D > void get_rotation_matrix( matrix< D, D, T >& result ) const;
+    template< size_t D > void get_rotation_matrix( Matrix< D, D, T >& result ) const;
 
-    friend std::ostream& operator<< ( std::ostream& os, const quaternion& q )
+    friend std::ostream& operator<< ( std::ostream& os, const Quaternion& q )
     {
         os << "(";
         size_t index = 0;
@@ -199,36 +199,41 @@ public:
         return os;
     };
 
-    static const quaternion IDENTITY;
-    static const quaternion QUATERI;
-    static const quaternion QUATERJ;
-    static const quaternion QUATERK;
+    static const Quaternion IDENTITY;
+    static const Quaternion QUATERI;
+    static const Quaternion QUATERJ;
+    static const Quaternion QUATERK;
 
 }; // class quaternion
 
 #ifndef VMMLIB_NO_TYPEDEFS
+typedef Quaternion< float >  Quaternionf;
+typedef Quaternion< double > Quaterniond;
+#endif
 
-typedef quaternion< float >  quaternionf;
-typedef quaternion< double > quaterniond;
-
+#ifdef VMMLIB_BACKWARD_TYPEDEFS
+typedef Quaternion< float >  quaternionf;
+typedef Quaternion< double > quaterniond;
+template< typename T >
+using quaternion = Quaternion<T>;
 #endif
 
 // - implementation - //
 
 template < typename T >
-const quaternion< T > quaternion< T >::IDENTITY( 0, 0, 0, 1 );
+const Quaternion< T > Quaternion< T >::IDENTITY( 0, 0, 0, 1 );
 
 template < typename T >
-const quaternion< T > quaternion< T >::QUATERI( 1, 0, 0, 0 );
+const Quaternion< T > Quaternion< T >::QUATERI( 1, 0, 0, 0 );
 
 template < typename T >
-const quaternion< T > quaternion< T >::QUATERJ( 0, 1, 0, 0 );
+const Quaternion< T > Quaternion< T >::QUATERJ( 0, 1, 0, 0 );
 
 template < typename T >
-const quaternion< T > quaternion< T >::QUATERK( 0, 0, 1, 0 );
+const Quaternion< T > Quaternion< T >::QUATERK( 0, 0, 1, 0 );
 
 template < typename T >
-quaternion< T >::quaternion( T x_, T y_, T z_, T w_ )
+Quaternion< T >::Quaternion( T x_, T y_, T z_, T w_ )
 {
     x() = x_;
     y() = y_;
@@ -239,7 +244,7 @@ quaternion< T >::quaternion( T x_, T y_, T z_, T w_ )
 
 
 template < typename T >
-quaternion< T >::quaternion( const vector< 3, T >& xyz, T w_ )
+Quaternion< T >::Quaternion( const Vector< 3, T >& xyz, T w_ )
 {
     super::set( xyz, w_ );
 }
@@ -248,7 +253,7 @@ quaternion< T >::quaternion( const vector< 3, T >& xyz, T w_ )
 
 
 template < typename T >
-quaternion< T >::quaternion( const vector< 3, T >& xyz )
+Quaternion< T >::Quaternion( const Vector< 3, T >& xyz )
 {
     super::set( xyz, static_cast< T >( 0.0 ) );
 }
@@ -256,7 +261,7 @@ quaternion< T >::quaternion( const vector< 3, T >& xyz )
 
 
 template< typename T > template< size_t M >
-quaternion< T >::quaternion( const matrix< M, M, T >& rotation_matrix_,
+Quaternion< T >::Quaternion( const Matrix< M, M, T >& rotation_matrix_,
                              typename enable_if< M >= 3 >::type* )
 {
     this->template set< M >( rotation_matrix_ );
@@ -266,7 +271,7 @@ quaternion< T >::quaternion( const matrix< M, M, T >& rotation_matrix_,
 
  // top-left 3x3 is interpreted as rot matrix.
 template < typename T > template< size_t D >
-void quaternion< T >::set( const matrix< D, D, T >& M )
+void Quaternion< T >::set( const Matrix< D, D, T >& M )
 {
     T trace = M( 0, 0 ) + M( 1, 1 ) + M( 2,2 ) + 1.0;
 
@@ -287,7 +292,7 @@ void quaternion< T >::set( const matrix< D, D, T >& M )
     }
     else
     {
-        vector< 3, T > diag( M( 0, 0 ), M( 1, 1 ), M( 2, 2 ) );
+        Vector< 3, T > diag( M( 0, 0 ), M( 1, 1 ), M( 2, 2 ) );
         size_t largest = diag.find_max_index();
 
         // 0, 0 is largest
@@ -345,7 +350,7 @@ void quaternion< T >::set( const matrix< D, D, T >& M )
 
 
 template < typename T >
-void quaternion< T >::zero()
+void Quaternion< T >::zero()
 {
     (*this) = super::ZERO;
 }
@@ -353,7 +358,7 @@ void quaternion< T >::zero()
 
 
 template < typename T >
-void quaternion< T >::identity()
+void Quaternion< T >::identity()
 {
     (*this) = IDENTITY;
 }
@@ -361,7 +366,7 @@ void quaternion< T >::identity()
 
 
 template < typename T >
-void quaternion< T >::set( T xx, T yy, T zz, T ww )
+void Quaternion< T >::set( T xx, T yy, T zz, T ww )
 {
     x() = xx;
     y() = yy;
@@ -372,7 +377,7 @@ void quaternion< T >::set( T xx, T yy, T zz, T ww )
 
 
 template< typename T >
-void quaternion< T >::set( vector< 3, T >& xyz, T _w )
+void Quaternion< T >::set( Vector< 3, T >& xyz, T _w )
 {
     x() = xyz.x();
     y() = xyz.y();
@@ -384,7 +389,7 @@ void quaternion< T >::set( vector< 3, T >& xyz, T _w )
 
 template < typename T >
 template< typename input_iterator_t >
-void quaternion< T >::set( input_iterator_t begin_, input_iterator_t end_ )
+void Quaternion< T >::set( input_iterator_t begin_, input_iterator_t end_ )
 {
     super::template set< input_iterator_t >( begin_, end_ );
 }
@@ -392,7 +397,7 @@ void quaternion< T >::set( input_iterator_t begin_, input_iterator_t end_ )
 
 
 template < typename T >
-bool quaternion< T >::operator==( const T& a ) const
+bool Quaternion< T >::operator==( const T& a ) const
 {
     return ( w() == a && x() == 0 && y() == 0 && z() == 0 );
 }
@@ -400,24 +405,24 @@ bool quaternion< T >::operator==( const T& a ) const
 
 
 template < typename T >
-bool quaternion< T >::operator!=( const T& a ) const
+bool Quaternion< T >::operator!=( const T& a ) const
 {
     return ( w() != a || x() != 0 || y() != 0 || z() != 0 );
 }
 
 
 template < typename T >
-bool quaternion< T >::operator==( const vector< 4, T >& a ) const
+bool Quaternion< T >::operator==( const Vector< 4, T >& a ) const
 {
     return this->operator==(
-        reinterpret_cast< const quaternion< T >& >( a )
+        reinterpret_cast< const Quaternion< T >& >( a )
             );
 }
 
 
 template < typename T >
 bool
-quaternion< T >::operator!=( const vector< 4, T >& a ) const
+Quaternion< T >::operator!=( const Vector< 4, T >& a ) const
 {
     return ! this->operator==( a );
 }
@@ -426,7 +431,7 @@ quaternion< T >::operator!=( const vector< 4, T >& a ) const
 
 template < typename T >
 bool
-quaternion< T >::operator==( const quaternion& a ) const
+Quaternion< T >::operator==( const Quaternion& a ) const
 {
     return (
         w() == a.w() &&
@@ -440,7 +445,7 @@ quaternion< T >::operator==( const quaternion& a ) const
 
 template < typename T >
 bool
-quaternion< T >::operator!=( const quaternion& a ) const
+Quaternion< T >::operator!=( const Quaternion& a ) const
 {
     return ! this->operator==( a );
 }
@@ -449,7 +454,7 @@ quaternion< T >::operator!=( const quaternion& a ) const
 
 template < typename T >
 bool
-quaternion< T >::is_akin( const quaternion& a, const T& delta )
+Quaternion< T >::is_akin( const Quaternion& a, const T& delta )
 {
     if( fabsf( w() - a.w() ) > delta ||
         fabsf( x() - a.x() ) > delta ||
@@ -463,7 +468,7 @@ quaternion< T >::is_akin( const quaternion& a, const T& delta )
 
 
 template < typename T >
-void quaternion< T >::conjugate()
+void Quaternion< T >::conjugate()
 {
     x() = -x();
     y() = -y();
@@ -473,16 +478,16 @@ void quaternion< T >::conjugate()
 
 
 template < typename T >
-quaternion< T > quaternion< T >::get_conjugate() const
+Quaternion< T > Quaternion< T >::get_conjugate() const
 {
-    return quaternion< T > ( -x(), -y(), -z(), w() );
+    return Quaternion< T > ( -x(), -y(), -z(), w() );
 }
 
 
 
 template < typename T >
 T
-quaternion< T >::abs() const
+Quaternion< T >::abs() const
 {
     return sqrt( squared_abs() );
 }
@@ -490,7 +495,7 @@ quaternion< T >::abs() const
 
 
 template < typename T >
-T quaternion< T >::squared_abs() const
+T Quaternion< T >::squared_abs() const
 {
     return x() * x() + y() * y() + z() * z() + w() * w();
 }
@@ -498,9 +503,9 @@ T quaternion< T >::squared_abs() const
 
 
 template < typename T >
-quaternion< T > quaternion< T >::inverse()
+Quaternion< T > Quaternion< T >::inverse()
 {
-    quaternion< T > q( *this );
+    Quaternion< T > q( *this );
     q.conjugate();
 
     T tmp = squared_abs();
@@ -511,7 +516,7 @@ quaternion< T > quaternion< T >::inverse()
 
 
 template < typename T >
-T quaternion< T >::normalize()
+T Quaternion< T >::normalize()
 {
     T len = abs();
     if( len == 0.0 )
@@ -524,10 +529,10 @@ T quaternion< T >::normalize()
 
 
 template < typename T >
-quaternion< T >
-quaternion< T >::get_normalized() const
+Quaternion< T >
+Quaternion< T >::get_normalized() const
 {
-    quaternion< T > q( *this );
+    Quaternion< T > q( *this );
     q.normalize();
     return q;
 }
@@ -539,29 +544,29 @@ quaternion< T >::get_normalized() const
 //
 
 template < typename T >
-quaternion< T >
-quaternion< T >::operator+( const quaternion< T >& a ) const
+Quaternion< T >
+Quaternion< T >::operator+( const Quaternion< T >& a ) const
 {
-    return quaternion( x() + a.x(), y() + a.y(), z() + a.z(), w() + a.w() );
+    return Quaternion( x() + a.x(), y() + a.y(), z() + a.z(), w() + a.w() );
 }
 
 
 
 template < typename T >
-quaternion< T >
-quaternion< T >::operator-( const quaternion< T >& a ) const
+Quaternion< T >
+Quaternion< T >::operator-( const Quaternion< T >& a ) const
 {
-    return quaternion( x() - a.x(), y() - a.y(), z() - a.z(), w() - a.w() );
+    return Quaternion( x() - a.x(), y() - a.y(), z() - a.z(), w() - a.w() );
 }
 
 
 
 // returns Grasssmann product
 template < typename T >
-quaternion< T >
-quaternion< T >::operator*( const quaternion< T >& a ) const
+Quaternion< T >
+Quaternion< T >::operator*( const Quaternion< T >& a ) const
 {
-    quaternion< T > ret( *this );
+    Quaternion< T > ret( *this );
     ret *= a;
     return ret;
 }
@@ -570,10 +575,10 @@ quaternion< T >::operator*( const quaternion< T >& a ) const
 
 // Grassmann product
 template < typename T >
-void quaternion< T >::operator*=( const quaternion< T >& q )
+void Quaternion< T >::operator*=( const Quaternion< T >& q )
 {
     #if 0
-    quaternion< T > orig( *this );
+    Quaternion< T > orig( *this );
     x() = orig.w() * a.x() + orig.x() * a.w() + orig.y() * a.z() - orig.z() * a.y();
     y() = orig.w() * a.y() + orig.y() * a.w() + orig.z() * a.x() - orig.x() * a.z();
     z() = orig.w() * a.z() + orig.z() * a.w() + orig.x() * a.y() - orig.y() * a.x();
@@ -618,16 +623,16 @@ void quaternion< T >::operator*=( const quaternion< T >& q )
 
 
 template < typename T >
-quaternion< T >
-quaternion< T >::operator-() const
+Quaternion< T >
+Quaternion< T >::operator-() const
 {
-    return quaternion( -x(), -y(), -z(), -w() );
+    return Quaternion( -x(), -y(), -z(), -w() );
 }
 
 
 
 template < typename T >
-void quaternion< T >::operator+=( const quaternion< T >& q )
+void Quaternion< T >::operator+=( const Quaternion< T >& q )
 {
     array[ 0 ] += q.array[ 0 ];
     array[ 1 ] += q.array[ 1 ];
@@ -638,7 +643,7 @@ void quaternion< T >::operator+=( const quaternion< T >& q )
 
 
 template < typename T >
-void quaternion< T >::operator-=( const quaternion< T >& q )
+void Quaternion< T >::operator-=( const Quaternion< T >& q )
 {
     array[ 0 ] -= q.array[ 0 ];
     array[ 1 ] -= q.array[ 1 ];
@@ -653,30 +658,30 @@ void quaternion< T >::operator-=( const quaternion< T >& q )
 //
 
 template < typename T >
-quaternion< T >
-quaternion< T >::operator*( const T a ) const
+Quaternion< T >
+Quaternion< T >::operator*( const T a ) const
 {
-    return quaternion( x() * a, y() * a, z() * a, w() * a );
+    return Quaternion( x() * a, y() * a, z() * a, w() * a );
 }
 
 
 
 template < typename T >
-quaternion< T >
-quaternion< T >::operator/( T a ) const
+Quaternion< T >
+Quaternion< T >::operator/( T a ) const
 {
     if ( a == 0.0 )
     {
         VMMLIB_ERROR( "Division by zero.", VMMLIB_HERE );
     }
     a = 1.0 / a;
-    return quaternion( x() * a, y() * a, z() * a, w() * a );
+    return Quaternion( x() * a, y() * a, z() * a, w() * a );
 }
 
 
 
 template < typename T >
-void quaternion< T >::operator*=( T q )
+void Quaternion< T >::operator*=( T q )
 {
     array[ 0 ] *= q;
     array[ 1 ] *= q;
@@ -687,7 +692,7 @@ void quaternion< T >::operator*=( T q )
 
 
 template < typename T >
-void quaternion< T >::operator/=( T q )
+void Quaternion< T >::operator/=( T q )
 {
     if ( q == 0.0 )
     {
@@ -701,28 +706,28 @@ void quaternion< T >::operator/=( T q )
 //quaternion/vector operations
 
 template < typename T >
-quaternion< T >
-quaternion< T >::operator+( const vector< 3, T >& a ) const
+Quaternion< T >
+Quaternion< T >::operator+( const Vector< 3, T >& a ) const
 {
-    return quaternion( x() + a.x(), y() + a.y(), z() + a.z(), w() );
+    return Quaternion( x() + a.x(), y() + a.y(), z() + a.z(), w() );
 }
 
 
 
 template < typename T >
-quaternion< T >
-quaternion< T >::operator-( const vector< 3, T >& a ) const
+Quaternion< T >
+Quaternion< T >::operator-( const Vector< 3, T >& a ) const
 {
-    return quaternion( w(), x() - a.x(), y() - a.y(), z() - a.z() );
+    return Quaternion( w(), x() - a.x(), y() - a.y(), z() - a.z() );
 }
 
 
 
 template < typename T >
-quaternion< T >
-quaternion< T >::operator*( const vector< 3, T >& a ) const
+Quaternion< T >
+Quaternion< T >::operator*( const Vector< 3, T >& a ) const
 {
-    return quaternion( -x() * a.x() - y() * a.y() - z() * a.z(),
+    return Quaternion( -x() * a.x() - y() * a.y() - z() * a.z(),
                         w() * a.x() + y() * a.z() - z() * a.y(),
                         w() * a.y() + z() * a.x() - x() * a.z(),
                         w() * a.z() + x() * a.y() - y() * a.x()  );
@@ -731,7 +736,7 @@ quaternion< T >::operator*( const vector< 3, T >& a ) const
 
 
 template < typename T >
-void quaternion< T >::operator+=( const vector< 3, T >& xyz )
+void Quaternion< T >::operator+=( const Vector< 3, T >& xyz )
 {
     x() += xyz.x();
     y() += xyz.y();
@@ -741,7 +746,7 @@ void quaternion< T >::operator+=( const vector< 3, T >& xyz )
 
 
 template < typename T >
-void quaternion< T >::operator-=( const vector< 3, T >& xyz )
+void Quaternion< T >::operator-=( const Vector< 3, T >& xyz )
 {
     x() -= xyz.x();
     y() -= xyz.y();
@@ -752,7 +757,7 @@ void quaternion< T >::operator-=( const vector< 3, T >& xyz )
 
 
 template < typename T >
-void quaternion< T >::operator*=(const vector< 3, T >& a )
+void Quaternion< T >::operator*=(const Vector< 3, T >& a )
 {
     T _x = x();
     T _y = y();
@@ -769,9 +774,9 @@ void quaternion< T >::operator*=(const vector< 3, T >& a )
 
 
 template < typename T >
-vector< 3, T > quaternion< T >::cross( const quaternion< T >& bb ) const
+Vector< 3, T > Quaternion< T >::cross( const Quaternion< T >& bb ) const
 {
-    vector< 3, T > result;
+    Vector< 3, T > result;
 
     result.array[ 0 ] = y() * bb.z() - z() * bb.y();
     result.array[ 1 ] = z() * bb.x() - x() * bb.z();
@@ -783,7 +788,7 @@ vector< 3, T > quaternion< T >::cross( const quaternion< T >& bb ) const
 
 
 template < typename T >
-T quaternion< T >::dot( const quaternion< T >& q ) const
+T Quaternion< T >::dot( const Quaternion< T >& q ) const
 {
     return w() * q.w() + x() * q.x() + y() * q.y() + z() * q.z();
 }
@@ -791,8 +796,8 @@ T quaternion< T >::dot( const quaternion< T >& q ) const
 
 
 template < typename T >
-T quaternion< T >::
-dot( const quaternion< T >& p, const quaternion< T >& q )
+T Quaternion< T >::
+dot( const Quaternion< T >& p, const Quaternion< T >& q )
 {
     return p.w() * q.w() + p.x() * q.x() + p.y() * q.y() + p.z() * q.z();
 }
@@ -800,15 +805,15 @@ dot( const quaternion< T >& p, const quaternion< T >& q )
 
 
 template < typename T >
-void quaternion< T >::normal( const quaternion< T >& aa,
-                              const quaternion< T >& bb,
-                              const quaternion< T >& cc,
-                              const quaternion< T >& dd )
+void Quaternion< T >::normal( const Quaternion< T >& aa,
+                              const Quaternion< T >& bb,
+                              const Quaternion< T >& cc,
+                              const Quaternion< T >& dd )
 {
     //right hand system, CCW triangle
-    const quaternion< T > quat_t = bb - aa;
-    const quaternion< T > quat_u = cc - aa;
-    const quaternion< T > quat_v = dd - aa;
+    const Quaternion< T > quat_t = bb - aa;
+    const Quaternion< T > quat_u = cc - aa;
+    const Quaternion< T > quat_v = dd - aa;
     cross( quat_t );
     cross( quat_u );
     cross( quat_v );
@@ -818,11 +823,11 @@ void quaternion< T >::normal( const quaternion< T >& aa,
 
 
 template < typename T >
-quaternion< T > quaternion< T >::normal( const quaternion< T >& aa,
-                                         const quaternion< T >& bb,
-                                         const quaternion< T >& cc )
+Quaternion< T > Quaternion< T >::normal( const Quaternion< T >& aa,
+                                         const Quaternion< T >& bb,
+                                         const Quaternion< T >& cc )
 {
-    quaternion< T > tmp;
+    Quaternion< T > tmp;
     tmp.normal( *this, aa, bb, cc );
     return tmp;
 }
@@ -832,55 +837,55 @@ quaternion< T > quaternion< T >::normal( const quaternion< T >& aa,
 // instead of rotating twice for increased performance, but be aware of non-commutativity!
 // (the first rotation quaternion has to be the first factor)
 template< typename T >
-quaternion< T > quaternion< T >::rotate( T theta, vector< 3, T >& axis,
-                                         const vector< 3, T >& a )
+Quaternion< T > Quaternion< T >::rotate( T theta, Vector< 3, T >& axis,
+                                         const Vector< 3, T >& a )
 {
-    quaternion< T > p = a;
+    Quaternion< T > p = a;
     T alpha = theta / 2;
-    quaternion< T > q = std::cos( alpha ) + ( std::sin( alpha ) * axis.normalize() );
+    Quaternion< T > q = std::cos( alpha ) + ( std::sin( alpha ) * axis.normalize() );
     return q * p * q.invert();
 }
 
 
 
 template< typename T >
-quaternion< T > quaternion< T >::rotate_x( T theta, const vector< 3, T >& a )
+Quaternion< T > Quaternion< T >::rotate_x( T theta, const Vector< 3, T >& a )
 {
-    quaternion< T > p = a;
+    Quaternion< T > p = a;
     T alpha = theta / 2;
-    quaternion< T > q = std::cos( alpha ) + ( std::sin( alpha ) *  QUATERI );
+    Quaternion< T > q = std::cos( alpha ) + ( std::sin( alpha ) *  QUATERI );
     return q * p * q.invert();
 }
 
 
 
 template< typename T >
-quaternion< T > quaternion< T >::rotate_y( T theta, const vector< 3, T >& a )
+Quaternion< T > Quaternion< T >::rotate_y( T theta, const Vector< 3, T >& a )
 {
-    quaternion< T > p = a;
+    Quaternion< T > p = a;
     T alpha = theta / 2;
-    quaternion< T > q = std::cos( alpha ) + ( std::sin( alpha ) *  QUATERJ );
+    Quaternion< T > q = std::cos( alpha ) + ( std::sin( alpha ) *  QUATERJ );
     return q * p * q.invert();
 }
 
 
 
 template< typename T >
-quaternion< T > quaternion< T >::rotate_z( T theta, const vector< 3, T >& a )
+Quaternion< T > Quaternion< T >::rotate_z( T theta, const Vector< 3, T >& a )
 {
-    quaternion< T > p = a;
+    Quaternion< T > p = a;
     T alpha = theta / 2;
-    quaternion< T > q = std::cos( alpha ) + ( std::sin( alpha ) *  QUATERK );
+    Quaternion< T > q = std::cos( alpha ) + ( std::sin( alpha ) *  QUATERK );
     return q * p * q.invert();
 }
 
 
 
 template < typename T >
-matrix< 3, 3, T >
-quaternion< T >::get_rotation_matrix() const
+Matrix< 3, 3, T >
+Quaternion< T >::get_rotation_matrix() const
 {
-    matrix< 3, 3, T > result;
+    Matrix< 3, 3, T > result;
     get_rotation_matrix< 3 >( result );
     return result;
 }
@@ -888,7 +893,7 @@ quaternion< T >::get_rotation_matrix() const
 
 
 template < typename T > template< size_t D >
-void quaternion< T >::get_rotation_matrix( matrix< D, D, T >& M ) const
+void Quaternion< T >::get_rotation_matrix( Matrix< D, D, T >& M ) const
 {
     T w2 = w() * w();
     T x2 = x() * x();
@@ -914,11 +919,11 @@ void quaternion< T >::get_rotation_matrix( matrix< D, D, T >& M ) const
 }
 
 template< typename T >
-quaternion< T > quaternion< T >::
-slerp( T a, const quaternion< T >& p, const quaternion< T >& q, const T epsilon )
+Quaternion< T > Quaternion< T >::
+slerp( T a, const Quaternion< T >& p, const Quaternion< T >& q, const T epsilon )
 {
-    quaternion< T > px = p.get_normalized();
-    quaternion< T > qx = q.get_normalized();
+    Quaternion< T > px = p.get_normalized();
+    Quaternion< T > qx = q.get_normalized();
 
     T cosine = px.dot( qx );
 
@@ -958,7 +963,7 @@ slerp( T a, const quaternion< T >& p, const quaternion< T >& q, const T epsilon 
 
 
 template < typename T >
-quaternion< T >& quaternion< T >::operator=(const quaternion& other)
+Quaternion< T >& Quaternion< T >::operator=(const Quaternion& other)
 {
     memcpy( array, other.array, 4 * sizeof( T ) );
     return *this;
@@ -966,8 +971,8 @@ quaternion< T >& quaternion< T >::operator=(const quaternion& other)
 
 
 template < typename T >
-const vector< 4, T >&
-quaternion< T >::operator=( const vector< 4, T >& other )
+const Vector< 4, T >&
+Quaternion< T >::operator=( const Vector< 4, T >& other )
 {
     memcpy( array, other.array, 4 * sizeof( T ) );
     return other;

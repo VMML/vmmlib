@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2014, Visualization and Multimedia Lab,
+ * Copyright (c) 2006-2015, Visualization and Multimedia Lab,
  *                          University of Zurich <http://vmml.ifi.uzh.ch>,
  *                          Eyescale Software GmbH,
  *                          Blue Brain Project, EPFL
@@ -30,33 +30,46 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef __VMML__FRUSTUM_CULLER__HPP__
-#define __VMML__FRUSTUM_CULLER__HPP__
+#ifndef VMML__FRUSTUM_CULLER__HPP
+#define VMML__FRUSTUM_CULLER__HPP
 
 #include <vmmlib/vector.hpp>
 #include <vmmlib/matrix.hpp>
-#include <vmmlib/visibility.hpp>
 
 // - declaration -
 
 namespace vmml
 {
 
+enum Visibility
+{
+    VISIBILITY_NONE     = 0,
+    VISIBILITY_PARTIAL  = 1,
+    VISIBILITY_FULL     = 2
+};
+
+inline std::ostream& operator<< ( std::ostream& os, const Visibility& v )
+{
+    return os << ( v == VISIBILITY_NONE ?    "not visible      " :
+                   v == VISIBILITY_PARTIAL ? "partially visible" :
+                   v == VISIBILITY_FULL ?    "fully visible    " : "ERROR" );
+}
+
 /** Helper class for OpenGL view frustum culling. */
 template< class T >
-class frustum_culler
+class FrustumCuller
 {
 public:
-    typedef vector< 2, T >    vec2;
-    typedef vector< 3, T >    vec3;
-    typedef vector< 4, T >    vec4;
+    typedef Vector< 2, T >    vec2;
+    typedef Vector< 3, T >    vec3;
+    typedef Vector< 4, T >    vec4;
 
     // contructors
-    frustum_culler() {}
-    ~frustum_culler(){}
+    FrustumCuller() {}
+    ~FrustumCuller(){}
 
     /** Set up the culling state using a 4x4 projection*modelView matrix. */
-    void setup( const matrix< 4, 4, T >& proj_modelview );
+    void setup( const Matrix< 4, 4, T >& proj_modelview );
 
     /**
      * Set up the culling state using the eight frustum corner points.
@@ -70,7 +83,7 @@ public:
     Visibility test_sphere( const vec4& sphere ) const;
     Visibility test_aabb( const vec2& x, const vec2& y, const vec2& z ) const;
 
-    friend std::ostream& operator << (std::ostream& os, const frustum_culler& f)
+    friend std::ostream& operator << (std::ostream& os, const FrustumCuller& f)
     {
         return os << "Frustum cull planes: " << std::endl
                   << "    left   " << f._left_plane << std::endl
@@ -98,8 +111,8 @@ private:
 
 #ifndef VMMLIB_NO_TYPEDEFS
 
-typedef frustum_culler< float >  frustum_cullerf;
-typedef frustum_culler< double > frustum_cullerd;
+typedef FrustumCuller< float >  frustum_cullerf;
+typedef FrustumCuller< double > frustum_cullerd;
 
 #endif
 
@@ -116,7 +129,7 @@ namespace vmml
  * matrix. The projection matrix should contain the viewing transformation.
  */
 template < class T >
-void frustum_culler< T >::setup( const matrix< 4, 4, T >& proj_modelview )
+void FrustumCuller< T >::setup( const Matrix< 4, 4, T >& proj_modelview )
 {
     // See http://www2.ravensoft.com/users/ggribb/plane%20extraction.pdf pp.5
 
@@ -141,7 +154,7 @@ void frustum_culler< T >::setup( const matrix< 4, 4, T >& proj_modelview )
 }
 
 template < class T >
-void frustum_culler< T >::setup( const vec3& a, const vec3& b,
+void FrustumCuller< T >::setup( const vec3& a, const vec3& b,
                                  const vec3& c, const vec3& d,
                                  const vec3& e, const vec3& f,
                                  const vec3& g, const vec3& h )
@@ -162,7 +175,7 @@ void frustum_culler< T >::setup( const vec3& a, const vec3& b,
 
 template < class T >
 inline void
-frustum_culler< T >::_normalize_plane( vector< 4, T >& plane ) const
+FrustumCuller< T >::_normalize_plane( Vector< 4, T >& plane ) const
 {
     const vec3& v3 = plane.template get_sub_vector< 3 >();
     const T len_i = 1.0 / v3.length();
@@ -174,7 +187,7 @@ frustum_culler< T >::_normalize_plane( vector< 4, T >& plane ) const
 
 
 template < class T > Visibility
-frustum_culler< T >::test_sphere( const vector< 4, T >& sphere ) const
+FrustumCuller< T >::test_sphere( const Vector< 4, T >& sphere ) const
 {
     Visibility visibility = VISIBILITY_FULL;
 
@@ -232,7 +245,7 @@ frustum_culler< T >::test_sphere( const vector< 4, T >& sphere ) const
 }
 
 template < class T >
-Visibility frustum_culler< T >::_test_aabb( const vec4& plane,
+Visibility FrustumCuller< T >::_test_aabb( const vec4& plane,
                                             const vec3& middle,
                                             const vec3& extent ) const
 {
@@ -250,7 +263,7 @@ Visibility frustum_culler< T >::_test_aabb( const vec4& plane,
 }
 
 template < class T >
-Visibility frustum_culler< T >::test_aabb( const vec2& x, const vec2& y,
+Visibility FrustumCuller< T >::test_aabb( const vec2& x, const vec2& y,
                                            const vec2& z ) const
 {
     Visibility result = VISIBILITY_FULL;

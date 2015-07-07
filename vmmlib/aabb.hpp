@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2014, Visualization and Multimedia Lab,
+ * Copyright (c) 2006-2015, Visualization and Multimedia Lab,
  *                          University of Zurich <http://vmml.ifi.uzh.ch>,
  *                          Eyescale Software GmbH,
  *                          Blue Brain Project, EPFL
@@ -29,8 +29,8 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-#ifndef __VMML__AXIS_ALIGNED_BOUNDING_BOX__HPP__
-#define __VMML__AXIS_ALIGNED_BOUNDING_BOX__HPP__
+#ifndef VMML__AXIS_ALIGNED_BOUNDING_BOX__HPP
+#define VMML__AXIS_ALIGNED_BOUNDING_BOX__HPP
 
 #include <vmmlib/vector.hpp>
 #include <limits>
@@ -50,27 +50,27 @@ template< typename T > class AABB
 public:
     /** Create an empty bounding box. */
     AABB();
-    AABB( const vector< 3, T >& pMin,
-                            const vector< 3, T >& pMax );
-    AABB( const vector< 4, T >& sphere );
+    AABB( const Vector< 3, T >& pMin,
+                            const Vector< 3, T >& pMax );
+    AABB( const Vector< 4, T >& sphere );
     AABB( T cx, T cy, T cz, T size );
 
-    bool isIn( const vector< 3, T >& pos );
-    bool isIn2d( const vector< 3, T >& pos ); // only x and y components are checked
-    bool isIn( const vector< 4, T >& sphere );
+    bool isIn( const Vector< 3, T >& pos );
+    bool isIn2d( const Vector< 3, T >& pos ); // only x and y components are checked
+    bool isIn( const Vector< 4, T >& sphere );
 
-    void set( const vector< 3, T >& pMin, const vector< 3, T >& pMax );
+    void set( const Vector< 3, T >& pMin, const Vector< 3, T >& pMax );
     void set( T cx, T cy, T cz, T size );
-    void setMin( const vector< 3, T >& pMin );
-    void setMax( const vector< 3, T >& pMax );
+    void setMin( const Vector< 3, T >& pMin );
+    void setMax( const Vector< 3, T >& pMax );
 
-    const vector< 3, T >& getMin() const;
-    const vector< 3, T >& getMax() const;
-    vector< 3, T >& getMin();
-    vector< 3, T >& getMax();
+    const Vector< 3, T >& getMin() const;
+    const Vector< 3, T >& getMax() const;
+    Vector< 3, T >& getMin();
+    Vector< 3, T >& getMax();
 
     void merge( const AABB< T >& aabb );
-    void merge( const vector< 3, T >& point );
+    void merge( const Vector< 3, T >& point );
 
     void setEmpty();
     bool isEmpty() const;
@@ -90,14 +90,14 @@ public:
     template< class U >
     bool operator!=( const AABB< U >& other ) const;
 
-    vector< 3, T > getCenter() const;
-    vector< 3, T > getDimension() const;
+    Vector< 3, T > getCenter() const;
+    Vector< 3, T > getDimension() const;
 
     static AABB< T > makeUnitBox();
 
 protected:
-    vector< 3, T > _min;
-    vector< 3, T > _max;
+    Vector< 3, T > _min;
+    Vector< 3, T > _max;
 };
 
 #ifndef VMMLIB_NO_TYPEDEFS
@@ -128,14 +128,14 @@ template<> inline AABB< double >::AABB()
 {}
 
 template< typename T >
-AABB< T >::AABB( const vector< 3, T >& pMin,
-                 const vector< 3, T >& pMax)
+AABB< T >::AABB( const Vector< 3, T >& pMin,
+                 const Vector< 3, T >& pMax)
     : _min( pMin )
     , _max( pMax )
 {}
 
 template< typename T >
-AABB< T >::AABB( const vector< 4, T >& sphere )
+AABB< T >::AABB( const Vector< 4, T >& sphere )
 {
     _max = _min = sphere.getCenter();
     _max += sphere.getRadius();
@@ -145,15 +145,15 @@ AABB< T >::AABB( const vector< 4, T >& sphere )
 template< typename T >
 AABB< T >::AABB( T cx, T cy, T cz, T size )
 {
-    _max = _min = vector< 3, T >( cx, cy, cz );
+    _max = _min = Vector< 3, T >( cx, cy, cz );
     _max += size;
     _min -= size;
 }
 
 template< typename T >
-inline bool AABB< T >::isIn( const vector< 4, T >& sphere )
+inline bool AABB< T >::isIn( const Vector< 4, T >& sphere )
 {
-    vector< 3, T > sv ( sphere.getCenter() );
+    Vector< 3, T > sv ( sphere.getCenter() );
     sv += sphere.getRadius();
     if ( sv.x() > _max.x() || sv.y() > _max.y() || sv.z() > _max.z() )
         return false;
@@ -164,7 +164,7 @@ inline bool AABB< T >::isIn( const vector< 4, T >& sphere )
 }
 
 template< typename T >
-inline bool AABB< T >::isIn( const vector< 3, T >& pos )
+inline bool AABB< T >::isIn( const Vector< 3, T >& pos )
 {
     if ( pos.x() > _max.x() || pos.y() > _max.y() || pos.z() > _max.z() ||
          pos.x() < _min.x() || pos.y() < _min.y() || pos.z() < _min.z( ))
@@ -175,7 +175,7 @@ inline bool AABB< T >::isIn( const vector< 3, T >& pos )
 }
 
 template< typename T >
-inline bool AABB< T >::isIn2d( const vector< 3, T >& pos )
+inline bool AABB< T >::isIn2d( const Vector< 3, T >& pos )
 {
     if ( pos.x() > _max.x() || pos.y() > _max.y() || pos.x() < _min.x() ||
          pos.y() < _min.y( ))
@@ -186,8 +186,8 @@ inline bool AABB< T >::isIn2d( const vector< 3, T >& pos )
 }
 
 template< typename T >
-inline void AABB< T >::set( const vector< 3, T >& pMin,
-                            const vector< 3, T >& pMax )
+inline void AABB< T >::set( const Vector< 3, T >& pMin,
+                            const Vector< 3, T >& pMax )
 {
     _min = pMin;
     _max = pMax;
@@ -196,41 +196,41 @@ inline void AABB< T >::set( const vector< 3, T >& pMin,
 template< typename T >
 inline void AABB< T >::set( T cx, T cy, T cz, T size )
 {
-    vector< 3, T > center( cx, cy, cz );
+    Vector< 3, T > center( cx, cy, cz );
     _min = center - size;
     _max = center + size;
 }
 
 template< typename T >
-inline void AABB< T >::setMin( const vector< 3, T >& pMin )
+inline void AABB< T >::setMin( const Vector< 3, T >& pMin )
 {
     _min = pMin;
 }
 
 template< typename T >
-inline void AABB< T >::setMax( const vector< 3, T >& pMax )
+inline void AABB< T >::setMax( const Vector< 3, T >& pMax )
 {
     _max = pMax;
 }
 
 template< typename T >
-inline const vector< 3, T >& AABB< T >::getMin() const
+inline const Vector< 3, T >& AABB< T >::getMin() const
 {
     return _min;
 }
 
 template< typename T >
-inline const vector< 3, T >& AABB< T >::getMax() const
+inline const Vector< 3, T >& AABB< T >::getMax() const
 {
     return _max;
 }
 
-template< typename T > inline vector< 3, T >& AABB< T >::getMin()
+template< typename T > inline Vector< 3, T >& AABB< T >::getMin()
 {
     return _min;
 }
 
-template< typename T > inline vector< 3, T >& AABB< T >::getMax()
+template< typename T > inline Vector< 3, T >& AABB< T >::getMax()
 {
     return _max;
 }
@@ -310,13 +310,13 @@ AABB< T >::operator!=( const AABB< U >& other )
 }
 
 template< typename T >
-vector< 3, T > AABB< T >::getCenter() const
+Vector< 3, T > AABB< T >::getCenter() const
 {
     return _min + ( ( _max - _min ) * 0.5f );
 }
 
 template< typename T >
-vector< 3, T > AABB< T >::getDimension() const
+Vector< 3, T > AABB< T >::getDimension() const
 {
     return _max - _min;
 }
@@ -324,8 +324,8 @@ vector< 3, T > AABB< T >::getDimension() const
 template< typename T >
 void AABB< T >::merge( const AABB<T>& aabb )
 {
-    const vector< 3, T >& min = aabb.getMin();
-    const vector< 3, T >& max = aabb.getMax();
+    const Vector< 3, T >& min = aabb.getMin();
+    const Vector< 3, T >& max = aabb.getMax();
 
     if ( min.x() < _min.x() )
         _min.x() = min.x();
@@ -343,7 +343,7 @@ void AABB< T >::merge( const AABB<T>& aabb )
 }
 
 template< typename T >
-void AABB< T >::merge( const vector< 3, T >& point )
+void AABB< T >::merge( const Vector< 3, T >& point )
 {
     if ( point.x() < _min.x() )
         _min.x() = point.x();
@@ -377,7 +377,7 @@ template< typename T > inline bool AABB< T >::isEmpty() const
 template< typename T >
 AABB< T > AABB< T >::makeUnitBox()
 {
-    return AABB( vector< 3, T >::ZERO, vector< 3, T >::ONE );
+    return AABB( Vector< 3, T >::ZERO, Vector< 3, T >::ONE );
 }
 
 }; //namespace vmml

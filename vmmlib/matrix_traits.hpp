@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2014, Visualization and Multimedia Lab,
+ * Copyright (c) 2006-2015, Visualization and Multimedia Lab,
  *                          University of Zurich <http://vmml.ifi.uzh.ch>,
  *                          Eyescale Software GmbH,
  *                          Blue Brain Project, EPFL
@@ -31,8 +31,8 @@
  */
 //Copyright (c) 2010 Daniel Pfeifer
 
-#ifndef __VMML_MATRIX_TRAITS_HPP__
-#define __VMML_MATRIX_TRAITS_HPP__
+#ifndef VMML_MATRIX_TRAITS_HPP__
+#define VMML_MATRIX_TRAITS_HPP__
 
 #include <vmmlib/matrix.hpp>
 #include <boost/la/matrix_traits.hpp>

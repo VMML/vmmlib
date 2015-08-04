@@ -3,5 +3,4 @@ vmmlib.creator.user
 Makefile
 GNUmakefile
 /nbproject/private/
-CMake/common
 build

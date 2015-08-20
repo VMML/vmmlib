@@ -104,8 +104,8 @@ public:
     bool operator==( const T& a ) const;
     bool operator!=( const T& a ) const;
 
-    bool operator==( const Quaternion& a ) const;
-    bool operator!=( const Quaternion& a ) const;
+    bool operator==( const Quaternion& rhs ) const;
+    bool operator!=( const Quaternion& rhs ) const;
 
     bool operator==( const Vector< 4, T >& a ) const;
     bool operator!=( const Vector< 4, T >& a ) const;
@@ -131,14 +131,14 @@ public:
     //
     // quaternion/quaternion operations
     //
-    Quaternion operator+( const Quaternion< T >& a ) const;
-    Quaternion operator-( const Quaternion< T >& a ) const;
+    Quaternion operator+( const Quaternion< T >& rhs ) const;
+    Quaternion operator-( const Quaternion< T >& rhs ) const;
     // caution: a * q != q * a in general
-    Quaternion operator*( const Quaternion< T >& a ) const;
-    void operator+=( const Quaternion< T >& a );
-    void operator-=( const Quaternion< T >& a );
+    Quaternion operator*( const Quaternion< T >& rhs ) const;
+    void operator+=( const Quaternion< T >& rhs );
+    void operator-=( const Quaternion< T >& rhs );
     // caution: a *= q != q *= a in general
-    void operator*=( const Quaternion< T >& a );
+    void operator*=( const Quaternion< T >& rhs );
 
     //
     // quaternion/scalar operations
@@ -432,13 +432,13 @@ Quaternion< T >::operator!=( const Vector< 4, T >& a ) const
 
 template < typename T >
 bool
-Quaternion< T >::operator==( const Quaternion& a ) const
+Quaternion< T >::operator==( const Quaternion& rhs ) const
 {
     return (
-        w() == a.w() &&
-        x() == a.x() &&
-        y() == a.y() &&
-        z() == a.z()
+        w() == rhs.w() &&
+        x() == rhs.x() &&
+        y() == rhs.y() &&
+        z() == rhs.z()
         );
 }
 
@@ -446,9 +446,9 @@ Quaternion< T >::operator==( const Quaternion& a ) const
 
 template < typename T >
 bool
-Quaternion< T >::operator!=( const Quaternion& a ) const
+Quaternion< T >::operator!=( const Quaternion& rhs ) const
 {
-    return ! this->operator==( a );
+    return ! this->operator==( rhs );
 }
 
 
@@ -546,18 +546,18 @@ Quaternion< T >::get_normalized() const
 
 template < typename T >
 Quaternion< T >
-Quaternion< T >::operator+( const Quaternion< T >& a ) const
+Quaternion< T >::operator+( const Quaternion< T >& rhs ) const
 {
-    return Quaternion( x() + a.x(), y() + a.y(), z() + a.z(), w() + a.w() );
+    return Quaternion( x() + rhs.x(), y() + rhs.y(), z() + rhs.z(), w() + rhs.w() );
 }
 
 
 
 template < typename T >
 Quaternion< T >
-Quaternion< T >::operator-( const Quaternion< T >& a ) const
+Quaternion< T >::operator-( const Quaternion< T >& rhs ) const
 {
-    return Quaternion( x() - a.x(), y() - a.y(), z() - a.z(), w() - a.w() );
+    return Quaternion( x() - rhs.x(), y() - rhs.y(), z() - rhs.z(), w() - rhs.w() );
 }
 
 
@@ -565,10 +565,10 @@ Quaternion< T >::operator-( const Quaternion< T >& a ) const
 // returns Grasssmann product
 template < typename T >
 Quaternion< T >
-Quaternion< T >::operator*( const Quaternion< T >& a ) const
+Quaternion< T >::operator*( const Quaternion< T >& rhs ) const
 {
     Quaternion< T > ret( *this );
-    ret *= a;
+    ret *= rhs;
     return ret;
 }
 
@@ -591,8 +591,8 @@ void Quaternion< T >::operator*=( const Quaternion< T >& q )
 
     T* _array = super::array;
 
-    const T& a = _array[ 3 ];
-    const T& b = _array[ 0 ];
+    const T& a_ = _array[ 3 ];
+    const T& b_ = _array[ 0 ];
     const T& c = _array[ 1 ];
     const T& d = _array[ 2 ];
     const T& _x = q.array[ 3 ];
@@ -601,13 +601,13 @@ void Quaternion< T >::operator*=( const Quaternion< T >& q )
     const T& _w = q.array[ 2 ];
 
     const T tmp_00 = (d - c) * (_z - _w);
-    const T tmp_01 = (a + b) * (_x + _y);
-    const T tmp_02 = (a - b) * (_z + _w);
+    const T tmp_01 = (a_ + b_) * (_x + _y);
+    const T tmp_02 = (a_ - b_) * (_z + _w);
     const T tmp_03 = (c + d) * (_x - _y);
-    const T tmp_04 = (d - b) * (_y - _z);
-    const T tmp_05 = (d + b) * (_y + _z);
-    const T tmp_06 = (a + c) * (_x - _w);
-    const T tmp_07 = (a - c) * (_x + _w);
+    const T tmp_04 = (d - b_) * (_y - _z);
+    const T tmp_05 = (d + b_) * (_y + _z);
+    const T tmp_06 = (a_ + c) * (_x - _w);
+    const T tmp_07 = (a_ - c) * (_x + _w);
     const T tmp_08 = tmp_05 + tmp_06 + tmp_07;
     const T tmp_09 = 0.5 * (tmp_04 + tmp_08);
 
@@ -660,23 +660,23 @@ void Quaternion< T >::operator-=( const Quaternion< T >& q )
 
 template < typename T >
 Quaternion< T >
-Quaternion< T >::operator*( const T a ) const
+Quaternion< T >::operator*( const T a_ ) const
 {
-    return Quaternion( x() * a, y() * a, z() * a, w() * a );
+    return Quaternion( x() * a_, y() * a_, z() * a_, w() * a_ );
 }
 
 
 
 template < typename T >
 Quaternion< T >
-Quaternion< T >::operator/( T a ) const
+Quaternion< T >::operator/( T a_ ) const
 {
-    if ( a == 0.0 )
+    if ( a_ == 0.0 )
     {
         VMMLIB_ERROR( "Division by zero.", VMMLIB_HERE );
     }
-    a = 1.0 / a;
-    return Quaternion( x() * a, y() * a, z() * a, w() * a );
+    a_ = 1.0 / a_;
+    return Quaternion( x() * a_, y() * a_, z() * a_, w() * a_ );
 }
 
 

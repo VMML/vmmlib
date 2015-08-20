@@ -58,7 +58,11 @@ endif()
 
 # Default component definition
 if(NOT CPACK_COMPONENTS_ALL)
-  set(CPACK_COMPONENTS_ALL unspecified lib dev doc apps examples)
+  if(RELEASE_VERSION)
+    set(CPACK_COMPONENTS_ALL lib dev doc apps examples)
+  else()
+    set(CPACK_COMPONENTS_ALL unspecified lib dev doc apps examples)
+  endif()
 
   set(CPACK_COMPONENT_UNSPECIFIED_DISPLAY_NAME "Unspecified")
   set(CPACK_COMPONENT_UNSPECIFIED_DESCRIPTION
@@ -186,4 +190,5 @@ set(CPACK_PACKAGE_FILE_NAME_BACKUP "${CPACK_PACKAGE_FILE_NAME}")
 include(CPack)
 set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_FILE_NAME_BACKUP}")
 
+include(PackageInstall)
 include(PackageConfig)

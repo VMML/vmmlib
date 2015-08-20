@@ -5,10 +5,6 @@
 #  sudo apt-get install devscripts
 ##
 
-if(NOT LSB_DISTRIBUTOR_ID STREQUAL "Ubuntu")
-  return()
-endif()
-
 find_program(DEBUILD_EXECUTABLE debuild)
 find_program(DPUT_EXECUTABLE dput)
 
@@ -65,7 +61,7 @@ function(UPLOAD_PPA UBUNTU_NAME)
     ${DEBIAN_BASE_DIR}/${CPACK_DEBIAN_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-source)
   execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory ${DEBIAN_BASE_DIR})
   execute_process(
-    COMMAND "${GIT_EXECUTABLE}" archive --worktree-attributes
+    COMMAND ${GIT_EXECUTABLE} archive --worktree-attributes
     --prefix ${CPACK_DEBIAN_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-source/
     -o ${DEBIAN_BASE_DIR}.tar HEAD
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})

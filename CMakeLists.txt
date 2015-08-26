@@ -12,7 +12,7 @@ set(VERSION_ABI 3)
 configure_file(${PROJECT_SOURCE_DIR}/vmmlib/version.in.hpp
                ${PROJECT_SOURCE_DIR}/vmmlib/version.hpp @ONLY)
 
-set(VMMLIB_COMPILE_TESTS FALSE CACHE BOOL "Compile 'tests' and 'tests_old' directories")
+set(VMMLIB_COMPILE_TESTS TRUE CACHE BOOL "Compile 'tests' and 'tests_old' directories")
 
 if(VMMLIB_COMPILE_TESTS)
   list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake
@@ -23,5 +23,5 @@ if(VMMLIB_COMPILE_TESTS)
   common_package(Boost COMPONENTS unit_test_framework)
 
   add_subdirectory(tests)
-  add_subdirectory(tests_old)
+  #add_subdirectory(tests_old)
 endif()

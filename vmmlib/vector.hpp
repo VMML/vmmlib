@@ -257,14 +257,12 @@ public:
     // retval = normal of (this), v1, v2
     Vector compute_normal( const Vector& v1, const Vector& v2 ) const;
 
-    template< size_t N >
-    void get_sub_vector( Vector< N, T >& sub_v_, size_t offset = 0,
-                         typename enable_if< M >= N >::type* = 0 );
-
+    /** @return the sub vector at the given position and length. */
     template< size_t N >
     Vector< N, T >& get_sub_vector( size_t offset = 0,
         typename enable_if< M >= N >::type* = 0 );
 
+    /** @return the sub vector at the given position and length. */
     template< size_t N >
     const Vector< N, T >& get_sub_vector( size_t offset = 0,
         typename enable_if< M >= N >::type* = 0 ) const;
@@ -1266,35 +1264,17 @@ distance_to_sphere( const Vector< 3, TT >& point,
     return ( point - center_ ).length() - w();
 }
 
-template< size_t M, typename T >
-template< size_t N >
-void
-Vector< M, T >::get_sub_vector( Vector< N, T >& sub_v, size_t offset,
-                               typename enable_if< M >= N >::type* )
-{
-    assert( offset <= M - N );
-    sub_v = reinterpret_cast< Vector< N, T >& >( *( begin() + offset ) );
-}
-
-
-
-template< size_t M, typename T >
-template< size_t N >
-inline Vector< N, T >&
-Vector< M, T >::get_sub_vector( size_t offset,
-    typename enable_if< M >= N >::type* )
+template< size_t M, typename T > template< size_t N > inline
+Vector< N, T >& Vector< M, T >::get_sub_vector( size_t offset,
+                                           typename enable_if< M >= N >::type* )
 {
     assert( offset <= M - N );
     return reinterpret_cast< Vector< N, T >& >( *( begin() + offset ) );
 }
 
-
-
-template< size_t M, typename T >
-template< size_t N >
-inline const Vector< N, T >&
-Vector< M, T >::get_sub_vector( size_t offset,
-    typename enable_if< M >= N >::type* ) const
+template< size_t M, typename T > template< size_t N > inline
+const Vector< N, T >& Vector< M, T >::get_sub_vector( size_t offset,
+                                     typename enable_if< M >= N >::type* ) const
 {
     assert( offset <= M - N );
     return reinterpret_cast< const Vector< N, T >& >( *( begin() + offset ) );

@@ -45,54 +45,55 @@
 #
 
 # Assume not found.
-set(CPPNETLIB_FOUND FALSE)
-set(CPPNETLIB_PATH)
+SET(CPPNETLIB_FOUND FALSE)
 
-# Find headers
-find_path(CPPNETLIB_INCLUDE_DIR boost/network.hpp
-  HINTS ${CPPNETLIB_ROOT}/include $ENV{CPPNETLIB_ROOT}/include
-  ${COMMON_SOURCE_DIR}/cppnetlib ${CMAKE_SOURCE_DIR}/cppnetlib
-  /usr/local/include
-  /usr/include)
+# PATH ________________________________________________________________________
 
-if(CPPNETLIB_INCLUDE_DIR)
-    set(CPPNETLIB_PATH "${CPPNETLIB_INCLUDE_DIR}/..")
+if(NOT CPPNETLIB_PATH)
+  find_path(CPPNETLIB_INCLUDE_DIR boost/network.hpp
+    HINTS ${CPPNETLIB_ROOT}/include $ENV{CPPNETLIB_ROOT}/include
+    ${CMAKE_SOURCE_DIR}/cppnetlib
+    /usr/local/include
+    /usr/include)
+  mark_as_advanced (CPPNETLIB_INCLUDE_DIR)
+  set(CPPNETLIB_PATH "${CPPNETLIB_INCLUDE_DIR}/..")
 endif()
 
-# Find dynamic libraries
-if(CPPNETLIB_PATH)
-    set(__libraries cppnetlib-client-connections
-                    cppnetlib-server-parsers
-                    cppnetlib-uri)
+# HEADERS AND DYNAMIC LIBRARIES_________________________________________________
 
-    foreach(__library ${__libraries})
+if(CPPNETLIB_PATH)
+  set(__libraries
+    cppnetlib-client-connections cppnetlib-server-parsers cppnetlib-uri)
+
+  foreach(__library ${__libraries})
     if(TARGET ${__library})
       list(APPEND CPPNETLIB_LIBRARIES ${__library})
-      set(CPPNETLIB_FOUND_SUBPROJECT ON)
     else()
       find_library(${__library} NAMES ${__library}
         HINTS ${CPPNETLIB_ROOT} $ENV{CPPNETLIB_ROOT}
         PATHS ${CPPNETLIB_PATH}/lib64 ${CPPNETLIB_PATH}/lib)
       list(APPEND CPPNETLIB_LIBRARIES ${${__library}})
     endif()
-    endforeach()
-    mark_as_advanced(CPPNETLIB_LIBRARIES)
+  endforeach()
+  mark_as_advanced(CPPNETLIB_LIBRARIES)
 endif()
 
-
-if(NOT cppnetlib_FIND_QUIETLY)
+# FOUND _______________________________________________________________________
+if(CPPNETLIB_FIND_REQUIRED)
   set(_cppnetlib_output 1)
+else()
+  if(NOT CPPNETLIB_FIND_QUIETLY)
+    set(_cppnetlib_output 1)
+  endif()
 endif()
 
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(cppnetlib DEFAULT_MSG
-                                  CPPNETLIB_LIBRARIES
-                                  CPPNETLIB_INCLUDE_DIR)
+find_package_handle_standard_args(CPPNETLIB DEFAULT_MSG CPPNETLIB_LIBRARIES CPPNETLIB_INCLUDE_DIR)
 
 if(CPPNETLIB_FOUND)
   set(CPPNETLIB_INCLUDE_DIRS ${CPPNETLIB_INCLUDE_DIR})
   if(_cppnetlib_output )
-    message(STATUS "Found cppnetlib in ${CPPNETLIB_INCLUDE_DIR}:${CPPNETLIB_LIBRARIES}")
+    message(STATUS "Found cpp-netlib in ${CPPNETLIB_INCLUDE_DIR}:${CPPNETLIB_LIBRARIES}")
   endif()
 else()
   set(CPPNETLIB_FOUND)

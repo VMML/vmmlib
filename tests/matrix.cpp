@@ -39,7 +39,7 @@
 
 using namespace vmml;
 
-double tolerance = 1e-12;
+double test_tolerance = 1e-12;
 
 BOOST_AUTO_TEST_CASE(matrix_plus)
 {
@@ -74,7 +74,7 @@ BOOST_AUTO_TEST_CASE(matrix_plus)
     };
     groundTruth = groundTruth_data;
 
-    BOOST_CHECK(C.equals(groundTruth,tolerance));
+    BOOST_CHECK(C.equals(groundTruth,test_tolerance));
 }
 
 BOOST_AUTO_TEST_CASE(matrix_product)
@@ -111,7 +111,7 @@ BOOST_AUTO_TEST_CASE(matrix_product)
     };
     groundTruth = groundTruth_data;
 
-    BOOST_CHECK(C.equals(groundTruth,tolerance));
+    BOOST_CHECK(C.equals(groundTruth,test_tolerance));
 }
 
 
@@ -182,7 +182,7 @@ BOOST_AUTO_TEST_CASE(matrix_inverse)
     M_inverse_correct.set( M_inverse_correct_data, M_inverse_correct_data + 9 );
     M.inverse( M_inverse );
 
-    BOOST_CHECK(M_inverse.equals(M_inverse_correct,double(tolerance)));
+    BOOST_CHECK(M_inverse.equals(M_inverse_correct,double(test_tolerance)));
 }
 
 BOOST_AUTO_TEST_CASE(matrix_frobenius_norm)
@@ -196,5 +196,5 @@ BOOST_AUTO_TEST_CASE(matrix_frobenius_norm)
     data_2 = test_data;
     float_t norm_check = 22.0907220343745223090082;
     float_t norm = data_2.frobenius_norm();
-    BOOST_CHECK(abs(norm - norm_check) < tolerance);
+    BOOST_CHECK(abs(norm - norm_check) < test_tolerance);
 }

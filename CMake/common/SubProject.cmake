@@ -26,22 +26,11 @@
 # - CMAKE_BINARY_DIR should be changed to PROJECT_BINARY_DIR
 # - CMAKE_SOURCE_DIR should be changed to PROJECT_SOURCE_DIR
 #
-# They must also be locatable by CMake's find_package(name), which can be
-# achieved in any of the following ways:
-# - include(PackageConfig) at the end of the top-level CMakeLists.txt
-# - include(CommonCPack), which indirectly includes PackageConfig
-# - Provide a compatible Find<Name>.cmake script (not recommended)
-#
-# If the project needs to do anything special when configured as a sub project
-# then it can check the variable ${PROJECT_NAME}_IS_SUBPROJECT.
-#
-# SubProject.cmake respects the following variables:
+# Respects the following variables:
 # - DISABLE_SUBPROJECTS: when set, does not load sub projects. Useful for
 #   example for continuous integration builds
 # - INSTALL_PACKAGES: command line cache variable which will "apt-get" or
 #   "port install" the known system packages. Will be unset after installation.
-# - COMMON_SOURCE_DIR: When set, the source code of subprojects will be
-#   downloaded in this path instead of CMAKE_SOURCE_DIR.
 # A sample project can be found at https://github.com/Eyescale/Collage.git
 #
 # How to create a dependency graph:
@@ -50,36 +39,22 @@
 #  neato -Goverlap=prism -Goutputorder=edgesfirst graph2.dot -Tpdf -o graph.pdf
 
 include(${CMAKE_CURRENT_LIST_DIR}/GitExternal.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/CMakeCompatibility.cmake)
 
 if(TARGET git_subproject_${PROJECT_NAME}_done)
   return()
 endif()
 add_custom_target(git_subproject_${PROJECT_NAME}_done)
 set_target_properties(git_subproject_${PROJECT_NAME}_done PROPERTIES
-  EXCLUDE_FROM_DEFAULT_BUILD ON FOLDER ${PROJECT_NAME}/zzphony)
-
-set(COMMON_SOURCE_DIR "${CMAKE_SOURCE_DIR}" CACHE PATH
-  "Location of common directory of all sources")
-set(__common_source_dir ${COMMON_SOURCE_DIR})
-get_filename_component(__common_source_dir ${__common_source_dir} ABSOLUTE)
-file(MAKE_DIRECTORY ${__common_source_dir})
+  EXCLUDE_FROM_DEFAULT_BUILD ON FOLDER "zzphony")
 
 function(subproject_install_packages file name)
-  if(NOT INSTALL_PACKAGES)
+  if(NOT EXISTS ${file} OR NOT INSTALL_PACKAGES)
     return()
   endif()
 
-  if(EXISTS ${file})
-    include(${file})
-  endif()
-
+  include(${file})
   string(TOUPPER ${name} NAME)
-  list(APPEND ${NAME}_DEB_DEPENDS pkg-config git subversion cmake autoconf
-    automake git-review doxygen ${OPTIONAL_DEBS})
-  set(${NAME}_BUILD_DEBS ${NAME}_DEB_DEPENDS)
-  list(APPEND ${NAME}_DEB_DEPENDS ninja-build lcov cppcheck git-svn clang
-    clang-format-3.5) # optional deb packages, not added to build spec
-  list(APPEND ${NAME}_PORT_DEPENDS cppcheck)
 
   if(${NAME}_DEB_DEPENDS AND CMAKE_SYSTEM_NAME MATCHES "Linux" )
     list(SORT ${NAME}_DEB_DEPENDS)
@@ -107,7 +82,8 @@ function(add_subproject name)
     # We're adding a sub project here: Remove parent's CMake
     # directories so they don't take precendence over the sub project
     # directories. Change is scoped to this function.
-    list(REMOVE_ITEM CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake)
+    list(REMOVE_ITEM CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake
+      ${PROJECT_SOURCE_DIR}/CMake/common)
   endif()
 
   list(LENGTH ARGN argc)
@@ -117,15 +93,14 @@ function(add_subproject name)
     set(path ${name})
   endif ()
 
-  if(NOT EXISTS "${__common_source_dir}/${path}/")
-    message(FATAL_ERROR
-      "Sub project ${path} not found in ${__common_source_dir}")
+  if(NOT EXISTS "${CMAKE_SOURCE_DIR}/${path}/")
+    message(FATAL_ERROR "Sub project ${path} not found in ${CMAKE_SOURCE_DIR}")
   endif()
 
   option(SUBPROJECT_${name} "Build ${name} " ON)
   if(SUBPROJECT_${name})
-    # Hint for the sub project, in case it needs to do anything special when
-    # configured as a sub project
+    # if the project needs to do anything special when configured as a
+    # sub project then it can check the variable ${PROJECT}_IS_SUBPROJECT
     set(${name}_IS_SUBPROJECT ON)
 
     # set ${PROJECT}_DIR to the location of the new build dir for the project
@@ -135,18 +110,19 @@ function(add_subproject name)
     endif()
 
     subproject_install_packages(
-      "${__common_source_dir}/${path}/CMake/${name}.cmake" ${name})
+      "${CMAKE_SOURCE_DIR}/${path}/CMake/${name}.cmake" ${name})
 
     # add the source sub directory to our build and set the binary dir
     # to the build tree
-
-    add_subdirectory("${__common_source_dir}/${path}"
+    set(ADD_SUBPROJECT_INDENT "${ADD_SUBPROJECT_INDENT}   ")
+    message("${ADD_SUBPROJECT_INDENT}========== ${path} ==========")
+    add_subdirectory("${CMAKE_SOURCE_DIR}/${path}"
                      "${CMAKE_BINARY_DIR}/${name}")
     if(NOT ${name}_SKIP_FIND)
-      # find subproject "package"
-      find_package(${name} REQUIRED QUIET)
+      find_package(${name} REQUIRED) # find subproject "package"
       include_directories(${${NAME}_INCLUDE_DIRS})
     endif()
+    message("${ADD_SUBPROJECT_INDENT}---------- ${path} ----------")
     set(${name}_IS_SUBPROJECT ON PARENT_SCOPE)
     # Mark globally that we've already used name as a sub project
     set_property(GLOBAL PROPERTY ${name}_IS_SUBPROJECT ON)
@@ -154,7 +130,7 @@ function(add_subproject name)
     get_property(__targets GLOBAL PROPERTY ${name}_ALL_DEP_TARGETS)
     if(__targets)
       add_custom_target(${name}-all DEPENDS ${__targets})
-      set_target_properties(${name}-all PROPERTIES FOLDER ${name})
+      set_target_properties(${name}-all PROPERTIES FOLDER "${name}")
     endif()
   endif()
 endfunction()
@@ -168,22 +144,18 @@ macro(git_subproject name url tag)
     endif()
     if(NOT ${NAME}_FOUND)
       get_property(__included GLOBAL PROPERTY ${name}_IS_SUBPROJECT)
-      if(__included) # already used as a sub project, just find it:
-        find_package(${name} QUIET REQUIRED CONFIG
-          HINTS ${CMAKE_BINARY_DIR}/${NAME})
-      else()
-        if(NOT EXISTS ${__common_source_dir}/${name})
-          # Always try first using Config mode, then Module mode.
-          find_package(${name} QUIET CONFIG)
-          if(NOT ${name}_FOUND)
-            find_package(${name} QUIET MODULE)
-          endif()
+      if(NOT EXISTS ${CMAKE_SOURCE_DIR}/${name})
+        # Always try first using Config mode, then Module mode.
+        find_package(${name} QUIET CONFIG)
+        if(NOT ${name}_FOUND)
+          find_package(${name} QUIET MODULE)
         endif()
-        if(NOT ${NAME}_FOUND OR ${NAME}_FOUND_SUBPROJECT)
-          # not found externally, add as sub project
-          git_external(${__common_source_dir}/${name} ${url} ${TAG})
-          add_subproject(${name})
-        endif()
+      elseif(__included) # already used as a sub project, just find it:
+        find_package(${name} QUIET CONFIG HINTS ${CMAKE_BINARY_DIR}/${NAME})
+      endif()
+      if(NOT ${NAME}_FOUND)
+        git_external(${CMAKE_SOURCE_DIR}/${name} ${url} ${TAG})
+        add_subproject(${name})
       endif()
     endif()
     get_property(__included GLOBAL PROPERTY ${name}_IS_SUBPROJECT)
@@ -210,14 +182,14 @@ if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/.gitsubprojects")
       string(REPLACE " " ";" __subproject_list ${__subproject})
       list(GET __subproject_list 0 __subproject_name)
       list(GET __subproject_list 1 __subproject_repo)
-      set(__subproject_dir "${__common_source_dir}/${__subproject_name}")
+      set(__subproject_dir "${CMAKE_SOURCE_DIR}/${__subproject_name}")
       file(APPEND "${GIT_SUBPROJECTS_SCRIPT}"
-        "execute_process(COMMAND \"${GIT_EXECUTABLE}\" fetch origin -q\n"
+        "execute_process(COMMAND ${GIT_EXECUTABLE} fetch origin -q\n"
         "  WORKING_DIRECTORY ${__subproject_dir})\n"
         "execute_process(COMMAND \n"
-        "  \"${GIT_EXECUTABLE}\" show-ref --hash=7 refs/remotes/origin/master\n"
+        "  ${GIT_EXECUTABLE} show-ref --hash=7 refs/remotes/origin/master\n"
         "  OUTPUT_VARIABLE newref OUTPUT_STRIP_TRAILING_WHITESPACE\n"
-        "  WORKING_DIRECTORY \"${__subproject_dir}\")\n"
+        "  WORKING_DIRECTORY ${__subproject_dir})\n"
         "if(newref)\n"
         "  file(APPEND .gitsubprojects\n"
         "    \"git_subproject(${__subproject_name} ${__subproject_repo} \${newref})\\n\")\n"
@@ -231,7 +203,7 @@ if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/.gitsubprojects")
       COMMENT "Update ${PROJECT_NAME}/.gitsubprojects"
       WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}")
     set_target_properties(update_git_subprojects_${PROJECT_NAME} PROPERTIES
-      EXCLUDE_FROM_DEFAULT_BUILD ON FOLDER ${PROJECT_NAME}/zzphony)
+      EXCLUDE_FROM_DEFAULT_BUILD ON FOLDER "${PROJECT_NAME}")
 
     if(NOT TARGET update)
       add_custom_target(update)
@@ -288,4 +260,5 @@ function(subproject_configure)
   if("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_CURRENT_SOURCE_DIR}")
     unset(INSTALL_PACKAGES CACHE) # Remove after install in SubProject.cmake
   endif()
+
 endfunction()

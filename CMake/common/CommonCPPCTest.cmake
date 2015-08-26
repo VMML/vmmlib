@@ -34,8 +34,6 @@ endif()
 
 include_directories(${CMAKE_CURRENT_LIST_DIR}/cpp ${PROJECT_SOURCE_DIR})
 
-common_compiler_flags()
-
 file(GLOB_RECURSE TEST_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.c *.cpp)
 foreach(FILE ${EXCLUDE_FROM_TESTS})
   list(REMOVE_ITEM TEST_FILES ${FILE})
@@ -47,12 +45,12 @@ set(ALL_CPP_PERF_TESTS)
 
 macro(common_add_cpp_test NAME FILE)
   set(TEST_NAME ${PROJECT_NAME}_${NAME})
-  if(NOT TARGET ${NAME} AND NOT MSVC) # Create target without project prefix if possible
+  if(NOT TARGET ${NAME}) # Create target without project prefix if possible
     set(TEST_NAME ${NAME})
   endif()
 
   add_executable(${TEST_NAME} ${FILE})
-  set_target_properties(${TEST_NAME} PROPERTIES FOLDER ${PROJECT_NAME}/tests
+  set_target_properties(${TEST_NAME} PROPERTIES FOLDER "Tests/${PROJECT_NAME}"
     OUTPUT_NAME ${NAME})
 
   # Per target INCLUDE_DIRECTORIES if supported
@@ -83,11 +81,11 @@ macro(common_add_cpp_test NAME FILE)
       -R '^${TEST_NAME}$$' -C $<CONFIGURATION> \${ARGS}
     DEPENDS ${TEST_NAME}
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    COMMENT "Running ${TEST_NAME} ctest")
+    COMMENT "Running ${TEST_NAME} cpp test")
   set_target_properties(ctest_${TEST_NAME} PROPERTIES
-    EXCLUDE_FROM_DEFAULT_BUILD ON FOLDER ${PROJECT_NAME}/tests/ctest)
+    EXCLUDE_FROM_DEFAULT_BUILD ON FOLDER "Tests")
 
-  if("${NAME}" MATCHES "^perf.*")
+  if(NAME MATCHES "^perf.*")
     list(APPEND ALL_CPP_PERF_TESTS ctest_${TEST_NAME})
   else()
     list(APPEND ALL_CPP_TESTS ctest_${TEST_NAME})
@@ -112,26 +110,26 @@ foreach(FILE ${TEST_FILES})
   endif()
 endforeach()
 
-if(NOT TARGET ${PROJECT_NAME}-cpptests)
-  add_custom_target(${PROJECT_NAME}-cpptests)
+if(NOT TARGET ${PROJECT_NAME}_cpptests)
+  add_custom_target(${PROJECT_NAME}_cpptests)
 endif()
-if(NOT TARGET ${PROJECT_NAME}-perftests)
-  add_custom_target(${PROJECT_NAME}-perftests)
+if(NOT TARGET ${PROJECT_NAME}_perftests)
+  add_custom_target(${PROJECT_NAME}_perftests)
 endif()
-set_target_properties(${PROJECT_NAME}-cpptests PROPERTIES
-  EXCLUDE_FROM_DEFAULT_BUILD ON FOLDER ${PROJECT_NAME}/tests)
-set_target_properties(${PROJECT_NAME}-perftests PROPERTIES
-  EXCLUDE_FROM_DEFAULT_BUILD ON FOLDER ${PROJECT_NAME}/tests)
+set_target_properties(${PROJECT_NAME}_cpptests PROPERTIES
+  EXCLUDE_FROM_DEFAULT_BUILD ON FOLDER "Tests")
+set_target_properties(${PROJECT_NAME}_perftests PROPERTIES
+  EXCLUDE_FROM_DEFAULT_BUILD ON FOLDER "Tests")
 
-add_dependencies(${PROJECT_NAME}-cpptests ${ALL_CPP_TESTS})
+add_dependencies(${PROJECT_NAME}_cpptests ${ALL_CPP_TESTS})
 if(ALL_CPP_PERF_TESTS)
-  add_dependencies(${PROJECT_NAME}-perftests ${ALL_CPP_PERF_TESTS})
+  add_dependencies(${PROJECT_NAME}_perftests ${ALL_CPP_PERF_TESTS})
 endif()
 
-add_dependencies(${PROJECT_NAME}-tests ${PROJECT_NAME}-cpptests)
-add_dependencies(tests ${PROJECT_NAME}-tests)
-add_dependencies(perftests ${PROJECT_NAME}-perftests)
+add_dependencies(${PROJECT_NAME}_tests ${PROJECT_NAME}_cpptests)
+add_dependencies(tests ${PROJECT_NAME}_tests)
+add_dependencies(perftests ${PROJECT_NAME}_perftests)
 
 if(ENABLE_COVERAGE)
-  add_coverage_targets(${PROJECT_NAME}-cpptests)
+  add_coverage_targets(${PROJECT_NAME}_cpptests)
 endif()

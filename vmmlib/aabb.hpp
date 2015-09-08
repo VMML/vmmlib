@@ -380,6 +380,6 @@ AABB< T > AABB< T >::makeUnitBox()
     return AABB( Vector< 3, T >::ZERO, Vector< 3, T >::ONE );
 }
 
-}; //namespace vmml
+} //namespace vmml
 
 #endif

@@ -461,12 +461,11 @@ inline T dot( const Vector< M, T >& first, const Vector< M, T >& second )
 }
 
 
-template< size_t M, typename T >
+template< size_t M = 3, typename T >
 inline Vector< M, T > cross( const Vector< 3, T >& a, const Vector< 3, T >& b )
 {
     return a.cross( b );
 }
-
 
 template< size_t M, typename T >
 inline Vector< M, T > normalize( const Vector< M, T >& vector_ )
@@ -1135,7 +1134,7 @@ inline T Vector< M, T >::normalize()
     if ( len == 0 )
         return 0;
 
-    const T tmp = 1.0 / len;
+    const T tmp = static_cast<T>(1.0) / len;
     (*this) *= tmp;
     return len;
 }

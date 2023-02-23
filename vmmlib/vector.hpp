@@ -45,6 +45,7 @@
 #include <cstring>
 #include <limits>
 #include <algorithm>
+#include <cstdint>
 
 namespace vmml
 {
